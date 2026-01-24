@@ -1,0 +1,31 @@
+# Operating System
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+/tmp/
+*.tmp
+*.temp
+
+# Logs
+*.log
+logs/
+
+# Dependencies (if projects are added)
+node_modules/
+vendor/
+*.pyc
+__pycache__/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+.tox/
