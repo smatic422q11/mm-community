@@ -53,8 +53,8 @@ Dieses Projekt ist unter der MIT-Lizenz lizenziert - siehe [LICENSE](LICENSE) f�
 
 ## 💬 Kontakt
 
-- Öffnen Sie ein [Issue](../../issues) für Fragen oder Vorschläge
-- Starten Sie eine [Discussion](../../discussions) für allgemeine Diskussionen
+- Öffnen Sie ein [Issue](https://github.com/smatic422q11/mm-community/issues) für Fragen oder Vorschläge
+- Starten Sie eine [Discussion](https://github.com/smatic422q11/mm-community/discussions) für allgemeine Diskussionen
 
 ---
 
