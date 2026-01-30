@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>M&M-COMMUNITY</title>
+    <title>M&M-COMMUNITY - Original Fundament</title>
     <style>
         body {
             background-color: #000000;
@@ -11,31 +11,46 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 40px 20px;
+            padding: 40px 10px;
             margin: 0;
         }
 
-        .logo-container {
+        /* DAS ORIGINALE LOGO-GEHÄUSE */
+        .logo-ring {
             width: 200px;
             height: 200px;
-            border: 8px solid #003d8f;
+            border: 15px solid #003d8f; /* Das dicke blaue Original-Gehäuse */
             border-radius: 50%;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            margin-bottom: 30px;
+            margin-bottom: 50px;
+            box-sizing: border-box;
         }
 
-        .logo-mm { font-size: 4rem; font-weight: bold; margin: 0; }
-        .logo-com { font-size: 0.9rem; letter-spacing: 4px; text-transform: uppercase; color: #003d8f; }
+        .logo-mm { 
+            font-size: 4.8rem; 
+            font-weight: 900; 
+            color: #ffffff; 
+            line-height: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .logo-community { 
+            font-size: 0.8rem; 
+            color: #ffffff; 
+            letter-spacing: 3px; 
+            text-transform: uppercase; 
+            font-weight: bold;
+        }
 
         .grid {
             width: 100%;
-            max-width: 800px;
+            max-width: 850px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
 
         .box {
@@ -48,7 +63,7 @@
             width: 50px;
             padding: 12px;
             border-right: 2px solid #003d8f;
-            color: #003d8f;
+            color: #ffffff;
             font-weight: bold;
             text-align: center;
         }
@@ -56,15 +71,15 @@
         .text {
             padding: 12px;
             text-transform: uppercase;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
 
-    <div class="logo-container">
+    <div class="logo-ring">
         <div class="logo-mm">M&M</div>
-        <div class="logo-com">Community</div>
+        <div class="logo-community">COMMUNITY</div>
     </div>
 
     <div class="grid">
