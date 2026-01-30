@@ -7,7 +7,7 @@
     <style>
         body { 
             background-color: #000000; 
-            color: #00aaff; /* Leuchtendes Blau für die gesamte Schrift */
+            color: #00aaff; 
             font-family: 'Segoe UI', Arial, sans-serif; 
             margin: 0; 
             padding: 40px 20px; 
@@ -16,12 +16,11 @@
             align-items: center;
         }
 
-        /* Dein Logo */
         .logo { 
             width: 220px; 
             height: auto;
             border-radius: 50%;
-            border: 3px solid #00aaff; /* Blauer Rand passend zur Schrift */
+            border: 3px solid #00aaff; 
             margin-bottom: 20px;
             box-shadow: 0 0 20px rgba(0, 170, 255, 0.3);
         }
@@ -31,21 +30,21 @@
             letter-spacing: 5px;
             margin-bottom: 60px;
             text-transform: uppercase;
-            color: #00aaff; /* Blau */
+            color: #00aaff;
             text-shadow: 0 0 10px rgba(0, 170, 255, 0.5);
         }
 
-        /* Das Fundament */
+        /* Das Fundament: Jetzt sauber von 1 nach 20 sortiert */
         .bauwerk { 
             width: 100%; 
             max-width: 700px; 
             display: flex;
-            flex-direction: column-reverse; /* Stockwerk 1 unten */
+            flex-direction: column; /* Sorgt für die Reihenfolge von oben nach unten */
         }
 
         .stockwerk { 
             padding: 15px 25px; 
-            border: 2px solid #00aaff; /* Blauer Rahmen */
+            border: 2px solid #00aaff; 
             margin-bottom: 8px;
             display: flex;
             align-items: center;
@@ -57,13 +56,13 @@
             font-size: 1.3rem;
             margin-right: 20px; 
             min-width: 45px;
-            color: #ffffff; /* Nummern in Weiß für besseren Kontrast */
+            color: #ffffff;
         }
 
         .titel {
             font-size: 1.2rem;
             text-transform: uppercase;
-            color: #00aaff; /* Schrift der Punkte in Blau */
+            color: #00aaff;
         }
     </style>
 </head>
@@ -98,7 +97,3 @@
 
 </body>
 </html>
-Damit hast du jetzt: Logo oben, Blaue Schrift, Schwarzer Grund und das Fundament mit allen 20 Punkten.
-
-Soll ich noch etwas an der Helligkeit des Blaus ändern oder ist es so perfekt?
-
