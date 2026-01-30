@@ -1,4 +1,3 @@
-HTML
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -8,8 +7,8 @@ HTML
     <style>
         body { 
             background-color: #000000; 
-            color: #1a73e8; /* Dein Blau */
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            color: #00aaff; /* Leuchtendes Blau für die gesamte Schrift */
+            font-family: 'Segoe UI', Arial, sans-serif; 
             margin: 0; 
             padding: 40px 20px; 
             display: flex;
@@ -17,42 +16,40 @@ HTML
             align-items: center;
         }
 
+        /* Dein Logo */
         .logo { 
             width: 220px; 
             height: auto;
             border-radius: 50%;
-            border: 3px solid #1a73e8;
+            border: 3px solid #00aaff; /* Blauer Rand passend zur Schrift */
             margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(0, 170, 255, 0.3);
         }
 
         h1 { 
-            font-size: 2.2rem; 
+            font-size: 2.5rem; 
             letter-spacing: 5px;
             margin-bottom: 60px;
             text-transform: uppercase;
-            text-shadow: 0 0 10px rgba(26, 115, 232, 0.5);
+            color: #00aaff; /* Blau */
+            text-shadow: 0 0 10px rgba(0, 170, 255, 0.5);
         }
 
-        /* Das visuelle Fundament */
+        /* Das Fundament */
         .bauwerk { 
             width: 100%; 
             max-width: 700px; 
             display: flex;
-            flex-direction: column-reverse; /* Stockwerk 1 ist das Fundament unten */
+            flex-direction: column-reverse; /* Stockwerk 1 unten */
         }
 
         .stockwerk { 
             padding: 15px 25px; 
-            border: 2px solid #1a73e8;
-            margin-bottom: 5px;
+            border: 2px solid #00aaff; /* Blauer Rahmen */
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
-            background: rgba(26, 115, 232, 0.05);
-            transition: background 0.3s;
-        }
-
-        .stockwerk:hover {
-            background: rgba(26, 115, 232, 0.2);
+            background: rgba(0, 170, 255, 0.05);
         }
 
         .nummer { 
@@ -60,19 +57,20 @@ HTML
             font-size: 1.3rem;
             margin-right: 20px; 
             min-width: 45px;
-            color: #ffffff;
+            color: #ffffff; /* Nummern in Weiß für besseren Kontrast */
         }
 
         .titel {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            color: #00aaff; /* Schrift der Punkte in Blau */
         }
     </style>
 </head>
 <body>
 
     <img src="https://github.com/smatic422q11.png" alt="MM Logo" class="logo">
+    
     <h1>MM-COMMUNITY</h1>
 
     <div class="bauwerk">
@@ -100,8 +98,7 @@ HTML
 
 </body>
 </html>
+Damit hast du jetzt: Logo oben, Blaue Schrift, Schwarzer Grund und das Fundament mit allen 20 Punkten.
 
-
-
-
+Soll ich noch etwas an der Helligkeit des Blaus ändern oder ist es so perfekt?
 
