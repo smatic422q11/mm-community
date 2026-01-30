@@ -1,61 +1,28 @@
-# M&M Community
 
-**Offizielles Fundament der M&M Community – Raum für Visionen und interaktive Entwicklung**
+Markdown
+# M&M-Community: Das Kollektiv
 
-Willkommen bei der M&M Community! Dies ist das zentrale Repository für unsere gemeinsame Vision, Zusammenarbeit und interaktive Entwicklung.
+![Status](https://img.shields.io/badge/System-Operativ-00ffcc?style=for-the-badge)
+![Security](https://img.shields.io/badge/Zugang-Selektiv-red?style=for-the-badge)
 
-## 🎯 Vision
+> **"Bewegung entsteht durch Tatendrang. Stabilität durch Empathie. Erfolg durch Struktur."**
 
-Die M&M Community ist ein offenes, kollaboratives Fundament, das:
+Willkommen im zentralen Nervensystem der M&M-Community. Dies ist kein Ort für Diskussionen, sondern ein Raum für die Umsetzung visionärer Projekte innerhalb eines festen Gefüges.
 
-- **Gemeinsame Visionen entwickelt**: Ein Raum für innovative Ideen und zukunftsorientierte Konzepte
-- **Interaktive Entwicklung ermöglicht**: Plattform für aktive Mitgestaltung und Zusammenarbeit
-- **Gemeinschaft fördert**: Ein Ort des Austauschs, des Lernens und der gegenseitigen Unterstützung
+## 🌐 Vision & Ziel
+Wir erschaffen eine Umgebung, in der das Kollektiv mehr ist als die Summe seiner Teile. Durch eine klare Hierarchie von Aufgaben und Verantwortlichkeiten (Floors) stellen wir sicher, dass Energie effizient genutzt wird.
 
-Lesen Sie mehr in unserer [Vision](docs/VISION.md).
+## 🏛️ Die Struktur
+Das System ist in operative Ebenen unterteilt. Jede Ebene ist autark und arbeitet an der Fertigstellung des Gesamtbildes:
 
-## 📁 Struktur
+* **Ebene 0: Fundament** – Integration und Beobachtung.
+* **Ebene 1: Execution** – Realisierung technischer und sozialer Projekte.
+* **Ebene 2: Core** – Strategische Ausrichtung und System-Erhalt.
 
-```
-mm-community/
-├── docs/              # Dokumentation und Richtlinien
-├── visionen/          # Raum für Ideen und Zukunftsvisionen
-├── projekte/          # Interaktive Entwicklungsprojekte
-```
+## 📁 Repository-Guide
+* `/Visionen`: Das Zielbild unserer Gemeinschaft.
+* `/Projekte`: Laufende und abgeschlossene Arbeiten des Kollektivs.
+* `/Dokumente`: Offizielle Richtlinien und Protokolle.
 
-### Bereiche
-
-- **[Visionen](visionen/)**: Teilen Sie Ihre Ideen und Zukunftsvisionen für die Community
-- **[Projekte](projekte/)**: Arbeiten Sie gemeinsam an konkreten Entwicklungsprojekten
-- **[Dokumentation](docs/)**: Architektur, Richtlinien und Community-Informationen
-
-## 🤝 Mitmachen
-
-Wir freuen uns über jeden Beitrag! Es gibt viele Möglichkeiten:
-
-1. **Visionen teilen**: Bringen Sie Ihre Ideen ein
-2. **Projekte starten**: Initiieren Sie neue Entwicklungen
-3. **Mitgestalten**: Tragen Sie zu bestehenden Projekten bei
-4. **Diskutieren**: Beteiligen Sie sich an Diskussionen
-
-Lesen Sie unsere [Beitragsrichtlinien](CONTRIBUTING.md), um loszulegen.
-
-## 📖 Dokumentation
-
-- [Vision](docs/VISION.md) - Unsere Vision und Kernprinzipien
-- [Architektur](docs/ARCHITECTURE.md) - Struktur und Aufbau der Community
-- [Beitragsrichtlinien](CONTRIBUTING.md) - Wie Sie beitragen können
-- [Code of Conduct](CODE_OF_CONDUCT.md) - Unsere Community-Richtlinien
-
-## 📜 Lizenz
-
-Dieses Projekt ist unter der MIT-Lizenz lizenziert - siehe [LICENSE](LICENSE) für Details.
-
-## 💬 Kontakt
-
-- Öffnen Sie ein [Issue](https://github.com/smatic422q11/mm-community/issues) für Fragen oder Vorschläge
-- Starten Sie eine [Discussion](https://github.com/smatic422q11/mm-community/discussions) für allgemeine Diskussionen
-
----
-
-**Gemeinsam gestalten wir die Zukunft der M&M Community!** 🚀
+## ✉️ Zugang
+Der Beitritt erfolgt ausschließlich über das **Selektions-Verfahren**. Wir suchen nicht nach Mitgliedern, wir finden sie. Wer etwas bewegt und Mitgefühl zeigt, wird vom System erkannt.
