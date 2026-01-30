@@ -1,70 +1,101 @@
-
+HTML
 <!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MM-Community.Online</title>
+    <title>MM-COMMUNITY - Das Fundament</title>
     <style>
-        body {
-            background-color: #000000; /* Tiefschwarz */
-            color: #ffffff; /* Weißer Text */
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
+        body { 
+            background-color: #000000; 
+            color: #1a73e8; /* Dein Blau */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 40px 20px; 
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
         }
 
-        .header {
-            text-align: center;
-            padding: 50px 20px;
-            width: 100%;
-            border-bottom: 2px solid #0056b3; /* Dunkelblaues Band */
-        }
-
-        .logo {
-            width: 180px;
-            height: 180px;
+        .logo { 
+            width: 220px; 
+            height: auto;
             border-radius: 50%;
-            border: 5px solid #0056b3; /* Dein Blau aus dem Logo */
-            box-shadow: 0 0 30px rgba(0, 86, 179, 0.5);
+            border: 3px solid #1a73e8;
             margin-bottom: 20px;
         }
 
-        .content {
-            max-width: 800px;
-            padding: 40px 20px;
-            text-align: center;
+        h1 { 
+            font-size: 2.2rem; 
+            letter-spacing: 5px;
+            margin-bottom: 60px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(26, 115, 232, 0.5);
         }
 
-        .etage-card {
-            background: rgba(0, 86, 179, 0.1);
-            border: 1px solid #0056b3;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 30px;
+        /* Das visuelle Fundament */
+        .bauwerk { 
+            width: 100%; 
+            max-width: 700px; 
+            display: flex;
+            flex-direction: column-reverse; /* Stockwerk 1 ist das Fundament unten */
         }
 
-        h1 { letter-spacing: 3px; margin: 0; font-size: 2rem; }
-        .blue-text { color: #0056b3; font-weight: bold; }
+        .stockwerk { 
+            padding: 15px 25px; 
+            border: 2px solid #1a73e8;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            background: rgba(26, 115, 232, 0.05);
+            transition: background 0.3s;
+        }
+
+        .stockwerk:hover {
+            background: rgba(26, 115, 232, 0.2);
+        }
+
+        .nummer { 
+            font-weight: bold; 
+            font-size: 1.3rem;
+            margin-right: 20px; 
+            min-width: 45px;
+            color: #ffffff;
+        }
+
+        .titel {
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <img src="https://github.com/smatic422q11.png" alt="MM-Logo" class="logo">
-        <h1>MM-COMMUNITY.ONLINE</h1>
-        <p class="blue-text">THE UNSTOPPABLE COLLECTIVE</p>
-    </div>
+    <img src="https://github.com/smatic422q11.png" alt="MM Logo" class="logo">
+    <h1>MM-COMMUNITY</h1>
 
-    <div class="content">
-        <div class="etage-card">
-            <h2 class="blue-text">Etage 6</h2>
-            <h3>Wahrnehmung</h3>
-            <p>Fokus auf das Wesentliche. Klarheit ohne Filter.</p>
-        </div>
+    <div class="bauwerk">
+        <div class="stockwerk"><span class="nummer">1.</span><span class="titel">Recht auf Gefühlsvorderung</span></div>
+        <div class="stockwerk"><span class="nummer">2.</span><span class="titel">Wie werde ich Mensch</span></div>
+        <div class="stockwerk"><span class="nummer">3.</span><span class="titel">Glaube an Friede</span></div>
+        <div class="stockwerk"><span class="nummer">4.</span><span class="titel">Programm für Bürgerliche Rechte</span></div>
+        <div class="stockwerk"><span class="nummer">5.</span><span class="titel">Moralische Gesetze und Verantwortung</span></div>
+        <div class="stockwerk"><span class="nummer">6.</span><span class="titel">Wahre Richtung und Kunst</span></div>
+        <div class="stockwerk"><span class="nummer">7.</span><span class="titel">Menschlichkeit – Wiederherstellung</span></div>
+        <div class="stockwerk"><span class="nummer">8.</span><span class="titel">Kinderschutz – Pflicht – Elternrechte</span></div>
+        <div class="stockwerk"><span class="nummer">9.</span><span class="titel">LGBTQ und Kirche</span></div>
+        <div class="stockwerk"><span class="nummer">10.</span><span class="titel">Veranstaltungen</span></div>
+        <div class="stockwerk"><span class="nummer">11.</span><span class="titel">Religions Bekenntnisse oder der Selbst weg Finden</span></div>
+        <div class="stockwerk"><span class="nummer">12.</span><span class="titel">Arbeitsrecht und Mobbing</span></div>
+        <div class="stockwerk"><span class="nummer">13.</span><span class="titel">Gesundheitswesen und Verhalten</span></div>
+        <div class="stockwerk"><span class="nummer">14.</span><span class="titel">Arbeitswelt und Du</span></div>
+        <div class="stockwerk"><span class="nummer">15.</span><span class="titel">Jugendsprecher</span></div>
+        <div class="stockwerk"><span class="nummer">16.</span><span class="titel">Pensionisten Ratgeber</span></div>
+        <div class="stockwerk"><span class="nummer">17.</span><span class="titel">Sozial gefallen und Wiederkehr</span></div>
+        <div class="stockwerk"><span class="nummer">18.</span><span class="titel">Nachbarschaft und Gemeinschaft</span></div>
+        <div class="stockwerk"><span class="nummer">19.</span><span class="titel">Kapital und Verwaltung</span></div>
+        <div class="stockwerk"><span class="nummer">20.</span><span class="titel">Das Kollektiv</span></div>
     </div>
 
 </body>
