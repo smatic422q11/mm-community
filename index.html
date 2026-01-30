@@ -2,22 +2,65 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M&M Community</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>MM-COMMUNITY | PLATTFORM</title>
+    <style>
+        body { background: #0a0a0a; color: #00ffcc; font-family: 'Courier New', monospace; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        header { border-bottom: 2px solid #00ffcc; padding: 20px; text-align: center; letter-spacing: 10px; }
+        #main-frame { flex-grow: 1; padding: 40px; display: flex; flex-direction: column; align-items: center; }
+        .login-box { border: 1px solid #00ffcc; padding: 30px; background: #111; box-shadow: 0 0 15px #00ffcc33; }
+        input { background: #000; border: 1px solid #00ffcc; color: #00ffcc; padding: 10px; margin-top: 10px; width: 250px; outline: none; }
+        button { background: #00ffcc; border: none; color: #000; padding: 10px 20px; margin-top: 15px; cursor: pointer; font-weight: bold; }
+        .hidden { display: none; }
+        .floor-ui { width: 100%; max-width: 800px; }
+    </style>
 </head>
-<body class="bg-slate-900 text-slate-100 flex flex-col items-center p-4 italic">
-    <header class="mt-10 text-center">
-        <h1 class="text-3xl font-bold">M&M Community</h1>
-        <p class="text-blue-400 mt-2 text-xl font-semibold">"Komm, wie du bist."</p>
-    </header>
-    <main class="mt-10 w-full max-w-md bg-slate-800 p-8 rounded-2xl border border-slate-700 shadow-2xl">
-komm wie du bist 
-            <span class="text-xs uppercase tracking-widest text-slate-400">Menschen-Zähler</span>
-            <div class="text-6xl font-mono font-bold mt-4 text-white">000.001</div>
+<body>
+
+<header>MM-COMMUNITY OS v1.0</header>
+
+<div id="main-frame">
+    <div id="login" class="login-box">
+        <h3>IDENTIFIKATION ERFORDERLICH</h3>
+        <p>Geben Sie Ihren Floor-Key ein:</p>
+        <input type="password" id="key" placeholder="Floor-Key...">
+        <br>
+        <button onclick="accessFloor()">LOGIN</button>
+    </div>
+
+    <div id="dashboard" class="hidden floor-ui">
+        <h2 id="floor-title">WILLKOMMEN</h2>
+        <div style="border: 1px solid #444; padding: 20px; background: #050505;">
+            <h3>Aktive Operationen</h3>
+            <ul id="tasks">
+                <li>Initialisiere Plattform-Module...</li>
+                <li>Warte auf Zuweisung durch Core...</li>
+            </ul>
         </div>
-        <button class="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-xl font-bold text-lg shadow-lg">Talent eintragen</button>
-    </main>
+        <button onclick="location.reload()" style="margin-top:20px; background: #444; color: white;">LOGOUT</button>
+    </div>
+</div>
+
+<script>
+    function accessFloor() {
+        const key = document.getElementById('key').value;
+        const login = document.getElementById('login');
+        const dash = document.getElementById('dashboard');
+        const title = document.getElementById('floor-title');
+
+        if(key === 'floor1_2026') { // Beispiel-Key für Floor 1
+            login.classList.add('hidden');
+            dash.classList.remove('hidden');
+            title.innerText = "ACCESS GRANTED: FLOOR 1 (EXECUTION)";
+        } else if(key === 'master_99') { // Dein Key für den Core
+            login.classList.add('hidden');
+            dash.classList.remove('hidden');
+            title.innerText = "ACCESS GRANTED: FLOOR 2 (CORE)";
+        } else {
+            alert('ZUGRIFF VERWEIGERT: Ungültiger Key.');
+        }
+    }
+</script>
+
 </body>
 </html>
 
