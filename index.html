@@ -1,85 +1,79 @@
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>MM-COMMUNITY | PLATTFORM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MM-COMMUNITY | Die 20 Programme</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #0a0a0a; color: #00ffcc; font-family: 'Courier New', monospace; margin: 0; display: flex; flex-direction: column; height: 100vh; }
-        header { border-bottom: 2px solid #00ffcc; padding: 20px; text-align: center; letter-spacing: 10px; }
-        #main-frame { flex-grow: 1; padding: 40px; display: flex; flex-direction: column; align-items: center; }
-        .login-box { border: 1px solid #00ffcc; padding: 30px; background: #111; box-shadow: 0 0 15px #00ffcc33; }
-        input { background: #000; border: 1px solid #00ffcc; color: #00ffcc; padding: 10px; margin-top: 10px; width: 250px; outline: none; }
-        button { background: #00ffcc; border: none; color: #000; padding: 10px 20px; margin-top: 15px; cursor: pointer; font-weight: bold; }
-        .hidden { display: none; }
-        .floor-ui { width: 100%; max-width: 800px; }
+        body { background: #000; color: #f0f0f0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .glow-text { color: #00ffcc; text-shadow: 0 0 15px rgba(0,255,204,0.4); }
+        .program-card { 
+            border-left: 2px solid #00ffcc; 
+            background: linear-gradient(90deg, rgba(0,255,204,0.07) 0%, transparent 100%);
+            transition: 0.4s;
+        }
+        .program-card:hover { 
+            background: rgba(0,255,204,0.15); 
+            border-left-width: 10px;
+            transform: translateX(5px);
+        }
+        .bg-grid {
+            background-image: radial-gradient(#111 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
     </style>
 </head>
-<body>
+<body class="bg-black bg-grid">
 
-<header>MM-COMMUNITY OS v1.0</header>
+    <div class="max-w-4xl mx-auto px-6 py-20">
+        <header class="text-center mb-24">
+            <h1 class="text-6xl md:text-8xl font-black mb-6 glow-text tracking-tighter uppercase">MM-COMMUNITY</h1>
+            <p class="text-xl md:text-2xl text-zinc-400 font-light max-w-2xl mx-auto">
+                Die unaufhaltbare Gemeinschaft entsteht. Hier sind die 20 Programme unserer Stockwerke.
+            </p>
+            <div class="mt-10 inline-block px-6 py-2 border border-cyan-900 rounded-full text-xs text-cyan-500 uppercase tracking-[0.3em] animate-pulse">
+                Phase 1: Informations-Modus aktiv
+            </div>
+        </header>
 
-<div id="main-frame">
-    <div id="login" class="login-box">
-        <h3>IDENTIFIKATION ERFORDERLICH</h3>
-        <p>Geben Sie Ihren Floor-Key ein:</p>
-        <input type="password" id="key" placeholder="Floor-Key...">
-        <br>
-        <button onclick="accessFloor()">LOGIN</button>
+        <div class="grid gap-6" id="programList">
+            </div>
+
+        <footer class="mt-32 pt-12 border-t border-zinc-900 text-center">
+            <p class="text-zinc-600 text-sm tracking-widest uppercase">
+                &copy; 2026 mm-community.online<br>
+                <span class="text-[10px] text-zinc-800 mt-4 block">Im Hintergrund wird das Kollektiv digitalisiert.</span>
+            </p>
+        </footer>
     </div>
 
-    <div id="dashboard" class="hidden floor-ui">
-        <h2 id="floor-title">WILLKOMMEN</h2>
-        <div style="border: 1px solid #444; padding: 20px; background: #050505;">
-            <h3>Aktive Operationen</h3>
-            <ul id="tasks">
-                <li>Initialisiere Plattform-Module...</li>
-                <li>Warte auf Zuweisung durch Core...</li>
-            </ul>
-        </div>
-        <button onclick="location.reload()" style="margin-top:20px; background: #444; color: white;">LOGOUT</button>
-    </div>
-</div>
+    <script>
+        const programme = [
+            "Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede",
+            "Programm für Bürgerliche Rechte", "Moralische Gesetze und Verantwortung",
+            "Wahre Richtung", "Menschlichkeit – Wiederherstellung",
+            "Kinderschutz – Pflicht – Elternrechte", "LGBTQ und Kirche", "Veranstaltungen",
+            "Religions Bekenntnisse oder der Selbst weg Finden", "Arbeitsrecht und Mobbing",
+            "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Jugendsprecher",
+            "Pensionisten Ratgeber", "Sozial abgerutscht und Wiederkehr",
+            "Nachbarschaft und Gemeinschaft", "Kapital und Verwaltung", "Das Kollektiv"
+        ];
 
-<script>
-    function accessFloor() {
-        const key = document.getElementById('key').value;
-        const login = document.getElementById('login');
-        const dash = document.getElementById('dashboard');
-        const title = document.getElementById('floor-title');
-
-        if(key === 'floor1_2026') { // Beispiel-Key für Floor 1
-            login.classList.add('hidden');
-            dash.classList.remove('hidden');
-            title.innerText = "ACCESS GRANTED: FLOOR 1 (EXECUTION)";
-        } else if(key === 'master_99') { // Dein Key für den Core
-            login.classList.add('hidden');
-            dash.classList.remove('hidden');
-            title.innerText = "ACCESS GRANTED: FLOOR 2 (CORE)";
-        } else {
-            alert('ZUGRIFF VERWEIGERT: Ungültiger Key.');
-        }
-    }
-</script>
-
+        const container = document.getElementById('programList');
+        programme.forEach((punkt, i) => {
+            const num = (i + 1).toString().padStart(2, '0');
+            container.innerHTML += `
+                <div class="program-card p-8">
+                    <span class="text-xs font-bold text-cyan-700 tracking-[0.5em] uppercase">Stockwerk ${num}</span>
+                    <h2 class="text-2xl md:text-3xl font-bold text-white mt-2 tracking-tight">${punkt}</h2>
+                </div>
+            `;
+        });
+    </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
