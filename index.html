@@ -7,7 +7,7 @@
     <style>
         body { 
             background-color: #000000; 
-            color: #00aaff; 
+            color: #ffffff; 
             font-family: 'Segoe UI', Arial, sans-serif; 
             margin: 0; 
             padding: 40px 20px; 
@@ -16,83 +16,112 @@
             align-items: center;
         }
 
-        .logo { 
-            width: 220px; 
-            height: auto;
+        /* Das neue blaue Logo-Design */
+        .logo-container {
+            width: 200px;
+            height: 200px;
+            background-color: #1a73e8; /* Blaues Rund-Design */
             border-radius: 50%;
-            border: 3px solid #00aaff; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 4px solid #ffffff;
             margin-bottom: 20px;
-            box-shadow: 0 0 20px rgba(0, 170, 255, 0.3);
+            box-shadow: 0 0 20px rgba(26, 115, 232, 0.6);
+        }
+
+        .logo-text-large {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #ffffff;
+            line-height: 1;
+        }
+
+        .logo-text-small {
+            font-size: 1rem;
+            color: #ffffff;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
         h1 { 
-            font-size: 2.5rem; 
-            letter-spacing: 5px;
-            margin-bottom: 60px;
+            font-size: 1.8rem; 
+            letter-spacing: 4px;
+            margin-bottom: 50px;
+            color: #1a73e8;
             text-transform: uppercase;
-            color: #00aaff;
-            text-shadow: 0 0 10px rgba(0, 170, 255, 0.5);
         }
 
-        /* Das Fundament: Jetzt sauber von 1 nach 20 sortiert */
-        .bauwerk { 
+        /* Das Fundament: 20 Stockwerke */
+        .fundament { 
             width: 100%; 
-            max-width: 700px; 
-            display: flex;
-            flex-direction: column; /* Sorgt für die Reihenfolge von oben nach unten */
+            max-width: 600px; 
         }
 
         .stockwerk { 
-            padding: 15px 25px; 
-            border: 2px solid #00aaff; 
-            margin-bottom: 8px;
+            padding: 12px 0; 
+            margin-bottom: 10px;
             display: flex;
-            align-items: center;
-            background: rgba(0, 170, 255, 0.05);
+            align-items: stretch;
+            background: #1a73e8; /* Blaue Balken */
+            border-radius: 4px;
+            overflow: hidden;
         }
 
         .nummer { 
+            background-color: #ffffff;
+            color: #1a73e8;
             font-weight: bold; 
-            font-size: 1.3rem;
-            margin-right: 20px; 
-            min-width: 45px;
-            color: #ffffff;
+            font-size: 1.2rem;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
         }
 
         .titel {
-            font-size: 1.2rem;
+            padding: 0 20px;
+            font-size: 1.1rem;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
             text-transform: uppercase;
-            color: #00aaff;
+            font-weight: 500;
         }
     </style>
 </head>
 <body>
 
-    <img src="https://github.com/smatic422q11.png" alt="MM Logo" class="logo">
+    <div class="logo-container">
+        <div class="logo-text-large">M&M</div>
+        <div class="logo-text-small">Community</div>
+    </div>
     
     <h1>MM-COMMUNITY</h1>
 
-    <div class="bauwerk">
-        <div class="stockwerk"><span class="nummer">1.</span><span class="titel">Recht auf Gefühlsvorderung</span></div>
-        <div class="stockwerk"><span class="nummer">2.</span><span class="titel">Wie werde ich Mensch</span></div>
-        <div class="stockwerk"><span class="nummer">3.</span><span class="titel">Glaube an Friede</span></div>
-        <div class="stockwerk"><span class="nummer">4.</span><span class="titel">Programm für Bürgerliche Rechte</span></div>
-        <div class="stockwerk"><span class="nummer">5.</span><span class="titel">Moralische Gesetze und Verantwortung</span></div>
-        <div class="stockwerk"><span class="nummer">6.</span><span class="titel">Wahre Richtung und Kunst</span></div>
-        <div class="stockwerk"><span class="nummer">7.</span><span class="titel">Menschlichkeit – Wiederherstellung</span></div>
-        <div class="stockwerk"><span class="nummer">8.</span><span class="titel">Kinderschutz – Pflicht – Elternrechte</span></div>
-        <div class="stockwerk"><span class="nummer">9.</span><span class="titel">LGBTQ und Kirche</span></div>
-        <div class="stockwerk"><span class="nummer">10.</span><span class="titel">Veranstaltungen</span></div>
-        <div class="stockwerk"><span class="nummer">11.</span><span class="titel">Religions Bekenntnisse oder der Selbst weg Finden</span></div>
-        <div class="stockwerk"><span class="nummer">12.</span><span class="titel">Arbeitsrecht und Mobbing</span></div>
-        <div class="stockwerk"><span class="nummer">13.</span><span class="titel">Gesundheitswesen und Verhalten</span></div>
-        <div class="stockwerk"><span class="nummer">14.</span><span class="titel">Arbeitswelt und Du</span></div>
-        <div class="stockwerk"><span class="nummer">15.</span><span class="titel">Jugendsprecher</span></div>
-        <div class="stockwerk"><span class="nummer">16.</span><span class="titel">Pensionisten Ratgeber</span></div>
-        <div class="stockwerk"><span class="nummer">17.</span><span class="titel">Sozial gefallen und Wiederkehr</span></div>
-        <div class="stockwerk"><span class="nummer">18.</span><span class="titel">Nachbarschaft und Gemeinschaft</span></div>
-        <div class="stockwerk"><span class="nummer">19.</span><span class="titel">Kapital und Verwaltung</span></div>
-        <div class="stockwerk"><span class="nummer">20.</span><span class="titel">Das Kollektiv</span></div>
+    <div class="fundament">
+        <div class="stockwerk"><div class="nummer">1</div><div class="titel">Recht auf Gefühlsvorderung</div></div>
+        <div class="stockwerk"><div class="nummer">2</div><div class="titel">Wie werde ich Mensch</div></div>
+        <div class="stockwerk"><div class="nummer">3</div><div class="titel">Glaube an Friede</div></div>
+        <div class="stockwerk"><div class="nummer">4</div><div class="titel">Programm für Bürgerliche Rechte</div></div>
+        <div class="stockwerk"><div class="nummer">5</div><div class="titel">Moralische Gesetze und Verantwortung</div></div>
+        <div class="stockwerk"><div class="nummer">6</div><div class="titel">Wahre Richtung und Kunst</div></div>
+        <div class="stockwerk"><div class="nummer">7</div><div class="titel">Menschlichkeit – Wiederherstellung</div></div>
+        <div class="stockwerk"><div class="nummer">8</div><div class="titel">Kinderschutz – Pflicht – Elternrechte</div></div>
+        <div class="stockwerk"><div class="nummer">9</div><div class="titel">LGBTQ und Kirche</div></div>
+        <div class="stockwerk"><div class="nummer">10</div><div class="titel">Veranstaltungen</div></div>
+        <div class="stockwerk"><div class="nummer">11</div><div class="titel">Religions Bekenntnisse oder der Selbst weg Finden</div></div>
+        <div class="stockwerk"><div class="nummer">12</div><div class="titel">Arbeitsrecht und Mobbing</div></div>
+        <div class="stockwerk"><div class="nummer">13</div><div class="titel">Gesundheitswesen und Verhalten</div></div>
+        <div class="stockwerk"><div class="nummer">14</div><div class="titel">Arbeitswelt und Du</div></div>
+        <div class="stockwerk"><div class="nummer">15</div><div class="titel">Jugendsprecher</div></div>
+        <div class="stockwerk"><div class="nummer">16</div><div class="titel">Pensionisten Ratgeber</div></div>
+        <div class="stockwerk"><div class="nummer">17</div><div class="titel">Sozial gefallen und Wiederkehr</div></div>
+        <div class="stockwerk"><div class="nummer">18</div><div class="titel">Nachbarschaft und Gemeinschaft</div></div>
+        <div class="stockwerk"><div class="nummer">19</div><div class="titel">Kapital und Verwaltung</div></div>
+        <div class="stockwerk"><div class="nummer">20</div><div class="titel">Das Kollektiv</div></div>
     </div>
 
 </body>
