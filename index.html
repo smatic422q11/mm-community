@@ -2,11 +2,11 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>MM-COMMUNITY - Das Fundament</title>
+    <title>M&M-COMMUNITY</title>
     <style>
         body {
-            background-color: #000000; /* Schwarzer Hintergrund */
-            color: #ffffff;            /* Weiße Schrift */
+            background-color: #000000;
+            color: #ffffff;
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
@@ -15,27 +15,22 @@
             margin: 0;
         }
 
-        /* LOGO MIT M&M BLAU */
         .logo-container {
             width: 200px;
             height: 200px;
-            border: 8px solid #003d8f; /* Dein M&M Blau */
+            border: 8px solid #003d8f;
             border-radius: 50%;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             margin-bottom: 30px;
-            background: radial-gradient(circle, #001a3d 0%, #000000 100%);
         }
 
-        .logo-text-mm { font-size: 4rem; font-weight: bold; margin: 0; }
-        .logo-text-com { font-size: 0.9rem; letter-spacing: 4px; text-transform: uppercase; color: #003d8f; }
+        .logo-mm { font-size: 4rem; font-weight: bold; margin: 0; }
+        .logo-com { font-size: 0.9rem; letter-spacing: 4px; text-transform: uppercase; color: #003d8f; }
 
-        h2 { color: #003d8f; letter-spacing: 2px; margin-bottom: 40px; text-transform: uppercase; }
-
-        /* DIE BOXEN */
-        .fundament-grid {
+        .grid {
             width: 100%;
             max-width: 800px;
             display: flex;
@@ -43,62 +38,56 @@
             gap: 10px;
         }
 
-        .row {
+        .box {
             display: flex;
-            border: 2px solid #003d8f; /* Blaues Gehäuse */
-            background: linear-gradient(to right, #001a3d, #000000);
-            border-radius: 4px;
-            overflow: hidden;
+            border: 2px solid #003d8f;
+            background-color: #000000;
         }
 
         .num {
-            width: 60px;
-            padding: 15px;
+            width: 50px;
+            padding: 12px;
             border-right: 2px solid #003d8f;
-            text-align: center;
+            color: #003d8f;
             font-weight: bold;
-            background-color: rgba(0, 61, 143, 0.2);
+            text-align: center;
         }
 
         .text {
-            padding: 15px;
-            flex-grow: 1;
+            padding: 12px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
     </style>
 </head>
 <body>
 
     <div class="logo-container">
-        <div class="logo-text-mm">M&M</div>
-        <div class="logo-text-com">Community</div>
+        <div class="logo-mm">M&M</div>
+        <div class="logo-com">Community</div>
     </div>
 
-    <h2>MM-COMMUNITY</h2>
-
-    <div class="fundament-grid">
-        <div class="row"><div class="num">1.</div><div class="text">Recht auf Gefühlsforderung</div></div>
-        <div class="row"><div class="num">2.</div><div class="text">Wie werde ich Mensch</div></div>
-        <div class="row"><div class="num">3.</div><div class="text">Glaube an Friede</div></div>
-        <div class="row"><div class="num">4.</div><div class="text">Programm für bürgerliche Rechte</div></div>
-        <div class="row"><div class="num">5.</div><div class="text">Moralische Gesetze und Verantwortung</div></div>
-        <div class="row"><div class="num">6.</div><div class="text">Wahre Richtung und Kunst</div></div>
-        <div class="row"><div class="num">7.</div><div class="text">Menschlichkeit – Wiederherstellung</div></div>
-        <div class="row"><div class="num">8.</div><div class="text">Kinderschutz – Pflicht – Elternrechte</div></div>
-        <div class="row"><div class="num">9.</div><div class="text">LGBTQ und Kirche</div></div>
-        <div class="row"><div class="num">10.</div><div class="text">Arbeitswelt und Mobbing</div></div>
-        <div class="row"><div class="num">11.</div><div class="text">Gesundheitswesen und Verhalten</div></div>
-        <div class="row"><div class="num">12.</div><div class="text">Partnerwelt und Du</div></div>
-        <div class="row"><div class="num">13.</div><div class="text">Jugendkristen Ratgeber</div></div>
-        <div class="row"><div class="num">14.</div><div class="text">Nachbarschaft und Gemeinschaft</div></div>
-        <div class="row"><div class="num">15.</div><div class="text">Kapital und Verwaltung</div></div>
-        <div class="row"><div class="num">16.</div><div class="text">Soziale Gerechtigkeit</div></div>
-        <div class="row"><div class="num">17.</div><div class="text">Bildung und Zukunft</div></div>
-        <div class="row"><div class="num">18.</div><div class="text">Schutz der Privatsphäre</div></div>
-        <div class="row"><div class="num">19.</div><div class="text">Zusammenhalt der Generationen</div></div>
-        <div class="row"><div class="num">20.</div><div class="text">Erfolg durch Gemeinschaft</div></div>
+    <div class="grid">
+        <div class="box"><div class="num">1.</div><div class="text">Gefühlsvorderung</div></div>
+        <div class="box"><div class="num">2.</div><div class="text">Wie werde ich Mensch</div></div>
+        <div class="box"><div class="num">3.</div><div class="text">Glaube an Friede</div></div>
+        <div class="box"><div class="num">4.</div><div class="text">Programm für Bürgerliche Rechte</div></div>
+        <div class="box"><div class="num">5.</div><div class="text">Moralische Gesetze und Verantwortung</div></div>
+        <div class="box"><div class="num">6.</div><div class="text">Menschlichkeit - Wiederherstellung</div></div>
+        <div class="box"><div class="num">7.</div><div class="text">Kinderschutz - Pflicht - Eltern Rechte</div></div>
+        <div class="box"><div class="num">8.</div><div class="text">Wahre Richtung und Kunst</div></div>
+        <div class="box"><div class="num">9.</div><div class="text">LGBTQ und Kirche</div></div>
+        <div class="box"><div class="num">10.</div><div class="text">Veranstaltungen mit Community</div></div>
+        <div class="box"><div class="num">11.</div><div class="text">Religions Bekenntnis der Selbstweg finden</div></div>
+        <div class="box"><div class="num">12.</div><div class="text">Arbeitsrecht und Mobbing</div></div>
+        <div class="box"><div class="num">13.</div><div class="text">Gesundheitswesen und Verhalten</div></div>
+        <div class="box"><div class="num">14.</div><div class="text">Arbeitswelt und Du</div></div>
+        <div class="box"><div class="num">15.</div><div class="text">Jugendsprecher</div></div>
+        <div class="box"><div class="num">16.</div><div class="text">Pensionisten Ratgeber</div></div>
+        <div class="box"><div class="num">17.</div><div class="text">Sozialgehilfen und Widerkehr</div></div>
+        <div class="box"><div class="num">18.</div><div class="text">Nachbarschaft und Gemeinschaft</div></div>
+        <div class="box"><div class="num">19.</div><div class="text">Kapital und Verwaltung</div></div>
+        <div class="box"><div class="num">20.</div><div class="text">Das Kollektiv</div></div>
     </div>
 
 </body>
