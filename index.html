@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MM-COMMUNITY - Alle 20 Fundamente</title>
+    <title>MM-COMMUNITY - Optimiertes Design</title>
     <style>
         body {
             background-color: #000000;
@@ -16,57 +16,73 @@
             align-items: center;
         }
 
-        /* Logo Design */
+        /* Logo Bereich - Blau angepasst */
         .logo-outer {
             width: 220px;
             height: 220px;
-            border: 6px solid #2b569a;
+            border: 5px solid #3a7bd5; /* Helleres, kräftigeres Blau */
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 20px;
-            background: radial-gradient(circle, #162d50 0%, #000000 100%);
-            box-shadow: 0 0 30px rgba(43, 86, 154, 0.5);
+            margin-bottom: 25px;
+            background: radial-gradient(circle, #001f3f 0%, #000000 100%);
+            box-shadow: 0 0 25px rgba(58, 123, 213, 0.4);
         }
 
         .logo-inner { text-align: center; }
-        .logo-mm { font-size: 4rem; font-family: 'Brush Script MT', cursive; line-height: 1; }
-        .logo-community { font-size: 1rem; letter-spacing: 3px; text-transform: uppercase; }
+        .logo-mm { font-size: 4.5rem; font-family: 'Brush Script MT', cursive; color: #ffffff; }
+        .logo-community { font-size: 1.1rem; letter-spacing: 4px; text-transform: uppercase; color: #ffffff; }
 
         h1.main-title {
-            color: #2b569a;
-            font-size: 1.5rem;
-            letter-spacing: 5px;
-            margin-bottom: 40px;
-            text-transform: uppercase;
+            color: #3a7bd5; /* Das neue Blau */
+            font-size: 1.6rem;
+            letter-spacing: 6px;
+            margin-bottom: 45px;
+            text-shadow: 0 0 10px rgba(58, 123, 213, 0.5);
         }
 
-        /* Fundament Liste */
-        .fundament-container { width: 100%; max-width: 600px; }
+        /* Fundament Boxen Design */
+        .fundament-container { width: 100%; max-width: 650px; }
 
         .row {
             display: flex;
-            margin-bottom: 8px;
-            gap: 5px;
+            margin-bottom: 12px; /* Mehr Platz zwischen den Boxen */
+            gap: 8px;
         }
 
         .box-num, .box-text {
-            border: 1.5px solid #4a90e2;
-            background: linear-gradient(to bottom, #0a192f, #000000);
-            box-shadow: inset 0 0 15px rgba(74, 144, 226, 0.4);
+            border: 2px solid #3a7bd5; /* Helleres Blau für die Kontur */
+            background: linear-gradient(180deg, #051937 0%, #000000 100%);
+            box-shadow: inset 0 0 12px rgba(58, 123, 213, 0.3), 0 0 8px rgba(58, 123, 213, 0.2);
             display: flex;
             align-items: center;
-            padding: 12px;
-            font-weight: bold;
+            padding: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
         }
 
-        .box-num { width: 50px; justify-content: center; color: #ffffff; }
-        .box-text { flex-grow: 1; text-align: left; text-transform: uppercase; font-size: 0.9rem; }
+        .box-num { 
+            width: 55px; 
+            justify-content: center; 
+            color: #ffffff; 
+            font-size: 1.2rem;
+        }
 
+        .box-text { 
+            flex-grow: 1; 
+            text-align: left; 
+            text-transform: uppercase; 
+            font-size: 0.95rem; 
+            letter-spacing: 1px;
+        }
+
+        /* Hover Effekt - jetzt leuchtet es richtig auf */
         .row:hover .box-num, .row:hover .box-text {
             border-color: #ffffff;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 20px rgba(58, 123, 213, 0.8);
+            transform: scale(1.01);
+            cursor: pointer;
         }
     </style>
 </head>
