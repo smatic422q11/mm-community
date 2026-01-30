@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MM-COMMUNITY - Das Fundament</title>
+    <title>MM-COMMUNITY - Alle 20 Fundamente</title>
     <style>
-        /* Grunddesign der Seite */
         body {
             background-color: #000000;
             color: #ffffff;
@@ -17,7 +16,7 @@
             align-items: center;
         }
 
-        /* Logo Design exakt wie im Bild */
+        /* Logo Design */
         .logo-outer {
             width: 220px;
             height: 220px;
@@ -28,25 +27,12 @@
             align-items: center;
             margin-bottom: 20px;
             background: radial-gradient(circle, #162d50 0%, #000000 100%);
+            box-shadow: 0 0 30px rgba(43, 86, 154, 0.5);
         }
 
-        .logo-inner {
-            text-align: center;
-        }
-
-        .logo-mm {
-            font-size: 4rem;
-            font-family: 'Brush Script MT', cursive, sans-serif; /* Handschrift-Stil */
-            line-height: 1;
-            margin-bottom: -5px;
-        }
-
-        .logo-community {
-            font-size: 1rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            font-weight: 300;
-        }
+        .logo-inner { text-align: center; }
+        .logo-mm { font-size: 4rem; font-family: 'Brush Script MT', cursive; line-height: 1; }
+        .logo-community { font-size: 1rem; letter-spacing: 3px; text-transform: uppercase; }
 
         h1.main-title {
             color: #2b569a;
@@ -56,11 +42,8 @@
             text-transform: uppercase;
         }
 
-        /* Die Liste mit dem Glow-Effekt */
-        .fundament-container {
-            width: 100%;
-            max-width: 500px;
-        }
+        /* Fundament Liste */
+        .fundament-container { width: 100%; max-width: 600px; }
 
         .row {
             display: flex;
@@ -71,31 +54,19 @@
         .box-num, .box-text {
             border: 1.5px solid #4a90e2;
             background: linear-gradient(to bottom, #0a192f, #000000);
-            box-shadow: inset 0 0 15px rgba(74, 144, 226, 0.4), 0 0 10px rgba(74, 144, 226, 0.2);
+            box-shadow: inset 0 0 15px rgba(74, 144, 226, 0.4);
             display: flex;
             align-items: center;
-            padding: 10px;
+            padding: 12px;
             font-weight: bold;
         }
 
-        .box-num {
-            width: 45px;
-            justify-content: center;
-            font-size: 1.1rem;
-        }
+        .box-num { width: 50px; justify-content: center; color: #ffffff; }
+        .box-text { flex-grow: 1; text-align: left; text-transform: uppercase; font-size: 0.9rem; }
 
-        .box-text {
-            flex-grow: 1;
-            font-size: 0.95rem;
-            padding-left: 15px;
-            text-align: left;
-        }
-
-        /* Hover-Effekt wie bei einer echten Webseite */
         .row:hover .box-num, .row:hover .box-text {
             border-color: #ffffff;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
         }
     </style>
 </head>
@@ -111,19 +82,26 @@
     <h1 class="main-title">MM-COMMUNITY</h1>
 
     <div class="fundament-container">
-        <div class="row"><div class="box-num">1.</div><div class="box-text">Recht auf Gefühlsforderung</div></div>
-        <div class="row"><div class="box-num">3.</div><div class="box-text">Wie werde ich Mensch</div></div>
+        <div class="row"><div class="box-num">1.</div><div class="box-text">Recht auf Gefühlsvorderung</div></div>
+        <div class="row"><div class="box-num">2.</div><div class="box-text">Wie werde ich Mensch</div></div>
+        <div class="row"><div class="box-num">3.</div><div class="box-text">Glaube an Friede</div></div>
         <div class="row"><div class="box-num">4.</div><div class="box-text">Programm für Bürgerliche Rechte</div></div>
         <div class="row"><div class="box-num">5.</div><div class="box-text">Moralische Gesetze und Verantwortung</div></div>
-        <div class="row"><div class="box-num">6.</div><div class="box-text">Moralische Gesetze und Verantwortung</div></div>
-        <div class="row"><div class="box-num">7.</div><div class="box-text">LGBTQ und Kirche</div></div>
-        <div class="row"><div class="box-num">8.</div><div class="box-text">Kinderschutz – Pflicht – Selbstweg finden</div></div>
-        <div class="row"><div class="box-num">10.</div><div class="box-text">Arbeitswelt und Mobbing</div></div>
+        <div class="row"><div class="box-num">6.</div><div class="box-text">Wahre Richtung und Kunst</div></div>
+        <div class="row"><div class="box-num">7.</div><div class="box-text">Menschlichkeit – Wiederherstellung</div></div>
+        <div class="row"><div class="box-num">8.</div><div class="box-text">Kinderschutz – Pflicht – Elternrechte</div></div>
+        <div class="row"><div class="box-num">9.</div><div class="box-text">LGBTQ und Kirche</div></div>
+        <div class="row"><div class="box-num">10.</div><div class="box-text">Veranstaltungen</div></div>
+        <div class="row"><div class="box-num">11.</div><div class="box-text">Religions Bekenntnisse oder der Selbst weg Finden</div></div>
+        <div class="row"><div class="box-num">12.</div><div class="box-text">Arbeitsrecht und Mobbing</div></div>
         <div class="row"><div class="box-num">13.</div><div class="box-text">Gesundheitswesen und Verhalten</div></div>
-        <div class="row"><div class="box-num">17.</div><div class="box-text">Parteienwelt und Du</div></div>
-        <div class="row"><div class="box-num">16.</div><div class="box-text">Jugendkrisen Ratgeber</div></div>
+        <div class="row"><div class="box-num">14.</div><div class="box-text">Arbeitswelt und Du</div></div>
+        <div class="row"><div class="box-num">15.</div><div class="box-text">Jugendsprecher</div></div>
+        <div class="row"><div class="box-num">16.</div><div class="box-text">Pensionisten Ratgeber</div></div>
+        <div class="row"><div class="box-num">17.</div><div class="box-text">Sozial gefallen und Wiederkehr</div></div>
         <div class="row"><div class="box-num">18.</div><div class="box-text">Nachbarschaft und Gemeinschaft</div></div>
-        <div class="row"><div class="box-num">20.</div><div class="box-text">Kapital und Verwaltung</div></div>
+        <div class="row"><div class="box-num">19.</div><div class="box-text">Kapital und Verwaltung</div></div>
+        <div class="row"><div class="box-num">20.</div><div class="box-text">Das Kollektiv</div></div>
     </div>
 
 </body>
