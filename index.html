@@ -4,87 +4,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MM-COMMUNITY | Die 20 Programme</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>MM-Community.Online</title>
     <style>
-       <div style="text-align: center; background-color: black; padding: 20px;">
- body { background: #000; color: #f0f0f0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        .glow-text { color: #00ffcc; text-shadow: 0 0 15px rgba(0,255,204,0.4); }
-        .program-card { 
-            border-left: 2px solid #00ffcc; 
-            background: linear-gradient(90deg, rgba(0,255,204,0.07) 0%, transparent 100%);
-            transition: 0.4s;
+        body {
+            background-color: #000000; /* Tiefschwarz */
+            color: #ffffff; /* Weißer Text */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
         }
-        .program-card:hover { 
-            background: rgba(0,255,204,0.15); 
-            border-left-width: 10px;
-            transform: translateX(5px);
+
+        .header {
+            text-align: center;
+            padding: 50px 20px;
+            width: 100%;
+            border-bottom: 2px solid #0056b3; /* Dunkelblaues Band */
         }
-        .bg-grid {
-            background-image: radial-gradient(#111 1px, transparent 1px);
-            background-size: 20px 20px;
+
+        .logo {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 5px solid #0056b3; /* Dein Blau aus dem Logo */
+            box-shadow: 0 0 30px rgba(0, 86, 179, 0.5);
+            margin-bottom: 20px;
         }
+
+        .content {
+            max-width: 800px;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .etage-card {
+            background: rgba(0, 86, 179, 0.1);
+            border: 1px solid #0056b3;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        h1 { letter-spacing: 3px; margin: 0; font-size: 2rem; }
+        .blue-text { color: #0056b3; font-weight: bold; }
     </style>
 </head>
-<body class="bg-black bg-grid">
+<body>
 
-    <div class="max-w-4xl mx-auto px-6 py-20">
-        <header class="text-center mb-24">
-            <h1 class="text-6xl md:text-8xl font-black mb-6 glow-text tracking-tighter uppercase">MM-COMMUNITY</h1>
-            <p class="text-xl md:text-2xl text-zinc-400 font-light max-w-2xl mx-auto">
-                Die unaufhaltbare Gemeinschaft entsteht. Hier sind die 20 Programme unserer Stockwerke.
-            </p>
-            <div class="mt-10 inline-block px-6 py-2 border border-cyan-900 rounded-full text-xs text-cyan-500 uppercase tracking-[0.3em] animate-pulse">
-                Phase 1: Informations-Modus aktiv
-            </div>
-        </header>
-
-        <div class="grid gap-6" id="programList">
-            </div>
-
-        <footer class="mt-32 pt-12 border-t border-zinc-900 text-center">
-            <p class="text-zinc-600 text-sm tracking-widest uppercase">
-                &copy; 2026 mm-community.online<br>
-                <span class="text-[10px] text-zinc-800 mt-4 block">Im Hintergrund wird das Kollektiv digitalisiert.</span>
-            </p>
-        </footer>
+    <div class="header">
+        <img src="https://github.com/smatic422q11.png" alt="MM-Logo" class="logo">
+        <h1>MM-COMMUNITY.ONLINE</h1>
+        <p class="blue-text">THE UNSTOPPABLE COLLECTIVE</p>
     </div>
 
-    <script>
-        const programme = [
-            "Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede",
-            "Programm für Bürgerliche Rechte", "Moralische Gesetze und Verantwortung",
-            "Wahre Richtung", "Menschlichkeit – Wiederherstellung",
-            "Kinderschutz – Pflicht – Elternrechte", "LGBTQ und Kirche", "Veranstaltungen",
-            "Religions Bekenntnisse oder der Selbst weg Finden", "Arbeitsrecht und Mobbing",
-            "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Jugendsprecher",
-            "Pensionisten Ratgeber", "Sozial abgerutscht und Wiederkehr",
-            "Nachbarschaft und Gemeinschaft", "Kapital und Verwaltung", "Das Kollektiv"
-        ];
+    <div class="content">
+        <div class="etage-card">
+            <h2 class="blue-text">Etage 6</h2>
+            <h3>Wahrnehmung</h3>
+            <p>Fokus auf das Wesentliche. Klarheit ohne Filter.</p>
+        </div>
+    </div>
 
-        const container = document.getElementById('programList');
-        programme.forEach((punkt, i) => {
-            const num = (i + 1).toString().padStart(2, '0');
-            container.innerHTML += `
-                <div class="program-card p-8">
-                    <span class="text-xs font-bold text-cyan-700 tracking-[0.5em] uppercase">Stockwerk ${num}</span>
-                    <h2 class="text-2xl md:text-3xl font-bold text-white mt-2 tracking-tight">${punkt}</h2>
-                </div>
-            `;
-        });
-    </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
 
 
 
