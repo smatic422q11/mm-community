@@ -56,12 +56,15 @@ body {
             font-weight: bold;
         }
 
-        .grid {
+    .grid {
             width: 100%;
-            max-width: 850px;
+            max-width: 1200px;
             display: flex;
-            flex-direction: column;
-            gap: 8px;
+            flex-wrap: wrap;       /* Erlaubt mehrere Reihen */
+            flex-direction: row;   /* Boxen nebeneinander */
+            gap: 10px;
+            justify-content: center;
+        }
         }
 
         .box {
