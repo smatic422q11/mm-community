@@ -56,36 +56,41 @@ body {
             font-weight: bold;
         }
 
-    .grid {
-            width: 100%;
-            max-width: 1200px;
-            display: flex;
-            flex-wrap: wrap;       /* Erlaubt mehrere Reihen */
-            flex-direction: row;   /* Boxen nebeneinander */
-            gap: 10px;
-            justify-content: center;
-        }
+   .grid {
+            display: grid;
+            /* Das hier erstellt genau 4 Spalten mit gleicher Breite */
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 15px; /* Abstand zwischen den Boxen */
+            width: 95%;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         .box {
             display: flex;
             border: 2px solid #003d8f;
             background-color: #000000;
+            min-height: 60px; /* Damit alle Boxen gleich hoch sind */
+            align-items: stretch;
         }
 
         .num {
-            width: 50px;
-            padding: 12px;
-            border-right: 2px solid #003d8f;
+            width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #003d8f; /* Blau hinterlegt für bessere Optik */
             color: #ffffff;
             font-weight: bold;
-            text-align: center;
         }
 
         .text {
-            padding: 12px;
+            padding: 10px;
             text-transform: uppercase;
-            font-size: 0.9rem;
+            font-size: 0.75rem; /* Etwas kleiner, damit der Text reinpasst */
+            display: flex;
+            align-items: center;
+            color: #ffffff;
         }
     </style>
 </head>
