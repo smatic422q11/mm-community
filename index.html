@@ -58,10 +58,15 @@ body {
 
    .grid {
             display: grid;
-            /* Das hier erstellt genau 4 Spalten mit gleicher Breite */
+            /* Definiert 5 Zeilen untereinander */
+            grid-template-rows: repeat(5, auto); 
+            /* Definiert 4 Spalten nebeneinander */
             grid-template-columns: repeat(4, 1fr); 
-            gap: 15px; /* Abstand zwischen den Boxen */
-            width: 95%;
+            /* DER TRICK: Füllt die Spalten erst von oben nach unten */
+            grid-auto-flow: column; 
+            
+            gap: 10px;
+            width: 100%;
             max-width: 1400px;
             margin: 0 auto;
         }
@@ -70,7 +75,7 @@ body {
             display: flex;
             border: 2px solid #003d8f;
             background-color: #000000;
-            min-height: 60px; /* Damit alle Boxen gleich hoch sind */
+            min-height: 50px;
             align-items: stretch;
         }
 
