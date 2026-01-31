@@ -2,96 +2,79 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>M&M-COMMUNITY - Original Fundament</title>
+    <title>M&M-COMMUNITY - Fundament</title>
     <style>
-body {
-    background-color: #000000;
-    color: #ffffff;
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px 0px 40px 0px;
-    margin: 0;
-}
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Zentriert den Inhalt */
+            padding: 40px 20px;
+            margin: 0;
+        }
 
-.logo-ring {
-    width: 100px;
-    height: 100px;
-    border: 3px solid #ffffff;
-    background-color: #003d8f;
-    border-radius: 50%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    
-    /* ABSTAND NACH UNTEN MASSIV VERGRÖSSERT */
-    margin-bottom: 450px; 
-    
-    margin-left: 15px; 
-    margin-right: auto; 
-}
-          .logo-mm { 
+        /* LOGO OBEN LINKS */
+        .logo-ring {
+            width: 100px;
+            height: 100px;
+            border: 3px solid #ffffff;
+            background-color: #003d8f;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin-left: 15px; 
+            margin-right: auto; /* Schiebt Logo nach links */
+            margin-bottom: 50px; /* Kleinerer Abstand, da jetzt die Box folgt */
+        }
+
+        .logo-mm { 
             font-size: 1.8rem; 
             font-weight: 900; 
-            color: #ffffff; 
             line-height: 0.8;
             margin-bottom: 7px;
-            display: block;           
-            transform: rotate(1deg)     
- }
-        .logo-community { 
-            font-size: 0.0 rem; 
-            color: #ffffff; 
-            letter-spacing: 0.01px; 
-            text-transform: uppercase;           
- 
-            font-weight: bold;
         }
 
         .logo-community { 
-            font-size: 0.0 rem; 
-            color: #ffffff; 
-            letter-spacing: 0.01px; 
-            text-transform: uppercase; 
-            font-weight: bold;
+            font-size: 0.5rem; 
+            letter-spacing: 1px; 
+            text-transform: uppercase;
         }
-width: 90%;
-    max-width: 1200px;
-    min-height: 400px; /* Schön viel Platz nach unten */
-    border: 3px solid #003d8f; /* Dein Community-Blau */
-    background-color: rgba(0, 61, 143, 0.1); /* Ganz dezenter blauer Schimmer im Hintergrund */
-    margin: -400px auto 50px auto; /* Der negative Wert zieht die Box in die Lücke hoch */
-    padding: 30px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: #ffffff;
-}
 
-.content-title {
-    color: #003d8f;
-    font-size: 2.5rem;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #ffffff;
-    padding-bottom: 10px;
-}
-   .grid {
+        /* DIE GROSSE BOX IN DER MITTE */
+        .main-content-box {
+            width: 100%;
+            max-width: 1200px;
+            min-height: 300px;
+            border: 3px solid #003d8f;
+            background-color: #000000;
+            margin-bottom: 100px; /* Abstand zu den 20 Punkten unten */
+            padding: 30px;
+            box-sizing: border-box;
+        }
+
+        .content-title {
+            color: #003d8f;
+            font-size: 2.2rem;
+            text-transform: uppercase;
+            margin-top: 0;
+            border-bottom: 2px solid #ffffff;
+            padding-bottom: 10px;
+        }
+
+        /* DAS GRID MIT DEN 20 PUNKTEN */
+        .grid {
             display: grid;
-            /* Definiert 5 Zeilen untereinander */
             grid-template-rows: repeat(5, auto); 
-            /* Definiert 4 Spalten nebeneinander */
             grid-template-columns: repeat(4, 1fr); 
-            /* DER TRICK: Füllt die Spalten erst von oben nach unten */
             grid-auto-flow: column; 
-            
             gap: 10px;
             width: 100%;
             max-width: 1400px;
-            margin: 0 auto;
         }
 
         .box {
@@ -99,7 +82,6 @@ width: 90%;
             border: 2px solid #003d8f;
             background-color: #000000;
             min-height: 50px;
-            align-items: stretch;
         }
 
         .num {
@@ -107,7 +89,7 @@ width: 90%;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #003d8f; /* Blau hinterlegt für bessere Optik */
+            background-color: #003d8f;
             color: #ffffff;
             font-weight: bold;
         }
@@ -115,10 +97,9 @@ width: 90%;
         .text {
             padding: 10px;
             text-transform: uppercase;
-            font-size: 0.75rem; /* Etwas kleiner, damit der Text reinpasst */
+            font-size: 0.75rem;
             display: flex;
             align-items: center;
-            color: #ffffff;
         }
     </style>
 </head>
@@ -127,6 +108,14 @@ width: 90%;
     <div class="logo-ring">
         <div class="logo-mm">M&M</div>
         <div class="logo-community">COMMUNITY</div>
+    </div>
+
+    <div class="main-content-box">
+        <h1 class="content-title">Das Was & Warum</h1>
+        <div style="font-size: 1.4rem; line-height: 1.8;">
+            <p>Hier beginnt deine Beschreibung...</p>
+            <p>Nutze diesen Raum für die Details deiner Vision.</p>
+        </div>
     </div>
 
     <div class="grid">
