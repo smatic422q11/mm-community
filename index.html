@@ -46,14 +46,17 @@
             background-color: #000000;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            width: 95%;
-            max-width: 1400px;
-            margin-bottom: 50px;
-        }
+       .grid {
+    display: grid;
+    /* Wir definieren 5 feste Stockwerke (Reihen) */
+    grid-template-rows: repeat(5, 1fr); 
+    /* Wir lassen das System automatisch Spalten erstellen */
+    grid-auto-flow: column; 
+    gap: 15px;
+    width: 95%;
+    max-width: 1400px;
+    margin-bottom: 50px;
+}
 
         .box {
             display: flex;
