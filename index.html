@@ -114,7 +114,7 @@
             background-color: #222; 
             background-size: cover;
             background-position: center;
-            border: 1px solid #003d8f;
+            border: 2px solid #003d8f;
         }
 
         .logo-overlay {
@@ -239,6 +239,7 @@
             if (inhalt) {
                 document.getElementById('wofuer-inhalt').innerText = inhalt.wofuer;
                 document.getElementById('wohin-inhalt').innerText = inhalt.wohin;
+                // Hier wird das Bild als Hintergrund gesetzt
                 document.getElementById('pano-box').style.backgroundImage = `url('${inhalt.bild}')`;
             } else {
                 document.getElementById('wofuer-inhalt').innerText = "Inhalt folgt für " + titel;
