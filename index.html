@@ -17,7 +17,7 @@
         }
 
         /* LOGO STYLING */
-       .logo-ring {
+        .logo-ring {
             width: 120px;
             height: 120px;
             border: 3px solid #ffffff;
@@ -28,10 +28,15 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            margin: 30px auto
+            margin: 30px auto;
         }
+        .logo-mm { font-size: 2.2rem; font-weight: 900; line-height: 0.8; }
+        .logo-community { font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; margin-top: 2px; }
 
-     .info-section {
+        /* DASHBOARD ANSICHT */
+        #dashboard { width: 100%; display: flex; flex-direction: column; align-items: center; }
+
+        .info-section {
             width: 90%;
             max-width: 800px;
             border: 2px solid #003d8f;
@@ -40,13 +45,6 @@
             margin-bottom: 40px;
             background-color: #000000;
         }
-
-    <h1 style="font-size: 2.5rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
-    <h2 style="color: #003d8f; font-size: 1.5rem; margin: 5px 0 20px 0;">DIE STILLE MILLION</h2>
-    <p style="text-align: justify; line-height: 1.6;">
-        Die M&M-Community ist das Fundament für alle... [Dein Text]
-    </p>
-</div>
 
        .grid {
     display: grid;
@@ -139,7 +137,7 @@
 <body>
 
     <div id="dashboard">
-       <div class="logo-ring" style="margin-left: 0; margin-right: auto;"> 
+        <div class="logo-ring">
             <div class="logo-mm">M&M</div>
             <div class="logo-community">COMMUNITY</div>
         </div>
