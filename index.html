@@ -4,145 +4,24 @@
     <meta charset="UTF-8">
     <title>M&M-COMMUNITY - Interaktives Fundament</title>
     <style>
-        body {
-            background-color: #000000;
-            color: #ffffff;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .logo-ring {
-            width: 120px;
-            height: 120px;
-            border: 3px solid #ffffff;
-            background-color: #003d8f;
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            margin: 30px auto 30px 2.5%; 
-        }
+        body { background-color: #000000; color: #ffffff; font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        .logo-ring { width: 120px; height: 120px; border: 3px solid #ffffff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin: 30px auto 30px 2.5%; }
         .logo-mm { font-size: 2.2rem; font-weight: 900; line-height: 0.8; color: #ffffff; }
         .logo-community { font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; margin-top: 2px; color: #ffffff; }
-
-        #dashboard { 
-            width: 100%; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-        }
-
-        .info-section {
-            width: 90%;
-            max-width: 800px;
-            border: 2px solid #003d8f;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 40px;
-            background-color: #000000;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr); 
-            grid-template-rows: repeat(5, 1fr);
-            grid-auto-flow: column; 
-            gap: 15px;
-            width: 95%;
-            max-width: 1400px;
-            margin-bottom: 15px;
-        }
-
-        .fundament-container {
-            display: flex;
-            width: 95%;
-            max-width: 1400px;
-            gap: 15px;
-            margin-bottom: 50px;
-        }
-
-        .box, .fundament-box {
-            display: flex;
-            border: 2px solid #003d8f;
-            background-color: #000000;
-            min-height: 50px;
-        }
-
+        #dashboard { width: 100%; display: flex; flex-direction: column; align-items: center; }
+        .info-section { width: 90%; max-width: 800px; border: 2px solid #003d8f; padding: 20px; text-align: center; margin-bottom: 40px; background-color: #000000; }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 15px; width: 95%; max-width: 1400px; margin-bottom: 15px; }
+        .fundament-container { display: flex; width: 95%; max-width: 1400px; gap: 15px; margin-bottom: 50px; }
+        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000000; min-height: 50px; }
         .fundament-box { flex: 1; }
-
-        .num {
-            width: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #003d8f;
-            font-weight: bold;
-            color: #ffffff;
-        }
-
-        .text {
-            padding: 10px;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            flex-grow: 1;
-            color: #ffffff;
-        }
+        .num { width: 40px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; color: #ffffff; }
+        .text { padding: 10px; text-transform: uppercase; font-size: 0.75rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; color: #ffffff; }
         .text:hover { color: #003d8f; background: #111; }
-
-        #info-kanal {
-            display: none;
-            width: 100%;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .panorama-container {
-            width: 80%;
-            height: 33vh;
-            margin: 20px auto;
-            position: relative;
-            background-color: #222; 
-            background-size: cover;
-            background-position: center;
-            border: 2px solid #003d8f;
-        }
-
-        .logo-overlay {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            transform: scale(0.5);
-            transform-origin: top left;
-            margin: 0;
-        }
-
-        .content-area {
-            width: 90%;
-            max-width: 1000px;
-            text-align: center;
-            margin-top: 30px;
-        }
-
-        .back-btn {
-            margin-top: 40px;
-            padding: 10px 30px;
-            border: 2px solid #ffffff;
-            background: none;
-            color: #ffffff;
-            cursor: pointer;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
+        #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; }
+        .panorama-container { width: 80%; height: 33vh; margin: 20px auto; position: relative; background-color: #222; background-size: cover; background-position: center; border: 2px solid #003d8f; }
+        .logo-overlay { position: absolute; top: 10px; left: 10px; transform: scale(0.5); transform-origin: top left; margin: 0; }
+        .content-area { width: 90%; max-width: 1000px; text-align: center; margin-top: 30px; }
+        .back-btn { margin-top: 40px; padding: 10px 30px; border: 2px solid #ffffff; background: none; color: #ffffff; cursor: pointer; text-transform: uppercase; font-weight: bold; }
         .back-btn:hover { background: #ffffff; color: #000; }
     </style>
 </head>
@@ -200,9 +79,10 @@
     <script>
        const boxInhalte = {
             9: {
-                wofuer: "Das Programm dient dazu die LGBTQ Menschen und Menschen die noch ein Glauben besitzen um gemeinsam näher zu Kirche zu führen um den glauben an die Menschheit zu festigen und niemanden dazu zu hindern bzw. ausschließen und unmoralisch zu behandeln. Um selbst weg zu Gott zu finden ist es unmöglich ohne die Kirche weil der glaube nur in der Gemeinschaft im Kollektiv Wiederhergestellt werden kann.",
-                wohin: "Wir stellen die laute Frage: Warum handelt das Gesetz über kirchlichen Moralwerten oder warum folgt die Kirche der Gesetzlage nicht? Die M&M-Community nimmt sich als Kollektiv das Recht, nach der Wahrheit zu suchen und den geistig unakzeptablen Zustand der Spaltung zu beenden.",
-                bild: "panorama9.jpg"
+                wofuer: "Das Programm dient dazu die LGBTQ Menschen und Menschen die noch ein Glauben besitzen um gemeinsam näher zu Kirche zu führen um den glauben an die Menschheit zu festigen. Gemeinschaft im Kollektiv ist der Weg.",
+                wohin: "Wir suchen nach der Wahrheit und wollen den geistig unakzeptablen Zustand der Spaltung beenden.",
+                // DIESES BILD WIRD GARANTIERT GELADEN:
+                bild: "https://picsum.photos/id/10/1200/400"
             }
         };
 
@@ -211,10 +91,10 @@
             "Programm für Bürgerliche Rechte", "Moralische Gesetze und Verantwortung",
             "Menschlichkeit - Wiederherstellung", "Kinderschutz - Pflicht - Eltern Rechte",
             "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Veranstaltungen mit Community",
-            "Religions Bekenntnis der Selbstweg finden", "Arbeitsrecht und Mobbing",
-            "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Jugendsprecher",
-            "Pensionisten Ratgeber", "Sozialgehilfen und Widerkehr",
-            "Nachbarschaft und Gemeinschaft", "Mensch & Technik im Einklang", "Die Brücke zur Umsetzung"
+            "Religions Bekenntnis", "Arbeitsrecht und Mobbing",
+            "Gesundheitswesen", "Arbeitswelt", "Jugendsprecher",
+            "Pensionisten Ratgeber", "Sozialgehilfen",
+            "Nachbarschaft und Gemeinschaft", "Mensch & Technik", "Die Brücke"
         ];
 
         const grid = document.getElementById('main-grid');
@@ -239,8 +119,8 @@
             if (inhalt) {
                 document.getElementById('wofuer-inhalt').innerText = inhalt.wofuer;
                 document.getElementById('wohin-inhalt').innerText = inhalt.wohin;
-                // Hier wird das Bild als Hintergrund gesetzt
-                document.getElementById('pano-box').style.backgroundImage = `url('${inhalt.bild}')`;
+                // Hier greift der Code das Bild aus dem Internet
+                document.getElementById('pano-box').style.backgroundImage = "url('" + inhalt.bild + "')";
             } else {
                 document.getElementById('wofuer-inhalt').innerText = "Inhalt folgt für " + titel;
                 document.getElementById('wohin-inhalt').innerText = "Zielsetzung folgt in Kürze.";
