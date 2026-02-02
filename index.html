@@ -5,7 +5,6 @@
     <title>M&M-COMMUNITY - Das Fundament</title>
     <style>
         body { background-color: #000000; color: #ffffff; font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        
         .logo-ring { width: 120px; height: 120px; border: 3px solid #ffffff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin: 30px auto; }
         .logo-mm { font-size: 2.2rem; font-weight: 900; line-height: 0.8; color: #ffffff; }
         .logo-community { font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; margin-top: 2px; color: #ffffff; }
@@ -25,7 +24,7 @@
         }
         
         .fundament-container { display: flex; width: 95%; max-width: 1400px; gap: 15px; margin-bottom: 50px; }
-        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000000; min-height: 55px; cursor: pointer; transition: 0.2s; }
+        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000000; min-height: 55px; cursor: pointer; }
         .box:hover { background: #001a3d; border-color: #ffffff; }
         
         .num { width: 45px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; color: #ffffff; flex-shrink: 0; font-size: 1.1rem; }
@@ -33,14 +32,13 @@
         
         #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; padding-bottom: 80px; }
         .panorama-container { width: 85%; height: 35vh; margin: 20px auto; position: relative; background-color: #111; background-size: cover; background-position: center; border: 2px solid #003d8f; }
-        .logo-overlay { position: absolute; top: 10px; left: 10px; transform: scale(0.5); transform-origin: top left; margin: 0; }
+        .logo-overlay { position: absolute; top: 10px; left: 10px; transform: scale(0.5); transform-origin: top left; }
         
         .content-area { width: 90%; max-width: 900px; text-align: center; }
-        .label { color: #003d8f; font-weight: bold; text-transform: uppercase; margin-top: 30px; font-size: 1.2rem; border-bottom: 1px solid #222; padding-bottom: 5px; }
+        .label { color: #003d8f; font-weight: bold; text-transform: uppercase; margin-top: 30px; font-size: 1.2rem; }
         .p-content { font-size: 1.4rem; text-align: justify; line-height: 1.7; margin: 15px 0 30px 0; color: #e0e0e0; }
         
-        .back-btn { margin-top: 40px; padding: 15px 45px; border: 2px solid #ffffff; background: #003d8f; color: #ffffff; cursor: pointer; text-transform: uppercase; font-weight: bold; transition: 0.3s; }
-        .back-btn:hover { background: #ffffff; color: #003d8f; }
+        .back-btn { margin-top: 40px; padding: 15px 45px; border: 2px solid #ffffff; background: #003d8f; color: #ffffff; cursor: pointer; text-transform: uppercase; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -50,45 +48,28 @@
             <div class="logo-mm">M&M</div>
             <div class="logo-community">COMMUNITY</div>
         </div>
-
         <div class="info-section">
-            <h1 style="font-size: 2.6rem; margin: 0; font-weight: 900; letter-spacing: 1px;">DAS WAS & WARUM</h1>
-            <h2 style="color: #003d8f; font-size: 1.6rem; margin: 5px 0 20px 0; font-weight: 800;">DIE STILLE MILLION</h2>
-            <p style="text-align: justify; line-height: 1.8; font-size: 1.1rem;">
-                Die M&M-Community ist das Fundament für Menschen, die zurück zur Menschlichkeit, Eigenverantwortung und echtem Zusammenhalt finden wollen. Wir bauen Brücken, wo Spaltung herrscht.
-            </p>
+            <h1 style="font-size: 2.6rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
+            <h2 style="color: #003d8f; font-size: 1.6rem; margin: 5px 0 20px 0;">DIE STILLE MILLION</h2>
+            <p style="text-align: justify; line-height: 1.8;">Die M&M-Community ist das Fundament für Menschen, die zurück zur Menschlichkeit, Eigenverantwortung und echtem Zusammenhalt finden wollen.</p>
         </div>
-
         <div class="grid" id="main-grid"></div>
-
         <div class="fundament-container">
-            <div class="fundament-box" onclick="showInfo('KAPITAL UND VERWALTUNG', 21)">
-                <div class="num">21</div>
-                <div class="text">KAPITAL UND VERWALTUNG</div>
-            </div>
-            <div class="fundament-box" onclick="showInfo('DAS KOLLEKTIV', 22)">
-                <div class="num">22</div>
-                <div class="text">DAS KOLLEKTIV</div>
-            </div>
+            <div class="fundament-box" onclick="showInfo('KAPITAL UND VERWALTUNG', 21)"><div class="num">21</div><div class="text">KAPITAL UND VERWALTUNG</div></div>
+            <div class="fundament-box" onclick="showInfo('DAS KOLLEKTIV', 22)"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div></div>
         </div>
     </div>
 
     <div id="info-kanal">
         <div class="panorama-container" id="pano-box">
-            <div class="logo-ring logo-overlay">
-                <div class="logo-mm">M&M</div>
-                <div class="logo-community">COMMUNITY</div>
-            </div>
+            <div class="logo-ring logo-overlay"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
         </div>
         <div class="content-area">
-            <h1 id="info-titel" style="color: #ffffff; text-transform: uppercase; font-size: 2.2rem; margin-bottom: 10px;"></h1>
-            
+            <h1 id="info-titel" style="color: #ffffff; text-transform: uppercase; font-size: 2.2rem;"></h1>
             <div class="label">Die Ansage (Wofür)</div>
             <p id="wofuer-inhalt" class="p-content"></p>
-            
             <div class="label">Das Ziel (Wohin)</div>
             <p id="wohin-inhalt" class="p-content"></p>
-            
             <button class="back-btn" onclick="showDashboard()">Zurück zum Fundament</button>
         </div>
     </div>
@@ -114,21 +95,12 @@
             17: { wofuer: "Ende der leeren Worte – Hilfe für Obdachlose und sauberes Wasser für alle.", wohin: "Als Kollektiv dort Taten setzen, wo der Staat versagt." },
             18: { wofuer: "Nachbarschaft als Spiegel des Staates: Hilfe statt Wegsehen.", wohin: "Vom Treppenhaus bis zum Kollektiv: Gemeinsam statt einsam." },
             19: { wofuer: "Technik als Werkzeug, Mensch als Schöpfer. Beherrschung statt Kontrolle.", wohin: "KI als Schutzschild für Menschenrechte und globale Ressourcenteilung." },
-            20: {
-                wofuer: "Die Brücke ist der Übergang zur absoluten Transparenz. Hier werden aus Usern aktive Gestalter, Wähler und Kandidaten. Für jedes Programm wird es gewählte Vertreter geben, die die Umsetzung im physischen Leben leiten. Jeder einzelne von euch ist bereits jetzt die Stille Million.",
-                wohin: "Sobald wir eine Million Stimmen sind, öffnen sich die Bereiche Kapital und Verwaltung. Das Ziel ist die kollektive Umsetzung aller 20 Programme in der physischen Welt. Viel Erfolg und Genesung an alle, die diesen Weg mit uns gehen."
-            },
+            20: { wofuer: "Die Brücke ist der Übergang zur absoluten Transparenz. Hier werden aus Usern aktive Gestalter, Wähler und Kandidaten.", wohin: "Sobald wir eine Million Stimmen sind, öffnen sich die Bereiche Kapital und Verwaltung." },
             21: { wofuer: "Bereich noch geschlossen.", wohin: "Öffnet sich ab der Stillen Million." },
             22: { wofuer: "Bereich noch geschlossen.", wohin: "Öffnet sich ab der Stillen Million." }
         };
 
-        const themen = [
-            "RECHT AUF GEFÜHLSVORDERUNG", "WIE WERDE ICH MENSCH", "GLAUBE AN FRIEDE", "PROGRAMM FÜR BÜRGERLICHE RECHTE",
-            "MORALISCHE GESETZE UND VERANTWORTUNG", "MENSCHLICHKEIT - WIEDERHERSTELLUNG", "KINDERSCHUTZ - PFLICHT - ELTERN RECHTE", "WAHRE RICHTUNG UND KUNST",
-            "LGBTQ UND KIRCHE", "TREND UND TRADITION", "RELIGIONSBEKENNTNIS ODER SELBSTWAHL", "ARBEITSRECHT UND MOBBING",
-            "GESUNDHEITSWESEN UND VERHALTEN", "ARBEITSWELT UND DU", "JUGENDSPRECHER", "PENSIONISTEN RATGEBER",
-            "SOZIALGEFALLEN UND WIEDERKEHR", "NACHBARSCHAFT UND GEMEINSCHAFT", "MENSCH & TECHNIK", "DIE BRÜCKE"
-        ];
+        const themen = ["RECHT AUF GEFÜHLSVORDERUNG", "WIE WERDE ICH MENSCH", "GLAUBE AN FRIEDE", "PROGRAMM FÜR BÜRGERLICHE RECHTE", "MORALISCHE GESETZE UND VERANTWORTUNG", "MENSCHLICHKEIT - WIEDERHERSTELLUNG", "KINDERSCHUTZ - PFLICHT - ELTERN RECHTE", "WAHRE RICHTUNG UND KUNST", "LGBTQ UND KIRCHE", "TREND UND TRADITION", "RELIGIONSBEKENNTNIS ODER SELBSTWAHL", "ARBEITSRECHT UND MOBBING", "GESUNDHEITSWESEN UND VERHALTEN", "ARBEITSWELT UND DU", "JUGENDSPRECHER", "PENSIONISTEN RATGEBER", "SOZIALGEFALLEN UND WIEDERKEHR", "NACHBARSCHAFT UND GEMEINSCHAFT", "MENSCH & TECHNIK", "DIE BRÜCKE"];
 
         const grid = document.getElementById('main-grid');
         themen.forEach((thema, index) => {
@@ -147,7 +119,6 @@
             document.getElementById('info-titel').innerText = "ANSAGE " + num + ": " + titel;
             document.getElementById('wofuer-inhalt').innerText = data.wofuer;
             document.getElementById('wohin-inhalt').innerText = data.wohin;
-            // Stabilerer Bild-Link
             document.getElementById('pano-box').style.backgroundImage = "url('https://picsum.photos/seed/mm" + num + "/1200/600')";
             window.scrollTo(0, 0);
         }
@@ -159,4 +130,4 @@
     </script>
 </body>
 </html>
-    
+       
