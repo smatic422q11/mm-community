@@ -105,14 +105,10 @@
             15: { wofuer: "Jugendsprecher als ernstzunehmende Stimmen einbinden.", wohin: "Brücke zwischen Generationen auf Augenhöhe bauen." },
             16: { wofuer: "Achtung vor dem Alter und der Lebensleistung.", wohin: "Symbiose zwischen Jugend (digital) und Senioren (weise)." },
             17: { wofuer: "Ende der leeren Worte – Hilfe für Obdachlose und sauberes Wasser für alle.", wohin: "Als Kollektiv dort Taten setzen, wo der Staat versagt." },
-            18: { wofuer: "Nachbarschaft als Spiegel des Staates: Hilfe statt Wegsehen.", wohin: "Vom Treppenhaus bis zum Kollektiv: Gemeinsam statt einsam." },
-            19: { wofuer: "Technik als Werkzeug, Mensch als Schöpfer. Beherrschung statt Kontrolle.", wohin: "KI als Schutzschild für Menschenrechte und globale Ressourcenteilung." },
-            20: {
-                wofuer: "Die Brücke ist der Übergang zur absoluten Transparenz. Hier werden aus Usern aktive Gestalter, Wähler und Kandidaten. Für jedes Programm wird es gewählte Vertreter geben, die die Umsetzung im physischen Leben leiten. Jeder einzelne von euch ist bereits jetzt die Stille Million.",
-                wohin: "Sobald wir eine Million Stimmen sind, öffnen sich die Bereiche Kapital und Verwaltung. Das Ziel ist die kollektive Umsetzung aller 20 Programme in der physischen Welt. Viel Erfolg und Genesung an alle, die diesen Weg mit uns gehen."
-            },
-            21: { wofuer: "Bereich noch geschlossen.", wohin: "Öffnet sich ab der Stillen Million." },
-            22: { wofuer: "Bereich noch geschlossen.", wohin: "Öffnet sich ab der Stillen Million." }
+            18: {
+                wofuer: "Dieses Programm holt die „Stille Million“ direkt vor deine Haustür. Wir brechen das Schweigen in den Fluren und das anonyme Wegschauen beim Begrüßen. In jedem Haus gibt es Jugendliche mit Energie und Senioren mit Erfahrung – doch oft leben sie wie Fremde nebeneinander. Wir weigern uns zu akzeptieren, dass Einsamkeit der Preis für unsere moderne Welt ist. Ein Wohnblock ist der Spiegel des Staates.",
+                wohin: "Wir wollen eine aktive Nachbarschaftshilfe etablieren, die organisch wächst. Das Ziel ist es, dass Jugendliche für Senioren Einkäufe erledigen, Online-Bestellungen abholen oder einfach den Müll mit rausbringen. Wir laden uns gegenseitig zum Essen ein und teilen unsere Zeit. Der Kern ist das Hinschauen statt Wegsehen. So verwandeln wir kalte Wohnblöcke in echte Gemeinschaften."
+            }
         };
 
         const themen = [
@@ -133,7 +129,7 @@
         });
 
         function showInfo(titel, num) {
-            const data = boxInhalte[num];
+            const data = boxInhalte[num] || { wofuer: "Inhalt folgt...", wohin: "Inhalt folgt..." };
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('info-kanal').style.display = 'flex';
             document.getElementById('info-titel').innerText = "ANSAGE " + num + ": " + titel;
