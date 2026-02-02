@@ -2,98 +2,150 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>M&M-COMMUNITY</title>
+    <title>M&M-COMMUNITY - Das Fundament</title>
     <style>
-        body { background-color: #000; color: #fff; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        .logo-ring { width: 100px; height: 100px; border: 2px solid #fff; background: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-bottom: 20px; }
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; max-width: 1200px; }
-        .box { display: flex; border: 1px solid #003d8f; cursor: pointer; background: #000; min-height: 50px; }
-        .num { width: 30px; background: #003d8f; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-        .text { padding: 10px; font-size: 0.8rem; display: flex; align-items: center; }
-        #info-kanal { display: none; border: 2px solid #003d8f; padding: 20px; margin-top: 20px; width: 90%; max-width: 800px; text-align: center; }
-        .back-btn { margin-top: 20px; padding: 10px; border: 1px solid #fff; background: #003d8f; color: #fff; cursor: pointer; }
+        body { background-color: #000000; color: #ffffff; font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        .logo-ring { width: 120px; height: 120px; border: 3px solid #ffffff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin: 30px auto 30px 2.5%; }
+        .logo-mm { font-size: 2.2rem; font-weight: 900; line-height: 0.8; color: #ffffff; }
+        .logo-community { font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; margin-top: 2px; color: #ffffff; }
+        #dashboard { width: 100%; display: flex; flex-direction: column; align-items: center; }
+        .info-section { width: 90%; max-width: 800px; border: 2px solid #003d8f; padding: 20px; text-align: center; margin-bottom: 40px; background-color: #000000; }
+        
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            grid-template-rows: repeat(5, 1fr); 
+            grid-auto-flow: column; 
+            gap: 15px; 
+            width: 95%; 
+            max-width: 1400px; 
+            margin-bottom: 15px; 
+        }
+        
+        .fundament-container { display: flex; width: 95%; max-width: 1400px; gap: 15px; margin-bottom: 50px; }
+        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000000; min-height: 50px; }
+        .fundament-box { flex: 1; }
+        .num { width: 40px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; color: #ffffff; flex-shrink: 0; }
+        .text { padding: 10px; text-transform: uppercase; font-size: 0.75rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; color: #ffffff; }
+        .text:hover { color: #003d8f; background: #111; }
+        
+        #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; }
+        .panorama-container { width: 80%; height: 33vh; margin: 20px auto; position: relative; background-color: #222; background-size: cover; background-position: center; border: 2px solid #003d8f; }
+        .logo-overlay { position: absolute; top: 10px; left: 10px; transform: scale(0.5); transform-origin: top left; }
+        .content-area { width: 90%; max-width: 1000px; text-align: center; margin-top: 30px; }
+        .back-btn { margin-top: 40px; padding: 10px 30px; border: 2px solid #ffffff; background: none; color: #ffffff; cursor: pointer; text-transform: uppercase; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div id="main-ui">
-    <div class="logo-ring"><strong>M&M</strong><small>COMMUNITY</small></div>
-    
-    <div style="border: 1px solid #003d8f; padding: 20px; text-align: center; margin-bottom: 30px;">
-        <h1>DAS WAS & WARUM</h1>
-        <p>Wir bauen das Fundament für die Stille Million.</p>
+    <div id="dashboard">
+        <div class="logo-ring">
+            <div class="logo-mm">M&M</div>
+            <div class="logo-community">COMMUNITY</div>
+        </div>
+
+        <div class="info-section">
+            <h1 style="font-size: 2.5rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
+            <h2 style="color: #003d8f; font-size: 1.5rem; margin: 5px 0 20px 0;">DIE STILLE MILLION</h2>
+            <p style="text-align: justify; line-height: 1.6;">
+                Die M&M-Community ist das Fundament für Menschen, die zurück zur Menschlichkeit, Eigenverantwortung und echtem Zusammenhalt finden wollen. Wir bauen Brücken, wo Spaltung herrscht.
+            </p>
+        </div>
+
+        <div class="grid" id="main-grid"></div>
+
+        <div class="fundament-container">
+            <div class="fundament-box">
+                <div class="num">21</div>
+                <div class="text" onclick="showInfo('KAPITAL UND VERWALTUNG', 21)">KAPITAL UND VERWALTUNG</div>
+            </div>
+            <div class="fundament-box">
+                <div class="num">22</div>
+                <div class="text" onclick="showInfo('DAS KOLLEKTIV', 22)">DAS KOLLEKTIV</div>
+            </div>
+        </div>
     </div>
 
-    <div class="grid">
-        <div class="box" onclick="zeig(1)"><div class="num">1</div><div class="text">GEFÜHLSVORDERUNG</div></div>
-        <div class="box" onclick="zeig(2)"><div class="num">2</div><div class="text">MENSCHWERDUNG</div></div>
-        <div class="box" onclick="zeig(3)"><div class="num">3</div><div class="text">FRIEDE</div></div>
-        <div class="box" onclick="zeig(4)"><div class="num">4</div><div class="text">BÜRGERRECHTE</div></div>
-        <div class="box" onclick="zeig(5)"><div class="num">5</div><div class="text">MORAL</div></div>
-        <div class="box" onclick="zeig(6)"><div class="num">6</div><div class="text">MENSCHLICHKEIT</div></div>
-        <div class="box" onclick="zeig(7)"><div class="num">7</div><div class="text">KINDERSCHUTZ</div></div>
-        <div class="box" onclick="zeig(8)"><div class="num">8</div><div class="text">KUNST</div></div>
-        <div class="box" onclick="zeig(9)"><div class="num">9</div><div class="text">LGBTQ & KIRCHE</div></div>
-        <div class="box" onclick="zeig(10)"><div class="num">10</div><div class="text">TRADITION</div></div>
-        <div class="box" onclick="zeig(11)"><div class="num">11</div><div class="text">SELBSTWAHL</div></div>
-        <div class="box" onclick="zeig(12)"><div class="num">12</div><div class="text">ARBEITSRECHT</div></div>
-        <div class="box" onclick="zeig(13)"><div class="num">13</div><div class="text">GESUNDHEIT</div></div>
-        <div class="box" onclick="zeig(14)"><div class="num">14</div><div class="text">ARBEITSWELT</div></div>
-        <div class="box" onclick="zeig(15)"><div class="num">15</div><div class="text">JUGENDSPRECHER</div></div>
-        <div class="box" onclick="zeig(16)"><div class="num">16</div><div class="text">PENSIONISTEN</div></div>
-        <div class="box" onclick="zeig(17)"><div class="num">17</div><div class="text">SOZIALGEFALLEN</div></div>
-        <div class="box" onclick="zeig(18)"><div class="num">18</div><div class="text">NACHBARSCHAFT</div></div>
-        <div class="box" onclick="zeig(19)"><div class="num">19</div><div class="text">TECHNIK</div></div>
-        <div class="box" onclick="zeig(20)"><div class="num">20</div><div class="text">DIE BRÜCKE</div></div>
+    <div id="info-kanal">
+        <div class="panorama-container" id="pano-box">
+            <div class="logo-ring logo-overlay">
+                <div class="logo-mm">M&M</div>
+                <div class="logo-community">COMMUNITY</div>
+            </div>
+        </div>
+        <div class="content-area">
+            <h1 id="info-titel" style="color: #003d8f;"></h1>
+            <div id="info-text">
+                <h3 style="color: #003d8f;">DIE ANSAGE (WOFÜR)</h3>
+                <p id="wofuer-inhalt" style="font-size: 1.2rem; text-align: justify;"></p>
+                <br>
+                <h3 style="color: #003d8f;">DAS ZIEL (WOHIN)</h3>
+                <p id="wohin-inhalt" style="font-size: 1.2rem; text-align: justify;"></p>
+            </div>
+            <button class="back-btn" onclick="showDashboard()">Zurück</button>
+        </div>
     </div>
-</div>
 
-<div id="info-kanal">
-    <h2 id="titel" style="color:#003d8f"></h2>
-    <div style="text-align: justify;">
-        <p><strong>WOFÜR:</strong> <span id="wofuer"></span></p>
-        <p><strong>WOHIN:</strong> <span id="wohin"></span></p>
-    </div>
-    <button class="back-btn" onclick="zurueck()">ZURÜCK</button>
-</div>
+    <script>
+        const boxInhalte = {
+            1: { wofuer: "Jeder Mensch zählt als Mensch, unabhängig von Herkunft oder Status.", wohin: "Lasten ablegen und gemeinsam einen Schritt nach vorne machen." },
+            2: { wofuer: "Menschsein anerkennen, Geld nur als Zahl sehen.", wohin: "Selbstwertgefühl unabhängig von Materiellem herstellen." },
+            3: { wofuer: "Friede beginnt im Herzen, Aufrichtigkeit vertreibt Zweifel.", wohin: "Zur Quelle des Friedens für die Gemeinschaft werden." },
+            4: { wofuer: "Raum für Selbstgestaltung und bürgerliche Rechte.", wohin: "Kollektives Handeln als geschlossene Einheit." },
+            5: { wofuer: "Innere Stimme über gesetzliche Erlaubnis stellen.", wohin: "Eigenverantwortung vor dem eigenen Herzen prüfen." },
+            6: { wofuer: "Glauben an das Menschliche ohne Etiketten.", wohin: "Menschlichkeit als fühlbare Realität wiederherstellen." },
+            7: { wofuer: "Bedingungslose Liebe und Freiraum für Kinder.", wohin: "Kindern die wahre Freiheit im Herzen mitgeben." },
+            8: { wofuer: "Eigene Biografie und Mut zur Kunst würdigen.", wohin: "Sich der Welt zeigen, wie man wirklich ist." },
+            9: { wofuer: "Spalt zwischen Staatsrecht und Moral (z.B. LGBTQ) thematisieren.", wohin: "Spiritualität, die jedes Leben bedingungslos schützt." },
+            10: { wofuer: "Trends als Drogen und Traditionen als Waffen entlarven.", wohin: "Echte Werte schaffen, die über Zeitgeist hinausgehen." },
+            11: { wofuer: "Grenzen im Kopf und Zufall der Geburt hinterfragen.", wohin: "Verbindung spüren, die tiefer liegt als Bekenntnisse." },
+            12: { wofuer: "Industrielle Hierarchien und emotionalen Zwang aufbrechen.", wohin: "Würde am Arbeitsplatz zurückgewinnen." },
+            13: { wofuer: "Zusammenhang zwischen seelischen Wunden und Systemprofit.", wohin: "Heilung und Souveränität über Körper und Geist." },
+            14: { wofuer: "Direkte Beteiligung an Profit und Körperschaftsteuer.", wohin: "Wirtschaftliche Souveränität des Arbeiters etablieren." },
+            15: { wofuer: "Jugendsprecher als ernstzunehmende Stimmen einbinden.", wohin: "Brücke zwischen Generationen auf Augenhöhe bauen." },
+            16: { wofuer: "Achtung vor dem Alter und der Lebensleistung.", wohin: "Symbiose zwischen Jugend (digital) und Senioren (weise)." },
+            17: { wofuer: "Ende der leeren Worte – Hilfe für Obdachlose und sauberes Wasser für alle.", wohin: "Als Kollektiv dort Taten setzen, wo der Staat versagt." },
+            18: { wofuer: "Nachbarschaft als Spiegel des Staates: Hilfe statt Wegsehen.", wohin: "Vom Treppenhaus bis zum Kollektiv: Gemeinsam statt einsam." },
+            19: { wofuer: "Technik als Werkzeug, Mensch als Schöpfer. Beherrschung statt Kontrolle.", wohin: "KI als Schutzschild für Menschenrechte und globale Ressourcenteilung." },
+            20: {
+                wofuer: "Die Brücke ist der Übergang zur absoluten Transparenz. Hier werden aus Usern aktive Gestalter, Wähler und Kandidaten. Für jedes Programm wird es gewählte Vertreter geben, die die Umsetzung im physischen Leben leiten. Jeder einzelne von euch ist bereits jetzt die Stille Million.",
+                wohin: "Sobald wir eine Million Stimmen sind, öffnen sich die Bereiche Kapital und Verwaltung. Das Ziel ist die kollektive Umsetzung aller 20 Programme in der physischen Welt. Viel Erfolg und Genesung an alle, die diesen Weg mit uns gehen."
+            },
+            21: { wofuer: "Bereich noch geschlossen.", wohin: "Öffnet sich ab der Stillen Million." },
+            22: { wofuer: "Bereich noch geschlossen.", wohin: "Öffnet sich ab der Stillen Million." }
+        };
 
-<script>
-    const inhalte = {
-        1: ["GEFÜHLSVORDERUNG", "Jeder zählt als Mensch.", "Lasten ablegen."],
-        2: ["MENSCHWERDUNG", "Geld als Zahl, Mensch als Wert.", "Selbstwert finden."],
-        3: ["FRIEDE", "Friede im Herzen.", "Quelle des Friedens werden."],
-        4: ["BÜRGERRECHTE", "Raum für Selbstgestaltung.", "Kollektives Handeln."],
-        5: ["MORAL", "Innere Stimme zählt.", "Eigenverantwortung prüfen."],
-        6: ["MENSCHLICHKEIT", "Glaube an das Menschliche.", "Wiederherstellung."],
-        7: ["KINDERSCHUTZ", "Liebe und Freiraum.", "Freiheit im Herzen."],
-        8: ["KUNST", "Mut zur Kunst.", "Echtes Zeigen."],
-        9: ["LGBTQ & KIRCHE", "Moral über Staatsrecht.", "Schutz jedes Lebens."],
-        10: ["TRADITION", "Echte Werte statt Trends.", "Beständigkeit schaffen."],
-        11: ["SELBSTWAHL", "Grenzen im Kopf lösen.", "Tiefe Verbindung spüren."],
-        12: ["ARBEITSRECHT", "Hierarchien aufbrechen.", "Würde im Job."],
-        13: ["GESUNDHEIT", "Seele und Systemheilung.", "Souveränität gewinnen."],
-        14: ["ARBEITSWELT", "Beteiligung am Profit.", "Wirtschaftliche Freiheit."],
-        15: ["JUGENDSPRECHER", "Stimme ab 14 Jahren.", "Generationen-Brücke."],
-        16: ["PENSIONISTEN", "Achtung vor Lebensleistung.", "Symbiose Jung & Alt."],
-        17: ["SOZIALGEFALLEN", "Taten statt Worte.", "Dort helfen, wo Not ist."],
-        18: ["NACHBARSCHAFT", "Miteinander statt wegsehen.", "Gemeinschaft im Kleinen."],
-        19: ["TECHNIK", "KI als Werkzeug.", "Schutzschild der Rechte."],
-        20: ["DIE BRÜCKE", "Absolute Transparenz.", "Umsetzung in der Welt."]
-    };
+        const themen = [
+            "RECHT AUF GEFÜHLSVORDERUNG", "WIE WERDE ICH MENSCH", "GLAUBE AN FRIEDE", "PROGRAMM FÜR BÜRGERLICHE RECHTE",
+            "MORALISCHE GESETZE UND VERANTWORTUNG", "MENSCHLICHKEIT - WIEDERHERSTELLUNG", "KINDERSCHUTZ - PFLICHT - ELTERN RECHTE", "WAHRE RICHTUNG UND KUNST",
+            "LGBTQ UND KIRCHE", "TREND UND TRADITION", "RELIGIONSBEKENNTNIS ODER SELBSTWAHL", "ARBEITSRECHT UND MOBBING",
+            "GESUNDHEITSWESEN UND VERHALTEN", "ARBEITSWELT UND DU", "JUGENDSPRECHER", "PENSIONISTEN RATGEBER",
+            "SOZIALGEFALLEN UND WIEDERKEHR", "NACHBARSCHAFT UND GEMEINSCHAFT", "MENSCH & TECHNIK", "DIE BRÜCKE"
+        ];
 
-    function zeig(nr) {
-        document.getElementById('main-ui').style.display = 'none';
-        document.getElementById('info-kanal').style.display = 'block';
-        document.getElementById('titel').innerText = inhalte[nr][0];
-        document.getElementById('wofuer').innerText = inhalte[nr][1];
-        document.getElementById('wohin').innerText = inhalte[nr][2];
-    }
+        const grid = document.getElementById('main-grid');
+        themen.forEach((thema, index) => {
+            const num = index + 1;
+            const box = document.createElement('div');
+            box.className = 'box';
+            box.innerHTML = `<div class="num">${num}</div><div class="text" onclick="showInfo('${thema}', ${num})">${thema}</div>`;
+            grid.appendChild(box);
+        });
 
-    function zurueck() {
-        document.getElementById('main-ui').style.display = 'block';
-        document.getElementById('info-kanal').style.display = 'none';
-    }
-</script>
+        function showInfo(titel, num) {
+            const data = boxInhalte[num];
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('info-kanal').style.display = 'flex';
+            document.getElementById('info-titel').innerText = "ANSAGE " + num + ": " + titel;
+            document.getElementById('wofuer-inhalt').innerText = data.wofuer;
+            document.getElementById('wohin-inhalt').innerText = data.wohin;
+            document.getElementById('pano-box').style.backgroundImage = "url('https://picsum.photos/id/" + (num + 20) + "/1200/400')";
+        }
 
+        function showDashboard() {
+            document.getElementById('info-kanal').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'flex';
+        }
+    </script>
 </body>
 </html>
