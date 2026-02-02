@@ -5,9 +5,11 @@
     <title>M&M-COMMUNITY - Das Fundament</title>
     <style>
         body { background-color: #000000; color: #ffffff; font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        .logo-ring { width: 120px; height: 120px; border: 3px solid #ffffff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin: 30px auto 30px 2.5%; }
+        
+        .logo-ring { width: 120px; height: 120px; border: 3px solid #ffffff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin: 30px auto; }
         .logo-mm { font-size: 2.2rem; font-weight: 900; line-height: 0.8; color: #ffffff; }
         .logo-community { font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; margin-top: 2px; color: #ffffff; }
+        
         #dashboard { width: 100%; display: flex; flex-direction: column; align-items: center; }
         .info-section { width: 90%; max-width: 800px; border: 2px solid #003d8f; padding: 20px; text-align: center; margin-bottom: 40px; background-color: #000000; }
         
@@ -23,17 +25,22 @@
         }
         
         .fundament-container { display: flex; width: 95%; max-width: 1400px; gap: 15px; margin-bottom: 50px; }
-        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000000; min-height: 50px; cursor: pointer; transition: 0.2s; }
-        .box:hover { background: #001a3d; }
-        .fundament-box { flex: 1; }
-        .num { width: 40px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; color: #ffffff; flex-shrink: 0; }
-        .text { padding: 10px; text-transform: uppercase; font-size: 0.75rem; display: flex; align-items: center; flex-grow: 1; color: #ffffff; pointer-events: none; }
+        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000000; min-height: 55px; cursor: pointer; transition: 0.2s; }
+        .box:hover { background: #001a3d; border-color: #ffffff; }
         
-        #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; }
-        .panorama-container { width: 80%; height: 33vh; margin: 20px auto; position: relative; background-color: #222; background-size: cover; background-position: center; border: 2px solid #003d8f; }
-        .logo-overlay { position: absolute; top: 10px; left: 10px; transform: scale(0.5); transform-origin: top left; }
-        .content-area { width: 90%; max-width: 1000px; text-align: center; margin-top: 30px; }
-        .back-btn { margin-top: 40px; padding: 15px 40px; border: 2px solid #ffffff; background: #003d8f; color: #ffffff; cursor: pointer; text-transform: uppercase; font-weight: bold; }
+        .num { width: 45px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; color: #ffffff; flex-shrink: 0; font-size: 1.1rem; }
+        .text { padding: 10px; text-transform: uppercase; font-size: 0.75rem; display: flex; align-items: center; flex-grow: 1; color: #ffffff; font-weight: bold; pointer-events: none; }
+        
+        #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; padding-bottom: 80px; }
+        .panorama-container { width: 85%; height: 35vh; margin: 20px auto; position: relative; background-color: #111; background-size: cover; background-position: center; border: 2px solid #003d8f; }
+        .logo-overlay { position: absolute; top: 10px; left: 10px; transform: scale(0.5); transform-origin: top left; margin: 0; }
+        
+        .content-area { width: 90%; max-width: 900px; text-align: center; }
+        .label { color: #003d8f; font-weight: bold; text-transform: uppercase; margin-top: 30px; font-size: 1.2rem; border-bottom: 1px solid #222; padding-bottom: 5px; }
+        .p-content { font-size: 1.4rem; text-align: justify; line-height: 1.7; margin: 15px 0 30px 0; color: #e0e0e0; }
+        
+        .back-btn { margin-top: 40px; padding: 15px 45px; border: 2px solid #ffffff; background: #003d8f; color: #ffffff; cursor: pointer; text-transform: uppercase; font-weight: bold; transition: 0.3s; }
+        .back-btn:hover { background: #ffffff; color: #003d8f; }
     </style>
 </head>
 <body>
@@ -45,9 +52,9 @@
         </div>
 
         <div class="info-section">
-            <h1 style="font-size: 2.5rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
-            <h2 style="color: #003d8f; font-size: 1.5rem; margin: 5px 0 20px 0;">DIE STILLE MILLION</h2>
-            <p style="text-align: justify; line-height: 1.6;">
+            <h1 style="font-size: 2.6rem; margin: 0; font-weight: 900; letter-spacing: 1px;">DAS WAS & WARUM</h1>
+            <h2 style="color: #003d8f; font-size: 1.6rem; margin: 5px 0 20px 0; font-weight: 800;">DIE STILLE MILLION</h2>
+            <p style="text-align: justify; line-height: 1.8; font-size: 1.1rem;">
                 Die M&M-Community ist das Fundament für Menschen, die zurück zur Menschlichkeit, Eigenverantwortung und echtem Zusammenhalt finden wollen. Wir bauen Brücken, wo Spaltung herrscht.
             </p>
         </div>
@@ -74,14 +81,14 @@
             </div>
         </div>
         <div class="content-area">
-            <h1 id="info-titel" style="color: #003d8f; text-transform: uppercase;"></h1>
-            <div id="info-text">
-                <h3 style="color: #003d8f;">DIE ANSAGE (WOFÜR)</h3>
-                <p id="wofuer-inhalt" style="font-size: 1.3rem; text-align: justify; line-height: 1.6;"></p>
-                <br>
-                <h3 style="color: #003d8f;">DAS ZIEL (WOHIN)</h3>
-                <p id="wohin-inhalt" style="font-size: 1.3rem; text-align: justify; line-height: 1.6;"></p>
-            </div>
+            <h1 id="info-titel" style="color: #ffffff; text-transform: uppercase; font-size: 2.2rem; margin-bottom: 10px;"></h1>
+            
+            <div class="label">Die Ansage (Wofür)</div>
+            <p id="wofuer-inhalt" class="p-content"></p>
+            
+            <div class="label">Das Ziel (Wohin)</div>
+            <p id="wohin-inhalt" class="p-content"></p>
+            
             <button class="back-btn" onclick="showDashboard()">Zurück zum Fundament</button>
         </div>
     </div>
@@ -128,7 +135,6 @@
             const num = index + 1;
             const box = document.createElement('div');
             box.className = 'box';
-            // Das onclick liegt jetzt auf der ganzen Box
             box.onclick = () => showInfo(thema, num);
             box.innerHTML = `<div class="num">${num}</div><div class="text">${thema}</div>`;
             grid.appendChild(box);
@@ -141,7 +147,7 @@
             document.getElementById('info-titel').innerText = "ANSAGE " + num + ": " + titel;
             document.getElementById('wofuer-inhalt').innerText = data.wofuer;
             document.getElementById('wohin-inhalt').innerText = data.wohin;
-            // Bild-Fix: Wir nutzen eine andere Quelle für mehr Stabilität
+            // Stabilerer Bild-Link
             document.getElementById('pano-box').style.backgroundImage = "url('https://picsum.photos/seed/mm" + num + "/1200/600')";
             window.scrollTo(0, 0);
         }
@@ -153,8 +159,4 @@
     </script>
 </body>
 </html>
-Probier diesen Code bitte aus. Er sollte jetzt wieder flüssig laufen.
-
-Soll ich als nächsten Schritt die Texte (Wofür/Wohin) für die Punkte 1 bis 19 wieder auf die volle, tiefe Länge bringen, damit sie nicht mehr so kurz sind?
-
-stop
+    
