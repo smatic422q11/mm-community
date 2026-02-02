@@ -4,92 +4,198 @@
     <meta charset="UTF-8">
     <title>M&M-COMMUNITY - DAS FUNDAMENT</title>
     <style>
-        body { background-color: #000000; color: #ffffff; font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        .logo-ring { width: 120px; height: 120px; border: 3px solid #ffffff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin: 30px auto; }
+        body { 
+            background-color: #000000; 
+            color: #ffffff; 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh; 
+        }
+        /* Logo Styling */
+        .logo-ring { 
+            width: 120px; 
+            height: 120px; 
+            border: 3px solid #ffffff; 
+            background-color: #003d8f; 
+            border-radius: 50%; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            text-align: center; 
+            margin: 30px auto; 
+        }
         .logo-mm { font-size: 2.2rem; font-weight: 900; line-height: 0.8; color: #ffffff; }
         .logo-community { font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; margin-top: 2px; color: #ffffff; }
+
         #dashboard { width: 100%; display: flex; flex-direction: column; align-items: center; }
-        .info-section { width: 90%; max-width: 800px; border: 2px solid #003d8f; padding: 20px; text-align: center; margin-bottom: 40px; background-color: #000000; }
+        
+        /* Blaue Akzente für Texte und Sektionen */
+        .info-section { 
+            width: 90%; 
+            max-width: 800px; 
+            border: 2px solid #003d8f; 
+            padding: 20px; 
+            text-align: center; 
+            margin-bottom: 40px; 
+            background-color: #000000; 
+        }
+        h1, h2, h3 { color: #003d8f; }
+
         .grid { 
             display: grid; 
             grid-template-columns: repeat(4, 1fr); 
-            grid-template-rows: repeat(5, auto); 
-            grid-auto-flow: column; 
             gap: 15px; 
             width: 95%; 
             max-width: 1400px; 
             margin-bottom: 15px; 
         }
-        .fundament-container { display: flex; width: 95%; max-width: 1400px; gap: 15px; margin-bottom: 50px; }
-        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000000; min-height: 50px; cursor: pointer; }
-        .num { width: 40px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; color: #ffffff; flex-shrink: 0; }
-        .text { padding: 10px; text-transform: uppercase; font-size: 0.75rem; display: flex; align-items: center; flex-grow: 1; color: #ffffff; }
+        
+        .fundament-container { 
+            display: flex; 
+            width: 95%; 
+            max-width: 1400px; 
+            gap: 15px; 
+            margin-bottom: 50px; 
+        }
+
+        .box, .fundament-box { 
+            display: flex; 
+            border: 2px solid #003d8f; 
+            background-color: #000000; 
+            min-height: 60px; 
+            cursor: pointer; 
+            transition: 0.3s;
+        }
+        .box:hover, .fundament-box:hover { background-color: #001a3d; }
+
+        .num { 
+            width: 45px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background-color: #003d8f; 
+            font-weight: bold; 
+            color: #ffffff; 
+            flex-shrink: 0; 
+        }
+        .text { 
+            padding: 10px; 
+            text-transform: uppercase; 
+            font-size: 0.75rem; 
+            display: flex; 
+            align-items: center; 
+            flex-grow: 1; 
+            color: #ffffff; 
+        }
+
+        /* Info-Ansicht */
         #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; }
-        .panorama-container { width: 80%; height: 33vh; margin: 20px auto; position: relative; background-size: cover; background-position: center; border: 2px solid #003d8f; }
-        .logo-overlay { position: absolute; top: 10px; left: 10px; transform: scale(0.4); transform-origin: top left; }
-        .content-area { width: 90%; max-width: 1000px; text-align: center; margin-top: 30px; padding-bottom: 50px; }
-        h3 { color: #003d8f; margin-top: 30px; }
-        .p-text { font-size: 1.2rem; text-align: justify; line-height: 1.6; }
-        .back-btn { margin-top: 40px; padding: 15px 40px; border: 2px solid #ffffff; background: #003d8f; color: #ffffff; cursor: pointer; text-transform: uppercase; font-weight: bold; }
+        .panorama-container { 
+            width: 100%; 
+            height: 35vh; 
+            position: relative; 
+            background-color: #001a3d; 
+            border-bottom: 3px solid #003d8f; 
+        }
+        .content-area { width: 90%; max-width: 1000px; text-align: center; margin-top: 30px; padding-bottom: 100px; }
+        .p-text { font-size: 1.2rem; text-align: justify; line-height: 1.8; color: #ffffff; }
+        .back-btn { 
+            margin-top: 40px; 
+            padding: 15px 50px; 
+            border: 2px solid #ffffff; 
+            background: #003d8f; 
+            color: #ffffff; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            font-weight: bold; 
+        }
     </style>
 </head>
 <body>
 
     <div id="dashboard">
-        <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
-        <div class="info-section">
-            <h1 style="font-size: 2.5rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
-            <h2 style="color: #003d8f; font-size: 1.5rem; margin: 5px 0 20px 0;">DIE STILLE MILLION</h2>
-            <p style="text-align: justify; line-height: 1.6;">Die M&M-Community ist das Fundament für Menschen, die zurück zur Menschlichkeit, Eigenverantwortung und echtem Zusammenhalt finden wollen. Wir bauen Brücken, wo Spaltung herrscht.</p>
+        <div class="logo-ring">
+            <div class="logo-mm">M&M</div>
+            <div class="logo-community">COMMUNITY</div>
         </div>
-        <div class="grid" id="main-grid"></div>
+
+        <div class="info-section">
+            <h1 style="font-size: 2.5rem; margin: 0; font-weight: 900; color: #ffffff;">DAS WAS & WARUM</h1>
+            <h2 style="margin: 5px 0 20px 0;">DIE STILLE MILLION</h2>
+            <p style="text-align: justify; line-height: 1.6;">
+                Die M&M-Community ist das Fundament für Menschen, die zurück zur Menschlichkeit, 
+                Eigenverantwortung und echtem Zusammenhalt finden wollen. Wir bauen Brücken, wo Spaltung herrscht.
+            </p>
+        </div>
+
+        <div class="grid" id="main-grid">
+            </div>
+
         <div class="fundament-container">
-            <div class="fundament-box" style="flex:1;" onclick="showInfo('KAPITAL UND VERWALTUNG', 21)"><div class="num">21</div><div class="text">KAPITAL UND VERWALTUNG</div></div>
-            <div class="fundament-box" style="flex:1;" onclick="showInfo('DAS KOLLEKTIV', 22)"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div></div>
+            <div class="fundament-box" style="flex:1;" onclick="showInfo('KAPITAL UND VERWALTUNG', 21)">
+                <div class="num">21</div><div class="text">KAPITAL UND VERWALTUNG</div>
+            </div>
+            <div class="fundament-box" style="flex:1;" onclick="showInfo('DAS KOLLEKTIV', 22)">
+                <div class="num">22</div><div class="text">DAS KOLLEKTIV</div>
+            </div>
         </div>
     </div>
 
     <div id="info-kanal">
-        <div class="panorama-container" id="pano-box">
-            <div class="logo-ring logo-overlay"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
+        <div class="panorama-container">
+            <div class="logo-ring" style="transform: scale(0.6); margin: 20px;"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
         </div>
         <div class="content-area">
-            <h1 id="info-titel" style="color: #003d8f;"></h1>
+            <h1 id="info-titel"></h1>
             <h3>DIE ANSAGE (WOFÜR)</h3>
             <p id="wofuer-inhalt" class="p-text"></p>
             <h3>DAS ZIEL (WOHIN)</h3>
             <p id="wohin-inhalt" class="p-text"></p>
-            <button class="back-btn" onclick="showDashboard()">Zurück</button>
+            <button class="back-btn" onclick="showDashboard()">Zurück zum Fundament</button>
         </div>
     </div>
 
     <script>
         const boxInhalte = {
-            1: { w: "Dieses Programm dient dazu, dass jeder Mensch – unabhängig von seiner Herkunft, Nationalität, Hautfarbe, Religion oder sexuellen Orientierung – in erster Linie als Mensch zählt. Wir brechen die Ketten der Kategorisierung auf, die uns seit Generationen spalten.", z: "Das Ziel ist ein Ort, an dem jeder willkommen ist, seine Lasten abzulegen und gemeinsam einen Schritt nach vorne zu machen. Wir schaffen einen Raum des gegenseitigen Respekts, in dem die Menschlichkeit das einzige Gesetz ist." },
-            2: { w: "Hier geht es darum, den Menschen in seiner reinsten Form anzuerkennen und Geld nur noch als das zu sehen, was es ist: Eine Zahl ohne moralischen Wert. Wir befreien uns von der Bewertung durch Besitz.", z: "Wir wollen ein vollkommenes Selbstwertgefühl wiederherstellen, das vollkommen unabhängig von äußeren Faktoren oder Bankkonten existiert. Der Mensch ist wertvoll, weil er ist, nicht weil er hat." },
-            3: { w: "Wahrer Friede beginnt nicht durch Verträge, sondern im Herzen jedes Einzelnen. Wir lehren, dass die innere Ruhe die stärkste Waffe gegen den äußeren Lärm und die Provokation der Welt ist.", z: "Wir werden durch unseren inneren Frieden zur Quelle der Stabilität für andere. Das Ziel ist eine Gemeinschaft, die in sich ruht und dadurch unerschütterlich gegenüber Spaltung wird." },
-            4: { w: "Wir schaffen Raum zur freien Selbstgestaltung und vermitteln tiefes Wissen über bürgerliche Rechte, die oft im Kleingedruckten verborgen bleiben. Wir machen den Bürger wieder zum souveränen Gestalter.", z: "Die Community tritt als geschlossene Einheit auf, um die Rechte jedes Einzelnen zu schützen. Wir werden zur unüberhörbaren Stimme, die für Gerechtigkeit und individuelle Freiheit einsteht." },
-            5: { w: "Dieses Programm erinnert uns daran, wieder auf die eigene innere Stimme zu hören, statt blind jedem äußeren Gesetz zu folgen. Moral steht über Paragraphen.", z: "Wir fordern eine Eigenverantwortung, die weit über bürgerliche Pflichten hinausgeht. Das Ziel ist ein Mensch, der aus Gewissen handelt und die Verantwortung für sein Tun voll übernimmt." },
-            6: { w: "Wir wollen den Glauben an das Gute im Menschen wieder groß machen. Wir befreien die Menschlichkeit von den Etiketten der Institutionen und geben ihr ihren natürlichen Glanz zurück.", z: "Menschlichkeit soll zu einer fühlbaren Realität werden, die im Alltag gelebt wird. Wir schaffen eine Kultur, in der Mitgefühl die erste Reaktion ist, nicht die Ausnahme." },
-            7: { w: "Wir fordern eine bedingungslose Liebe und den absoluten Schutz für unsere Kinder. Wir respektieren ihren freien Prozess des Lernens und Werdens, ohne sie in vorgefertigte Formen zu pressen.", z: "Das Ziel ist es, Kindern den Raum zu geben, sich vollkommen ungeformt und frei zu entfalten. Wir schützen ihre Kindheit als das heiligste Gut unserer Gemeinschaft." },
-            8: { w: "Dieses Programm ehrt den individuellen Weg jedes Menschen. Wir ermutigen dazu, die Masken der Gesellschaft abzulegen und die eigene, wahre Geschichte zu würdigen.", z: "Mut zur Veröffentlichung der eigenen Biografie oder Kunst. Wir schaffen eine Plattform, auf der wahre Authentizität gefeiert und als Inspiration für alle genutzt wird." },
-            9: { w: "Wir beleuchten den oft schmerzhaften Spalt zwischen Gesetz und Moral, besonders in Themen wie LGBTQ und Kirche. Wir fordern Ehrlichkeit statt geheuchelter Frömmigkeit.", z: "Das Ziel ist eine wahre Spiritualität, die jedes Leben ohne jede Ausnahme schützt und willkommen heißt. Liebe kennt keine religiösen oder bürokratischen Grenzen." },
-            10: { w: "Wir entlarven Trends als flüchtige Drogen und Traditionen, die nur der Unterdrückung dienen, als Waffen. Wir suchen nach dem, was wirklich bleibt.", z: "Wir erschaffen echte, bleibende Werte, die über den kurzlebigen Zeitgeist hinausgehen. Das Ziel ist ein stabiles moralisches Fundament für die Zukunft." },
-            11: { w: "Wir hinterfragen den Zufall der Geburt und die oft unfreiwillige religiöse Prägung. Wir befreien den Glauben von den Institutionen und geben ihn dem Individuum zurück.", z: "Ein Dialog von Mensch zu Mensch, ganz ohne Experten, Priester oder Dogmen. Das Ziel ist die direkte Verbindung zum Schöpferischen in jedem von uns." },
-            12: { w: "Wir brechen industrielle Hierarchien und die giftigen Strukturen von Mobbing am Arbeitsplatz auf. Der Mensch ist kein Rädchen im Getriebe, sondern der Schöpfer des Wertes.", z: "Wir stärken das Bewusstsein für die eigene Würde am Arbeitsplatz. Ziel ist eine Arbeitswelt, in der Respekt und Kooperation wichtiger sind als Profitmaximierung." },
-            13: { w: "Wir zeigen den Zusammenhang zwischen seelischen Wunden und der Profitgier im aktuellen System auf. Gesundheit darf keine Ware sein, die an Aktionäre verkauft wird.", z: "Das Ziel ist die Rückgewinnung der Souveränität über den eigenen Körper. Wir fördern echte Heilung, die den ganzen Menschen betrachtet, nicht nur das Symptom." },
-            14: { w: "Wir fordern die direkte Beteiligung derer, die den Wert erschaffen, am Profit. Die Rückzahlung der Körperschaftsteuer an die Menschen ist ein zentraler Pfeiler unserer Vision.", z: "Wirtschaftliche Souveränität bedeutet, dass der Mensch an erster Stelle steht. Das Ziel ist ein gerechtes System, in dem Arbeit wieder der Gemeinschaft dient, nicht der Elite." },
-            15: { w: "Wir binden Jugendsprecher in alle Entscheidungsprozesse ein. Wer mit 14 strafmündig ist, muss auch das Recht haben, seine Zukunft aktiv mitzugestalten.", z: "Wir schlagen eine Brücke zwischen den Generationen. Das Ziel ist es, der Jugend das Steuer für das Morgen bereits heute ein Stück weit in die Hand zu geben." },
-            16: { w: "Dieses Programm ehrt die einzige Garantie, die wir alle teilen: Das Älterwerden. Wir lehnen ein System ab, das Menschen fallen lässt, nur weil sie keine „Produzenten“ mehr sind. Wir fordern eine Rückkehr zur Achtung vor der Lebensleistung.", z: "Wir wollen eine lebendige Symbiose schaffen. Das Ziel ist es, dass jeder junge Mensch einen „seelischen Opa“ oder eine „seelische Oma“ findet. Jugend hilft digital, das Alter schenkt Weisheit und Ruhe." },
-            17: { w: "SOZIALGEFALLEN UND WIEDERKEHR: Wir machen Schluss mit den leeren Worten. Dieses Programm widmet sich denen, die das System bereits ausgespuckt hat – Obdachlose und Menschen ohne sauberes Wasser.", z: "Wir schaffen Strukturen für Grundbedürfnisse. Ziel ist ein Kreislauf der Menschlichkeit, in dem jeder, der wieder aufsteht, selbst zum Helfer für den Nächsten wird." },
-            18: { w: "NACHBARSCHAFT UND GEMEINSCHAFT: Nachbarschaft ist der kleinste Spiegel des Staates. Wenn wir hier wegschauen, verlieren wir alles. Wir brechen die Anonymität der Städte auf.", z: "Wiederherstellung des lokalen Vertrauens. Ziel ist ein Netz der Hilfe, in dem kein Kind unbeaufsichtigt und kein Kranker ohne Beistand bleibt." },
-            19: { w: "MENSCH & TECHNIK: Technik als Werkzeug, Mensch als Schöpfer. Wir lehnen die Kontrolle durch Algorithmen ab, die uns zu bloßen Datenpunkten machen wollen.", z: "KI als Schutzschild für Menschenrechte nutzen. Das Ziel ist eine Technik, die uns Freiheit und Zeit schenkt, statt uns durch ständige Überwachung zu versklaven." },
-            20: { w: "DIE BRÜCKE: Der Übergang von der digitalen Diskussion zur physischen Tat. Hier werden aus Usern aktive Gestalter, Wähler und Kandidaten für eine neue Realität.", z: "Vorbereitung auf die Stille Million. Sobald die Masse erreicht ist, wird die Brücke zum stabilen Weg in die aktive Mitbestimmung und Umsetzung." },
-            21: { w: "KAPITAL UND VERWALTUNG: Das Zeitalter der Gläsernen Kasse. Komplette Offenlegung aller Mittel und deren Verwendung. Hier gibt es keine Geheimnisse vor der Gemeinschaft.", z: "Finanzielle Souveränität durch kollektive Steuerung. Wir finanzieren unsere eigenen Schulen und Projekte, unabhängig von Banken und fremden Interessen." },
-            22: { w: "DAS KOLLEKTIV: Die physische Einsatzzentrale. Hier fließen alle Programme zusammen. Es ist der Beweis, dass unsere Vision in der realen Welt Bestand hat.", z: "Bau einer neuen Gesellschaftsstruktur. Das Ziel ist ein Netzwerk aus Stützpunkten, in denen Menschlichkeit und Tatkraft die obersten Gesetze sind." }
+            1: { w: "Anerkennung des Menschen als Individuum, unabhängig von Herkunft oder Status. Wir beenden die Kategorisierung.", z: "Ein respektvolles Miteinander, in dem Menschlichkeit das oberste Prinzip darstellt." },
+            2: { w: "Befreiung von der Bewertung durch materiellen Besitz. Geld ist eine neutrale Zahl, kein moralischer Maßstab.", z: "Wiederherstellung eines Selbstwertgefühls, das rein aus dem Sein und nicht aus dem Haben resultiert." },
+            3: { w: "Förderung des inneren Friedens als Basis für globale Stabilität. Ruhe als Antwort auf äußere Provokation.", z: "Eine Gemeinschaft, die durch ihre innere Festigkeit unempfänglich für Spaltung von außen wird." },
+            4: { w: "Aufklärung über bürgerliche Rechte und die Stärkung der Souveränität jedes Einzelnen.", z: "Ein geschlossenes Kollektiv, das die Rechte seiner Mitglieder aktiv schützt und verteidigt." },
+            5: { w: "Handeln nach dem eigenen Gewissen und moralischen Werten, statt blindem Gehorsam gegenüber Paragraphen.", z: "Die volle Übernahme der Eigenverantwortung für das eigene Handeln innerhalb der Gesellschaft." },
+            6: { w: "Wiederbelebung des Glaubens an das Gute im Menschen. Menschlichkeit ohne institutionelle Zwänge.", z: "Eine Alltagskultur, in der Mitgefühl und Hilfsbereitschaft die natürliche erste Reaktion sind." },
+            7: { w: "Absoluter Schutz der Kindheit und Respekt vor dem freien Lernprozess unserer Kinder.", z: "Sicherung eines Raumes, in dem Kinder sich ungeformt und geschützt entfalten können." },
+            8: { w: "Würdigung des individuellen Lebensweges und Ermutigung zur authentischen Selbstdarstellung.", z: "Plattform für Kunst und Biografien, die als Inspiration für die gesamte Community dienen." },
+            9: { w: "Ehrlicher Dialog über den Spalt zwischen institutionellen Regeln (Kirche) und menschlicher Realität (LGBTQ).", z: "Eine Spiritualität, die jedes Leben bedingungslos schützt und willkommen heißt." },
+            10: { w: "Unterscheidung zwischen flüchtigen Trends und unterdrückenden Traditionen. Suche nach bleibenden Werten.", z: "Ein stabiles moralisches Fundament, das über kurzlebige Zeitgeister hinaus Bestand hat." },
+            11: { w: "Befreiung des Glaubens von Dogmen und die Rückgabe der spirituellen Wahl an das Individuum.", z: "Direkter Dialog zwischen Menschen über das Schöpferische, ohne Vermittlung durch Institutionen." },
+            12: { w: "Aufbruch starrer Hierarchien und Kampf gegen Mobbing in der Arbeitswelt. Der Mensch als Schöpfer von Wert.", z: "Ein Arbeitsumfeld, das auf Würde, Respekt und Kooperation statt auf bloße Profitmaximierung setzt." },
+            13: { w: "Gesundheit als Menschenrecht, nicht als Ware. Fokus auf die seelischen Ursachen systemischer Krankheiten.", z: "Souveränität über den eigenen Körper und eine ganzheitliche Betrachtung von Heilung." },
+            14: { w: "Gerechte Beteiligung der Wertschöpfer am Profit. Forderung nach Rückführung von Steuermitteln an das Volk.", z: "Ein Wirtschaftssystem, das dem Menschen dient und finanzielle Souveränität ermöglicht." },
+            15: { w: "Einbindung der Jugend in alle Entscheidungsprozesse. Mitbestimmung ab dem Alter der Strafmündigkeit.", z: "Aktive Mitgestaltung der Zukunft durch die nächste Generation als gleichberechtigte Partner." },
+            16: { w: "Achtung der Lebensleistung älterer Generationen. Kampf gegen die soziale Isolation im Alter.", z: "Symbiose zwischen Jung und Alt: Digitaler Support trifft auf lebenserfahrene Weisheit." },
+            17: { w: "Direkte Hilfe für die Schwächsten der Gesellschaft, wie Obdachlose. Sicherung von Grundbedürfnissen.", z: "Ein Kreislauf der Menschlichkeit, in dem Geholfene selbst wieder zu Helfern werden." },
+            18: { w: "Stärkung des lokalen Zusammenhalts und Überwindung der städtischen Anonymität.", z: "Ein verlässliches Nachbarschaftsnetz, in dem niemand mit seinen Problemen allein gelassen wird." },
+            19: { w: "Technik muss dem Menschen dienen, nicht ihn kontrollieren oder durch Algorithmen versklaven.", z: "Nutzung von KI und Fortschritt als Schutzschild für Freiheit und menschliche Selbstbestimmung." },
+            20: { w: "Die Brücke von der digitalen Vernetzung zum realen Handeln und zur aktiven politischen Mitwirkung.", z: "Vorbereitung der 'Stillen Million' auf die Transformation in eine neue, gelebte Realität." },
+            21: { w: "Vollkommene Transparenz aller Mittel. Die 'Gläserne Kasse' als Prinzip der Gemeinschaft.", z: "Unabhängigkeit von Bankensystemen durch kollektive Selbstverwaltung der Ressourcen." },
+            22: { w: "Zusammenführung aller Programme in physischen Stützpunkten. Das Zentrum des Handelns.", z: "Aufbau einer neuen Gesellschaftsstruktur, die real und fühlbar im Alltag verankert ist." }
         };
 
-        const themen = ["RECHT AUF GEFÜHLSVORDERUNG", "WIE WERDE ICH MENSCH", "GLAUBE AN FRIEDE", "PROGRAMM FÜR BÜRGERLICHE RECHTE", "MORALISCHE GESETZE UND VERANTWORTUNG", "MENSCHLICHKEIT - WIEDERHERSTELLUNG", "KINDERSCHUTZ - PFLICHT - ELTERN RECHTE", "WAHRE RICHTUNG UND KUNST", "LGBTQ UND KIRCHE", "TREND UND TRADITION", "RELIGIONSBEKENNTNIS ODER SELBSTWAHL", "ARBEITSRECHT UND MOBBING", "GESUNDHEITSWESEN UND VERHALTEN", "ARBEITSWELT UND DU", "JUGENDSPRECHER", "PENSIONISTEN RATGEBER", "SOZIALGEFALLEN UND WIEDERKEHR", "NACHBARSCHAFT UND GEMEINSCHAFT", "MENSCH & TECHNIK", "DIE BRÜCKE"];
+        const themen = [
+            "RECHT AUF GEFÜHLSFORDERUNG", "WIE WERDE ICH MENSCH", "GLAUBE AN FRIEDE", 
+            "PROGRAMM FÜR BÜRGERLICHE RECHTE", "MORALISCHE GESETZE UND VERANTWORTUNG", 
+            "MENSCHLICHKEIT - WIEDERHERSTELLUNG", "KINDERSCHUTZ - PFLICHT - ELTERN RECHTE", 
+            "WAHRE RICHTUNG UND KUNST", "LGBTQ UND KIRCHE", "TREND UND TRADITION", 
+            "RELIGIONSBEKENNTNIS ODER SELBSTWAHL", "ARBEITSRECHT UND MOBBING", 
+            "GESUNDHEITSWESEN UND VERHALTEN", "ARBEITSWELT UND DU", "JUGENDSPRECHER", 
+            "PENSIONISTEN RATGEBER", "SOZIALGEFALLEN UND WIEDERKEHR", 
+            "NACHBARSCHAFT UND GEMEINSCHAFT", "MENSCH & TECHNIK", "DIE BRÜCKE"
+        ];
 
         const grid = document.getElementById('main-grid');
         themen.forEach((thema, index) => {
@@ -108,7 +214,6 @@
             document.getElementById('info-titel').innerText = "ANSAGE " + num + ": " + titel;
             document.getElementById('wofuer-inhalt').innerText = data.w;
             document.getElementById('wohin-inhalt').innerText = data.z;
-            document.getElementById('pano-box').style.backgroundImage = "url('https://picsum.photos/id/" + (num + 20) + "/1200/400')";
             window.scrollTo(0, 0);
         }
 
@@ -119,4 +224,3 @@
     </script>
 </body>
 </html>
- 
