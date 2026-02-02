@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -37,7 +39,7 @@
             <h1 style="font-size: 2.5rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
             <h2 style="color: #003d8f; font-size: 1.5rem; margin: 5px 0 20px 0;">DIE STILLE MILLION</h2>
             <p style="text-align: justify; line-height: 1.6;">
-                Die M&M-Community ist das Fundament für alle...
+                Die M&M-Community ist das Fundament für Menschen, die zurück zur Menschlichkeit, Eigenverantwortung und echtem Zusammenhalt finden wollen. Wir bauen Brücken, wo Spaltung herrscht.
             </p>
         </div>
 
@@ -77,13 +79,29 @@
     </div>
 
     <script>
-       const boxInhalte = {
-            9: {
-                wofuer: "Das Programm dient dazu die LGBTQ Menschen und Menschen die noch ein Glauben besitzen um gemeinsam näher zu Kirche zu führen um den glauben an die Menschheit zu festigen. Gemeinschaft im Kollektiv ist der Weg.",
-                wohin: "Wir suchen nach der Wahrheit und wollen den geistig unakzeptablen Zustand der Spaltung beenden.",
-                // DIESES BILD WIRD GARANTIERT GELADEN:
-                bild: "https://picsum.photos/id/10/1200/400"
-            }
+        const boxInhalte = {
+            1: { wofuer: "Raum für Empathie und Intuition zurückfordern.", wohin: "In einer Welt der Logik die Menschlichkeit an erste Stelle setzen." },
+            2: { wofuer: "Masken ablegen und zum wahren Kern zurückfinden.", wohin: "Weg vom reinen Funktionieren, hin zum echten Sein." },
+            3: { wofuer: "Unerschütterlicher Glaube an den Frieden.", wohin: "Konflikte durch Kommunikation und Gemeinsamkeit lösen." },
+            4: { wofuer: "Schutz der Freiheit des Einzelnen.", wohin: "Aufklärung über bürgerliche Rechte und deren Verteidigung." },
+            5: { wofuer: "Förderung moralischer Integrität.", wohin: "Verantwortung für das eigene Handeln in der Gemeinschaft übernehmen." },
+            6: { wofuer: "Wiederherstellung von Menschlichkeit im System.", wohin: "Präsenz und Mitgefühl in Ämtern und Betrieben verankern." },
+            7: { wofuer: "Schutz der Kinder vor Übergriffigkeit.", wohin: "Wahrung der natürlichen Elternrechte und Werteerziehung." },
+            8: { wofuer: "Förderung kreativen Ausdrucks.", wohin: "Kunst als Spiegel der Seele, die die Gesellschaft bewegt." },
+            9: { wofuer: "LGBTQ Menschen und Gläubige näher zur Kirche führen.", wohin: "Den Glauben an die Menschheit festigen und Spaltung beenden." },
+            10: { wofuer: "Echte Begegnungen im realen Leben schaffen.", wohin: "Die Gemeinschaft durch Feste und Workshops spürbar machen." },
+            11: { wofuer: "Freiheit des Glaubens ohne Zwang.", wohin: "Respekt für jedes Bekenntnis und Raum für die individuelle Selbstwahl." },
+            12: { wofuer: "Aufklärung und Rückhalt gegen Mobbing.", wohin: "Faire Bedingungen schaffen, damit niemand am Arbeitsplatz zerbricht." },
+            13: { wofuer: "Ganzheitliche Sicht auf den Menschen.", wohin: "Ein System, das die Selbstbestimmung über den Körper achtet." },
+            14: { wofuer: "Arbeit soll dem Leben dienen.", wohin: "Eine Arbeitswelt, die deine Persönlichkeit und Qualität schützt." },
+            15: { wofuer: "Plattform für die Stimmen der Jugend.", wohin: "Jugendliche bringen Visionen für die Zukunft aktiv ein." },
+            16: { wofuer: "Erfahrung als wertvoller Schatz.", wohin: "Senioren bei Bürokratie unterstützen und ihr Wissen schätzen." },
+            17: { wofuer: "Hilfe aus echtem Sozialgefallen.", wohin: "Ein Kreislauf, in dem Menschlichkeit immer wieder zur Gemeinschaft zurückkehrt." },
+            18: { wofuer: "Lokale Netzwerke stärken.", wohin: "Füreinander da sein und aufeinander aufpassen." },
+            19: { wofuer: "Technik als Diener des Menschen.", wohin: "Bewusster Umgang mit Digitalisierung zum Schutz der Privatsphäre." },
+            20: { wofuer: "Verbindung von Altem und Neuem.", wohin: "Brücken bauen zwischen Generationen und verschiedenen Meinungen." },
+            21: { wofuer: "Inhalt folgt für Kapital und Verwaltung.", wohin: "Zielsetzung wird definiert." },
+            22: { wofuer: "Inhalt folgt für Das Kollektiv.", wohin: "Zielsetzung wird definiert." }
         };
 
         const themen = [
@@ -91,9 +109,9 @@
             "Programm für Bürgerliche Rechte", "Moralische Gesetze und Verantwortung",
             "Menschlichkeit - Wiederherstellung", "Kinderschutz - Pflicht - Eltern Rechte",
             "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Veranstaltungen mit Community",
-            "Religions Bekenntnis", "Arbeitsrecht und Mobbing",
-            "Gesundheitswesen", "Arbeitswelt", "Jugendsprecher",
-            "Pensionisten Ratgeber", "Sozialgehilfen",
+            "Religionsbekenntnis oder Selbstwahl", "Arbeitsrecht und Mobbing",
+            "Gesundheitswesen und Verhalten", "Arbeitswelt und du", "Jugendsprecher",
+            "Pensionisten Ratgeber", "Sozialgefallen und Wiederkehr",
             "Nachbarschaft und Gemeinschaft", "Mensch & Technik", "Die Brücke"
         ];
 
@@ -119,12 +137,7 @@
             if (inhalt) {
                 document.getElementById('wofuer-inhalt').innerText = inhalt.wofuer;
                 document.getElementById('wohin-inhalt').innerText = inhalt.wohin;
-                // Hier greift der Code das Bild aus dem Internet
-                document.getElementById('pano-box').style.backgroundImage = "url('" + inhalt.bild + "')";
-            } else {
-                document.getElementById('wofuer-inhalt').innerText = "Inhalt folgt für " + titel;
-                document.getElementById('wohin-inhalt').innerText = "Zielsetzung folgt in Kürze.";
-                document.getElementById('pano-box').style.backgroundImage = "none";
+                document.getElementById('pano-box').style.backgroundImage = "url('https://picsum.photos/id/" + (nummer + 15) + "/1200/400')";
             }
         }
 
@@ -135,4 +148,3 @@
     </script>
 </body>
 </html>
-
