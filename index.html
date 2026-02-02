@@ -1,3 +1,8 @@
+Ich habe verstanden. Wir bringen jetzt alles in Ordnung: die vertikale Sortierung (von oben nach unten in den Spalten), die 4er-Reihe und die vollständigen, langen Texte, die das Herzstück deiner Arbeit sind.
+
+Hier ist der komplette Code für dein Dashboard:
+
+HTML
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -5,51 +10,90 @@
     <title>M&M-COMMUNITY - DAS FUNDAMENT</title>
     <style>
         body { background-color: #000000; color: #ffffff; font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        
         .logo-ring { width: 120px; height: 120px; border: 3px solid #ffffff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin: 30px auto; }
         .logo-mm { font-size: 2.2rem; font-weight: 900; line-height: 0.8; color: #ffffff; }
         .logo-community { font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; margin-top: 2px; color: #ffffff; }
+        
         #dashboard { width: 100%; display: flex; flex-direction: column; align-items: center; }
         .info-section { width: 90%; max-width: 800px; border: 2px solid #003d8f; padding: 20px; text-align: center; margin-bottom: 40px; background-color: #000000; }
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; width: 95%; max-width: 1400px; margin-bottom: 15px; }
+        
+        /* Die 4er Reihe mit vertikaler Sortierung (1-5 in der ersten Spalte) */
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            grid-template-rows: repeat(5, auto); 
+            grid-auto-flow: column; 
+            gap: 15px; 
+            width: 95%; 
+            max-width: 1400px; 
+            margin-bottom: 15px; 
+        }
+        
         .fundament-container { display: flex; width: 95%; max-width: 1400px; gap: 15px; margin-bottom: 50px; }
-        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000000; min-height: 50px; cursor: pointer; }
+        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000000; min-height: 50px; cursor: pointer; transition: 0.2s; }
+        .box:hover, .fundament-box:hover { background-color: #111; border-color: #ffffff; }
+        
         .fundament-box { flex: 1; }
         .num { width: 40px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; color: #ffffff; flex-shrink: 0; }
         .text { padding: 10px; text-transform: uppercase; font-size: 0.75rem; display: flex; align-items: center; flex-grow: 1; color: #ffffff; }
+        
         #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; }
         .panorama-container { width: 80%; height: 33vh; margin: 20px auto; position: relative; background-color: #222; background-size: cover; background-position: center; border: 2px solid #003d8f; }
         .logo-overlay { position: absolute; top: 10px; left: 10px; transform: scale(0.4); transform-origin: top left; margin: 0; }
-        .content-area { width: 90%; max-width: 1000px; text-align: center; margin-top: 30px; }
+        .content-area { width: 90%; max-width: 1000px; text-align: center; margin-top: 30px; padding-bottom: 50px; }
+        
+        h3 { color: #003d8f; margin-top: 30px; text-transform: uppercase; letter-spacing: 1px; }
+        .p-text { font-size: 1.2rem; text-align: justify; line-height: 1.6; margin-top: 10px; }
+        
         .back-btn { margin-top: 40px; padding: 15px 40px; border: 2px solid #ffffff; background: #003d8f; color: #ffffff; cursor: pointer; text-transform: uppercase; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div id="dashboard">
-        <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
+        <div class="logo-ring">
+            <div class="logo-mm">M&M</div>
+            <div class="logo-community">COMMUNITY</div>
+        </div>
+
         <div class="info-section">
             <h1 style="font-size: 2.5rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
             <h2 style="color: #003d8f; font-size: 1.5rem; margin: 5px 0 20px 0;">DIE STILLE MILLION</h2>
-            <p style="text-align: justify; line-height: 1.6;">Die M&M-Community ist das Fundament für Menschen, die zurück zur Menschlichkeit, Eigenverantwortung und echtem Zusammenhalt finden wollen. Wir bauen Brücken, wo Spaltung herrscht.</p>
+            <p style="text-align: justify; line-height: 1.6;">
+                Die M&M-Community ist das Fundament für Menschen, die zurück zur Menschlichkeit, Eigenverantwortung und echtem Zusammenhalt finden wollen. Wir bauen Brücken, wo Spaltung herrscht.
+            </p>
         </div>
+
         <div class="grid" id="main-grid"></div>
+
         <div class="fundament-container">
-            <div class="fundament-box" onclick="showInfo('KAPITAL UND VERWALTUNG', 21)"><div class="num">21</div><div class="text">KAPITAL UND VERWALTUNG</div></div>
-            <div class="fundament-box" onclick="showInfo('DAS KOLLEKTIV', 22)"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div></div>
+            <div class="fundament-box" onclick="showInfo('KAPITAL UND VERWALTUNG', 21)">
+                <div class="num">21</div>
+                <div class="text">KAPITAL UND VERWALTUNG</div>
+            </div>
+            <div class="fundament-box" onclick="showInfo('DAS KOLLEKTIV', 22)">
+                <div class="num">22</div>
+                <div class="text">DAS KOLLEKTIV</div>
+            </div>
         </div>
     </div>
 
     <div id="info-kanal">
         <div class="panorama-container" id="pano-box">
-            <div class="logo-ring logo-overlay"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
+            <div class="logo-ring logo-overlay">
+                <div class="logo-mm">M&M</div>
+                <div class="logo-community">COMMUNITY</div>
+            </div>
         </div>
         <div class="content-area">
-            <h1 id="info-titel" style="color: #003d8f;"></h1>
-            <h3 style="color: #003d8f;">DIE ANSAGE (WOFÜR)</h3>
-            <p id="wofuer-inhalt" style="font-size: 1.2rem; text-align: justify; line-height: 1.6;"></p>
-            <br>
-            <h3 style="color: #003d8f;">DAS ZIEL (WOHIN)</h3>
-            <p id="wohin-inhalt" style="font-size: 1.2rem; text-align: justify; line-height: 1.6;"></p>
+            <h1 id="info-titel" style="color: #003d8f; font-size: 2rem;"></h1>
+            <div>
+                <h3>DIE ANSAGE (WOFÜR)</h3>
+                <p id="wofuer-inhalt" class="p-text"></p>
+                <h3>DAS ZIEL (WOHIN)</h3>
+                <p id="wohin-inhalt" class="p-text"></p>
+            </div>
             <button class="back-btn" onclick="showDashboard()">Zurück</button>
         </div>
     </div>
@@ -71,33 +115,44 @@
             13: { w: "Zusammenhang zwischen seelischen Wunden und Profitgier im System.", z: "Souveränität über den eigenen Körper und echte Heilung zurückgewinnen." },
             14: { w: "Direkte Beteiligung der Arbeiter am Profit und Rückzahlung der Körperschaftsteuer.", z: "Wirtschaftliche Souveränität: Der Mensch steht an erster Stelle." },
             15: { w: "Jugendsprecher in allen Bereichen einbinden. Strafmündigkeit ab 14 erfordert auch Mitspracherecht.", z: "Brücke zwischen Generationen schlagen und der Jugend das Steuer für morgen geben." },
-            16: { w: "Dieses Programm ehrt die einzige Garantie, die wir alle teilen: Das Älterwerden. Wir lehnen ein System ab, das Menschen fallen lässt, nur weil sie keine „Produzenten“ mehr sind und dem Staat vermeintlich auf der Tasche liegen. Wir fordern eine Rückkehr zur Achtung vor der Lebensleistung. Jeder Mensch in unserer Community trägt die Verantwortung, den Älteren Stütze zu sein und von ihrer Erfahrung zu lernen, statt sie in die Isolation abzuschieben.", z: "Wir wollen eine lebendige Symbiose schaffen. Das Ziel ist es, dass jeder junge Mensch einen „seelischen Opa“ oder eine „seelische Oma“ findet. In praktischen Projekten hilft die Jugend den Älteren, den physischen Weg in die digitale Welt zu meistern. Im Gegenzug schenken die Älteren der Jugend ihre Ruhe, Weisheit und Geschichte." },
-            17: { w: "SOZIALGEFALLEN UND WIEDERKEHR: Ende der leeren Worte – Hilfe für Obdachlose und sauberes Wasser für alle. Wir setzen Taten dort, wo der Staat versagt.", z: "Als geschlossenes Kollektiv sorgen wir für die Grundbedürfnisse jedes Mitglieds unserer Gemeinschaft." },
-            18: { w: "NACHBARSCHAFT UND GEMEINSCHAFT: Nachbarschaft als Spiegel des Staates. Hilfe statt Wegsehen, vom Treppenhaus bis zum Kollektiv.", z: "Vom Treppenhaus bis zum Kollektiv: Gemeinsam statt einsam. Wiederherstellung des lokalen Vertrauens." },
-            19: { w: "MENSCH & TECHNIK: Technik als Werkzeug, Mensch als Schöpfer. Beherrschung statt Kontrolle durch Algorithmen.", z: "KI als Schutzschild für Menschenrechte und globale Ressourcenteilung einsetzen." },
-            20: { w: "DIE BRÜCKE: Der Übergang zur absoluten Transparenz. Hier werden aus Usern aktive Gestalter, Wähler und Kandidaten für die Umsetzung.", z: "Sobald wir eine Million Stimmen sind, öffnen sich die Bereiche Kapital und Verwaltung für alle." },
-            21: { w: "KAPITAL UND VERWALTUNG: Gläserne Kasse. Komplette Offenlegung aller finanziellen Mittel und deren Verwendung für Projekte.", z: "Finanzielle Unabhängigkeit durch kollektive Steuerung der Ressourcen." },
-            22: { w: "DAS KOLLEKTIV: Die physische Einsatzzentrale zur Umsetzung aller 20 Programme in der realen Welt.", z: "Bau einer neuen, menschlichen Gesellschaftsstruktur basierend auf Respekt und Tatkraft." }
+            16: { 
+                w: "Dieses Programm ehrt die einzige Garantie, die wir alle teilen: Das Älterwerden. Wir lehnen ein System ab, das Menschen fallen lässt, nur weil sie keine „Produzenten“ mehr sind und dem Staat vermeintlich auf der Tasche liegen. Wir fordern eine Rückkehr zur Achtung vor der Lebensleistung. Jeder Mensch in unserer Community trägt die Verantwortung, den Älteren Stütze zu sein und von ihrer Erfahrung zu lernen, statt sie in die Isolation abzuschieben.", 
+                z: "Wir wollen eine lebendige Symbiose schaffen. Das Ziel ist es, dass jeder junge Mensch einen „seelischen Opa“ oder eine „seelische Oma“ findet. In praktischen Projekten hilft die Jugend den Älteren, den physischen Weg in die digitale Welt zu meistern. Im Gegenzug schenken die Älteren der Jugend ihre Ruhe, Weisheit und Geschichte." 
+            },
+            17: { w: "SOZIALGEFALLEN UND WIEDERKEHR: Ende der leeren Worte – Hilfe für Obdachlose und sauberes Wasser für alle. Wir setzen Taten dort, wo der Staat versagt.", z: "Als geschlossenes Kollektiv sorgen wir für die Grundbedürfnisse und die Würde jedes Mitglieds unserer Gemeinschaft." },
+            18: { w: "NACHBARSCHAFT UND GEMEINSCHAFT: Nachbarschaft als Spiegel des Staates. Hilfe statt Wegsehen, vom Treppenhaus bis zum Kollektiv.", z: "Wiederherstellung des lokalen Vertrauens. Niemand soll in seiner unmittelbaren Umgebung einsam oder hilflos sein." },
+            19: { w: "MENSCH & TECHNIK: Technik als Werkzeug, Mensch als Schöpfer. Beherrschung statt Kontrolle durch Algorithmen.", z: "KI als Schutzschild für Menschenrechte und globale Ressourcenteilung einsetzen, statt zur Überwachung." },
+            20: { w: "DIE BRÜCKE: Der Übergang zur absoluten Transparenz. Hier werden aus Usern aktive Gestalter, Wähler und Kandidaten.", z: "Vorbereitung auf die Stille Million. Sobald die Masse erreicht ist, wird die Brücke zum Weg in die reale Umsetzung." },
+            21: { w: "KAPITAL UND VERWALTUNG: Gläserne Kasse. Komplette Offenlegung aller finanziellen Mittel und deren Verwendung für Projekte.", z: "Finanzielle Unabhängigkeit der Community durch kollektive und transparente Steuerung der Ressourcen." },
+            22: { w: "DAS KOLLEKTIV: Die physische Einsatzzentrale zur Umsetzung aller 20 Programme in der realen Welt.", z: "Bau einer neuen Gesellschaftsstruktur basierend auf Respekt, Tatkraft und echtem menschlichem Miteinander." }
         };
 
-        const themen = ["RECHT AUF GEFÜHLSVORDERUNG", "WIE WERDE ICH MENSCH", "GLAUBE AN FRIEDE", "PROGRAMM FÜR BÜRGERLICHE RECHTE", "MORALISCHE GESETZE UND VERANTWORTUNG", "MENSCHLICHKEIT - WIEDERHERSTELLUNG", "KINDERSCHUTZ - PFLICHT - ELTERN RECHTE", "WAHRE RICHTUNG UND KUNST", "LGBTQ UND KIRCHE", "TREND UND TRADITION", "RELIGIONSBEKENNTNIS ODER SELBSTWAHL", "ARBEITSRECHT UND MOBBING", "GESUNDHEITSWESEN UND VERHALTEN", "ARBEITSWELT UND DU", "JUGENDSPRECHER", "PENSIONISTEN RATGEBER", "SOZIALGEFALLEN UND WIEDERKEHR", "NACHBARSCHAFT UND GEMEINSCHAFT", "MENSCH & TECHNIK", "DIE BRÜCKE"];
+        const themen = [
+            "RECHT AUF GEFÜHLSVORDERUNG", "WIE WERDE ICH MENSCH", "GLAUBE AN FRIEDE", "PROGRAMM FÜR BÜRGERLICHE RECHTE",
+            "MORALISCHE GESETZE UND VERANTWORTUNG", "MENSCHLICHKEIT - WIEDERHERSTELLUNG", "KINDERSCHUTZ - PFLICHT - ELTERN RECHTE", "WAHRE RICHTUNG UND KUNST",
+            "LGBTQ UND KIRCHE", "TREND UND TRADITION", "RELIGIONSBEKENNTNIS ODER SELBSTWAHL", "ARBEITSRECHT UND MOBBING",
+            "GESUNDHEITSWESEN UND VERHALTEN", "ARBEITSWELT UND DU", "JUGENDSPRECHER", "PENSIONISTEN RATGEBER",
+            "SOZIALGEFALLEN UND WIEDERKEHR", "NACHBARSCHAFT UND GEMEINSCHAFT", "MENSCH & TECHNIK", "DIE BRÜCKE"
+        ];
 
         const grid = document.getElementById('main-grid');
-        themen.forEach((t, i) => {
-            const b = document.createElement('div');
-            b.className = 'box';
-            b.onclick = () => showInfo(t, i + 1);
-            b.innerHTML = `<div class="num">${i+1}</div><div class="text">${t}</div>`;
-            grid.appendChild(b);
+        themen.forEach((thema, index) => {
+            const num = index + 1;
+            const box = document.createElement('div');
+            box.className = 'box';
+            box.onclick = () => showInfo(thema, num);
+            box.innerHTML = `<div class="num">${num}</div><div class="text">${thema}</div>`;
+            grid.appendChild(box);
         });
 
-        function showInfo(titel, n) {
+        function showInfo(titel, num) {
+            const data = boxInhalte[num];
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('info-kanal').style.display = 'flex';
-            document.getElementById('info-titel').innerText = "ANSAGE " + n + ": " + titel;
-            document.getElementById('wofuer-inhalt').innerText = boxInhalte[n].w;
-            document.getElementById('wohin-inhalt').innerText = boxInhalte[n].z;
-            document.getElementById('pano-box').style.backgroundImage = "url('https://picsum.photos/id/" + (n + 20) + "/1200/400')";
+            document.getElementById('info-titel').innerText = "ANSAGE " + num + ": " + titel;
+            document.getElementById('wofuer-inhalt').innerText = data.w;
+            document.getElementById('wohin-inhalt').innerText = data.z;
+            document.getElementById('pano-box').style.backgroundImage = "url('https://picsum.photos/id/" + (num + 20) + "/1200/400')";
             window.scrollTo(0, 0);
         }
 
@@ -108,3 +163,5 @@
     </script>
 </body>
 </html>
+  
+    
