@@ -106,10 +106,13 @@
             16: { wofuer: "Achtung vor dem Alter und der Lebensleistung.", wohin: "Symbiose zwischen Jugend (digital) und Senioren (weise)." },
             17: { wofuer: "Ende der leeren Worte – Hilfe für Obdachlose und sauberes Wasser für alle.", wohin: "Als Kollektiv dort Taten setzen, wo der Staat versagt." },
             18: { wofuer: "Nachbarschaft als Spiegel des Staates: Hilfe statt Wegsehen.", wohin: "Vom Treppenhaus bis zum Kollektiv: Gemeinsam statt einsam." },
-            19: {
-                wofuer: "Technik als Werkzeug, Mensch als Schöpfer. Wir nutzen digitale Vernetzung, um die „Stille Million“ hörbar zu machen. Technik soll befreien, nicht isolieren. Wir fangen bei Null an, um ein Kollektiv zu bauen, das Technik beherrscht, statt von ihr beherrscht zu werden.",
-                wohin: "Eine Symbiose, in der KI als Schutzschild für Menschenrechte fungiert. Ziel ist eine Plattform für Wahrheit, direkten Austausch und das globale Teilen von Ressourcen. Technik arbeitet im Hintergrund, damit der Mensch im Vordergrund wieder Zeit für Menschlichkeit hat."
-            }
+            19: { wofuer: "Technik als Werkzeug, Mensch als Schöpfer. Beherrschung statt Kontrolle.", wohin: "KI als Schutzschild für Menschenrechte und globale Ressourcenteilung." },
+            20: {
+                wofuer: "Die Brücke ist der Übergang zur absoluten Transparenz. Hier werden aus Usern aktive Gestalter, Wähler und Kandidaten. Für jedes Programm wird es gewählte Vertreter geben, die die Umsetzung im physischen Leben leiten. Jeder einzelne von euch ist bereits jetzt die Stille Million.",
+                wohin: "Sobald wir eine Million Stimmen sind, öffnen sich die Bereiche Kapital und Verwaltung. Das Ziel ist die kollektive Umsetzung aller 20 Programme in der physischen Welt. Viel Erfolg und Genesung an alle, die diesen Weg mit uns gehen."
+            },
+            21: { wofuer: "Bereich noch geschlossen.", wohin: "Öffnet sich ab der Stillen Million." },
+            22: { wofuer: "Bereich noch geschlossen.", wohin: "Öffnet sich ab der Stillen Million." }
         };
 
         const themen = [
@@ -130,7 +133,7 @@
         });
 
         function showInfo(titel, num) {
-            const data = boxInhalte[num] || { wofuer: "Inhalt folgt...", wohin: "Inhalt folgt..." };
+            const data = boxInhalte[num];
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('info-kanal').style.display = 'flex';
             document.getElementById('info-titel').innerText = "ANSAGE " + num + ": " + titel;
