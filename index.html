@@ -10,11 +10,20 @@
         .logo-community { font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; margin-top: 2px; color: #ffffff; }
         #dashboard { width: 100%; display: flex; flex-direction: column; align-items: center; }
         .info-section { width: 90%; max-width: 800px; border: 2px solid #003d8f; padding: 20px; text-align: center; margin-bottom: 40px; background-color: #000000; }
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 98%; max-width: 1600px; margin-bottom: 20px; }
-        .box { display: flex; border: 2px solid #003d8f; background-color: #000000; min-height: 60px; overflow: hidden; }
-        .num { width: 35px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; color: #ffffff; flex-shrink: 0; }
-        .text { padding: 5px 10px; text-transform: uppercase; font-size: 0.65rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; color: #ffffff; line-height: 1.2; }
+        
+        /* Gitter korrigiert: Standard von links nach rechts */
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 95%; max-width: 1400px; margin-bottom: 10px; }
+        
+        .box { display: flex; border: 2px solid #003d8f; background-color: #000000; min-height: 50px; overflow: hidden; }
+        
+        /* Das Fundament: Box 21 und 22 unter dem Gitter */
+        .fundament-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 95%; max-width: 1400px; margin-bottom: 30px; }
+        .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000000; min-height: 60px; }
+
+        .num { width: 40px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; color: #ffffff; flex-shrink: 0; }
+        .text { padding: 8px 12px; text-transform: uppercase; font-size: 0.7rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; color: #ffffff; }
         .text:hover { color: #003d8f; background: #111; }
+        
         #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; }
         .panorama-container { width: 80%; height: 33vh; margin: 20px auto; position: relative; background-size: cover; background-position: center; border: 2px solid #003d8f; }
         .content-area { width: 90%; max-width: 1000px; text-align: center; margin-top: 30px; }
@@ -38,6 +47,8 @@
         </div>
 
         <div class="grid" id="main-grid"></div>
+
+        <div class="fundament-container" id="fundament-grid"></div>
     </div>
 
     <div id="info-kanal">
@@ -61,37 +72,41 @@
                 wofuer: "Das Programm dient dazu, dass jeder Mensch – unabhängig von Herkunft, Nationalität, Hautfarbe, Religion oder Sexualität – in erster Linie als Mensch zählt. Alles andere ist nur eine Last, die wir aufgelegt bekommen haben.", 
                 wohin: "Da du hier angeklickt hast und so kommst, wie du bist, bist du hier genau richtig. Hier ist jeder willkommen, um uns auszutauschen und zu sehen, wie wir in der heutigen Gesellschaft stehen, wo unser Innenleben so steht und um über Ängste und Mut zu sprechen. Wir wollen diese Lasten hier ablegen, um gemeinsam einen Schritt nach vorne zu machen." 
             }
-            // Weitere folgen nach deinen Zetteln...
         };
 
         const themen = [
-            "Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", 
-            "Programm für bürgerliche Rechte", "Moralische Gesetze und Verantwortung",
-            "Menschlichkeit - Wiederherstellung", "Kinderschutz - Pflicht - Elternrechte",
-            "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Veranstaltungen mit Community",
-            "Religionsbekenntnis oder Selbstwahl", "Arbeitsrecht und Mobbing",
-            "Gesundheitswesen und Verhalten", "Arbeitswelt und du", "Jugendsprecher",
-            "Pensionisten Ratgeber", "Sozialgefallen und Wiederkehr",
-            "Nachbarschaft und Gemeinschaft", "Mensch & Technik", "Die Brücke"
+            "Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Bürgerliche Rechte",
+            "Moral & Verantwortung", "Menschlichkeit - Reset", "Kinderschutz & Elternrechte", "Wahre Kunst & Richtung",
+            "LGBTQ & Kirche", "Real-Life Community", "Bekenntnis oder Selbstwahl", "Stopp Mobbing",
+            "Gesundheit & Verhalten", "Arbeitswelt & DU", "Jugend-Power", "Pensionisten Schutz",
+            "Sozialgefallen & Wiederkehr", "Nachbarschafts-Macht", "Mensch & Technik", "Die Brücke",
+            "Kapital & Verwaltung", "Das Kollektiv" // Box 21 und 22
         ];
 
         const grid = document.getElementById('main-grid');
+        const fundament = document.getElementById('fundament-grid');
+
         themen.forEach((thema, index) => {
-            const box = document.createElement('div');
-            box.className = 'box';
             const num = index + 1;
+            const box = document.createElement('div');
+            box.className = num > 20 ? 'fundament-box' : 'box';
             box.innerHTML = `<div class="num">${num}</div><div class="text" onclick="showInfo('${thema}', ${num})">${thema}</div>`;
-            grid.appendChild(box);
+            
+            if (num <= 20) {
+                grid.appendChild(box);
+            } else {
+                fundament.appendChild(box);
+            }
         });
 
         function showInfo(titel, num) {
-            const data = boxInhalte[num] || { wofuer: "Text folgt...", wohin: "Text folgt..." };
+            const data = boxInhalte[num] || { wofuer: "Text wird noch definiert...", wohin: "Text wird noch definiert..." };
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('info-kanal').style.display = 'flex';
             document.getElementById('info-titel').innerText = "ANSAGE " + num + ": " + titel;
             document.getElementById('wofuer-inhalt').innerText = data.wofuer;
             document.getElementById('wohin-inhalt').innerText = data.wohin;
-            document.getElementById('pano-box').style.backgroundImage = "url('https://picsum.photos/id/" + (num + 30) + "/1200/400')";
+            document.getElementById('pano-box').style.backgroundImage = "url('https://picsum.photos/id/" + (num + 40) + "/1200/400')";
         }
 
         function showDashboard() {
