@@ -22,11 +22,10 @@
         }
         .fundament-container { display: flex; width: 95%; max-width: 1400px; gap: 15px; margin-bottom: 50px; }
         .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000000; min-height: 50px; cursor: pointer; }
-        .fundament-box { flex: 1; }
         .num { width: 40px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; color: #ffffff; flex-shrink: 0; }
         .text { padding: 10px; text-transform: uppercase; font-size: 0.75rem; display: flex; align-items: center; flex-grow: 1; color: #ffffff; }
         #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; }
-        .panorama-container { width: 80%; height: 33vh; margin: 20px auto; position: relative; background-color: #222; background-size: cover; background-position: center; border: 2px solid #003d8f; }
+        .panorama-container { width: 80%; height: 33vh; margin: 20px auto; position: relative; background-size: cover; background-position: center; border: 2px solid #003d8f; }
         .logo-overlay { position: absolute; top: 10px; left: 10px; transform: scale(0.4); transform-origin: top left; }
         .content-area { width: 90%; max-width: 1000px; text-align: center; margin-top: 30px; padding-bottom: 50px; }
         h3 { color: #003d8f; margin-top: 30px; }
@@ -45,8 +44,8 @@
         </div>
         <div class="grid" id="main-grid"></div>
         <div class="fundament-container">
-            <div class="fundament-box" onclick="showInfo('KAPITAL UND VERWALTUNG', 21)"><div class="num">21</div><div class="text">KAPITAL UND VERWALTUNG</div></div>
-            <div class="fundament-box" onclick="showInfo('DAS KOLLEKTIV', 22)"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div></div>
+            <div class="fundament-box" style="flex:1;" onclick="showInfo('KAPITAL UND VERWALTUNG', 21)"><div class="num">21</div><div class="text">KAPITAL UND VERWALTUNG</div></div>
+            <div class="fundament-box" style="flex:1;" onclick="showInfo('DAS KOLLEKTIV', 22)"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div></div>
         </div>
     </div>
 
@@ -66,58 +65,31 @@
 
     <script>
         const boxInhalte = {
-            1: { w: "Das Programm dient dazu, dass jeder Mensch – unabhängig von Herkunft, Nationalität, Hautfarbe, Religion oder Sexualität – in erster Linie als Mensch zählt.", z: "Hier ist jeder willkommen, um Lasten abzulegen und gemeinsam einen Schritt nach vorne machen." },
-            2: { w: "Jeden Menschen so zu nehmen wie er ist und Geld nur als Zahl anzuerkennen.", z: "Ein vollkommenes Selbstwertgefühl herstellen, unabhängig von äußeren Faktoren." },
-            3: { w: "Friede beginnt im Herzen. Innere Ruhe ist stärker als äußerer Lärm.", z: "Durch inneren Frieden zur Quelle für andere werden." },
-            4: { w: "Raum zur Selbstgestaltung und Wissen über bürgerliche Rechte.", z: "Die Community tritt als geschlossene Einheit für die Rechte jedes Einzelnen ein." },
-            5: { w: "Wieder auf die innere Stimme hören, statt nur auf Gesetze.", z: "Eigenverantwortung, die über bürgerliche Pflichten hinausgeht." },
-            6: { w: "Glauben an das Menschliche wieder groß machen.", z: "Menschlichkeit als fühlbare Realität ohne Etiketten." },
-            7: { w: "Bedingungslose Liebe für Kinder und deren freien Prozess.", z: "Kindern den Raum geben, sich ungeformt und frei zu entfalten." },
-            8: { w: "Den eigenen Weg würdigen und die Masken ablegen.", z: "Mut zur Veröffentlichung der eigenen Biografie oder Kunst." },
-            9: { w: "Spalt zwischen Gesetz und Moral (z.B. LGBTQ) beleuchten.", z: "Wahre Spiritualität, die jedes Leben ohne Ausnahme schützt." },
-            10: { w: "Trends als Drogen und Traditionen als Waffen entlarven.", z: "Echte Werte schaffen, die über den Zeitgeist hinausgehen." },
-            11: { w: "Zufall der Geburt und religiöse Prägung hinterfragen.", z: "Dialog von Mensch zu Mensch ohne Experten oder Dogmen." },
-            12: { w: "Industrielle Hierarchien und Mobbing-Strukturen aufbrechen.", z: "Bewusstsein für die eigene Würde am Arbeitsplatz stärken." },
-            13: { w: "Zusammenhang zwischen seelischen Wunden und Profitgier im System.", z: "Souveränität über den eigenen Körper und echte Heilung zurückgewinnen." },
-            14: { w: "Direkte Beteiligung der Arbeiter am Profit und Rückzahlung der Körperschaftsteuer.", z: "Wirtschaftliche Souveränität: Der Mensch steht an erster Stelle." },
-            15: { w: "Jugendsprecher in allen Bereichen einbinden. Strafmündigkeit ab 14 erfordert auch Mitspracherecht.", z: "Brücke zwischen Generationen schlagen und der Jugend das Steuer für morgen geben." },
-            16: { 
-                w: "Dieses Programm ehrt die einzige Garantie, die wir alle teilen: Das Älterwerden. Wir lehnen ein System ab, das Menschen fallen lässt, nur weil sie keine „Produzenten“ mehr sind und dem Staat vermeintlich auf der Tasche liegen. Wir fordern eine Rückkehr zur Achtung vor der Lebensleistung. Jeder Mensch in unserer Community trägt die Verantwortung, den Älteren Stütze zu sein und von ihrer Erfahrung zu lernen, statt sie in die Isolation abzuschieben.", 
-                z: "Wir wollen eine lebendige Symbiose schaffen. Das Ziel ist es, dass jeder junge Mensch einen „seelischen Opa“ oder eine „seelische Oma“ findet. In praktischen Projekten hilft die Jugend den Älteren, den physischen Weg in die digitale Welt zu meistern – sei es bei der Einrichtung von Handys, Apps oder dem Verstehen des Internets. Im Gegenzug schenken die Älteren der Jugend ihre Ruhe, Weisheit und Geschichte." 
-            },
-            17: { 
-                w: "SOZIALGEFALLEN UND WIEDERKEHR: Wir machen Schluss mit den leeren Worten der Politik. Dieses Programm widmet sich denen, die das System bereits ausgespuckt hat. Es geht um Obdachlose, um Menschen ohne sauberes Wasser und um jene, die in der Armutsfalle stecken. Wir warten nicht auf staatliche Hilfe, die niemals ankommt, sondern organisieren die Rückkehr der Menschlichkeit durch direkte Tat.", 
-                z: "Unser Ziel ist es, als geschlossenes Kollektiv dort einzuspringen, wo der soziale Staat versagt. Wir schaffen Strukturen für Grundbedürfnisse – von sauberem Trinkwasser bis zur menschenwürdigen Unterkunft. Jedes Mitglied, das wieder auf die Beine kommt, wird selbst zum Helfer. So entsteht ein Kreislauf der Wiederkehr, der niemanden endgültig verloren gibt." 
-            },
-            18: { 
-                w: "NACHBARSCHAFT UND GEMEINSCHAFT: Die Nachbarschaft ist der kleinste Spiegel unserer Gesellschaft. Wenn wir hier wegschauen, verlieren wir das Ganze. Dieses Programm bricht die Anonymität der Städte auf. Es geht darum, wieder zu wissen, wer nebenan wohnt, und eine Kultur der gegenseitigen Wachsamkeit und Hilfe zu etablieren, die über das private Interesse hinausgeht.", 
-                z: "Wir bauen das Vertrauen vom Treppenhaus bis zum ganzen Viertel wieder auf. Das Ziel ist ein Netz aus Hilfe, in dem kein Kind ohne Aufsicht und kein Kranker ohne Suppe bleibt. Wir machen Nachbarschaft wieder zu einem Ort der Sicherheit, an dem man sich nicht mehr fremd ist, sondern als Teil einer schützenden Gemeinschaft fühlt." 
-            },
-            19: { 
-                w: "MENSCH & TECHNIK: Wir leben in einer Zeit, in der Algorithmen entscheiden, was wir sehen und denken. Dieses Programm fordert die Rückkehr des Menschen als Schöpfer und Herr der Technik. Wir lehnen die Kontrolle durch KI ab, die uns zu bloßen Datenpunkten macht. Technik muss dem Leben dienen, nicht die Seele ersetzen oder den Menschen überflüssig machen.", 
-                z: "Wir nutzen die modernste Technik, wie KI und Blockchain, als Schutzschild für unsere Rechte. Das Ziel ist eine globale Ressourcenteilung, die durch Technik fair gesteuert wird, ohne dass eine zentrale Macht uns überwacht. Wir machen Technik zu einem Werkzeug der Freiheit, das uns Freizeit und Menschsein ermöglicht, statt uns zu versklaven." 
-            },
-            20: { 
-                w: "DIE BRÜCKE: Dies ist das entscheidende Programm für den Übergang. Die Brücke führt uns aus der digitalen Welt der reinen Diskussion in die physische Welt der Tat. Hier schaffen wir die absolute Transparenz. Aus passiven Usern werden aktive Gestalter, Wähler und Kandidaten. Es ist die Vorbereitung auf den Moment, in dem wir als eine Million Stimmen die Realität verändern.", 
-                z: "Das Ziel ist die Schaffung gewählter Vertreter für jedes der 20 Programme. Sobald die Masse der Stillen Million erreicht ist, wird die Brücke zum Fundament für eine neue Art der Mitbestimmung. Wir bereiten hier den Boden für die totale Transparenz in Führung und Entscheidung vor, damit Macht nie wieder missbraucht werden kann." 
-            },
-            21: { 
-                w: "KAPITAL UND VERWALTUNG: Hier bricht das Zeitalter der Gläsernen Kasse an. In diesem Bereich gibt es keine Geheimnisse. Wir zeigen jedem Mitglied bis auf den letzten Cent, woher das Kapital kommt und wofür es verwendet wird. Wir verwalten unsere Ressourcen nicht hinter verschlossenen Türen, sondern als kollektive Einheit mit absolutem Mitspracherecht jedes Teilhabers.", 
-                z: "Ziel ist die vollständige finanzielle Souveränität der Community. Wir finanzieren unsere eigenen Projekte, Schulen und Krankenhäuser. Durch die kollektive Steuerung entziehen wir uns der Abhängigkeit von Banken und schaffen ein Wirtschaftssystem, das auf echtem Wert und menschlichem Bedarf basiert, statt auf Zinsen und Ausbeutung." 
-            },
-            22: { 
-                w: "DAS KOLLEKTIV: Dies ist die physische Einsatzzentrale. Hier fließen alle 20 Programme zusammen. Das Kollektiv ist der lebendige Beweis, dass unsere Vision funktioniert. Es ist die Struktur, die den Schutz, die Arbeit und das soziale Leben koordiniert. Hier wird entschieden, wo angepackt wird und wie wir uns als Gemeinschaft gegen äußere Spaltung wehren.", 
-                z: "Wir bauen eine neue Gesellschaftsstruktur inmitten der alten auf. Das Ziel ist ein physisches Netzwerk aus Stützpunkten, in denen Respekt, Tatkraft und Menschlichkeit die obersten Gesetze sind. Das Kollektiv ist der Endpunkt des Fundaments und der Anfang einer Welt, in der der Mensch wieder das Maß aller Dinge ist." 
-            }
+            1: { w: "Dieses Programm dient dazu, dass jeder Mensch – unabhängig von seiner Herkunft, Nationalität, Hautfarbe, Religion oder sexuellen Orientierung – in erster Linie als Mensch zählt. Wir brechen die Ketten der Kategorisierung auf, die uns seit Generationen spalten.", z: "Das Ziel ist ein Ort, an dem jeder willkommen ist, seine Lasten abzulegen und gemeinsam einen Schritt nach vorne zu machen. Wir schaffen einen Raum des gegenseitigen Respekts, in dem die Menschlichkeit das einzige Gesetz ist." },
+            2: { w: "Hier geht es darum, den Menschen in seiner reinsten Form anzuerkennen und Geld nur noch als das zu sehen, was es ist: Eine Zahl ohne moralischen Wert. Wir befreien uns von der Bewertung durch Besitz.", z: "Wir wollen ein vollkommenes Selbstwertgefühl wiederherstellen, das vollkommen unabhängig von äußeren Faktoren oder Bankkonten existiert. Der Mensch ist wertvoll, weil er ist, nicht weil er hat." },
+            3: { w: "Wahrer Friede beginnt nicht durch Verträge, sondern im Herzen jedes Einzelnen. Wir lehren, dass die innere Ruhe die stärkste Waffe gegen den äußeren Lärm und die Provokation der Welt ist.", z: "Wir werden durch unseren inneren Frieden zur Quelle der Stabilität für andere. Das Ziel ist eine Gemeinschaft, die in sich ruht und dadurch unerschütterlich gegenüber Spaltung wird." },
+            4: { w: "Wir schaffen Raum zur freien Selbstgestaltung und vermitteln tiefes Wissen über bürgerliche Rechte, die oft im Kleingedruckten verborgen bleiben. Wir machen den Bürger wieder zum souveränen Gestalter.", z: "Die Community tritt als geschlossene Einheit auf, um die Rechte jedes Einzelnen zu schützen. Wir werden zur unüberhörbaren Stimme, die für Gerechtigkeit und individuelle Freiheit einsteht." },
+            5: { w: "Dieses Programm erinnert uns daran, wieder auf die eigene innere Stimme zu hören, statt blind jedem äußeren Gesetz zu folgen. Moral steht über Paragraphen.", z: "Wir fordern eine Eigenverantwortung, die weit über bürgerliche Pflichten hinausgeht. Das Ziel ist ein Mensch, der aus Gewissen handelt und die Verantwortung für sein Tun voll übernimmt." },
+            6: { w: "Wir wollen den Glauben an das Gute im Menschen wieder groß machen. Wir befreien die Menschlichkeit von den Etiketten der Institutionen und geben ihr ihren natürlichen Glanz zurück.", z: "Menschlichkeit soll zu einer fühlbaren Realität werden, die im Alltag gelebt wird. Wir schaffen eine Kultur, in der Mitgefühl die erste Reaktion ist, nicht die Ausnahme." },
+            7: { w: "Wir fordern eine bedingungslose Liebe und den absoluten Schutz für unsere Kinder. Wir respektieren ihren freien Prozess des Lernens und Werdens, ohne sie in vorgefertigte Formen zu pressen.", z: "Das Ziel ist es, Kindern den Raum zu geben, sich vollkommen ungeformt und frei zu entfalten. Wir schützen ihre Kindheit als das heiligste Gut unserer Gemeinschaft." },
+            8: { w: "Dieses Programm ehrt den individuellen Weg jedes Menschen. Wir ermutigen dazu, die Masken der Gesellschaft abzulegen und die eigene, wahre Geschichte zu würdigen.", z: "Mut zur Veröffentlichung der eigenen Biografie oder Kunst. Wir schaffen eine Plattform, auf der wahre Authentizität gefeiert und als Inspiration für alle genutzt wird." },
+            9: { w: "Wir beleuchten den oft schmerzhaften Spalt zwischen Gesetz und Moral, besonders in Themen wie LGBTQ und Kirche. Wir fordern Ehrlichkeit statt geheuchelter Frömmigkeit.", z: "Das Ziel ist eine wahre Spiritualität, die jedes Leben ohne jede Ausnahme schützt und willkommen heißt. Liebe kennt keine religiösen oder bürokratischen Grenzen." },
+            10: { w: "Wir entlarven Trends als flüchtige Drogen und Traditionen, die nur der Unterdrückung dienen, als Waffen. Wir suchen nach dem, was wirklich bleibt.", z: "Wir erschaffen echte, bleibende Werte, die über den kurzlebigen Zeitgeist hinausgehen. Das Ziel ist ein stabiles moralisches Fundament für die Zukunft." },
+            11: { w: "Wir hinterfragen den Zufall der Geburt und die oft unfreiwillige religiöse Prägung. Wir befreien den Glauben von den Institutionen und geben ihn dem Individuum zurück.", z: "Ein Dialog von Mensch zu Mensch, ganz ohne Experten, Priester oder Dogmen. Das Ziel ist die direkte Verbindung zum Schöpferischen in jedem von uns." },
+            12: { w: "Wir brechen industrielle Hierarchien und die giftigen Strukturen von Mobbing am Arbeitsplatz auf. Der Mensch ist kein Rädchen im Getriebe, sondern der Schöpfer des Wertes.", z: "Wir stärken das Bewusstsein für die eigene Würde am Arbeitsplatz. Ziel ist eine Arbeitswelt, in der Respekt und Kooperation wichtiger sind als Profitmaximierung." },
+            13: { w: "Wir zeigen den Zusammenhang zwischen seelischen Wunden und der Profitgier im aktuellen System auf. Gesundheit darf keine Ware sein, die an Aktionäre verkauft wird.", z: "Das Ziel ist die Rückgewinnung der Souveränität über den eigenen Körper. Wir fördern echte Heilung, die den ganzen Menschen betrachtet, nicht nur das Symptom." },
+            14: { w: "Wir fordern die direkte Beteiligung derer, die den Wert erschaffen, am Profit. Die Rückzahlung der Körperschaftsteuer an die Menschen ist ein zentraler Pfeiler unserer Vision.", z: "Wirtschaftliche Souveränität bedeutet, dass der Mensch an erster Stelle steht. Das Ziel ist ein gerechtes System, in dem Arbeit wieder der Gemeinschaft dient, nicht der Elite." },
+            15: { w: "Wir binden Jugendsprecher in alle Entscheidungsprozesse ein. Wer mit 14 strafmündig ist, muss auch das Recht haben, seine Zukunft aktiv mitzugestalten.", z: "Wir schlagen eine Brücke zwischen den Generationen. Das Ziel ist es, der Jugend das Steuer für das Morgen bereits heute ein Stück weit in die Hand zu geben." },
+            16: { w: "Dieses Programm ehrt die einzige Garantie, die wir alle teilen: Das Älterwerden. Wir lehnen ein System ab, das Menschen fallen lässt, nur weil sie keine „Produzenten“ mehr sind. Wir fordern eine Rückkehr zur Achtung vor der Lebensleistung.", z: "Wir wollen eine lebendige Symbiose schaffen. Das Ziel ist es, dass jeder junge Mensch einen „seelischen Opa“ oder eine „seelische Oma“ findet. Jugend hilft digital, das Alter schenkt Weisheit und Ruhe." },
+            17: { w: "SOZIALGEFALLEN UND WIEDERKEHR: Wir machen Schluss mit den leeren Worten. Dieses Programm widmet sich denen, die das System bereits ausgespuckt hat – Obdachlose und Menschen ohne sauberes Wasser.", z: "Wir schaffen Strukturen für Grundbedürfnisse. Ziel ist ein Kreislauf der Menschlichkeit, in dem jeder, der wieder aufsteht, selbst zum Helfer für den Nächsten wird." },
+            18: { w: "NACHBARSCHAFT UND GEMEINSCHAFT: Nachbarschaft ist der kleinste Spiegel des Staates. Wenn wir hier wegschauen, verlieren wir alles. Wir brechen die Anonymität der Städte auf.", z: "Wiederherstellung des lokalen Vertrauens. Ziel ist ein Netz der Hilfe, in dem kein Kind unbeaufsichtigt und kein Kranker ohne Beistand bleibt." },
+            19: { w: "MENSCH & TECHNIK: Technik als Werkzeug, Mensch als Schöpfer. Wir lehnen die Kontrolle durch Algorithmen ab, die uns zu bloßen Datenpunkten machen wollen.", z: "KI als Schutzschild für Menschenrechte nutzen. Das Ziel ist eine Technik, die uns Freiheit und Zeit schenkt, statt uns durch ständige Überwachung zu versklaven." },
+            20: { w: "DIE BRÜCKE: Der Übergang von der digitalen Diskussion zur physischen Tat. Hier werden aus Usern aktive Gestalter, Wähler und Kandidaten für eine neue Realität.", z: "Vorbereitung auf die Stille Million. Sobald die Masse erreicht ist, wird die Brücke zum stabilen Weg in die aktive Mitbestimmung und Umsetzung." },
+            21: { w: "KAPITAL UND VERWALTUNG: Das Zeitalter der Gläsernen Kasse. Komplette Offenlegung aller Mittel und deren Verwendung. Hier gibt es keine Geheimnisse vor der Gemeinschaft.", z: "Finanzielle Souveränität durch kollektive Steuerung. Wir finanzieren unsere eigenen Schulen und Projekte, unabhängig von Banken und fremden Interessen." },
+            22: { w: "DAS KOLLEKTIV: Die physische Einsatzzentrale. Hier fließen alle Programme zusammen. Es ist der Beweis, dass unsere Vision in der realen Welt Bestand hat.", z: "Bau einer neuen Gesellschaftsstruktur. Das Ziel ist ein Netzwerk aus Stützpunkten, in denen Menschlichkeit und Tatkraft die obersten Gesetze sind." }
         };
 
-        const themen = [
-            "RECHT AUF GEFÜHLSVORDERUNG", "WIE WERDE ICH MENSCH", "GLAUBE AN FRIEDE", "PROGRAMM FÜR BÜRGERLICHE RECHTE",
-            "MORALISCHE GESETZE UND VERANTWORTUNG", "MENSCHLICHKEIT - WIEDERHERSTELLUNG", "KINDERSCHUTZ - PFLICHT - ELTERN RECHTE", "WAHRE RICHTUNG UND KUNST",
-            "LGBTQ UND KIRCHE", "TREND UND TRADITION", "RELIGIONSBEKENNTNIS ODER SELBSTWAHL", "ARBEITSRECHT UND MOBBING",
-            "GESUNDHEITSWESEN UND VERHALTEN", "ARBEITSWELT UND DU", "JUGENDSPRECHER", "PENSIONISTEN RATGEBER",
-            "SOZIALGEFALLEN UND WIEDERKEHR", "NACHBARSCHAFT UND GEMEINSCHAFT", "MENSCH & TECHNIK", "DIE BRÜCKE"
-        ];
+        const themen = ["RECHT AUF GEFÜHLSVORDERUNG", "WIE WERDE ICH MENSCH", "GLAUBE AN FRIEDE", "PROGRAMM FÜR BÜRGERLICHE RECHTE", "MORALISCHE GESETZE UND VERANTWORTUNG", "MENSCHLICHKEIT - WIEDERHERSTELLUNG", "KINDERSCHUTZ - PFLICHT - ELTERN RECHTE", "WAHRE RICHTUNG UND KUNST", "LGBTQ UND KIRCHE", "TREND UND TRADITION", "RELIGIONSBEKENNTNIS ODER SELBSTWAHL", "ARBEITSRECHT UND MOBBING", "GESUNDHEITSWESEN UND VERHALTEN", "ARBEITSWELT UND DU", "JUGENDSPRECHER", "PENSIONISTEN RATGEBER", "SOZIALGEFALLEN UND WIEDERKEHR", "NACHBARSCHAFT UND GEMEINSCHAFT", "MENSCH & TECHNIK", "DIE BRÜCKE"];
 
         const grid = document.getElementById('main-grid');
         themen.forEach((thema, index) => {
@@ -147,3 +119,4 @@
     </script>
 </body>
 </html>
+ 
