@@ -30,10 +30,10 @@
         .text:hover { color: #003d8f; background: #111; }
         
         #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; }
-        .panorama-container { width: 80%; height: 33vh; margin: 20px auto; position: relative; background-color: #222; background-size: cover; background-position: center; border: 2px solid #003d8f; }
+        .panorama-container { width: 100%; height: 40vh; position: relative; background-size: cover; background-position: center; border-bottom: 3px solid #003d8f; }
         .logo-overlay { position: absolute; top: 10px; left: 10px; transform: scale(0.5); transform-origin: top left; }
-        .content-area { width: 90%; max-width: 1000px; text-align: center; margin-top: 30px; }
-        .back-btn { margin-top: 40px; padding: 10px 30px; border: 2px solid #ffffff; background: none; color: #ffffff; cursor: pointer; text-transform: uppercase; font-weight: bold; }
+        .content-area { width: 90%; max-width: 1000px; text-align: center; margin-top: 30px; padding-bottom: 50px; }
+        .back-btn { margin-top: 40px; padding: 15px 40px; border: 2px solid #ffffff; background: #003d8f; color: #ffffff; cursor: pointer; text-transform: uppercase; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -52,7 +52,7 @@
             </p>
         </div>
 
-        <div class="grid" id="main-grid"></div>
+        <div id="main-grid" class="grid"></div>
 
         <div class="fundament-container">
             <div class="fundament-box">
@@ -74,13 +74,13 @@
             </div>
         </div>
         <div class="content-area">
-            <h1 id="info-titel" style="color: #003d8f;"></h1>
+            <h1 id="info-titel" style="color: #003d8f; text-transform: uppercase;"></h1>
             <div id="info-text">
                 <h3 style="color: #003d8f;">DIE ANSAGE (WOFÜR)</h3>
-                <p id="wofuer-inhalt" style="font-size: 1.2rem; text-align: justify;"></p>
+                <p id="wofuer-inhalt" style="font-size: 1.3rem; text-align: justify; line-height: 1.6;"></p>
                 <br>
                 <h3 style="color: #003d8f;">DAS ZIEL (WOHIN)</h3>
-                <p id="wohin-inhalt" style="font-size: 1.2rem; text-align: justify;"></p>
+                <p id="wohin-inhalt" style="font-size: 1.3rem; text-align: justify; line-height: 1.6;"></p>
             </div>
             <button class="back-btn" onclick="showDashboard()">Zurück</button>
         </div>
@@ -88,31 +88,28 @@
 
     <script>
         const boxInhalte = {
-            1: { wofuer: "Jeder Mensch zählt als Mensch, unabhängig von Herkunft oder Status.", wohin: "Lasten ablegen und gemeinsam einen Schritt nach vorne machen." },
-            2: { wofuer: "Menschsein anerkennen, Geld nur als Zahl sehen.", wohin: "Selbstwertgefühl unabhängig von Materiellem herstellen." },
-            3: { wofuer: "Friede beginnt im Herzen, Aufrichtigkeit vertreibt Zweifel.", wohin: "Zur Quelle des Friedens für die Gemeinschaft werden." },
-            4: { wofuer: "Raum für Selbstgestaltung und bürgerliche Rechte.", wohin: "Kollektives Handeln als geschlossene Einheit." },
-            5: { wofuer: "Innere Stimme über gesetzliche Erlaubnis stellen.", wohin: "Eigenverantwortung vor dem eigenen Herzen prüfen." },
-            6: { wofuer: "Glauben an das Menschliche ohne Etiketten.", wohin: "Menschlichkeit als fühlbare Realität wiederherstellen." },
-            7: { wofuer: "Bedingungslose Liebe und Freiraum für Kinder.", wohin: "Kindern die wahre Freiheit im Herzen mitgeben." },
-            8: { wofuer: "Eigene Biografie und Mut zur Kunst würdigen.", wohin: "Sich der Welt zeigen, wie man wirklich ist." },
-            9: { wofuer: "Spalt zwischen Staatsrecht und Moral (z.B. LGBTQ) thematisieren.", wohin: "Spiritualität, die jedes Leben bedingungslos schützt." },
-            10: { wofuer: "Trends als Drogen und Traditionen als Waffen entlarven.", wohin: "Echte Werte schaffen, die über Zeitgeist hinausgehen." },
-            11: { wofuer: "Grenzen im Kopf und Zufall der Geburt hinterfragen.", wohin: "Verbindung spüren, die tiefer liegt als Bekenntnisse." },
-            12: { wofuer: "Industrielle Hierarchien und emotionalen Zwang aufbrechen.", wohin: "Würde am Arbeitsplatz zurückgewinnen." },
-            13: { wofuer: "Zusammenhang zwischen seelischen Wunden und Systemprofit.", wohin: "Heilung und Souveränität über Körper und Geist." },
-            14: { wofuer: "Direkte Beteiligung an Profit und Körperschaftsteuer.", wohin: "Wirtschaftliche Souveränität des Arbeiters etablieren." },
-            15: { wofuer: "Jugendsprecher als ernstzunehmende Stimmen einbinden.", wohin: "Brücke zwischen Generationen auf Augenhöhe bauen." },
-            16: { wofuer: "Achtung vor dem Alter und der Lebensleistung.", wohin: "Symbiose zwischen Jugend (digital) und Senioren (weise)." },
-            17: { wofuer: "Ende der leeren Worte – Hilfe für Obdachlose und sauberes Wasser für alle.", wohin: "Als Kollektiv dort Taten setzen, wo der Staat versagt." },
-            18: { wofuer: "Nachbarschaft als Spiegel des Staates: Hilfe statt Wegsehen.", wohin: "Vom Treppenhaus bis zum Kollektiv: Gemeinsam statt einsam." },
-            19: { wofuer: "Technik als Werkzeug, Mensch als Schöpfer. Beherrschung statt Kontrolle.", wohin: "KI als Schutzschild für Menschenrechte und globale Ressourcenteilung." },
-            20: {
-                wofuer: "Die Brücke ist der Übergang zur absoluten Transparenz. Hier werden aus Usern aktive Gestalter, Wähler und Kandidaten. Für jedes Programm wird es gewählte Vertreter geben, die die Umsetzung im physischen Leben leiten. Jeder einzelne von euch ist bereits jetzt die Stille Million.",
-                wohin: "Sobald wir eine Million Stimmen sind, öffnen sich die Bereiche Kapital und Verwaltung. Das Ziel ist die kollektive Umsetzung aller 20 Programme in der physischen Welt. Viel Erfolg und Genesung an alle, die diesen Weg mit uns gehen."
-            },
-            21: { wofuer: "Bereich noch geschlossen.", wohin: "Öffnet sich ab der Stillen Million." },
-            22: { wofuer: "Bereich noch geschlossen.", wohin: "Öffnet sich ab der Stillen Million." }
+            1: { wofuer: "Jeder Mensch zählt als Mensch, unabhängig von Herkunft, Status oder Etiketten. Wir beenden die künstliche Spaltung.", wohin: "Einen Raum schaffen, in dem man Lasten ablegen und gemeinsam den ersten Schritt in eine Zukunft ohne Vorurteile gehen kann.", img: "1" },
+            2: { wofuer: "Anerkennung des Menschen in seiner reinsten Form. Geld ist lediglich eine neutrale Zahl ohne moralischen Wert.", wohin: "Wiederherstellung eines Selbstwertgefühls, das vollkommen unabhängig von materiellem Besitz existiert.", img: "2" },
+            3: { wofuer: "Wahrer Friede beginnt im Herzen. Aufrichtigkeit und innere Ruhe sind unsere stärksten Werkzeuge gegen Angst.", wohin: "Durch inneren Frieden zur stabilen Kraftquelle für die gesamte Gemeinschaft werden.", img: "3" },
+            4: { wofuer: "Schaffung von Raum für bürgerliche Rechte und die Souveränität des Individuums. Wissen schützt Freiheit.", wohin: "Als geschlossene Einheit auftreten, um die individuellen Rechte jedes Mitglieds aktiv zu schützen.", img: "4" },
+            5: { wofuer: "Die moralische Instanz und das Gewissen stehen über dem bloßen Gesetz. Wir folgen der Ethik des Herzens.", wohin: "Förderung einer Eigenverantwortung, die direkt vor dem eigenen Gewissen geprüft wird.", img: "5" },
+            6: { wofuer: "Den Glauben an das Menschliche ohne institutionelle Vorgaben wiederbeleben. Menschlichkeit als höchster Wert.", wohin: "Menschlichkeit als fühlbare, tägliche Realität in unserem Zusammenleben verankern.", img: "6" },
+            7: { wofuer: "Bedingungslose Liebe, Schutz und absoluter Freiraum für die Entwicklung unserer Kinder. Sie sind unsere Zukunft.", wohin: "Kindern ermöglichen, ungeformt und in wahrer Freiheit ihre eigene Identität zu finden.", img: "7" },
+            8: { wofuer: "Würdigung des individuellen Lebensweges. Wir ermutigen zur authentischen Kunst und der eigenen Geschichte.", wohin: "Eine Plattform bieten, auf der wahre Authentizität gefeiert und als Inspiration genutzt wird.", img: "8" },
+            9: { wofuer: "Ehrlicher Dialog über den Spalt zwischen Systemrecht und Moral. Wahrhaftigkeit statt Heuchelei.", wohin: "Eine Spiritualität leben, die jedes Leben ohne jede Ausnahme schützt und willkommen heißt.", img: "9" },
+            10: { wofuer: "Trends als Ablenkung und Traditionen als Machtinstrumente entlarven. Suche nach dem Kern.", wohin: "Echte, bleibende Werte erschaffen, die über den aktuellen Zeitgeist hinaus Bestand haben.", img: "10" },
+            11: { wofuer: "Die Grenzen im Kopf und den Zufall der Geburt (Nationalität) konsequent hinterfragen. Wir sind Weltbürger.", wohin: "Eine Verbindung spüren, die tiefer liegt als jedes religiöse oder politische Bekenntnis.", img: "11" },
+            12: { wofuer: "Aufbrechen von Hierarchien und dem psychischen Druck von Mobbing am Arbeitsplatz. Würde im Schaffen.", wohin: "Die Würde und die eigene Schöpferkraft im Berufsleben vollständig zurückgewinnen.", img: "12" },
+            13: { wofuer: "Zusammenhang zwischen seelischen Wunden und der Profitgier des Systems aufzeigen. Heilung statt Handel.", wohin: "Ganzheitliche Heilung und echte Souveränität über den eigenen Körper erreichen.", img: "13" },
+            14: { wofuer: "Beteiligung der Menschen am Profit und die Rückführung der Steuerkraft. Der Mensch vor dem Kapital.", wohin: "Etablierung einer wirtschaftlichen Souveränität, in der Erfolg der Gemeinschaft dient.", img: "14" },
+            15: { wofuer: "Jugendsprecher als ernstzunehmende Stimmen integrieren. Mitgestaltung der Welt von morgen.", wohin: "Eine Brücke zwischen den Generationen bauen, die auf echtem Respekt basiert.", img: "15" },
+            16: { wofuer: "Tiefe Achtung vor dem Alter und der Lebensleistung. Schutz der Würde im Herbst des Lebens.", wohin: "Symbiose schaffen: Die Jugend unterstützt digital, das Alter schenkt Weisheit.", img: "16" },
+            17: { wofuer: "Taten statt Worte: Hilfe für Obdachlose und Sicherung von sauberem Wasser für alle Seelen.", wohin: "Als Kollektiv dort handeln, wo staatliche Strukturen Menschen bewusst übersehen.", img: "17" },
+            18: { wofuer: "Nachbarschaftshilfe als Basis der Gemeinschaft. Wir brechen die Anonymität auf. Liebe deinen Nächsten.", wohin: "Vom lokalen Umfeld bis zur weltweiten Community: Ein Netz, das niemanden allein lässt.", img: "18" },
+            19: { wofuer: "Technik als dienendes Werkzeug begreifen, nicht als Instrument der Überwachung oder Kontrolle.", wohin: "KI als Schutzschild für Menschenrechte und zur gerechten Ressourcenverteilung nutzen.", img: "19" },
+            20: { wofuer: "Die Brücke ist der Übergang zur absoluten Transparenz. Hier werden User zu aktiven Gestaltern.", wohin: "Sobald die Stille Million erreicht ist, wird die Brücke zum realen Weg der Umsetzung.", img: "20" },
+            21: { wofuer: "Dieser Bereich ist aktuell unter Verschluss.", wohin: "Öffnet sich nach Erreichen der Stillen Million.", img: "21" },
+            22: { wofuer: "Das Kollektiv: Die physische Manifestation der Vision.", wohin: "Öffnet sich nach Erreichen der Stillen Million.", img: "22" }
         };
 
         const themen = [
@@ -139,7 +136,8 @@
             document.getElementById('info-titel').innerText = "ANSAGE " + num + ": " + titel;
             document.getElementById('wofuer-inhalt').innerText = data.wofuer;
             document.getElementById('wohin-inhalt').innerText = data.wohin;
-            document.getElementById('pano-box').style.backgroundImage = "url('https://picsum.photos/id/" + (num + 20) + "/1200/400')";
+            document.getElementById('pano-box').style.backgroundImage = `url('https://picsum.photos/id/${parseInt(num)+10}/1200/600')`;
+            window.scrollTo(0,0);
         }
 
         function showDashboard() {
@@ -149,6 +147,6 @@
     </script>
 </body>
 </html>
-Ich habe den gesamten Code gesichert. Würdest du gerne an den Inhalten der einzelnen Punkte arbeiten oder soll ich eine bestimmte Funktion ergänzen?
 
-stop
+   
+     
