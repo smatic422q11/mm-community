@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>M&M-COMMUNITY - Das Fundament</title>
+    <title>M&M-COMMUNITY - Interaktives Fundament</title>
     <style>
         body { background-color: #000000; color: #ffffff; font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         .logo-ring { width: 120px; height: 120px; border: 3px solid #ffffff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin: 30px auto 30px 2.5%; }
@@ -10,15 +10,19 @@
         .logo-community { font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; margin-top: 2px; color: #ffffff; }
         #dashboard { width: 100%; display: flex; flex-direction: column; align-items: center; }
         .info-section { width: 90%; max-width: 800px; border: 2px solid #003d8f; padding: 20px; text-align: center; margin-bottom: 40px; background-color: #000000; }
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-flow: column; gap: 15px; width: 95%; max-width: 1400px; margin-bottom: 15px; }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 15px; width: 95%; max-width: 1400px; margin-bottom: 15px; }
+        .fundament-container { display: flex; width: 95%; max-width: 1400px; gap: 15px; margin-bottom: 50px; }
         .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000000; min-height: 50px; }
+        .fundament-box { flex: 1; }
         .num { width: 40px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; color: #ffffff; }
         .text { padding: 10px; text-transform: uppercase; font-size: 0.75rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; color: #ffffff; }
         .text:hover { color: #003d8f; background: #111; }
         #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; }
-        .panorama-container { width: 80%; height: 33vh; margin: 20px auto; position: relative; background-size: cover; background-position: center; border: 2px solid #003d8f; }
+        .panorama-container { width: 80%; height: 33vh; margin: 20px auto; position: relative; background-color: #222; background-size: cover; background-position: center; border: 2px solid #003d8f; }
+        .logo-overlay { position: absolute; top: 10px; left: 10px; transform: scale(0.5); transform-origin: top left; margin: 0; }
         .content-area { width: 90%; max-width: 1000px; text-align: center; margin-top: 30px; }
         .back-btn { margin-top: 40px; padding: 10px 30px; border: 2px solid #ffffff; background: none; color: #ffffff; cursor: pointer; text-transform: uppercase; font-weight: bold; }
+        .back-btn:hover { background: #ffffff; color: #000; }
     </style>
 </head>
 <body>
@@ -33,80 +37,106 @@
             <h1 style="font-size: 2.5rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
             <h2 style="color: #003d8f; font-size: 1.5rem; margin: 5px 0 20px 0;">DIE STILLE MILLION</h2>
             <p style="text-align: justify; line-height: 1.6;">
-                M&M ist kein Kaffeekränzchen. Hier wird das Fundament für echte Freiheit und radikale Menschlichkeit gegossen. Wer nicht bereit ist, Verantwortung zu übernehmen, ist hier falsch.
+                Die M&M-Community ist das Fundament für Menschen, die zurück zur Menschlichkeit, Eigenverantwortung und echtem Zusammenhalt finden wollen. Wir bauen Brücken, wo Spaltung herrscht.
             </p>
         </div>
 
         <div class="grid" id="main-grid"></div>
+
+        <div class="fundament-container">
+            <div class="fundament-box">
+                <div class="num">22</div>
+                <div class="text" onclick="showInfo('Das Kollektiv', 22)">Das Kollektiv</div>
+            </div>
+            <div class="fundament-box">
+                <div class="num">21</div>
+                <div class="text" onclick="showInfo('Kapital und Verwaltung', 21)">Kapital und Verwaltung</div>
+            </div>
+        </div>
     </div>
 
     <div id="info-kanal">
-        <div class="panorama-container" id="pano-box"></div>
+        <div class="panorama-container" id="pano-box">
+            <div class="logo-ring logo-overlay">
+                <div class="logo-mm">M&M</div>
+                <div class="logo-community">COMMUNITY</div>
+            </div>
+        </div>
+        
         <div class="content-area">
             <h1 id="info-titel" style="color: #003d8f;"></h1>
             <div id="info-text">
-                <h3 style="color: #003d8f;">DIE ANSAGE (WOFÜR)</h3>
-                <p id="wofuer-inhalt" style="font-size: 1.2rem;"></p>
+                <h3>WOFÜR</h3>
+                <p id="wofuer-inhalt"></p>
                 <br>
-                <h3 style="color: #003d8f;">DAS ZIEL (WOHIN)</h3>
-                <p id="wohin-inhalt" style="font-size: 1.2rem;"></p>
+                <h3>WOHIN</h3>
+                <p id="wohin-inhalt"></p>
             </div>
-            <button class="back-btn" onclick="showDashboard()">Zurück</button>
+            <button class="back-btn" onclick="showDashboard()">Zurück zum Fundament</button>
         </div>
     </div>
 
     <script>
         const boxInhalte = {
-            1: { wofuer: "Schluss mit der kalten Logik. Wer nicht mehr fühlt, ist steuerbar.", wohin: "Wir erzwingen den Raum für Intuition und echtes menschliches Empfinden zurück." },
-            2: { wofuer: "Raus aus der Matrix der Programmierung.", wohin: "Masken ablegen und als freies Individuum existieren, statt nur zu funktionieren." },
-            3: { wofuer: "Friede ist kein Geschenk, sondern eine knallharte Entscheidung.", wohin: "Wir lassen uns nicht in die Kriege anderer hetzen. Punkt." },
-            4: { wofuer: "Rechte werden nicht erbeten, sie werden genommen.", wohin: "Radikale Verteidigung der bürgerlichen Freiheit gegen jeden staatlichen Übergriff." },
-            5: { wofuer: "Wer Freiheit will, muss die Eier haben, Verantwortung zu tragen.", wohin: "Kein Verstecken hinter Befehlen. Jeder steht für sein Handeln gerade." },
-            6: { wofuer: "Systeme machen Menschen zu Nummern – wir machen das rückgängig.", wohin: "Erzwingung menschlicher Behandlung in jedem Amt und jedem Betrieb." },
-            7: { wofuer: "Hände weg von unseren Kindern.", wohin: "Erziehung ist Sache der Eltern. Wir schützen die Jugend vor ideologischem Zugriff." },
-            8: { wofuer: "Kunst ist Widerstand, kein hohles Entertainment.", wohin: "Wahrheit ungeschminkt aussprechen und die Richtung vorgeben." },
-            9: { wofuer: "LGBTQ und Gläubige gemeinsam gegen die Spaltung.", wohin: "Religiöse Heuchelei beenden und den Glauben an die Menschheit festigen." },
-            10: { wofuer: "Schluss mit dem digitalen Versteckspiel.", wohin: "Echte Treffen, echte Organisation, echte Macht im Kollektiv." },
-            11: { wofuer: "Deine Spiritualität ist deine verdammte Privatsache.", wohin: "Kein Zwang, keine Vorschriften – absolute Freiheit bei der Selbstwahl des Bekenntnisses." },
-            12: { wofuer: "Stopp der modernen Sklaverei und Ausbeutung.", wohin: "Wer mobbt oder ausbeutet, bekommt es mit der geschlossenen Community zu tun." },
-            13: { wofuer: "Mein Körper gehört mir – kein Diktat von außen.", wohin: "Echte Heilung statt Profitgier der Pharmaindustrie. Radikale Selbstbestimmung." },
-            14: { wofuer: "Du bist kein Rädchen im Getriebe.", wohin: "Wir biegen die Arbeitswelt so zurecht, dass sie dem Menschen dient, nicht dem Kapital." },
-            15: { wofuer: "Wir bilden Anführer aus, keine Mitläufer.", wohin: "Die Jugend übernimmt das Ruder und setzt die neuen Standards." },
-            16: { wofuer: "Wer das Land aufgebaut hat, wird nicht entsorgt.", wohin: "Wir schützen unsere Alten vor Isolation und staatlicher Armut." },
-            17: { wofuer: "Sozialgefallen statt staatlicher Almosen.", wohin: "Direkte Hilfe ohne Bürokratie. Ein Kreislauf, der uns unabhängig macht." },
-            18: { wofuer: "Das Viertel gehört den Nachbarn, nicht der Verwaltung.", wohin: "Sicherheit und Zusammenhalt direkt vor der Haustür selbst organisieren." },
-            19: { wofuer: "Wir kontrollieren die Technik, nicht sie uns.", wohin: "Werkzeuge nutzen, aber Privatsphäre als unantastbares Heiligtum schützen." },
-            20: { wofuer: "Die Trümmer der Gesellschaft neu zusammensetzen.", wohin: "Radikaler Zusammenhalt als Brücke gegen die Spaltung von oben." }
+            1: { wofuer: "Raum für Empathie und Intuition zurückfordern.", wohin: "In einer Welt der Logik die Menschlichkeit an erste Stelle setzen." },
+            2: { wofuer: "Masken ablegen und zum wahren Kern zurückfinden.", wohin: "Weg vom reinen Funktionieren, hin zum echten Sein." },
+            3: { wofuer: "Unerschütterlicher Glaube an den Frieden.", wohin: "Konflikte durch Kommunikation und Gemeinsamkeit lösen." },
+            4: { wofuer: "Schutz der Freiheit des Einzelnen.", wohin: "Aufklärung über bürgerliche Rechte und deren Verteidigung." },
+            5: { wofuer: "Förderung moralischer Integrität.", wohin: "Verantwortung für das eigene Handeln in der Gemeinschaft übernehmen." },
+            6: { wofuer: "Wiederherstellung von Menschlichkeit im System.", wohin: "Präsenz und Mitgefühl in Ämtern und Betrieben verankern." },
+            7: { wofuer: "Schutz der Kinder vor Übergriffigkeit.", wohin: "Wahrung der natürlichen Elternrechte und Werteerziehung." },
+            8: { wofuer: "Förderung kreativen Ausdrucks.", wohin: "Kunst als Spiegel der Seele, die die Gesellschaft bewegt." },
+            9: { wofuer: "LGBTQ Menschen und Gläubige näher zur Kirche führen.", wohin: "Den Glauben an die Menschheit festigen und Spaltung beenden." },
+            10: { wofuer: "Echte Begegnungen im realen Leben schaffen.", wohin: "Die Gemeinschaft durch Feste und Workshops spürbar machen." },
+            11: { wofuer: "Freiheit des Glaubens ohne Zwang.", wohin: "Respekt für jedes Bekenntnis und Raum für die individuelle Selbstwahl." },
+            12: { wofuer: "Aufklärung und Rückhalt gegen Mobbing.", wohin: "Faire Bedingungen schaffen, damit niemand am Arbeitsplatz zerbricht." },
+            13: { wofuer: "Ganzheitliche Sicht auf den Menschen.", wohin: "Ein System, das die Selbstbestimmung über den Körper achtet." },
+            14: { wofuer: "Arbeit soll dem Leben dienen.", wohin: "Eine Arbeitswelt, die deine Persönlichkeit und Qualität schützt." },
+            15: { wofuer: "Plattform für die Stimmen der Jugend.", wohin: "Jugendliche bringen Visionen für die Zukunft aktiv ein." },
+            16: { wofuer: "Erfahrung als wertvoller Schatz.", wohin: "Senioren bei Bürokratie unterstützen und ihr Wissen schätzen." },
+            17: { wofuer: "Hilfe aus echtem Sozialgefallen.", wohin: "Ein Kreislauf, in dem Menschlichkeit immer wieder zur Gemeinschaft zurückkehrt." },
+            18: { wofuer: "Lokale Netzwerke stärken.", wohin: "Füreinander da sein und aufeinander aufpassen." },
+            19: { wofuer: "Technik als Diener des Menschen.", wohin: "Bewusster Umgang mit Digitalisierung zum Schutz der Privatsphäre." },
+            20: { wofuer: "Verbindung von Altem und Neuem.", wohin: "Brücken bauen zwischen Generationen und verschiedenen Meinungen." },
+            21: { wofuer: "Inhalt folgt für Kapital und Verwaltung.", wohin: "Zielsetzung wird definiert." },
+            22: { wofuer: "Inhalt folgt für Das Kollektiv.", wohin: "Zielsetzung wird definiert." }
         };
 
         const themen = [
             "Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", 
-            "Bürgerliche Rechte", "Moral & Verantwortung",
-            "Menschlichkeit - Reset", "Kinderschutz & Elternrechte",
-            "Wahre Kunst & Richtung", "LGBTQ & Kirche", "Real-Life Community",
-            "Bekenntnis oder Selbstwahl", "Stopp Mobbing",
-            "Gesundheit & Verhalten", "Arbeitswelt & DU", "Jugend-Power",
-            "Pensionisten Schutz", "Sozialgefallen & Wiederkehr",
-            "Nachbarschafts-Macht", "Mensch vs. Technik", "Die Brücke"
+            "Programm für Bürgerliche Rechte", "Moralische Gesetze und Verantwortung",
+            "Menschlichkeit - Wiederherstellung", "Kinderschutz - Pflicht - Eltern Rechte",
+            "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Veranstaltungen mit Community",
+            "Religionsbekenntnis oder Selbstwahl", "Arbeitsrecht und Mobbing",
+            "Gesundheitswesen und Verhalten", "Arbeitswelt und du", "Jugendsprecher",
+            "Pensionisten Ratgeber", "Sozialgefallen und Wiederkehr",
+            "Nachbarschaft und Gemeinschaft", "Mensch & Technik", "Die Brücke"
         ];
 
         const grid = document.getElementById('main-grid');
+
         themen.forEach((thema, index) => {
             const box = document.createElement('div');
             box.className = 'box';
-            const num = index + 1;
-            box.innerHTML = `<div class="num">${num}</div><div class="text" onclick="showInfo('${thema}', ${num})">${thema}</div>`;
+            const nummer = index + 1;
+            box.innerHTML = `
+                <div class="num">${nummer}.</div>
+                <div class="text" onclick="showInfo('${thema}', ${nummer})">${thema}</div>
+            `;
             grid.appendChild(box);
         });
 
-        function showInfo(titel, num) {
-            const data = boxInhalte[num];
+        function showInfo(titel, nummer) {
+            const inhalt = boxInhalte[nummer];
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('info-kanal').style.display = 'flex';
-            document.getElementById('info-titel').innerText = "ANSAGE " + num + ": " + titel;
-            document.getElementById('wofuer-inhalt').innerText = data.wofuer;
-            document.getElementById('wohin-inhalt').innerText = data.wohin;
-            document.getElementById('pano-box').style.backgroundImage = "url('https://picsum.photos/id/" + (num + 20) + "/1200/400')";
+            document.getElementById('info-titel').innerText = "BOX " + nummer + ": " + titel;
+            
+            if (inhalt) {
+                document.getElementById('wofuer-inhalt').innerText = inhalt.wofuer;
+                document.getElementById('wohin-inhalt').innerText = inhalt.wohin;
+                document.getElementById('pano-box').style.backgroundImage = "url('https://picsum.photos/id/" + (nummer + 15) + "/1200/400')";
+            }
         }
 
         function showDashboard() {
