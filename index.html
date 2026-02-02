@@ -107,9 +107,12 @@
             17: { wofuer: "Ende der leeren Worte – Hilfe für Obdachlose und sauberes Wasser für alle.", wohin: "Als Kollektiv dort Taten setzen, wo der Staat versagt." },
             18: { wofuer: "Nachbarschaft als Spiegel des Staates: Hilfe statt Wegsehen.", wohin: "Vom Treppenhaus bis zum Kollektiv: Gemeinsam statt einsam." },
             19: { wofuer: "Technik als Werkzeug, Mensch als Schöpfer. Beherrschung statt Kontrolle.", wohin: "KI als Schutzschild für Menschenrechte und globale Ressourcenteilung." },
-            20: { wofuer: "Die Brücke ist der Übergang zur absoluten Transparenz und Mitbestimmung.", wohin: "Kollektive Umsetzung der Programme in der physischen Welt sobald wir eine Million Stimmen sind." },
-            21: { wofuer: "GLÄSERNE KASSE: Totale Transparenz aller Mittel.", wohin: "Finanzielle Kraft für kollektive Projekte (öffnet ab 1 Mio. User)." },
-            22: { wofuer: "EINSATZZENTRALE: Physische Realisierung der Programme.", wohin: "Bau einer parallelen, gerechten Gesellschaftsstruktur." }
+            20: { 
+                wofuer: "Die Brücke ist der Übergang zur absoluten Transparenz. Hier werden aus Usern aktive Gestalter, Wähler und Kandidaten. Für jedes Programm wird es gewählte Vertreter geben, die die Umsetzung im physischen Leben leiten.", 
+                wohin: "Sobald wir eine Million Stimmen sind, öffnen sich die Bereiche Kapital und Verwaltung. Das Ziel ist die kollektive Umsetzung aller 20 Programme." 
+            },
+            21: { wofuer: "BEREICH GESCHLOSSEN: Die gläserne Kasse für Kapital und Verwaltung.", wohin: "Öffnet sich erst ab der Stillen Million für totale Transparenz." },
+            22: { wofuer: "BEREICH GESCHLOSSEN: Das Kollektiv für die physische Umsetzung.", wohin: "Öffnet sich erst ab der Stillen Million für kollektives Handeln." }
         };
 
         const themen = [
@@ -131,12 +134,14 @@
 
         function showInfo(titel, num) {
             const data = boxInhalte[num];
-            document.getElementById('dashboard').style.display = 'none';
-            document.getElementById('info-kanal').style.display = 'flex';
-            document.getElementById('info-titel').innerText = "ANSAGE " + num + ": " + titel;
-            document.getElementById('wofuer-inhalt').innerText = data.wofuer;
-            document.getElementById('wohin-inhalt').innerText = data.wohin;
-            document.getElementById('pano-box').style.backgroundImage = "url('https://picsum.photos/id/" + (num + 20) + "/1200/400')";
+            if (data) {
+                document.getElementById('dashboard').style.display = 'none';
+                document.getElementById('info-kanal').style.display = 'flex';
+                document.getElementById('info-titel').innerText = "ANSAGE " + num + ": " + titel;
+                document.getElementById('wofuer-inhalt').innerText = data.wofuer;
+                document.getElementById('wohin-inhalt').innerText = data.wohin;
+                document.getElementById('pano-box').style.backgroundImage = "url('https://picsum.photos/id/" + (num + 20) + "/1200/400')";
+            }
         }
 
         function showDashboard() {
@@ -146,5 +151,3 @@
     </script>
 </body>
 </html>
-
-   
