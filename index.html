@@ -4,112 +4,123 @@
     <meta charset="UTF-8">
     <title>M&M-COMMUNITY - Das Fundament</title>
     <style>
-        body { background-color: #000000; color: #ffffff; font-family: Arial, sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        body { background-color: #000000; color: #ffffff; font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        .logo-ring { width: 120px; height: 120px; border: 3px solid #ffffff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin: 30px auto 30px 2.5%; }
+        .logo-mm { font-size: 2.2rem; font-weight: 900; line-height: 0.8; color: #ffffff; }
+        .logo-community { font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; margin-top: 2px; color: #ffffff; }
+        #dashboard { width: 100%; display: flex; flex-direction: column; align-items: center; }
+        .info-section { width: 90%; max-width: 800px; border: 2px solid #003d8f; padding: 20px; text-align: center; margin-bottom: 40px; background-color: #000000; }
         
-        /* Das Haupt-Layout nach der Skizze */
-        .main-container { display: flex; width: 100%; max-width: 1400px; justify-content: space-between; align-items: flex-start; margin-top: 20px; }
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            grid-template-rows: repeat(5, 1fr); 
+            grid-auto-flow: column; 
+            gap: 15px; 
+            width: 95%; 
+            max-width: 1400px; 
+            margin-bottom: 15px; 
+        }
         
-        /* Die Pyramiden */
-        .pyramide-container { width: 200px; text-align: center; }
-        .pyramide { width: 0; height: 0; border-left: 80px solid transparent; border-right: 80px solid transparent; margin: 0 auto; position: relative; }
-        .links { border-bottom: 350px solid #222; } /* Alte Welt */
-        .rechts { border-top: 350px solid #003d8f; } /* Neue Welt - umgedreht */
+        .fundament-container { display: flex; width: 95%; max-width: 1400px; gap: 15px; margin-bottom: 50px; }
+        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000000; min-height: 50px; }
+        .fundament-box { flex: 1; }
+        .num { width: 40px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; color: #ffffff; flex-shrink: 0; }
+        .text { padding: 10px; text-transform: uppercase; font-size: 0.75rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; color: #ffffff; }
+        .text:hover { color: #003d8f; background: #111; }
         
-        .pyramide-labels { display: flex; flex-direction: column; gap: 5px; font-weight: bold; font-size: 0.9rem; margin-top: 10px; }
-
-        /* Das Zentrum */
-        .center-content { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 0 40px; border: 2px solid #ffffff; margin: 0 20px; min-height: 500px; }
-        .logo-ring { width: 100px; height: 100px; border: 3px solid #ffffff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; margin: -50px auto 20px auto; }
-        .logo-mm { font-size: 1.8rem; font-weight: 900; line-height: 0.8; }
-        .logo-community { font-size: 0.5rem; letter-spacing: 1px; font-weight: bold; }
-
-        h1.slogan { font-size: 2.5rem; font-style: italic; color: #ffffff; margin: 20px 0; }
-        .section-box { text-align: justify; width: 90%; margin-bottom: 30px; }
-        .section-box h2 { color: #003d8f; border-bottom: 1px solid #003d8f; padding-bottom: 5px; }
-
-        /* Das Grid der 20 Punkte (unter dem Hauptteil) */
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; max-width: 1400px; margin-top: 40px; }
-        .box { display: flex; border: 1px solid #003d8f; background-color: #000; cursor: pointer; }
-        .num { width: 30px; background: #003d8f; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem; }
-        .text { padding: 8px; font-size: 0.7rem; text-transform: uppercase; flex: 1; }
-        .box:hover { background: #111; color: #003d8f; }
-
-        /* Info Overlay */
-        #info-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); flex-direction: column; align-items: center; justify-content: center; z-index: 1000; }
-        .overlay-content { width: 80%; max-width: 800px; text-align: center; }
-        .back-btn { margin-top: 30px; padding: 10px 30px; border: 2px solid #fff; background: none; color: #fff; cursor: pointer; }
+        #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; }
+        .panorama-container { width: 80%; height: 33vh; margin: 20px auto; position: relative; background-color: #222; background-size: cover; background-position: center; border: 2px solid #003d8f; }
+        .logo-overlay { position: absolute; top: 10px; left: 10px; transform: scale(0.5); transform-origin: top left; }
+        .content-area { width: 90%; max-width: 1000px; text-align: center; margin-top: 30px; }
+        .back-btn { margin-top: 40px; padding: 10px 30px; border: 2px solid #ffffff; background: none; color: #ffffff; cursor: pointer; text-transform: uppercase; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div class="main-container">
-        <div class="pyramide-container">
-            <div style="margin-bottom: 10px; font-weight: bold;">REICH</div>
-            <div class="pyramide links"></div>
-            <div class="pyramide-labels">
-                <span>0,1%</span><span>1%</span><span>2%</span><span>10%</span><span>15%</span><span>20%</span><span style="color:red">51,4%</span>
-            </div>
-            <div style="margin-top: 10px; font-weight: bold;">ARM</div>
+    <div id="dashboard">
+        <div class="logo-ring">
+            <div class="logo-mm">M&M</div>
+            <div class="logo-community">COMMUNITY</div>
         </div>
 
-        <div class="center-content">
-            <div class="logo-ring">
-                <div class="logo-mm">M&M</div>
-                <div class="logo-community">COMMUNITY</div>
-            </div>
-            
-            <h1 class="slogan">"Komm wie du bist"</h1>
-            
-            <div class="section-box">
-                <h2>WAS</h2>
-                <p>Wir bauen ein Fundament der Menschlichkeit. Ein System, das den Menschen vor den Profit stellt, die Jugend mit den Senioren vernetzt und durch die Stille Million eine unaufhaltsame Kraft der Veränderung schafft. Ein Raum für Kunst, Heilung und echte Mitbestimmung.</p>
-            </div>
-
-            <div class="section-box">
-                <h2>WARUM</h2>
-                <p>Weil die alte Pyramide (links) uns zeigt, dass die Mehrheit der Menschen die Last trägt, während die Spitze den Nutzen zieht. Wir kehren dieses Prinzip um. Wir handeln, weil das System versagt hat und wir als Kollektiv die Verantwortung für unsere Zukunft selbst übernehmen – transparent, gerecht und unbestechlich.</p>
-            </div>
+        <div class="info-section">
+            <h1 style="font-size: 2.5rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
+            <h2 style="color: #003d8f; font-size: 1.5rem; margin: 5px 0 20px 0;">DIE STILLE MILLION</h2>
+            <p style="text-align: justify; line-height: 1.6;">
+                Die M&M-Community ist das Fundament für Menschen, die zurück zur Menschlichkeit, Eigenverantwortung und echtem Zusammenhalt finden wollen. Wir bauen Brücken, wo Spaltung herrscht.
+            </p>
         </div>
 
-        <div class="pyramide-container">
-            <div style="margin-bottom: 10px; font-weight: bold;">ARM / KOLLEKTIV</div>
-            <div class="pyramide rechts"></div>
-            <div class="pyramide-labels" style="margin-top: -340px; position: relative; z-index: 10;">
-                 <span style="color:cyan">51,4%</span><span>20%</span><span>15%</span><span>10%</span><span>2%</span><span>1%</span><span>REICH</span>
+        <div class="grid" id="main-grid"></div>
+
+        <div class="fundament-container">
+            <div class="fundament-box">
+                <div class="num">21</div>
+                <div class="text" onclick="showInfo('KAPITAL UND VERWALTUNG', 21)">KAPITAL UND VERWALTUNG</div>
+            </div>
+            <div class="fundament-box">
+                <div class="num">22</div>
+                <div class="text" onclick="showInfo('DAS KOLLEKTIV', 22)">DAS KOLLEKTIV</div>
             </div>
         </div>
     </div>
 
-    <div class="grid" id="main-grid"></div>
-
-    <div id="info-overlay">
-        <div class="overlay-content">
+    <div id="info-kanal">
+        <div class="panorama-container" id="pano-box">
+            <div class="logo-ring logo-overlay">
+                <div class="logo-mm">M&M</div>
+                <div class="logo-community">COMMUNITY</div>
+            </div>
+        </div>
+        <div class="content-area">
             <h1 id="info-titel" style="color: #003d8f;"></h1>
-            <h3 style="color: #003d8f;">ANSAGE (WOFÜR)</h3>
-            <p id="wofuer-inhalt" style="font-size: 1.2rem;"></p>
-            <h3 style="color: #003d8f;">ZIEL (WOHIN)</h3>
-            <p id="wohin-inhalt" style="font-size: 1.2rem;"></p>
-            <button class="back-btn" onclick="closeInfo()">ZURÜCK</button>
+            <div id="info-text">
+                <h3 style="color: #003d8f;">DIE ANSAGE (WOFÜR)</h3>
+                <p id="wofuer-inhalt" style="font-size: 1.2rem; text-align: justify;"></p>
+                <br>
+                <h3 style="color: #003d8f;">DAS ZIEL (WOHIN)</h3>
+                <p id="wohin-inhalt" style="font-size: 1.2rem; text-align: justify;"></p>
+            </div>
+            <button class="back-btn" onclick="showDashboard()">Zurück</button>
         </div>
     </div>
 
     <script>
         const boxInhalte = {
-            1: { t: "RECHT AUF GEFÜHLSVORDERUNG", wof: "Mensch zählt als Mensch.", woh: "Lasten ablegen." },
-            2: { t: "WIE WERDE ICH MENSCH", wof: "Geld als Zahl, Mensch als Wert.", woh: "Selbstwert finden." },
-            // ... (Alle weiteren 18 Punkte sind hier im Hintergrund aktiv)
-            15: { t: "JUGENDSPRECHER", wof: "Stimme ab 14 Jahren.", woh: "Generationen-Architektur." },
-            16: { t: "PENSIONISTEN RATGEBER", wof: "Achtung vor Lebensleistung.", woh: "Symbiose Jung & Alt." },
-            17: { t: "SOZIALGEFALLEN", wof: "Taten statt Worte.", woh: "Wasser und Hilfe teilen." },
-            18: { t: "NACHBARSCHAFT", wof: "Miteinander im Haus.", woh: "Staat im Kleinen heilen." },
-            19: { t: "MENSCH & TECHNIK", wof: "KI als Werkzeug.", woh: "Schutzschild der Rechte." },
-            20: { t: "DIE BRÜCKKE", wof: "Übergang zur Transparenz.", woh: "Kollektive Umsetzung." }
+            1: { wofuer: "Jeder Mensch zählt als Mensch, unabhängig von Herkunft oder Status.", wohin: "Lasten ablegen und gemeinsam einen Schritt nach vorne machen." },
+            2: { wofuer: "Menschsein anerkennen, Geld nur als Zahl sehen.", wohin: "Selbstwertgefühl unabhängig von Materiellem herstellen." },
+            3: { wofuer: "Friede beginnt im Herzen, Aufrichtigkeit vertreibt Zweifel.", wohin: "Zur Quelle des Friedens für die Gemeinschaft werden." },
+            4: { wofuer: "Raum für Selbstgestaltung und bürgerliche Rechte.", wohin: "Kollektives Handeln als geschlossene Einheit." },
+            5: { wofuer: "Innere Stimme über gesetzliche Erlaubnis stellen.", wohin: "Eigenverantwortung vor dem eigenen Herzen prüfen." },
+            6: { wofuer: "Glauben an das Menschliche ohne Etiketten.", wohin: "Menschlichkeit als fühlbare Realität wiederherstellen." },
+            7: { wofuer: "Bedingungslose Liebe und Freiraum für Kinder.", wohin: "Kindern die wahre Freiheit im Herzen mitgeben." },
+            8: { wofuer: "Eigene Biografie und Mut zur Kunst würdigen.", wohin: "Sich der Welt zeigen, wie man wirklich ist." },
+            9: { wofuer: "Spalt zwischen Staatsrecht und Moral (z.B. LGBTQ) thematisieren.", wohin: "Spiritualität, die jedes Leben bedingungslos schützt." },
+            10: { wofuer: "Trends als Drogen und Traditionen als Waffen entlarven.", wohin: "Echte Werte schaffen, die über Zeitgeist hinausgehen." },
+            11: { wofuer: "Grenzen im Kopf und Zufall der Geburt hinterfragen.", wohin: "Verbindung spüren, die tiefer liegt als Bekenntnisse." },
+            12: { wofuer: "Industrielle Hierarchien und emotionalen Zwang aufbrechen.", wohin: "Würde am Arbeitsplatz zurückgewinnen." },
+            13: { wofuer: "Zusammenhang zwischen seelischen Wunden und Systemprofit.", wohin: "Heilung und Souveränität über Körper und Geist." },
+            14: { wofuer: "Direkte Beteiligung an Profit und Körperschaftsteuer.", wohin: "Wirtschaftliche Souveränität des Arbeiters etablieren." },
+            15: { wofuer: "Jugendsprecher als ernstzunehmende Stimmen einbinden.", wohin: "Brücke zwischen Generationen auf Augenhöhe bauen." },
+            16: { wofuer: "Achtung vor dem Alter und der Lebensleistung.", wohin: "Symbiose zwischen Jugend (digital) und Senioren (weise)." },
+            17: { wofuer: "Ende der leeren Worte – Hilfe für Obdachlose und sauberes Wasser für alle.", wohin: "Als Kollektiv dort Taten setzen, wo der Staat versagt." },
+            18: { wofuer: "Nachbarschaft als Spiegel des Staates: Hilfe statt Wegsehen.", wohin: "Vom Treppenhaus bis zum Kollektiv: Gemeinsam statt einsam." },
+            19: { wofuer: "Technik als Werkzeug, Mensch als Schöpfer. Beherrschung statt Kontrolle.", wohin: "KI als Schutzschild für Menschenrechte und globale Ressourcenteilung." },
+            20: {
+                wofuer: "Die Brücke ist der Übergang zur absoluten Transparenz. Hier werden aus Usern aktive Gestalter, Wähler und Kandidaten. Für jedes Programm wird es gewählte Vertreter geben, die die Umsetzung im physischen Leben leiten. Jeder einzelne von euch ist bereits jetzt die Stille Million.",
+                wohin: "Sobald wir eine Million Stimmen sind, öffnen sich die Bereiche Kapital und Verwaltung. Das Ziel ist die kollektive Umsetzung aller 20 Programme in der physischen Welt. Viel Erfolg und Genesung an alle, die diesen Weg mit uns gehen."
+            },
+            21: { wofuer: "Bereich noch geschlossen.", wohin: "Öffnet sich ab der Stillen Million." },
+            22: { wofuer: "Bereich noch geschlossen.", wohin: "Öffnet sich ab der Stillen Million." }
         };
 
         const themen = [
-            "GEFÜHLSVORDERUNG", "MENSCHWERDUNG", "FRIEDE", "BÜRGERRECHTE", "MORAL", "MENSCHLICHKEIT", "KINDERSCHUTZ", "KUNST",
-            "LGBTQ", "TRADITION", "SELBSTWAHL", "ARBEITSRECHT", "GESUNDHEIT", "ARBEITSWELT", "JUGENDSPRECHER", "PENSIONISTEN",
-            "SOZIALGEFALLEN", "GEMEINSCHAFT", "TECHNIK", "DIE BRÜCKE"
+            "RECHT AUF GEFÜHLSVORDERUNG", "WIE WERDE ICH MENSCH", "GLAUBE AN FRIEDE", "PROGRAMM FÜR BÜRGERLICHE RECHTE",
+            "MORALISCHE GESETZE UND VERANTWORTUNG", "MENSCHLICHKEIT - WIEDERHERSTELLUNG", "KINDERSCHUTZ - PFLICHT - ELTERN RECHTE", "WAHRE RICHTUNG UND KUNST",
+            "LGBTQ UND KIRCHE", "TREND UND TRADITION", "RELIGIONSBEKENNTNIS ODER SELBSTWAHL", "ARBEITSRECHT UND MOBBING",
+            "GESUNDHEITSWESEN UND VERHALTEN", "ARBEITSWELT UND DU", "JUGENDSPRECHER", "PENSIONISTEN RATGEBER",
+            "SOZIALGEFALLEN UND WIEDERKEHR", "NACHBARSCHAFT UND GEMEINSCHAFT", "MENSCH & TECHNIK", "DIE BRÜCKE"
         ];
 
         const grid = document.getElementById('main-grid');
@@ -117,20 +128,23 @@
             const num = index + 1;
             const box = document.createElement('div');
             box.className = 'box';
-            box.innerHTML = `<div class="num">${num}</div><div class="text" onclick="openInfo(${num})">${thema}</div>`;
+            box.innerHTML = `<div class="num">${num}</div><div class="text" onclick="showInfo('${thema}', ${num})">${thema}</div>`;
             grid.appendChild(box);
         });
 
-        function openInfo(num) {
-            const data = boxInhalte[num] || { t: themen[num-1], wof: "Inhalt folgt...", woh: "Inhalt folgt..." };
-            document.getElementById('info-titel').innerText = data.t;
-            document.getElementById('wofuer-inhalt').innerText = data.wof;
-            document.getElementById('wohin-inhalt').innerText = data.woh;
-            document.getElementById('info-overlay').style.display = 'flex';
+        function showInfo(titel, num) {
+            const data = boxInhalte[num];
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('info-kanal').style.display = 'flex';
+            document.getElementById('info-titel').innerText = "ANSAGE " + num + ": " + titel;
+            document.getElementById('wofuer-inhalt').innerText = data.wofuer;
+            document.getElementById('wohin-inhalt').innerText = data.wohin;
+            document.getElementById('pano-box').style.backgroundImage = "url('https://picsum.photos/id/" + (num + 20) + "/1200/400')";
         }
 
-        function closeInfo() {
-            document.getElementById('info-overlay').style.display = 'none';
+        function showDashboard() {
+            document.getElementById('info-kanal').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'flex';
         }
     </script>
 </body>
