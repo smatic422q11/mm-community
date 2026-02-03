@@ -8,19 +8,37 @@
         .logo-ring { width: 120px; height: 120px; border: 3px solid #ffffff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin: 30px auto 30px 2.5%; }
         .logo-mm { font-size: 2.2rem; font-weight: 900; line-height: 0.8; color: #ffffff; }
         .logo-community { font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; margin-top: 2px; color: #ffffff; }
+        
         #dashboard { width: 100%; display: flex; flex-direction: column; align-items: center; }
+        
         .info-section { width: 90%; max-width: 800px; border: 2px solid #003d8f; padding: 20px; text-align: center; margin-bottom: 40px; background-color: #000000; }
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; width: 95%; max-width: 1400px; margin-bottom: 15px; }
+        
+        /* Spalten-System: Von oben nach unten */
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            grid-template-rows: repeat(5, auto); 
+            grid-auto-flow: column; /* Dies erzwingt die vertikale Nummerierung */
+            gap: 15px; 
+            width: 95%; 
+            max-width: 1400px; 
+            margin-bottom: 15px; 
+        }
+
         .fundament-container { display: flex; width: 95%; max-width: 1400px; gap: 15px; margin-bottom: 50px; }
+        
         .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000000; min-height: 55px; }
         .fundament-box { flex: 1; }
+        
         .num { width: 45px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; color: #ffffff; flex-shrink: 0; }
         .text { padding: 10px; text-transform: uppercase; font-size: 0.75rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; color: #ffffff; }
         .text:hover { color: #003d8f; background: #111; }
+        
         #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; }
         .panorama-container { width: 80%; height: 33vh; margin: 20px auto; position: relative; background-color: #222; background-size: cover; background-position: center; border: 2px solid #003d8f; }
         .logo-overlay { position: absolute; top: 10px; left: 10px; transform: scale(0.5); transform-origin: top left; margin: 0; }
         .content-area { width: 90%; max-width: 1000px; text-align: center; margin-top: 30px; padding-bottom: 50px; }
+        
         .back-btn { margin-top: 40px; padding: 10px 30px; border: 2px solid #ffffff; background: none; color: #ffffff; cursor: pointer; text-transform: uppercase; font-weight: bold; }
         .back-btn:hover { background: #ffffff; color: #000; }
     </style>
@@ -37,7 +55,7 @@
             <h1 style="font-size: 2.5rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
             <h2 style="color: #003d8f; font-size: 1.5rem; margin: 5px 0 20px 0;">DIE STILLE MILLION</h2>
             <p style="text-align: justify; line-height: 1.6;">
-                Die M&M-Community ist das Fundament für alle, die nach Wahrheit, Werten und einer echten Gemeinschaft streben. Wir vereinen Tradition mit dem Geist der neuen Zeit.
+                Die M&M-Community ist das Fundament für alle...
             </p>
         </div>
 
@@ -83,16 +101,6 @@
                 wohin: "Zu einem Zustand, in dem Menschen ihre Gefühle als Stärke begreifen und danach handeln.",
                 bild: "https://picsum.photos/id/652/1200/400"
             },
-            2: {
-                wofuer: "Die Rückkehr zum Kern des Seins. Menschwerdung bedeutet, Masken abzulegen und die eigene Verantwortung im Kollektiv zu erkennen.",
-                wohin: "Die Wiederherstellung der menschlichen Würde und Authentizität.",
-                bild: "https://picsum.photos/id/64/1200/400"
-            },
-            9: {
-                wofuer: "Dieses Programm schlägt die Brücke für LGBTQ-Menschen und Gläubige, um den Glauben an die Menschheit und die göttliche Gemeinschaft zu festigen.",
-                wohin: "Beendigung der geistigen Spaltung und Suche nach der universellen Wahrheit.",
-                bild: "https://picsum.photos/id/10/1200/400"
-            },
             10: {
                 wofuer: "Trend und Tradition verbindet die Werte unserer Vorfahren mit den Möglichkeiten der Zukunft. Wir bewahren das Alte, ohne das Neue zu fürchten.",
                 wohin: "Eine harmonische Balance zwischen Beständigkeit und Fortschritt.",
@@ -113,6 +121,8 @@
 
         const grid = document.getElementById('main-grid');
 
+        // Die Themen werden in der Reihenfolge des Arrays ausgegeben.
+        // CSS grid-auto-flow: column sorgt dafür, dass 1-5 in Spalte 1 landen, 6-10 in Spalte 2 usw.
         themen.forEach((thema, index) => {
             const box = document.createElement('div');
             box.className = 'box';
@@ -135,8 +145,8 @@
                 document.getElementById('wohin-inhalt').innerText = inhalt.wohin;
                 document.getElementById('pano-box').style.backgroundImage = "url('" + inhalt.bild + "')";
             } else {
-                document.getElementById('wofuer-inhalt').innerText = "Text Gemini eingeben für " + titel;
-                document.getElementById('wohin-inhalt').innerText = "Zielsetzung wird definiert.";
+                document.getElementById('wofuer-inhalt').innerText = "Inhalt für " + titel + " folgt.";
+                document.getElementById('wohin-inhalt').innerText = "Zielsetzung folgt.";
                 document.getElementById('pano-box').style.backgroundImage = "none";
             }
             window.scrollTo(0,0);
@@ -149,4 +159,5 @@
     </script>
 </body>
 </html>
-     
+  
+ 
