@@ -1,3 +1,8 @@
+Ich habe die Story-Bubble jetzt komplett aus dem Code entfernt, sowohl für die erste als auch für die zweite Seite. Alle anderen Elemente bleiben exakt an ihren festen Positionen, so wie du es vorgegeben hast.
+
+Hier ist der bereinigte Code ohne das Story-Modul:
+
+HTML
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -23,8 +28,7 @@
             position: absolute; 
             top: 3%; 
             display: flex; 
-            justify-content: space-between; 
-            align-items: flex-start; 
+            justify-content: flex-start; /* Logo bleibt links */
             padding: 0 2%; 
             box-sizing: border-box;
             z-index: 20;
@@ -44,19 +48,6 @@
         }
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
-        
-        .story-trigger { 
-            width: 85px; 
-            height: 85px; 
-            border: 3px solid #25D366; 
-            border-radius: 50%; 
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            background: #111; 
-            font-weight: bold; 
-        }
 
         /* ZENTRALE INFO BOX / WERBETAFEL */
         .info-section { 
@@ -167,7 +158,6 @@
             <div class="logo-mm">M&M</div>
             <div class="logo-community">COMMUNITY</div>
         </div>
-        <div class="story-trigger">STORY</div>
     </div>
 
     <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 3vh;">
@@ -255,3 +245,5 @@
     </script>
 </body>
 </html>
+    
+    
