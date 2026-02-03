@@ -4,43 +4,43 @@
     <meta charset="UTF-8">
     <title>M&M-COMMUNITY - Interaktives Fundament</title>
     <style>
-        body { background-color: #000000; color: #ffffff; font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        .logo-ring { width: 120px; height: 120px; border: 3px solid #ffffff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin: 30px auto 30px 2.5%; }
+        body { background-color: #000000; color: #ffffff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        .logo-ring { width: 120px; height: 120px; border: 3px solid #ffffff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin: 30px auto; }
         .logo-mm { font-size: 2.2rem; font-weight: 900; line-height: 0.8; color: #ffffff; }
         .logo-community { font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; margin-top: 2px; color: #ffffff; }
         
         #dashboard { width: 100%; display: flex; flex-direction: column; align-items: center; }
+        .info-section { width: 90%; max-width: 800px; border: 2px solid #003d8f; padding: 25px; text-align: center; margin-bottom: 40px; background-color: #000; }
         
-        .info-section { width: 90%; max-width: 800px; border: 2px solid #003d8f; padding: 20px; text-align: center; margin-bottom: 40px; background-color: #000000; }
-        
-        /* Spalten-System: Von oben nach unten */
         .grid { 
             display: grid; 
             grid-template-columns: repeat(4, 1fr); 
             grid-template-rows: repeat(5, auto); 
-            grid-auto-flow: column; /* Dies erzwingt die vertikale Nummerierung */
+            grid-auto-flow: column; 
             gap: 15px; 
             width: 95%; 
             max-width: 1400px; 
-            margin-bottom: 15px; 
+            margin-bottom: 20px; 
         }
 
+        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 60px; transition: 0.3s; }
+        .box:hover { border-color: #ffffff; }
         .fundament-container { display: flex; width: 95%; max-width: 1400px; gap: 15px; margin-bottom: 50px; }
+        .fundament-box { flex: 1; border-color: #ffffff; }
         
-        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000000; min-height: 55px; }
-        .fundament-box { flex: 1; }
+        .num { width: 45px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; color: #ffffff; }
+        .text { padding: 10px; text-transform: uppercase; font-size: 0.8rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: bold; }
+
+        /* INFO KANAL */
+        #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; padding-bottom: 100px; }
+        .panorama-container { width: 100%; height: 40vh; position: relative; background-size: cover; background-position: center; border-bottom: 4px solid #003d8f; }
+        .content-area { width: 90%; max-width: 800px; margin-top: 30px; text-align: left; }
         
-        .num { width: 45px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; color: #ffffff; flex-shrink: 0; }
-        .text { padding: 10px; text-transform: uppercase; font-size: 0.75rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; color: #ffffff; }
-        .text:hover { color: #003d8f; background: #111; }
-        
-        #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; }
-        .panorama-container { width: 80%; height: 33vh; margin: 20px auto; position: relative; background-color: #222; background-size: cover; background-position: center; border: 2px solid #003d8f; }
-        .logo-overlay { position: absolute; top: 10px; left: 10px; transform: scale(0.5); transform-origin: top left; margin: 0; }
-        .content-area { width: 90%; max-width: 1000px; text-align: center; margin-top: 30px; padding-bottom: 50px; }
-        
-        .back-btn { margin-top: 40px; padding: 10px 30px; border: 2px solid #ffffff; background: none; color: #ffffff; cursor: pointer; text-transform: uppercase; font-weight: bold; }
-        .back-btn:hover { background: #ffffff; color: #000; }
+        .comment-section { margin-top: 40px; border-top: 1px solid #333; padding-top: 20px; }
+        textarea { width: 100%; height: 100px; background: #111; color: #fff; border: 1px solid #003d8f; padding: 10px; margin-bottom: 10px; resize: none; }
+        .submit-btn { background: #003d8f; color: #fff; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
+        .comments-display { margin-top: 20px; font-size: 0.9rem; color: #ccc; font-style: italic; }
+        .back-btn { margin: 40px 0; padding: 12px 40px; border: 2px solid #ffffff; background: none; color: #ffffff; cursor: pointer; font-weight: bold; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -53,9 +53,9 @@
 
         <div class="info-section">
             <h1 style="font-size: 2.5rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
-            <h2 style="color: #003d8f; font-size: 1.5rem; margin: 5px 0 20px 0;">DIE STILLE MILLION</h2>
+            <h2 style="color: #003d8f; font-size: 1.5rem; margin: 5px 0 20px 0;">DAS INTERAKTIVE FUNDAMENT</h2>
             <p style="text-align: justify; line-height: 1.6;">
-                Die M&M-Community ist das Fundament für alle...
+                Willkommen in deinem Kollektiv. Jede Box ist ein Programm, ein Weg, eine Einladung. Klicke ein Thema an, finde heraus, wofür wir stehen, und teile anonym deine Gedanken. Dein Weg zählt.
             </p>
         </div>
 
@@ -74,37 +74,50 @@
     </div>
 
     <div id="info-kanal">
-        <div class="panorama-container" id="pano-box">
-            <div class="logo-ring logo-overlay">
-                <div class="logo-mm">M&M</div>
-                <div class="logo-community">COMMUNITY</div>
-            </div>
-        </div>
-        
+        <div class="panorama-container" id="pano-box"></div>
         <div class="content-area">
-            <h1 id="info-titel" style="color: #003d8f;"></h1>
+            <button class="back-btn" onclick="showDashboard()">← Zurück</button>
+            <h1 id="info-titel" style="color: #003d8f; font-size: 2.5rem;"></h1>
+            
             <div id="info-text">
-                <h3>WOFÜR</h3>
-                <p id="wofuer-inhalt"></p>
+                <h3 style="border-left: 4px solid #003d8f; padding-left: 15px;">WOFÜR</h3>
+                <p id="wofuer-inhalt" style="font-size: 1.1rem; line-height: 1.6;"></p>
                 <br>
-                <h3>WOHIN</h3>
-                <p id="wohin-inhalt"></p>
+                <h3 style="border-left: 4px solid #003d8f; padding-left: 15px;">WOHIN</h3>
+                <p id="wohin-inhalt" style="font-size: 1.1rem; line-height: 1.6;"></p>
             </div>
-            <button class="back-btn" onclick="showDashboard()">Zurück zum Fundament</button>
+
+            <div class="comment-section">
+                <h3>DEIN BEITRAG (ANONYM)</h3>
+                <p>Teile deine Gedanken oder deinen Weg zu diesem Thema:</p>
+                <textarea id="comment-input" placeholder="Schreibe hier..."></textarea>
+                <button class="submit-btn" onclick="addComment()">Absenden</button>
+                <div id="comments-list" class="comments-display"></div>
+            </div>
         </div>
     </div>
 
     <script>
         const boxInhalte = {
             1: {
-                wofuer: "Die Gefühlsvorderung ist das Fundament unserer emotionalen Arbeit. Es ist der mutige Anspruch, Emotionen in einer kühlen Welt wieder als Priorität zu setzen.",
-                wohin: "Zu einem Zustand, in dem Menschen ihre Gefühle als Stärke begreifen und danach handeln.",
-                bild: "https://picsum.photos/id/652/1200/400"
+                wofuer: "Die Gefühlsvorderung ist unsere erste Regel: Komm wie du bist. Unabhängig von deiner Identität, Nationalität, Religion, Hautfarbe oder Sexualität. Hier zählt nur dein Menschsein und deine ehrliche Emotion.",
+                wohin: "Wir bauen eine Brücke zu einer Welt ohne Vorurteile, in der das Individuum in seiner reinsten Form akzeptiert wird.",
+                bild: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1200"
+            },
+            2: {
+                wofuer: "Wie werde ich Mensch? In einer digitalisierten Welt suchen wir gemeinsam nach den Wurzeln unserer Existenz. Dieses Programm lädt dich ein, Masken abzulegen und deine wahre Natur zu entdecken.",
+                wohin: "Zurück zur Authentizität und zur Wiederherstellung der menschlichen Würde im täglichen Miteinander.",
+                bild: "https://images.unsplash.com/photo-1508873696983-2dfd5898f08b?auto=format&fit=crop&w=1200"
             },
             10: {
-                wofuer: "Trend und Tradition verbindet die Werte unserer Vorfahren mit den Möglichkeiten der Zukunft. Wir bewahren das Alte, ohne das Neue zu fürchten.",
-                wohin: "Eine harmonische Balance zwischen Beständigkeit und Fortschritt.",
-                bild: "https://picsum.photos/id/1059/1200/400"
+                wofuer: "Trend und Tradition. Wir bewahren das kostbare Erbe unserer Kultur und verbinden es mutig mit den Trends von morgen. Ein Programm für alle, die Werte schätzen und Fortschritt gestalten wollen.",
+                wohin: "Eine Zukunft, die ihre Wurzeln nicht vergisst, während sie nach den Sternen greift.",
+                bild: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=1200"
+            },
+            22: {
+                wofuer: "Das Kollektiv ist die Summe aller Stimmen. Hier fließen alle Wege zusammen. Es ist der Schutzraum für die 'Stille Million', um gemeinsam laut zu werden.",
+                wohin: "Echte Gemeinschaftliche Kraft durch Einheit in der Vielfalt.",
+                bild: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200"
             }
         };
 
@@ -120,9 +133,8 @@
         ];
 
         const grid = document.getElementById('main-grid');
+        let currentBox = 0;
 
-        // Die Themen werden in der Reihenfolge des Arrays ausgegeben.
-        // CSS grid-auto-flow: column sorgt dafür, dass 1-5 in Spalte 1 landen, 6-10 in Spalte 2 usw.
         themen.forEach((thema, index) => {
             const box = document.createElement('div');
             box.className = 'box';
@@ -135,21 +147,34 @@
         });
 
         function showInfo(titel, nummer) {
+            currentBox = nummer;
             const inhalt = boxInhalte[nummer];
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('info-kanal').style.display = 'flex';
-            document.getElementById('info-titel').innerText = "BOX " + nummer + ": " + titel;
+            document.getElementById('info-titel').innerText = titel;
+            document.getElementById('comments-list').innerHTML = ""; 
             
             if (inhalt) {
                 document.getElementById('wofuer-inhalt').innerText = inhalt.wofuer;
                 document.getElementById('wohin-inhalt').innerText = inhalt.wohin;
-                document.getElementById('pano-box').style.backgroundImage = "url('" + inhalt.bild + "')";
+                document.getElementById('pano-box').style.backgroundImage = `linear-gradient(to bottom, rgba(0,0,0,0.3), #000), url('${inhalt.bild}')`;
             } else {
-                document.getElementById('wofuer-inhalt').innerText = "Inhalt für " + titel + " folgt.";
-                document.getElementById('wohin-inhalt').innerText = "Zielsetzung folgt.";
+                document.getElementById('wofuer-inhalt').innerText = "Hier entsteht ein Programm zur aktiven Mitgestaltung. Deine Stimme wird gebraucht.";
+                document.getElementById('wohin-inhalt').innerText = "Ziel ist die gemeinschaftliche Erarbeitung dieses Themas.";
                 document.getElementById('pano-box').style.backgroundImage = "none";
             }
             window.scrollTo(0,0);
+        }
+
+        function addComment() {
+            const val = document.getElementById('comment-input').value;
+            if(val) {
+                const list = document.getElementById('comments-list');
+                const p = document.createElement('p');
+                p.innerHTML = `<strong>Anonym:</strong> "${val}"`;
+                list.prepend(p);
+                document.getElementById('comment-input').value = "";
+            }
         }
 
         function showDashboard() {
@@ -159,5 +184,3 @@
     </script>
 </body>
 </html>
-  
- 
