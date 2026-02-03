@@ -4,184 +4,185 @@
     <meta charset="UTF-8">
     <title>M&M-COMMUNITY - Interaktives Fundament</title>
     <style>
-        body { background-color: #000000; color: #ffffff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        body { background-color: #000000; color: #ffffff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
         
-        /* LOGO */
-        .logo-ring { width: 120px; height: 120px; border: 3px solid #ffffff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin: 30px auto; }
-        .logo-mm { font-size: 2.2rem; font-weight: 900; line-height: 0.8; color: #ffffff; }
-        .logo-community { font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; margin-top: 2px; color: #ffffff; }
+        /* LOGO DASHBOARD */
+        .logo-ring { width: 110px; height: 110px; border: 3px solid #ffffff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin: 20px auto; }
+        .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
+        .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
         
-        #dashboard { width: 100%; display: flex; flex-direction: column; align-items: center; }
-        .info-section { width: 90%; max-width: 800px; border: 2px solid #003d8f; padding: 25px; text-align: center; margin-bottom: 40px; background-color: #000; }
+        #dashboard { width: 100%; display: flex; flex-direction: column; align-items: center; padding-bottom: 50px; }
+        .info-section { width: 90%; max-width: 800px; border: 2px solid #003d8f; padding: 20px; text-align: center; margin-bottom: 30px; }
         
-        /* GRID: 4 Spalten, von oben nach unten nummeriert */
-        .grid { 
-            display: grid; 
-            grid-template-columns: repeat(4, 1fr); 
-            grid-template-rows: repeat(5, auto); 
-            grid-auto-flow: column; 
-            gap: 15px; 
-            width: 95%; 
-            max-width: 1400px; 
-            margin-bottom: 20px; 
-        }
+        /* GRID VERTIKAL */
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, auto); grid-auto-flow: column; gap: 12px; width: 95%; max-width: 1300px; margin-bottom: 20px; }
+        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 55px; cursor: pointer; transition: 0.2s; }
+        .box:hover { border-color: #fff; background: #001a3d; }
+        .num { width: 40px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; font-size: 0.9rem; flex-shrink: 0; }
+        .text { padding: 8px; text-transform: uppercase; font-size: 0.75rem; display: flex; align-items: center; flex-grow: 1; font-weight: bold; }
 
-        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 60px; cursor: pointer; }
-        .fundament-container { display: flex; width: 95%; max-width: 1400px; gap: 15px; margin-bottom: 50px; }
+        .fundament-container { display: flex; width: 95%; max-width: 1300px; gap: 12px; }
         .fundament-box { flex: 1; }
-        
-        /* Nummer und Text Style */
-        .num { width: 45px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; color: #ffffff; flex-shrink: 0; }
-        .text { padding: 10px; text-transform: uppercase; font-size: 0.75rem; display: flex; align-items: center; flex-grow: 1; color: #ffffff; font-weight: bold; }
-        .box:hover, .fundament-box:hover { border-color: #ffffff; }
 
-        /* INFO SEITE */
-        #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; padding-bottom: 100px; }
-        .panorama-container { width: 100%; height: 45vh; position: relative; background-size: cover; background-position: center; border-bottom: 4px solid #003d8f; background-color: #111; }
+        /* INFO KANAL LAYOUT */
+        #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; min-height: 100vh; }
+        .pano-wrapper { width: 100%; display: flex; justify-content: center; margin-top: 20px; }
+        .panorama-container { 
+            width: 80%; /* 10% links/rechts Rand */
+            height: 25vh; /* 25% Bildschirmhöhe */
+            background-size: cover; 
+            background-position: center; 
+            border: 2px solid #003d8f;
+            position: relative;
+        }
         
-        .logo-overlay { position: absolute; top: 20px; left: 20px; transform: scale(0.6); transform-origin: top left; margin: 0; }
-        
-        .content-area { width: 90%; max-width: 900px; margin-top: 40px; }
-        .text-block { background: rgba(255,255,255,0.05); padding: 20px; border-left: 4px solid #003d8f; margin-bottom: 20px; }
-        
-        h3 { color: #003d8f; text-transform: uppercase; margin-top: 0; }
-        p { line-height: 1.6; font-size: 1.1rem; }
-
-        .back-btn { margin-bottom: 20px; padding: 10px 25px; border: 2px solid #ffffff; background: none; color: #ffffff; cursor: pointer; font-weight: bold; text-transform: uppercase; align-self: flex-start; }
-        .back-btn:hover { background: #fff; color: #000; }
+        .content-area { width: 80%; max-width: 1000px; margin-top: 30px; text-align: left; }
+        .text-section { border-left: 4px solid #003d8f; padding-left: 20px; margin-bottom: 30px; }
+        h2 { color: #003d8f; margin: 0 0 10px 0; text-transform: uppercase; }
+        p { line-height: 1.6; font-size: 1.05rem; margin-bottom: 20px; }
 
         /* KOMMENTARE */
-        .comment-box { margin-top: 50px; border-top: 1px solid #333; padding-top: 30px; }
-        textarea { width: 100%; height: 100px; background: #111; color: #fff; border: 1px solid #333; padding: 15px; margin-top: 10px; }
-        .send-btn { background: #003d8f; color: white; border: none; padding: 10px 30px; margin-top: 10px; cursor: pointer; font-weight: bold; }
+        .comment-area { background: #111; padding: 20px; border: 1px solid #333; margin-top: 40px; }
+        .comment-list { margin-bottom: 20px; max-height: 200px; overflow-y: auto; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .comment-item { padding: 8px; border-bottom: 1px solid #222; font-size: 0.9rem; color: #ccc; }
+        textarea { width: 100%; height: 80px; background: #000; color: #fff; border: 1px solid #003d8f; padding: 10px; box-sizing: border-box; }
+        .btn-send { background: #003d8f; color: #fff; border: none; padding: 10px 20px; cursor: pointer; margin-top: 10px; font-weight: bold; }
+
+        /* NAVIGATION UNTEN */
+        .nav-footer { width: 80%; max-width: 1000px; display: flex; justify-content: space-between; margin: 40px 0 60px 0; }
+        .nav-btn { padding: 15px 30px; border: 2px solid #fff; background: none; color: #fff; cursor: pointer; font-weight: bold; text-transform: uppercase; min-width: 150px; }
+        .nav-btn:hover { background: #fff; color: #000; }
+        .home-btn { padding: 15px 30px; border: 2px solid #003d8f; background: none; color: #003d8f; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div id="dashboard">
-        <div class="logo-ring">
-            <div class="logo-mm">M&M</div>
-            <div class="logo-community">COMMUNITY</div>
-        </div>
-
-        <div class="info-section">
-            <h1 style="font-size: 2.5rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
-            <h2 style="color: #003d8f; font-size: 1.5rem; margin: 5px 0 20px 0;">INTERAKTIVES FUNDAMENT</h2>
-            <p>Wähle ein Programm, informiere dich und gestalte anonym mit.</p>
-        </div>
-
-        <div class="grid" id="main-grid"></div>
-
-        <div class="fundament-container">
-            <div class="fundament-box" onclick="showInfo('Kapital und Verwaltung', 21)">
-                <div class="num">21</div>
-                <div class="text">Kapital und Verwaltung</div>
-            </div>
-            <div class="fundament-box" onclick="showInfo('Das Kollektiv', 22)">
-                <div class="num">22</div>
-                <div class="text">Das Kollektiv</div>
-            </div>
-        </div>
+<div id="dashboard">
+    <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
+    <div class="info-section">
+        <h1 style="margin:0;">DAS WAS & WARUM</h1>
+        <h2 style="color:#003d8f; margin:0;">INTERAKTIVES FUNDAMENT</h2>
     </div>
+    <div class="grid" id="main-grid"></div>
+    <div class="fundament-container">
+        <div class="fundament-box" onclick="openBox(21)"><div class="num">21</div><div class="text">Kapital und Verwaltung</div></div>
+        <div class="fundament-box" onclick="openBox(22)"><div class="num">22</div><div class="text">Das Kollektiv</div></div>
+    </div>
+</div>
 
-    <div id="info-kanal">
-        <div class="panorama-container" id="pano-box">
-            <div class="logo-ring logo-overlay">
-                <div class="logo-mm">M&M</div>
-                <div class="logo-community">COMMUNITY</div>
-            </div>
-        </div>
+<div id="info-kanal">
+    <div class="pano-wrapper"><div class="panorama-container" id="pano-img"></div></div>
+    <div class="content-area">
+        <h1 id="title-display" style="font-size: 2.5rem; margin-bottom: 5px;"></h1>
+        <h3 id="nr-display" style="color:#003d8f; margin-top:0;"></h3>
         
-        <div class="content-area">
-            <button class="back-btn" onclick="showDashboard()">Zurück</button>
-            <h1 id="info-titel" style="font-size: 3rem; margin-bottom: 30px;"></h1>
-            
-            <div class="text-block">
-                <h3>WOFÜR</h3>
-                <p id="wofuer-inhalt"></p>
-            </div>
-            
-            <div class="text-block">
-                <h3>WOHIN</h3>
-                <p id="wohin-inhalt"></p>
-            </div>
+        <div class="text-section">
+            <h2>Wofür</h2>
+            <p id="wofuer-txt"></p>
+        </div>
+        <div class="text-section">
+            <h2>Wohin</h2>
+            <p id="wohin-txt"></p>
+        </div>
 
-            <div class="comment-box">
-                <h4>DEIN ANONYMER BEITRAG</h4>
-                <textarea id="comment-in" placeholder="Schreibe deine Gedanken zu diesem Thema..."></textarea>
-                <button class="send-btn" onclick="alert('Danke für deinen Beitrag!')">ABSENDEN</button>
-            </div>
+        <div class="comment-area">
+            <h3>DISKUSSION & AUSTAUSCH</h3>
+            <div class="comment-list" id="comment-list"></div>
+            <textarea id="comment-input" placeholder="Deine Gedanken zu diesem Thema..."></textarea>
+            <button class="btn-send" onclick="postComment()">BEITRAG TEILEN</button>
         </div>
     </div>
 
-    <script>
-        const themen = [
-            "Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", 
-            "Programm für Bürgerliche Rechte", "Moralische Gesetze und Verantwortung",
-            "Menschlichkeit - Wiederherstellung", "Kinderschutz - Pflicht - Eltern Rechte",
-            "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition",
-            "Religions Bekenntnis", "Arbeitsrecht und Mobbing",
-            "Gesundheitswesen", "Arbeitswelt", "Jugendsprecher",
-            "Pensionisten Ratgeber", "Sozialgehilfen",
-            "Nachbarschaft und Gemeinschaft", "Mensch & Technik", "Die Brücke"
-        ];
+    <div class="nav-footer">
+        <button class="nav-btn" id="prevBtn" onclick="prevBox()">← Zurück</button>
+        <button class="home-btn" onclick="showDashboard()">ÜBERSICHT</button>
+        <button class="nav-btn" id="nextBtn" onclick="nextBox()">Weiter →</button>
+    </div>
+</div>
 
-        // Hier sind alle Daten für JEDE Box gespeichert
-        const datenbank = {
-            1: { 
-                wofuer: "Komm wie du bist – unabhängig von Identität, Nationalität, Religion, Hautfarbe oder Sexualität. Die Gefühlsvorderung stellt den Menschen in den Mittelpunkt.", 
-                wohin: "Eine Gemeinschaft ohne Ausgrenzung.",
-                bild: "https://picsum.photos/id/1011/1200/600"
-            },
-            10: { 
-                wofuer: "Verbindung von bewährten Werten mit modernen Entwicklungen.", 
-                wohin: "Stabilität in einer sich wandelnden Welt.",
-                bild: "https://picsum.photos/id/1059/1200/600"
-            },
-            21: { 
-                wofuer: "Transparente Verwaltung der Ressourcen der Community.", 
-                wohin: "Wirtschaftliche Unabhängigkeit.",
-                bild: "https://picsum.photos/id/1060/1200/600"
-            },
-            22: { 
-                wofuer: "Das Herzstück der M&M-Community. Das Zusammenkommen der stillen Million.", 
-                wohin: "Ein starkes, unerschütterliches Netzwerk.",
-                bild: "https://picsum.photos/id/1074/1200/600"
-            }
-        };
+<script>
+    const themen = [
+        "Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", 
+        "Moralische Gesetze und Verantwortung", "Menschlichkeit - Wiederherstellung", "Kinderschutz - Pflicht - Eltern Rechte", 
+        "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religions Bekenntnis", 
+        "Arbeitsrecht und Mobbing", "Gesundheitswesen", "Arbeitswelt", "Jugendsprecher", 
+        "Pensionisten Ratgeber", "Sozialgehilfen", "Nachbarschaft und Gemeinschaft", "Mensch & Technik", "Die Brücke",
+        "Kapital und Verwaltung", "Das Kollektiv"
+    ];
 
+    const boxDaten = {
+        1: { wofuer: "Komm wie du bist. Unabhängig von Identität, Nationalität oder Religion. Hier fordern wir echtes Gefühl ein.", wohin: "In eine Welt der radikalen Akzeptanz.", img: "https://picsum.photos/id/652/1200/400" },
+        2: { wofuer: "Die Rückbesinnung auf das, was uns als Spezies ausmacht. Menschlichkeit jenseits von Profit.", wohin: "Zurück zur Würde.", img: "https://picsum.photos/id/64/1200/400" },
+        10: { wofuer: "Trend und Tradition verbindet unsere Wurzeln mit dem Puls der Zeit.", wohin: "Beständigkeit im Wandel.", img: "https://picsum.photos/id/1059/1200/400" },
+        20: { wofuer: "Die Brücke verbindet Gegensätze und schafft Raum für Dialog.", wohin: "Überwindung der Spaltung.", img: "https://picsum.photos/id/445/1200/400" }
+    };
+
+    let currentNr = 1;
+    const comments = {}; // Speichert Kommentare pro Box-Nummer
+
+    function buildGrid() {
         const grid = document.getElementById('main-grid');
+        for(let i=1; i<=20; i++) {
+            const b = document.createElement('div');
+            b.className = 'box';
+            b.onclick = () => openBox(i);
+            b.innerHTML = `<div class="num">${i}</div><div class="text">${themen[i-1]}</div>`;
+            grid.appendChild(b);
+        }
+    }
 
-        themen.forEach((thema, index) => {
-            const nr = index + 1;
-            const box = document.createElement('div');
-            box.className = 'box';
-            box.onclick = () => showInfo(thema, nr);
-            box.innerHTML = `<div class="num">${nr}</div><div class="text">${thema}</div>`;
-            grid.appendChild(box);
+    function openBox(nr) {
+        currentNr = nr;
+        document.getElementById('dashboard').style.display = 'none';
+        document.getElementById('info-kanal').style.display = 'flex';
+        updateContent();
+    }
+
+    function updateContent() {
+        const data = boxDaten[currentNr] || { 
+            wofuer: `Einladung zum Austausch über ${themen[currentNr-1]}. Teile deine Sichtweise!`, 
+            wohin: "Gemeinsam definieren wir das Ziel dieses Programms.",
+            img: `https://picsum.photos/id/${currentNr+20}/1200/400` 
+        };
+        
+        document.getElementById('title-display').innerText = themen[currentNr-1];
+        document.getElementById('nr-display').innerText = "PROGRAMM NR. " + currentNr;
+        document.getElementById('wofuer-txt').innerText = data.wofuer;
+        document.getElementById('wohin-txt').innerText = data.wohin;
+        document.getElementById('pano-img').style.backgroundImage = `url('${data.img}')`;
+        
+        renderComments();
+        window.scrollTo(0,0);
+    }
+
+    function renderComments() {
+        const list = document.getElementById('comment-list');
+        list.innerHTML = "";
+        const boxComments = comments[currentNr] || ["Noch keine Beiträge. Sei der Erste!"];
+        boxComments.forEach(c => {
+            const div = document.createElement('div');
+            div.className = 'comment-item';
+            div.innerText = c;
+            list.appendChild(div);
         });
+    }
 
-        function showInfo(titel, nummer) {
-            const info = datenbank[nummer] || { 
-                wofuer: "Text Gemini eingeben: Dieses Programm fördert den Austausch zum Thema " + titel + ".", 
-                wohin: "Ziel ist die Stärkung der Gemeinschaft durch aktive Beteiligung.",
-                bild: "https://picsum.photos/id/" + (nummer + 10) + "/1200/600"
-            };
-            
-            document.getElementById('dashboard').style.display = 'none';
-            document.getElementById('info-kanal').style.display = 'flex';
-            
-            document.getElementById('info-titel').innerText = titel;
-            document.getElementById('wofuer-inhalt').innerText = info.wofuer;
-            document.getElementById('wohin-inhalt').innerText = info.wohin;
-            document.getElementById('pano-box').style.backgroundImage = "url('" + info.bild + "')";
-            window.scrollTo(0,0);
-        }
+    function postComment() {
+        const input = document.getElementById('comment-input');
+        if(!input.value) return;
+        if(!comments[currentNr]) comments[currentNr] = [];
+        comments[currentNr].push(input.value);
+        input.value = "";
+        renderComments();
+    }
 
-        function showDashboard() {
-            document.getElementById('info-kanal').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'flex';
-        }
-    </script>
+    function nextBox() { if(currentNr < 22) { currentNr++; updateContent(); } }
+    function prevBox() { if(currentNr > 1) { currentNr--; updateContent(); } }
+    function showDashboard() { document.getElementById('info-kanal').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; }
+
+    buildGrid();
+</script>
 </body>
 </html>
+      
+      
