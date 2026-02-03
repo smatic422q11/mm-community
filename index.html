@@ -13,103 +13,103 @@
             min-height: 100vh; overflow-x: hidden; 
         }
         
-        /* HEADER - Story nur auf Seite 2 */
+        /* HEADER - Story Button Positionierung */
         .dashboard-header { 
             width: 100%; position: absolute; top: 3%; 
-            display: flex; justify-content: space-between; align-items: flex-start; 
-            padding: 0 5%; box-sizing: border-box; z-index: 20;
+            display: flex; justify-content: flex-end; 
+            padding: 0 5%; box-sizing: border-box; z-index: 30;
         }
 
         .logo-ring { 
-            width: 110px; height: 110px; border: 3px solid #fff; 
+            width: 90px; height: 90px; border: 2px solid #fff; 
             background-color: #003d8f; border-radius: 50%; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            position: absolute; top: 15px; left: 15px;
         }
-        .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
-        .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
+        .logo-mm { font-size: 1.6rem; font-weight: 900; line-height: 0.8; }
+        .logo-community { font-size: 0.5rem; letter-spacing: 1px; text-transform: uppercase; font-weight: bold; }
         
         .story-trigger { 
             width: 85px; height: 85px; border: 3px solid #25D366; border-radius: 50%; 
             cursor: pointer; display: flex; align-items: center; justify-content: center; 
-            background: #111; font-weight: bold; 
+            background: #111; font-weight: bold; margin-right: -20px; /* Leicht nach rechts verschoben */
         }
 
-        /* WERBETAFEL / INFO BOX */
-        .info-section, .werbe-tafel { 
-            width: 80%; height: 27.5vh; margin-top: 3vh; 
+        /* TITEL ÜBER DER TAFEL */
+        .page-title {
+            width: 80%; text-align: center; margin-top: 5vh;
+            font-size: 2.5rem; font-weight: 900; text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* WERBETAFEL MIT FOTO-PLATZHALTER */
+        .werbe-tafel { 
+            width: 80%; height: 27.5vh; margin-top: 2vh; 
             border: 2px solid #003d8f; display: flex; 
-            flex-direction: column; justify-content: center; align-items: center; 
-            text-align: center; padding: 20px; box-sizing: border-box;
-            position: relative;
+            justify-content: center; align-items: center; 
+            position: relative; overflow: hidden;
+            background: #050505;
         }
 
-        .info-description { max-width: 85%; color: #ccc; font-size: 1.4rem; line-height: 1.4; margin-top: 10px; }
-
-        .grid { 
-            display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); 
-            grid-auto-flow: column; gap: 15px; width: 95%; max-width: 1400px; margin-top: 40px;
+        .werbe-bg-foto {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('https://via.placeholder.com/1200x400/111111/444444?text=+'); /* Platzhalter für Foto */
+            background-size: cover; background-position: center; opacity: 0.6;
         }
 
-        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 60px; position: relative; }
-        .num { width: 45px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; font-size: 1.1rem; }
+        .werbe-overlay-text {
+            position: relative; z-index: 10;
+            font-size: 1.8rem; color: rgba(255, 255, 255, 0.4); /* Dezent hell/dunkel */
+            text-transform: uppercase; font-weight: bold; letter-spacing: 5px;
+        }
+
+        /* INHALT: WOFÜR & WOHIN */
+        .detail-content { width: 80%; border: 1px solid #003d8f; padding: 30px; background: #000; margin-top: 20px; text-align: left; }
+        .label-style { color: #003d8f; font-weight: bold; text-transform: uppercase; font-size: 1.2rem; margin-bottom: 10px; display: block; }
+        
+        /* DASHBOARD GRID */
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 15px; width: 95%; max-width: 1400px; margin-top: 40px; }
+        .box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 60px; position: relative; }
+        .num { width: 45px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; }
         .text { padding: 15px; text-transform: uppercase; font-size: 0.75rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; }
         .text:hover { background: #003d8f; }
 
-        .fundament-container { display: flex; width: 95%; max-width: 1400px; gap: 15px; margin-top: 15px; margin-bottom: 50px; }
-        .fundament-box { flex: 1; }
-        .locked-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; }
-
-        /* INFO KANAL SEITE 2 */
-        #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; padding-top: 0; }
-        .detail-content { width: 80%; border: 1px solid #003d8f; padding: 40px; background: #050505; margin-top: 20px; text-align: left; }
-        .label-style { color: #003d8f; font-weight: bold; text-transform: uppercase; font-size: 1.2rem; margin-bottom: 10px; display: block; }
-        .back-btn { margin: 50px 0; padding: 15px 40px; border: 2px solid #fff; background: none; color: #fff; cursor: pointer; }
+        .back-btn { margin: 30px 0; padding: 15px 40px; border: 2px solid #fff; background: none; color: #fff; cursor: pointer; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
     <div id="dashboard-container" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-        <div class="dashboard-header" style="justify-content: flex-start;">
-            <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
+        <div class="werbe-tafel" style="margin-top: 3vh;">
+             <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
+             <div class="werbe-overlay-text" style="color:#fff; font-size: 2.5rem; opacity: 1;">DAS WAS & WARUM</div>
         </div>
-
-        <div class="info-section">
-            <h1 style="font-size: 2.8rem; margin: 0;">DAS WAS & WARUM</h1>
-            <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
-            <p class="info-description">
-                Die M&M-Community ist das Fundament für alle, die im Kollektiv wachsen wollen. Die Wahl der Vorsitzenden erfolgt erst nach Erreichen der stillen Million.
-            </p>
-        </div>
-
         <div class="grid" id="main-grid"></div>
-
-        <div class="fundament-container">
-            <div class="fundament-box"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div><div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div></div>
-            <div class="fundament-box"><div class="num">21</div><div class="text">KAPITAL UND VERWALTUNG</div><div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div></div>
-        </div>
+        <button class="back-btn" style="opacity: 0.5; cursor: default;">FUNDAMENT (BOX 21/22 UNTEN)</button>
     </div>
 
-    <div id="info-kanal">
+    <div id="info-kanal" style="display: none;">
         <div class="dashboard-header">
-            <div></div> <div class="story-trigger">STORY</div>
+            <div class="story-trigger">STORY</div>
         </div>
 
+        <h1 id="info-titel" class="page-title"></h1>
+
         <div class="werbe-tafel">
-            <div class="logo-ring" style="transform: scale(0.8); margin-bottom: 10px;">
-                <div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div>
-            </div>
-            <h1 id="info-titel" style="color: #fff; font-size: 2.2rem; text-transform: uppercase; margin: 0;"></h1>
+            <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
+            
+            <div class="werbe-bg-foto"></div>
+            <div class="werbe-overlay-text">Hier ist Platz für Werbung</div>
         </div>
 
         <div class="detail-content">
             <span class="label-style">Wofür</span>
-            <p id="wofuer-text" style="font-size: 1.4rem; line-height: 1.6; margin-top: 0;"></p>
-            
-            <hr style="border: 0; border-top: 1px solid #003d8f; margin: 30px 0;">
-            
+            <p id="wofuer-text" style="font-size: 1.3rem; line-height: 1.5; margin-top: 0;"></p>
+            <hr style="border: 0; border-top: 1px solid #003d8f; margin: 20px 0;">
             <span class="label-style">Wohin</span>
-            <p id="wohin-text" style="font-size: 1.2rem; color: #ccc; margin-top: 0;"></p>
+            <p id="wohin-text" style="font-size: 1.1rem; color: #ccc; margin-top: 0;"></p>
         </div>
+        
         <button class="back-btn" onclick="showDashboard()">ZURÜCK ZUM FUNDAMENT</button>
     </div>
 
@@ -154,6 +154,3 @@
     </script>
 </body>
 </html>
-
-       
-          
