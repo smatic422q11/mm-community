@@ -2,143 +2,172 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>M&M-COMMUNITY - Das Komplette Fundament</title>
+    <title>M&M-COMMUNITY - Interaktives Fundament</title>
     <style>
         body { background-color: #000000; color: #ffffff; font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         .logo-ring { width: 120px; height: 120px; border: 3px solid #ffffff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin: 30px auto 30px 2.5%; }
         .logo-mm { font-size: 2.2rem; font-weight: 900; line-height: 0.8; color: #ffffff; }
         .logo-community { font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; margin-top: 2px; color: #ffffff; }
-        
-        /* DASHBOARD STRUKTUR */
         #dashboard { width: 100%; display: flex; flex-direction: column; align-items: center; }
-        
-        /* SEKTOREN-BOX (NEU: DAS DAHINTER) */
-        .sektoren-monitor { width: 90%; max-width: 1400px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; border: 2px solid #ff4d4d; padding: 20px; background: #0a0a0a; }
-        .sektor-liste { color: #ff4d4d; font-size: 0.8rem; list-style: none; padding: 0; }
-        .sektor-liste li { display: flex; justify-content: space-between; border-bottom: 1px solid #222; padding: 5px 0; }
-        
-        .counter-box { text-align: center; border-left: 2px solid #003d8f; padding-left: 20px; }
-        .status-lock { font-weight: bold; color: #ff4d4d; text-transform: uppercase; letter-spacing: 2px; }
-
-        .info-section { width: 90%; max-width: 800px; border: 2px solid #003d8f; padding: 20px; text-align: center; margin-bottom: 40px; }
-        
-        /* GRID & BOXEN */
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; width: 95%; max-width: 1400px; margin-bottom: 15px; }
-        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000000; min-height: 50px; }
+        .info-section { width: 90%; max-width: 800px; border: 2px solid #003d8f; padding: 20px; text-align: center; margin-bottom: 40px; background-color: #000000; }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 15px; width: 95%; max-width: 1400px; margin-bottom: 15px; }
         .fundament-container { display: flex; width: 95%; max-width: 1400px; gap: 15px; margin-bottom: 50px; }
-        .fundament-box { flex: 1; }
-        .num { width: 40px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; }
-        .text { padding: 10px; text-transform: uppercase; font-size: 0.75rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; }
+        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000000; min-height: 50px; position: relative; }
+        .fundament-box { flex: 1; position: relative; overflow: hidden; }
+        .num { width: 40px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; color: #ffffff; }
+        .text { padding: 10px; text-transform: uppercase; font-size: 0.75rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; color: #ffffff; }
         .text:hover { color: #003d8f; background: #111; }
+        
+        /* Sperre für 21 & 22 */
+        .locked-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; text-align: center; font-size: 0.6rem; padding: 5px; z-index: 10; color: #aaa; pointer-events: none; }
 
-        /* FREIE ZONEN MARKIERUNG */
-        .free-zone-marker { border: 1px dashed #444; color: #444; font-size: 0.6rem; text-align: center; padding: 5px; }
-
-        /* INFO KANAL */
+        /* Info-Kanal & Homeoffice */
         #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; }
-        .panorama-container { width: 80%; height: 33vh; margin: 20px auto; position: relative; background-color: #222; background-size: cover; border: 2px solid #003d8f; }
+        .panorama-container { width: 80%; height: 33vh; margin: 20px auto; position: relative; background-color: #222; background-size: cover; background-position: center; border: 2px solid #003d8f; }
+        
+        /* Story-System */
+        .story-trigger { position: absolute; top: 15px; right: 20px; width: 70px; height: 70px; border: 3px solid #25D366; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; background: #000; font-size: 0.7rem; font-weight: bold; }
+
+        .content-area { width: 90%; max-width: 1000px; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px; }
+        
+        /* Homeoffice Style Boxen */
+        .homeoffice-box { border: 1px solid #003d8f; padding: 15px; background: #050505; text-align: left; }
+        .homeoffice-box h3 { color: #003d8f; margin-top: 0; font-size: 1rem; border-bottom: 1px solid #003d8f; padding-bottom: 5px; }
+        
+        textarea { width: 100%; background: #111; color: #fff; border: 1px solid #333; padding: 10px; box-sizing: border-box; resize: none; margin-bottom: 10px; }
+        
+        .vid-btn { background: #003d8f; color: white; border: none; padding: 10px; cursor: pointer; width: 100%; font-weight: bold; text-transform: uppercase; }
+        
+        /* YT Kommentare */
+        .comment-area { grid-column: span 2; border-top: 2px solid #003d8f; padding-top: 20px; text-align: left; }
+        .yt-comment-input { border-bottom: 1px solid #333; padding: 10px 0; margin-bottom: 20px; }
+
+        .back-btn { margin: 40px 0; padding: 10px 30px; border: 2px solid #ffffff; background: none; color: #ffffff; cursor: pointer; text-transform: uppercase; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div id="dashboard">
-    <div class="logo-ring">
-        <div class="logo-mm">M&M</div>
-        <div class="logo-community">COMMUNITY</div>
-    </div>
-
-    <div class="sektoren-monitor">
-        <div>
-            <h3 style="margin-top:0;">SEKTOREN-ABZÜGE (Transparenz)</h3>
-            <ul class="sektor-liste">
-                <li><span>BANKEN / SEPA</span> <span>- 1.2%</span></li>
-                <li><span>STEUERN (SVS/FINANZAMT)</span> <span>- 25.0%</span></li>
-                <li><span>PLATTFORM-GEBÜHREN</span> <span>- 8.0%</span></li>
-                <li style="color: #00ff00; border:none; margin-top:10px;"><strong>NETTO FÜR DAS ZIEL:</strong> <span><strong>65.8%</strong></span></li>
-            </ul>
+    <div id="dashboard">
+        <div class="logo-ring">
+            <div class="logo-mm">M&M</div>
+            <div class="logo-community">COMMUNITY</div>
         </div>
-        <div class="counter-box">
-            <div class="status-lock">🔒 Wahl der Chairmen gesperrt</div>
-            <div style="font-size: 2.5rem; font-weight: 900; margin: 10px 0;">€ 0 / 1.000.000</div>
-            <p style="font-size: 0.7rem;">Ziel: Die Stille Million</p>
+
+        <div class="info-section">
+            <h1 style="font-size: 2.5rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
+            <h2 style="color: #003d8f; font-size: 1.5rem; margin: 5px 0 20px 0;">DIE STILLE MILLION</h2>
+            <p style="text-align: justify; line-height: 1.6;">
+                Die M&M-Community ist das Fundament für alle...
+            </p>
         </div>
-    </div>
 
-    <div class="info-section">
-        <h1 style="font-size: 2.5rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
-        <h2 style="color: #003d8f; font-size: 1.5rem; margin: 5px 0 20px 0;">DIE STILLE MILLION</h2>
-        <p style="text-align: justify; line-height: 1.6;">Die M&M-Community ist das Fundament für alle...</p>
-    </div>
+        <div class="grid" id="main-grid"></div>
 
-    <div class="grid" id="main-grid"></div>
-
-    <div class="fundament-container">
-        <div class="fundament-box">
-            <div class="num">22</div>
-            <div class="text" onclick="showInfo('Das Kollektiv', 22)">Das Kollektiv</div>
-        </div>
-        <div class="fundament-box">
-            <div class="num">21</div>
-            <div class="text" onclick="showInfo('Kapital und Verwaltung', 21)">Kapital und Verwaltung</div>
+        <div class="fundament-container">
+            <div class="fundament-box" id="f-22">
+                <div class="num">22</div>
+                <div class="text">Das Kollektiv</div>
+                <div class="locked-overlay">Sperre: Wahl erst nach der stillen Million.</div>
+            </div>
+            <div class="fundament-box" id="f-21">
+                <div class="num">21</div>
+                <div class="text">Kapital und Verwaltung</div>
+                <div class="locked-overlay">Sperre: Wahl erst nach der stillen Million.</div>
+            </div>
         </div>
     </div>
-    
-    <div class="free-zone-marker">FREIE ZONE: System jederzeit erweiterbar ohne Paralyse</div>
-</div>
 
-<div id="info-kanal">
-    <div class="panorama-container" id="pano-box"></div>
-    <div style="text-align:center; padding: 20px;">
-        <h1 id="info-titel" style="color: #003d8f;"></h1>
-        <div id="info-text" style="max-width: 800px; margin: auto;">
-            <h3>WOFÜR</h3><p id="wofuer-inhalt"></p><br>
-            <h3>WOHIN</h3><p id="wohin-inhalt"></p>
+    <div id="info-kanal">
+        <div class="panorama-container" id="pano-box">
+            <div class="logo-ring logo-overlay" style="transform: scale(0.5); transform-origin: top left; position: absolute; top:0; left:0;">
+                <div class="logo-mm">M&M</div>
+                <div class="logo-community">COMMUNITY</div>
+            </div>
+            <div class="story-trigger" onclick="alert('Story öffnet...')">STORY</div>
         </div>
-        <button onclick="showDashboard()" style="margin-top:40px; padding:10px 30px; border:2px solid #fff; background:none; color:#fff; cursor:pointer;">ZURÜCK</button>
+        
+        <h1 id="info-titel" style="color: #003d8f; margin-bottom: 0;"></h1>
+
+        <div class="content-area">
+            <div class="homeoffice-box">
+                <h3>GEFÜHLSFORDERUNG</h3>
+                <p id="wofuer-inhalt" style="font-size: 0.9rem; line-height: 1.4;"></p>
+                <h3>ZIELSETZUNG</h3>
+                <p id="wohin-inhalt" style="font-size: 0.9rem; line-height: 1.4;"></p>
+            </div>
+
+            <div class="homeoffice-box">
+                <h3>MEIN HOMEOFFICE</h3>
+                <textarea rows="3" placeholder="Meine Bio / Meine Story hinzufügen..."></textarea>
+                <button class="vid-btn" onclick="alert('Video-Modul startet...')">Video-Freischaltung</button>
+            </div>
+
+            <div class="comment-area">
+                <h3>KOMMENTARE (YouTube-Style)</h3>
+                <div class="yt-comment-input">
+                    <textarea rows="1" placeholder="Öffentlich kommentieren..."></textarea>
+                </div>
+                <div id="comments-list" style="color: #888; font-size: 0.8rem;">
+                    Noch keine Kommentare vorhanden. Sei der Erste.
+                </div>
+            </div>
+        </div>
+        
+        <button class="back-btn" onclick="showDashboard()">Zurück zum Fundament</button>
     </div>
-</div>
 
-<script>
-    const boxInhalte = {
-        1: { wofuer: "Hier fordern wir die emotionale Beteiligung ein. Es ist kein Betteln, es ist ein Anspruch.", wohin: "Zementierung des Fundaments durch Gefühlsforderung." },
-        9: { wofuer: "LGBTQ Menschen und Menschen mit Glauben zur Kirche führen...", wohin: "Wahrheit suchen, Spaltung beenden." }
-    };
+    <script>
+        const boxInhalte = {
+            1: { wofuer: "Hier wird die Gefühlsforderung gegenüber Geld und Werten definiert.", wohin: "Wiederherstellung der menschlichen Ehre.", bild: "https://picsum.photos/id/1/1200/400" },
+            9: { wofuer: "Unterstützung von LGBTQ und Gläubigen.", wohin: "Ende der Spaltung im Kollektiv.", bild: "https://picsum.photos/id/10/1200/400" }
+            // Weitere Boxen hier ergänzen...
+        };
 
-    const themen = [
-        "Gefühlsforderung", "Wie werde ich Mensch", "Glaube an Friede", 
-        "Programm für Bürgerliche Rechte", "Moralische Gesetze und Verantwortung",
-        "Menschlichkeit", "Kinderschutz", "Wahre Richtung", "LGBTQ und Kirche", 
-        "Veranstaltungen", "Religions Bekenntnis", "Arbeitsrecht", "Gesundheitswesen", 
-        "Arbeitswelt", "Jugendsprecher", "Pensionisten Ratgeber", "Sozialgehilfen",
-        "Nachbarschaft", "Mensch & Technik", "Die Brücke"
-    ];
+        const themen = [
+            "Gefühlsforderung", "Wie werde ich Mensch", "Glaube an Friede", 
+            "Programm für Bürgerliche Rechte", "Moralische Gesetze und Verantwortung",
+            "Menschlichkeit - Wiederherstellung", "Kinderschutz - Pflicht - Eltern Rechte",
+            "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Veranstaltungen mit Community",
+            "Religions Bekenntnis", "Arbeitsrecht und Mobbing",
+            "Gesundheitswesen", "Arbeitswelt", "Jugendsprecher",
+            "Pensionisten Ratgeber", "Sozialgehilfen",
+            "Nachbarschaft und Gemeinschaft", "Mensch & Technik", "Die Brücke"
+        ];
 
-    const grid = document.getElementById('main-grid');
-    themen.forEach((thema, index) => {
-        const box = document.createElement('div');
-        box.className = 'box';
-        const nummer = index + 1;
-        box.innerHTML = `<div class="num">${nummer}.</div><div class="text" onclick="showInfo('${thema}', ${nummer})">${thema}</div>`;
-        grid.appendChild(box);
-    });
+        const grid = document.getElementById('main-grid');
 
-    function showInfo(titel, nummer) {
-        if((nummer === 21 || nummer === 22)) {
-            alert("ZUGRIFF VERWEIGERT: Erst nach Erreichen der Stillen Million freigeschaltet.");
-            return;
+        themen.forEach((thema, index) => {
+            const box = document.createElement('div');
+            box.className = 'box';
+            const nummer = index + 1;
+            box.innerHTML = `
+                <div class="num">${nummer}.</div>
+                <div class="text" onclick="showInfo('${thema}', ${nummer})">${thema}</div>
+            `;
+            grid.appendChild(box);
+        });
+
+        function showInfo(titel, nummer) {
+            const inhalt = boxInhalte[nummer];
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('info-kanal').style.display = 'flex';
+            document.getElementById('info-titel').innerText = "BOX " + nummer + ": " + titel;
+            
+            if (inhalt) {
+                document.getElementById('wofuer-inhalt').innerText = inhalt.wofuer;
+                document.getElementById('wohin-inhalt').innerText = inhalt.wohin;
+                document.getElementById('pano-box').style.backgroundImage = "url('" + inhalt.bild + "')";
+            } else {
+                document.getElementById('wofuer-inhalt').innerText = "Anregung für " + titel + " wird geladen...";
+                document.getElementById('wohin-inhalt').innerText = "Zielsetzung folgt durch Interaktion.";
+                document.getElementById('pano-box').style.backgroundImage = "none";
+            }
         }
-        const inhalt = boxInhalte[nummer];
-        document.getElementById('dashboard').style.display = 'none';
-        document.getElementById('info-kanal').style.display = 'flex';
-        document.getElementById('info-titel').innerText = "BOX " + nummer + ": " + titel;
-        document.getElementById('wofuer-inhalt').innerText = inhalt ? inhalt.wofuer : "Inhalt folgt...";
-        document.getElementById('wohin-inhalt').innerText = inhalt ? inhalt.wohin : "Ziel folgt...";
-    }
 
-    function showDashboard() {
-        document.getElementById('info-kanal').style.display = 'none';
-        document.getElementById('dashboard').style.display = 'flex';
-    }
-</script>
+        function showDashboard() {
+            document.getElementById('info-kanal').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'flex';
+        }
+    </script>
 </body>
 </html>
