@@ -1,164 +1,122 @@
-HTML
 <!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>M&M-COMMUNITY - Lobby</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plattform - Das Dashboard</title>
     <style>
-        :root { --main-blue: #003d8f; --glow: #0055ff; }
-        body { background-color: #000; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; }
-
-        /* HEADER & TÜR */
-        header { width: 100%; display: flex; justify-content: flex-end; padding: 20px; box-sizing: border-box; position: absolute; }
-        .login-btn { border: 1px solid var(--main-blue); color: #fff; background: none; padding: 10px 20px; cursor: pointer; text-transform: uppercase; font-size: 0.8rem; transition: 0.3s; }
-        .login-btn:hover { background: var(--main-blue); box-shadow: 0 0 10px var(--glow); }
-
-        /* LOGO */
-        .logo-area { display: flex; flex-direction: column; align-items: center; padding-top: 40px; }
-        .logo-ring { width: 100px; height: 100px; border: 2px solid #fff; background: var(--main-blue); border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 0 20px rgba(0,61,143,0.5); }
-        .logo-mm { font-size: 1.8rem; font-weight: 900; line-height: 0.8; }
-        .logo-community { font-size: 0.55rem; letter-spacing: 1.5px; text-transform: uppercase; }
-
-        /* DASHBOARD GRID */
-        #dashboard { display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        .grid { 
-            display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, auto); 
-            grid-auto-flow: column; gap: 15px; width: 95%; max-width: 1200px; margin-top: 30px; 
+        :root {
+            --bg-color: #f8f9fa;
+            --header-color: #1a1a1a;
+            --accent-color: #0056b3;
+            --zone-bg: #ffffff;
+            --alert-color: #d9534f;
         }
 
-        .box { display: flex; border: 1px solid var(--main-blue); background: #000; min-height: 60px; cursor: pointer; position: relative; transition: 0.3s; }
-        .box:hover { border-color: #fff; background: #050505; }
-        
-        .num { width: 40px; display: flex; align-items: center; justify-content: center; background: var(--main-blue); font-weight: bold; }
-        .text { padding: 10px; font-size: 0.75rem; text-transform: uppercase; display: flex; align-items: center; flex-grow: 1; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--bg-color); color: #333; line-height: 1.6; }
 
-        /* LIVE PULSE */
-        .pulse { position: absolute; top: 5px; right: 5px; width: 6px; height: 6px; background: #fff; border-radius: 50%; box-shadow: 0 0 8px #fff; animation: blink 2s infinite; }
-        @keyframes blink { 0% { opacity: 0.2; } 50% { opacity: 1; } 100% { opacity: 0.2; } }
+        /* HEADER & LOGO */
+        header { 
+            background: var(--header-color); color: white; 
+            padding: 1rem 5%; display: flex; justify-content: space-between; 
+            align-items: center; position: sticky; top: 0; z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .logo { font-size: 1.5rem; font-weight: bold; letter-spacing: 1px; }
 
-        /* FUNDAMENT */
-        .fundament-row { display: flex; width: 95%; max-width: 1200px; gap: 15px; margin-top: 15px; margin-bottom: 50px; }
-        .f-box { flex: 1; display: flex; border: 1px solid #fff; background: #000; min-height: 60px; cursor: pointer; }
+        /* HAUPTCONTAINER */
+        .container { max-width: 1100px; margin: 20px auto; padding: 0 20px; }
 
-        /* INFO KANAL */
-        #info-kanal { display: none; flex-direction: column; align-items: center; width: 100%; }
-        .pano-frame { width: 80%; height: 25vh; border: 1px solid var(--main-blue); margin-top: 20px; background-size: cover; background-position: center; }
-        .content { width: 80%; max-width: 900px; margin-top: 30px; }
-        .section { border-left: 3px solid var(--main-blue); padding-left: 20px; margin-bottom: 30px; }
+        /* DIE FREIEN ZONEN (Platzhalter für Vision & Texte) */
+        .free-zone { 
+            background: var(--zone-bg); border: 1px solid #ddd; 
+            padding: 30px; margin-bottom: 30px; border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        /* WERBETAFEL (Strategischer Bereich) */
+        .promo-board { 
+            background: #333; color: #fff; padding: 40px; 
+            text-align: center; border-radius: 8px; margin-bottom: 30px;
+        }
+
+        /* SEKTOREN-RECHNER (Die Wahrheit über die Abzüge) */
+        .sector-analysis { 
+            background: #fff; border-left: 5px solid var(--alert-color);
+            padding: 20px; border-radius: 8px; margin-bottom: 30px;
+        }
+        .sector-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; }
+        .sector-item { background: #f1f1f1; padding: 15px; border-radius: 4px; text-align: center; }
+
+        /* STATUS & SPERRE */
+        .status-bar { 
+            background: #e9ecef; border-radius: 20px; height: 30px; 
+            width: 100%; margin: 20px 0; overflow: hidden; position: relative;
+        }
+        .progress { background: var(--accent-color); height: 100%; width: 0%; transition: width 0.5s; }
         
-        /* NAV BUTTONS */
-        .nav-bar { width: 80%; display: flex; justify-content: space-between; margin: 40px 0; }
-        .nav-btn { background: none; border: 1px solid #fff; color: #fff; padding: 10px 25px; cursor: pointer; text-transform: uppercase; font-size: 0.8rem; }
-        
-        /* COMMENTS */
-        .comment-wrap { background: #0a0a0a; padding: 20px; border: 1px solid #222; margin-top: 20px; }
-        #comment-list { max-height: 200px; overflow-y: auto; margin-bottom: 15px; font-size: 0.9rem; color: #bbb; }
-        textarea { width: 100%; background: #000; color: #fff; border: 1px solid var(--main-blue); padding: 10px; box-sizing: border-box; }
+        .election-lock { 
+            background: #fff3cd; border: 1px solid #ffeeba; 
+            padding: 20px; text-align: center; border-radius: 8px; 
+            font-weight: bold; color: #856404;
+        }
+
+        /* FOOTER (Rechtliche Hülle) */
+        footer { text-align: center; padding: 40px; font-size: 0.8rem; color: #777; }
     </style>
 </head>
 <body>
 
 <header>
-    <button class="login-btn" onclick="alert('Hier öffnet sich bald das Profil-Zentrum.')">Anmelden / Profil</button>
+    <div class="logo">LOGO / PLATTFORM</div>
+    <nav>Dashboard | Sektoren | Kontakt</nav>
 </header>
 
-<div id="dashboard">
-    <div class="logo-area">
-        <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
-        <p style="color: var(--main-blue); font-weight: bold; margin-top: 15px; letter-spacing: 2px;">LOBBY DER STILLEN MILLION</p>
+<div class="container">
+
+    <div class="promo-board">
+        <h2>DIE WERBETAFEL</h2>
+        <p>Hier wird die Aufmerksamkeit gesteuert.</p>
     </div>
 
-    <div class="grid" id="main-grid"></div>
-
-    <div class="fundament-row">
-        <div class="f-box" onclick="openBox(21)"><div class="num">21</div><div class="text">Kapital und Verwaltung</div></div>
-        <div class="f-box" onclick="openBox(22)"><div class="num">22</div><div class="text">Das Kollektiv</div></div>
+    <div class="free-zone">
+        <h3>Vision & Inhalt</h3>
+        <p><i>Dieser Bereich ist eine freie Zone. Hier kannst du Texte einfügen, ohne das System zu paralysieren.</i></p>
     </div>
-</div>
 
-<div id="info-kanal">
-    <div class="pano-frame" id="pano"></div>
-    <div class="content">
-        <h1 id="title" style="margin:0;"></h1>
-        <p id="nr-label" style="color: var(--main-blue); margin-bottom: 30px;"></p>
-        
-        <div class="section"><h3>WOFÜR</h3><p id="wofuer"></p></div>
-        <div class="section"><h3>WOHIN</h3><p id="wohin"></p></div>
-
-        <div class="comment-wrap">
-            <h4 style="margin-top:0;">DISKUSSION (ANONYM)</h4>
-            <div id="comment-list"></div>
-            <textarea id="com-input" placeholder="Gedanken teilen..."></textarea>
-            <button class="login-btn" style="margin-top:10px" onclick="addComment()">Absenden</button>
+    <div class="sector-analysis">
+        <h3>Sektoren-Transparenz</h3>
+        <p>Was von deinem Beitrag wirklich im Kapital ankommt:</p>
+        <div class="sector-grid">
+            <div class="sector-item"><strong>Patreon</strong><br>10% Gebühr</div>
+            <div class="sector-item"><strong>Staat</strong><br>Steuern (Österreich)</div>
+            <div class="sector-item"><strong>Bank</strong><br>SEPA-Gebühren</div>
+            <div class="sector-item"><strong>Netto</strong><br>Das echte Kapital</div>
         </div>
     </div>
 
-    <div class="nav-bar">
-        <button class="nav-btn" onclick="prevBox()">← Vorheriges</button>
-        <button class="nav-btn" style="border-color: var(--main-blue)" onclick="home()">Übersicht</button>
-        <button class="nav-btn" onclick="nextBox()">Nächstes →</button>
+    <div class="free-zone">
+        <h3>Strategische Reserve / Freie Zone</h3>
+        <p>Platzhalter für zukünftige Entwicklungen.</p>
     </div>
+
+    <div class="free-zone">
+        <h3>Fortschritt bis zur Stillen Million</h3>
+        <div class="status-bar">
+            <div class="progress" style="width: 5%;"></div> </div>
+        <p>Status: In Vorbereitung. Erst bei Erreichung des Meilensteins wird die Wahl freigeschaltet.</p>
+    </div>
+
+    <div class="election-lock" id="lock-message">
+        🔒 WAHL DER CHAIRMEN GESPERRT<br>
+        Die Wahlfunktion wird erst aktiviert, wenn das Ziel erreicht ist.
+    </div>
+
 </div>
 
-<script>
-    const themen = ["Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Gesetze und Verantwortung", "Menschlichkeit", "Kinderschutz", "Wahre Richtung & Kunst", "LGBTQ & Kirche", "Trend und Tradition", "Religions Bekenntnis", "Arbeitsrecht & Mobbing", "Gesundheitswesen", "Arbeitswelt", "Jugendsprecher", "Pensionisten Ratgeber", "Sozialgehilfen", "Nachbarschaft", "Mensch & Technik", "Die Brücke", "Kapital und Verwaltung", "Das Kollektiv"];
-    
-    const db = {
-        1: { w: "Komm wie du bist. Ohne Maske, ohne Vorurteil. Deine Identität spielt keine Rolle, nur dein Menschsein.", z: "In eine Gemeinschaft, die auf echtes Gefühl baut." },
-        10: { w: "Verbindung von echten Werten mit dem Geist der neuen Zeit.", z: "Ein stabiles Morgen auf festen Wurzeln." },
-        21: { w: "Transparente Verwaltung der Community-Ressourcen.", z: "Dieser Raum wird aktiv, sobald die Stille Million erreicht ist." },
-        22: { w: "Die Bündelung aller Kräfte der Gemeinschaft.", z: "Das finale Ziel: Die Sichtbarkeit der Stillen Million." }
-    };
+<footer>
+    &copy; 2026 Plattform Projekt | <a href="#">Impressum</a> | <a href="#">Datenschutz</a>
+</footer>
 
-    let cur = 1;
-    const cms = {};
-
-    function init() {
-        const g = document.getElementById('main-grid');
-        for(let i=1; i<=20; i++) {
-            const b = document.createElement('div');
-            b.className = 'box';
-            b.onclick = () => openBox(i);
-            // Zufälliger Live-Pulse
-            const pulse = Math.random() > 0.5 ? '<div class="pulse"></div>' : '';
-            b.innerHTML = `<div class="num">${i}</div><div class="text">${themen[i-1]}</div>${pulse}`;
-            g.appendChild(b);
-        }
-    }
-
-    function openBox(n) {
-        cur = n;
-        document.getElementById('dashboard').style.display = 'none';
-        document.getElementById('info-kanal').style.display = 'flex';
-        const d = db[n] || { w: "Austausch zum Thema " + themen[n-1], z: "Gemeinsame Wege finden." };
-        document.getElementById('title').innerText = themen[n-1];
-        document.getElementById('nr-label').innerText = "PROGRAMM NR. " + n;
-        document.getElementById('wofuer').innerText = d.w;
-        document.getElementById('wohin').innerText = d.z;
-        document.getElementById('pano').style.backgroundImage = `url('https://picsum.photos/id/${n+10}/1200/400')`;
-        loadCms();
-        window.scrollTo(0,0);
-    }
-
-    function addComment() {
-        const i = document.getElementById('com-input');
-        if(!i.value) return;
-        if(!cms[cur]) cms[cur] = [];
-        cms[cur].push(i.value);
-        i.value = "";
-        loadCms();
-    }
-
-    function loadCms() {
-        const l = document.getElementById('comment-list');
-        l.innerHTML = (cms[cur] || ["Noch kein Beitrag..."]).map(c => `<div style="margin-bottom:10px; border-bottom:1px solid #111; padding-bottom:5px">User: ${c}</div>`).join('');
-    }
-
-    function nextBox() { if(cur < 22) openBox(cur+1); }
-    function prevBox() { if(cur > 1) openBox(cur-1); }
-    function home() { document.getElementById('info-kanal').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; }
-
-    init();
-</script>
 </body>
 </html>
