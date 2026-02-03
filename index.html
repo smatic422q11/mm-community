@@ -2,120 +2,104 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plattform - Das Dashboard</title>
+    <title>Plattform - Die Stille Million</title>
     <style>
         :root {
-            --bg-color: #f8f9fa;
-            --header-color: #1a1a1a;
-            --accent-color: #0056b3;
-            --zone-bg: #ffffff;
-            --alert-color: #d9534f;
+            --main-bg: #121212; /* Tiefes Schwarz für Fokus */
+            --box-bg: #1e1e1e;
+            --accent: #ffd700; /* Gold für das Ziel */
+            --alert: #ff4d4d; /* Rot für die Sektoren-Abzüge */
+            --text: #e0e0e0;
         }
 
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--bg-color); color: #333; line-height: 1.6; }
-
-        /* HEADER & LOGO */
-        header { 
-            background: var(--header-color); color: white; 
-            padding: 1rem 5%; display: flex; justify-content: space-between; 
-            align-items: center; position: sticky; top: 0; z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        .logo { font-size: 1.5rem; font-weight: bold; letter-spacing: 1px; }
-
-        /* HAUPTCONTAINER */
-        .container { max-width: 1100px; margin: 20px auto; padding: 0 20px; }
-
-        /* DIE FREIEN ZONEN (Platzhalter für Vision & Texte) */
-        .free-zone { 
-            background: var(--zone-bg); border: 1px solid #ddd; 
-            padding: 30px; margin-bottom: 30px; border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-
-        /* WERBETAFEL (Strategischer Bereich) */
-        .promo-board { 
-            background: #333; color: #fff; padding: 40px; 
-            text-align: center; border-radius: 8px; margin-bottom: 30px;
-        }
-
-        /* SEKTOREN-RECHNER (Die Wahrheit über die Abzüge) */
-        .sector-analysis { 
-            background: #fff; border-left: 5px solid var(--alert-color);
-            padding: 20px; border-radius: 8px; margin-bottom: 30px;
-        }
-        .sector-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; }
-        .sector-item { background: #f1f1f1; padding: 15px; border-radius: 4px; text-align: center; }
-
-        /* STATUS & SPERRE */
-        .status-bar { 
-            background: #e9ecef; border-radius: 20px; height: 30px; 
-            width: 100%; margin: 20px 0; overflow: hidden; position: relative;
-        }
-        .progress { background: var(--accent-color); height: 100%; width: 0%; transition: width 0.5s; }
+        body { font-family: 'Arial', sans-serif; background: var(--main-bg); color: var(--text); margin: 0; padding: 0; }
         
-        .election-lock { 
-            background: #fff3cd; border: 1px solid #ffeeba; 
-            padding: 20px; text-align: center; border-radius: 8px; 
-            font-weight: bold; color: #856404;
+        /* HEADER MIT LOGO */
+        header { 
+            background: #000; padding: 20px 5%; border-bottom: 2px solid var(--accent);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo { font-size: 24px; font-weight: bold; color: var(--accent); }
+
+        /* WERBETAFEL (Ganz oben, strategisch) */
+        .promo-board { 
+            background: linear-gradient(45deg, #222, #333); 
+            margin: 20px auto; width: 90%; padding: 40px; 
+            border: 1px solid #444; border-radius: 10px; text-align: center;
         }
 
-        /* FOOTER (Rechtliche Hülle) */
-        footer { text-align: center; padding: 40px; font-size: 0.8rem; color: #777; }
+        /* DIE BOXEN (System-Module) */
+        .container { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 20px; }
+        
+        .box { 
+            background: var(--box-bg); border: 1px solid #333; 
+            border-radius: 8px; padding: 25px; width: 400px; min-height: 250px;
+        }
+
+        /* FREIE ZONEN (Platzhalter für deine Texte & Vision) */
+        .free-zone { border: 2px dashed #555; background: rgba(255,255,255,0.02); }
+        
+        /* SEKTOREN-TRANSPARENZ (Die Gefühlsforderung) */
+        .sector-list { color: var(--alert); font-weight: bold; list-style: none; padding: 0; }
+        .sector-list li { margin: 10px 0; border-bottom: 1px solid #333; padding-bottom: 5px; }
+
+        /* DIE SPERRE (Chairmen-Wahl) */
+        .lock-box { 
+            background: #2a2a2a; border-top: 4px solid var(--accent); 
+            text-align: center; padding: 30px; margin: 40px auto; width: 80%;
+        }
+        .status-inactive { color: #666; font-style: italic; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo">LOGO / PLATTFORM</div>
-    <nav>Dashboard | Sektoren | Kontakt</nav>
+    <div class="logo">DAS LOGO</div>
+    <nav>PLATTFORM | DASHBOARD | SYSTEM</nav>
 </header>
 
+<div class="promo-board">
+    <h1>DIE WERBETAFEL</h1>
+    <p>Hier findet die Steuerung der Aufmerksamkeit statt.</p>
+</div>
+
 <div class="container">
-
-    <div class="promo-board">
-        <h2>DIE WERBETAFEL</h2>
-        <p>Hier wird die Aufmerksamkeit gesteuert.</p>
+    
+    <div class="box free-zone">
+        <h3>FREIE ZONE: DIE VISION</h3>
+        <p>[Hier liegen deine Texte. Dieser Raum ist reserviert, damit das System stabil bleibt.]</p>
     </div>
 
-    <div class="free-zone">
-        <h3>Vision & Inhalt</h3>
-        <p><i>Dieser Bereich ist eine freie Zone. Hier kannst du Texte einfügen, ohne das System zu paralysieren.</i></p>
+    <div class="box">
+        <h3>DIE SEKTOREN (Abzüge)</h3>
+        <p>Was der Staat und die Banken einfordern:</p>
+        <ul class="sector-list">
+            <li>Bankgebühren / SEPA: [Wert]</li>
+            <li>Steuern (SVS/Finanzamt): [Wert]</li>
+            <li>Patreon / Dienstleister: [Wert]</li>
+        </ul>
+        <p><strong>Netto-Kapital für das Ziel: [Restwert]</strong></p>
     </div>
 
-    <div class="sector-analysis">
-        <h3>Sektoren-Transparenz</h3>
-        <p>Was von deinem Beitrag wirklich im Kapital ankommt:</p>
-        <div class="sector-grid">
-            <div class="sector-item"><strong>Patreon</strong><br>10% Gebühr</div>
-            <div class="sector-item"><strong>Staat</strong><br>Steuern (Österreich)</div>
-            <div class="sector-item"><strong>Bank</strong><br>SEPA-Gebühren</div>
-            <div class="sector-item"><strong>Netto</strong><br>Das echte Kapital</div>
-        </div>
-    </div>
-
-    <div class="free-zone">
-        <h3>Strategische Reserve / Freie Zone</h3>
-        <p>Platzhalter für zukünftige Entwicklungen.</p>
-    </div>
-
-    <div class="free-zone">
-        <h3>Fortschritt bis zur Stillen Million</h3>
-        <div class="status-bar">
-            <div class="progress" style="width: 5%;"></div> </div>
-        <p>Status: In Vorbereitung. Erst bei Erreichung des Meilensteins wird die Wahl freigeschaltet.</p>
-    </div>
-
-    <div class="election-lock" id="lock-message">
-        🔒 WAHL DER CHAIRMEN GESPERRT<br>
-        Die Wahlfunktion wird erst aktiviert, wenn das Ziel erreicht ist.
+    <div class="box free-zone">
+        <h3>GEFÜHLSFORDERUNG</h3>
+        <p>[Text zur emotionalen Forderung - vogel-v wird immer so geschrieben.]</p>
     </div>
 
 </div>
 
+<div class="lock-box">
+    <h2>WAHL DER CHAIRMEN</h2>
+    <p class="status-inactive">Status: Gesperrt bis zum Erreichen der Stillen Million.</p>
+    <div style="background: #444; height: 10px; width: 100%; border-radius: 5px; margin-top: 15px;">
+        <div style="background: var(--accent); height: 100%; width: 5%;"></div>
+    </div>
+</div>
+
 <footer>
-    &copy; 2026 Plattform Projekt | <a href="#">Impressum</a> | <a href="#">Datenschutz</a>
+    <div style="text-align: center; padding: 20px; font-size: 12px; color: #555;">
+        FREIE ZONEN AKTIV | SYSTEM STABIL | KEINE PARALYSE
+    </div>
 </footer>
 
 </body>
