@@ -2,105 +2,143 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Plattform - Die Stille Million</title>
+    <title>M&M-COMMUNITY - Das Komplette Fundament</title>
     <style>
-        :root {
-            --main-bg: #121212; /* Tiefes Schwarz für Fokus */
-            --box-bg: #1e1e1e;
-            --accent: #ffd700; /* Gold für das Ziel */
-            --alert: #ff4d4d; /* Rot für die Sektoren-Abzüge */
-            --text: #e0e0e0;
-        }
-
-        body { font-family: 'Arial', sans-serif; background: var(--main-bg); color: var(--text); margin: 0; padding: 0; }
+        body { background-color: #000000; color: #ffffff; font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        .logo-ring { width: 120px; height: 120px; border: 3px solid #ffffff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin: 30px auto 30px 2.5%; }
+        .logo-mm { font-size: 2.2rem; font-weight: 900; line-height: 0.8; color: #ffffff; }
+        .logo-community { font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; margin-top: 2px; color: #ffffff; }
         
-        /* HEADER MIT LOGO */
-        header { 
-            background: #000; padding: 20px 5%; border-bottom: 2px solid var(--accent);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .logo { font-size: 24px; font-weight: bold; color: var(--accent); }
-
-        /* WERBETAFEL (Ganz oben, strategisch) */
-        .promo-board { 
-            background: linear-gradient(45deg, #222, #333); 
-            margin: 20px auto; width: 90%; padding: 40px; 
-            border: 1px solid #444; border-radius: 10px; text-align: center;
-        }
-
-        /* DIE BOXEN (System-Module) */
-        .container { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 20px; }
+        /* DASHBOARD STRUKTUR */
+        #dashboard { width: 100%; display: flex; flex-direction: column; align-items: center; }
         
-        .box { 
-            background: var(--box-bg); border: 1px solid #333; 
-            border-radius: 8px; padding: 25px; width: 400px; min-height: 250px;
-        }
-
-        /* FREIE ZONEN (Platzhalter für deine Texte & Vision) */
-        .free-zone { border: 2px dashed #555; background: rgba(255,255,255,0.02); }
+        /* SEKTOREN-BOX (NEU: DAS DAHINTER) */
+        .sektoren-monitor { width: 90%; max-width: 1400px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; border: 2px solid #ff4d4d; padding: 20px; background: #0a0a0a; }
+        .sektor-liste { color: #ff4d4d; font-size: 0.8rem; list-style: none; padding: 0; }
+        .sektor-liste li { display: flex; justify-content: space-between; border-bottom: 1px solid #222; padding: 5px 0; }
         
-        /* SEKTOREN-TRANSPARENZ (Die Gefühlsforderung) */
-        .sector-list { color: var(--alert); font-weight: bold; list-style: none; padding: 0; }
-        .sector-list li { margin: 10px 0; border-bottom: 1px solid #333; padding-bottom: 5px; }
+        .counter-box { text-align: center; border-left: 2px solid #003d8f; padding-left: 20px; }
+        .status-lock { font-weight: bold; color: #ff4d4d; text-transform: uppercase; letter-spacing: 2px; }
 
-        /* DIE SPERRE (Chairmen-Wahl) */
-        .lock-box { 
-            background: #2a2a2a; border-top: 4px solid var(--accent); 
-            text-align: center; padding: 30px; margin: 40px auto; width: 80%;
-        }
-        .status-inactive { color: #666; font-style: italic; }
+        .info-section { width: 90%; max-width: 800px; border: 2px solid #003d8f; padding: 20px; text-align: center; margin-bottom: 40px; }
+        
+        /* GRID & BOXEN */
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; width: 95%; max-width: 1400px; margin-bottom: 15px; }
+        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000000; min-height: 50px; }
+        .fundament-container { display: flex; width: 95%; max-width: 1400px; gap: 15px; margin-bottom: 50px; }
+        .fundament-box { flex: 1; }
+        .num { width: 40px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; }
+        .text { padding: 10px; text-transform: uppercase; font-size: 0.75rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; }
+        .text:hover { color: #003d8f; background: #111; }
+
+        /* FREIE ZONEN MARKIERUNG */
+        .free-zone-marker { border: 1px dashed #444; color: #444; font-size: 0.6rem; text-align: center; padding: 5px; }
+
+        /* INFO KANAL */
+        #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; }
+        .panorama-container { width: 80%; height: 33vh; margin: 20px auto; position: relative; background-color: #222; background-size: cover; border: 2px solid #003d8f; }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="logo">DAS LOGO</div>
-    <nav>PLATTFORM | DASHBOARD | SYSTEM</nav>
-</header>
+<div id="dashboard">
+    <div class="logo-ring">
+        <div class="logo-mm">M&M</div>
+        <div class="logo-community">COMMUNITY</div>
+    </div>
 
-<div class="promo-board">
-    <h1>DIE WERBETAFEL</h1>
-    <p>Hier findet die Steuerung der Aufmerksamkeit statt.</p>
-</div>
+    <div class="sektoren-monitor">
+        <div>
+            <h3 style="margin-top:0;">SEKTOREN-ABZÜGE (Transparenz)</h3>
+            <ul class="sektor-liste">
+                <li><span>BANKEN / SEPA</span> <span>- 1.2%</span></li>
+                <li><span>STEUERN (SVS/FINANZAMT)</span> <span>- 25.0%</span></li>
+                <li><span>PLATTFORM-GEBÜHREN</span> <span>- 8.0%</span></li>
+                <li style="color: #00ff00; border:none; margin-top:10px;"><strong>NETTO FÜR DAS ZIEL:</strong> <span><strong>65.8%</strong></span></li>
+            </ul>
+        </div>
+        <div class="counter-box">
+            <div class="status-lock">🔒 Wahl der Chairmen gesperrt</div>
+            <div style="font-size: 2.5rem; font-weight: 900; margin: 10px 0;">€ 0 / 1.000.000</div>
+            <p style="font-size: 0.7rem;">Ziel: Die Stille Million</p>
+        </div>
+    </div>
 
-<div class="container">
+    <div class="info-section">
+        <h1 style="font-size: 2.5rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
+        <h2 style="color: #003d8f; font-size: 1.5rem; margin: 5px 0 20px 0;">DIE STILLE MILLION</h2>
+        <p style="text-align: justify; line-height: 1.6;">Die M&M-Community ist das Fundament für alle...</p>
+    </div>
+
+    <div class="grid" id="main-grid"></div>
+
+    <div class="fundament-container">
+        <div class="fundament-box">
+            <div class="num">22</div>
+            <div class="text" onclick="showInfo('Das Kollektiv', 22)">Das Kollektiv</div>
+        </div>
+        <div class="fundament-box">
+            <div class="num">21</div>
+            <div class="text" onclick="showInfo('Kapital und Verwaltung', 21)">Kapital und Verwaltung</div>
+        </div>
+    </div>
     
-    <div class="box free-zone">
-        <h3>FREIE ZONE: DIE VISION</h3>
-        <p>[Hier liegen deine Texte. Dieser Raum ist reserviert, damit das System stabil bleibt.]</p>
-    </div>
-
-    <div class="box">
-        <h3>DIE SEKTOREN (Abzüge)</h3>
-        <p>Was der Staat und die Banken einfordern:</p>
-        <ul class="sector-list">
-            <li>Bankgebühren / SEPA: [Wert]</li>
-            <li>Steuern (SVS/Finanzamt): [Wert]</li>
-            <li>Patreon / Dienstleister: [Wert]</li>
-        </ul>
-        <p><strong>Netto-Kapital für das Ziel: [Restwert]</strong></p>
-    </div>
-
-    <div class="box free-zone">
-        <h3>GEFÜHLSFORDERUNG</h3>
-        <p>[Text zur emotionalen Forderung - vogel-v wird immer so geschrieben.]</p>
-    </div>
-
+    <div class="free-zone-marker">FREIE ZONE: System jederzeit erweiterbar ohne Paralyse</div>
 </div>
 
-<div class="lock-box">
-    <h2>WAHL DER CHAIRMEN</h2>
-    <p class="status-inactive">Status: Gesperrt bis zum Erreichen der Stillen Million.</p>
-    <div style="background: #444; height: 10px; width: 100%; border-radius: 5px; margin-top: 15px;">
-        <div style="background: var(--accent); height: 100%; width: 5%;"></div>
+<div id="info-kanal">
+    <div class="panorama-container" id="pano-box"></div>
+    <div style="text-align:center; padding: 20px;">
+        <h1 id="info-titel" style="color: #003d8f;"></h1>
+        <div id="info-text" style="max-width: 800px; margin: auto;">
+            <h3>WOFÜR</h3><p id="wofuer-inhalt"></p><br>
+            <h3>WOHIN</h3><p id="wohin-inhalt"></p>
+        </div>
+        <button onclick="showDashboard()" style="margin-top:40px; padding:10px 30px; border:2px solid #fff; background:none; color:#fff; cursor:pointer;">ZURÜCK</button>
     </div>
 </div>
 
-<footer>
-    <div style="text-align: center; padding: 20px; font-size: 12px; color: #555;">
-        FREIE ZONEN AKTIV | SYSTEM STABIL | KEINE PARALYSE
-    </div>
-</footer>
+<script>
+    const boxInhalte = {
+        1: { wofuer: "Hier fordern wir die emotionale Beteiligung ein. Es ist kein Betteln, es ist ein Anspruch.", wohin: "Zementierung des Fundaments durch Gefühlsforderung." },
+        9: { wofuer: "LGBTQ Menschen und Menschen mit Glauben zur Kirche führen...", wohin: "Wahrheit suchen, Spaltung beenden." }
+    };
 
+    const themen = [
+        "Gefühlsforderung", "Wie werde ich Mensch", "Glaube an Friede", 
+        "Programm für Bürgerliche Rechte", "Moralische Gesetze und Verantwortung",
+        "Menschlichkeit", "Kinderschutz", "Wahre Richtung", "LGBTQ und Kirche", 
+        "Veranstaltungen", "Religions Bekenntnis", "Arbeitsrecht", "Gesundheitswesen", 
+        "Arbeitswelt", "Jugendsprecher", "Pensionisten Ratgeber", "Sozialgehilfen",
+        "Nachbarschaft", "Mensch & Technik", "Die Brücke"
+    ];
+
+    const grid = document.getElementById('main-grid');
+    themen.forEach((thema, index) => {
+        const box = document.createElement('div');
+        box.className = 'box';
+        const nummer = index + 1;
+        box.innerHTML = `<div class="num">${nummer}.</div><div class="text" onclick="showInfo('${thema}', ${nummer})">${thema}</div>`;
+        grid.appendChild(box);
+    });
+
+    function showInfo(titel, nummer) {
+        if((nummer === 21 || nummer === 22)) {
+            alert("ZUGRIFF VERWEIGERT: Erst nach Erreichen der Stillen Million freigeschaltet.");
+            return;
+        }
+        const inhalt = boxInhalte[nummer];
+        document.getElementById('dashboard').style.display = 'none';
+        document.getElementById('info-kanal').style.display = 'flex';
+        document.getElementById('info-titel').innerText = "BOX " + nummer + ": " + titel;
+        document.getElementById('wofuer-inhalt').innerText = inhalt ? inhalt.wofuer : "Inhalt folgt...";
+        document.getElementById('wohin-inhalt').innerText = inhalt ? inhalt.wohin : "Ziel folgt...";
+    }
+
+    function showDashboard() {
+        document.getElementById('info-kanal').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'flex';
+    }
+</script>
 </body>
 </html>
