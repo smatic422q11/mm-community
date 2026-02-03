@@ -14,7 +14,7 @@
             flex-direction: column; 
             align-items: center; 
             min-height: 100vh; 
-            overflow-x: hidden; 
+            overflow: hidden; 
         }
         
         /* HEADER BEREICH */
@@ -56,10 +56,9 @@
             justify-content: center; 
             background: #111; 
             font-weight: bold; 
-            transition: transform 0.3s; 
         }
 
-        /* ZENTRALE INFO BOX (DAS WAS & WARUM) */
+        /* ZENTRALE TAFEL */
         .info-section { 
             width: 80%; 
             height: 27.5vh; 
@@ -76,7 +75,6 @@
             position: relative;
         }
 
-        /* SCHRIFTGRÖSSE FÜR DEN BESCHREIBUNGSTEXT */
         .info-description {
             max-width: 85%; 
             color: #ccc; 
@@ -85,7 +83,7 @@
             margin: 10px 0 0 0;
         }
 
-        /* GRID STRUKTUR */
+        /* GRID */
         .grid { 
             display: grid; 
             grid-template-columns: repeat(4, 1fr); 
@@ -112,8 +110,6 @@
             justify-content: center; 
             background-color: #003d8f; 
             font-weight: bold; 
-            font-size: 1.1rem; 
-            min-width: 45px;
         }
 
         .text { 
@@ -125,7 +121,6 @@
             cursor: pointer; 
             flex-grow: 1; 
         }
-        .text:hover { background: #003d8f; }
 
         .fundament-container { 
             display: flex; 
@@ -133,9 +128,8 @@
             max-width: 1400px; 
             gap: 15px; 
             margin-top: 15px; 
-            margin-bottom: 50px; 
         }
-        .fundament-box { flex: 1; border-color: #003d8f; }
+        .fundament-box { flex: 1; }
         .locked-overlay { 
             position: absolute; 
             top:0; left:0; width:100%; height:100%; 
@@ -143,57 +137,34 @@
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            text-align: center; 
             font-size: 0.75rem; 
-            color: #fff; 
-            z-index: 10; 
-            cursor: not-allowed; 
-            font-weight: bold; 
         }
 
-        /* ÄNDERUNGEN NUR FÜR SEITE 2 */
-        #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; padding-top: 2vh; }
+        /* INFO KANAL REINIGUNG */
+        #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; }
         
-        .werbe-tafel-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            position: relative;
-        }
-
         .tafel-intern-logo {
             position: absolute;
             top: 10px;
             left: 10px;
-            transform: scale(0.65);
+            transform: scale(0.6);
             transform-origin: top left;
         }
 
-        .info-box-detail {
-            width: 80%;
-            border: 1px solid #003d8f;
-            padding: 20px;
-            margin-top: 15px;
-            text-align: left;
-        }
-        
-        .label-blue { color: #003d8f; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 5px; }
-
-        .back-btn { margin: 30px 0; padding: 15px 40px; border: 2px solid #fff; background: none; color: #fff; cursor: pointer; text-transform: uppercase; }
+        .back-btn { margin-top: 50px; padding: 15px 40px; border: 2px solid #fff; background: none; color: #fff; cursor: pointer; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
-    <div class="dashboard-header" id="header-s1">
+    <div class="dashboard-header" id="header-main">
         <div class="logo-ring">
             <div class="logo-mm">M&M</div>
             <div class="logo-community">COMMUNITY</div>
         </div>
-        <div class="story-trigger" onclick="alert('Story Modul...')">STORY</div>
+        <div class="story-trigger" id="story-btn">STORY</div>
     </div>
 
-    <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+    <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding-top: 0;">
         <div class="info-section">
             <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
             <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
@@ -201,94 +172,57 @@
                 Die M&M-Community ist das Fundament für alle, die im Kollektiv wachsen wollen. Die Wahl der Vorsitzenden erfolgt erst nach Erreichen der stillen Million.
             </p>
         </div>
-
         <div class="grid" id="main-grid"></div>
-
         <div class="fundament-container">
-            <div class="fundament-box">
-                <div class="num">22</div>
-                <div class="text">DAS KOLLEKTIV</div>
-                <div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div>
-            </div>
-            <div class="fundament-box">
-                <div class="num">21</div>
-                <div class="text">KAPITAL UND VERWALTUNG</div>
-                <div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div>
-            </div>
+            <div class="fundament-box"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div><div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div></div>
+            <div class="fundament-box"><div class="num">21</div><div class="text">KAPITAL UND VERWALTUNG</div><div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div></div>
         </div>
     </div>
 
     <div id="info-kanal">
-        <h1 id="info-titel" style="text-transform: uppercase; font-size: 2.2rem; margin-bottom: 10px;"></h1>
+        <div style="height: 3vh;"></div> <h1 id="info-titel" style="text-transform: uppercase; font-size: 2.5rem; margin-bottom: 20px;"></h1>
         
-        <div class="werbe-tafel-container">
-            <div class="info-section">
-                <div class="tafel-intern-logo">
-                    <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
-                </div>
-                <span style="color: rgba(255,255,255,0.3); font-weight: bold; font-size: 1.5rem; letter-spacing: 3px;">HIER IST PLATZ FÜR WERBUNG</span>
+        <div class="info-section">
+            <div class="tafel-intern-logo">
+                <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
             </div>
-            <div style="margin-left: 20px;">
-                <div class="story-trigger">STORY</div>
-            </div>
-        </div>
-
-        <div class="info-box-detail">
-            <span class="label-blue">Wofür</span>
-            <p id="wofuer-text" style="margin: 0; font-size: 1.2rem;"></p>
-        </div>
-
-        <div class="info-box-detail">
-            <span class="label-blue">Wohin</span>
-            <p id="wohin-text" style="margin: 0; font-size: 1rem; color: #ccc;"></p>
+            <span style="color: rgba(255,255,255,0.3); font-weight: bold; font-size: 1.8rem; letter-spacing: 5px;">HIER IST PLATZ FÜR WERBUNG</span>
         </div>
 
         <button class="back-btn" onclick="showDashboard()">ZURÜCK ZUM FUNDAMENT</button>
     </div>
 
     <script>
-        const details = {
-            1: { 
-                wofuer: "Jeder darf fühlen, wie er möchte. Unsere Gefühlswelt zeigt uns, dass Wachstum dazu gehört. Das Programm hilft dir zu entscheiden, ob es deine eigenen Gefühle sind oder fremde. Du hast ein Recht auf die Wahrheit.", 
-                wohin: "Zur Unterscheidung eigener und fremder Gefühle und dem Anspruch auf Wahrheit." 
-            }
-        };
-
         const themen = [
-            "Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", 
+            "Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", 
             "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", 
             "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntniss oder Selbstwahl", "Gesundheitswesen und Verhalten", 
             "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", 
-            "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch and Technik", "Die Brücke"
+            "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"
         ];
 
         const grid = document.getElementById('main-grid');
         themen.forEach((thema, index) => {
             const box = document.createElement('div');
             box.className = 'box';
-            const nr = index + 1;
-            box.innerHTML = `<div class="num">${nr}</div><div class="text" onclick="showInfo(${nr}, '${thema}')">${thema}</div>`;
+            box.innerHTML = `<div class="num">${index + 1}</div><div class="text" onclick="showInfo('${thema}')">${thema}</div>`;
             grid.appendChild(box);
         });
 
-        function showInfo(nr, titel) {
-            document.getElementById('header-s1').style.display = 'none';
+        function showInfo(titel) {
             document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('header-main').style.display = 'none';
             document.getElementById('info-kanal').style.display = 'flex';
             document.getElementById('info-titel').innerText = titel;
-            
-            const data = details[nr] || { wofuer: "Inhalt folgt...", wohin: "Inhalt folgt..." };
-            document.getElementById('wofuer-text').innerText = data.wofuer;
-            document.getElementById('wohin-text').innerText = data.wohin;
         }
 
         function showDashboard() {
             document.getElementById('info-kanal').style.display = 'none';
-            document.getElementById('header-s1').style.display = 'flex';
+            document.getElementById('header-main').style.display = 'flex';
             document.getElementById('dashboard').style.display = 'flex';
         }
     </script>
 </body>
 </html>
-     
-  
+      
+       
