@@ -1,329 +1,142 @@
 <!DOCTYPE html>
-
 <html lang="de">
-
 <head>
-
     <meta charset="UTF-8">
-
     <title>M&M-COMMUNITY - Das Fundament</title>
-
     <style>
-
         body { background-color: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
-
         
-
-        /* HEADER & STORY POSITIONIERUNG */
-
         .dashboard-header { width: 95%; max-width: 1400px; display: flex; justify-content: space-between; align-items: center; margin: 20px 0; position: relative; }
-
         .logo-ring { width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
-
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
-
         
-
         .story-trigger { width: 85px; height: 85px; border: 3px solid #25D366; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; background: #111; font-weight: bold; transition: transform 0.3s; }
-
         .story-trigger:hover { transform: scale(1.1); }
 
-
-
-        /* GRID & STRUKTUR */
-
-        #dashboard { width: 100%; display: flex; flex-direction: column; align-items: center; }
-
         .info-section { width: 90%; max-width: 800px; border: 2px solid #003d8f; padding: 30px; text-align: center; margin-bottom: 40px; }
-
         
-
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 15px; width: 95%; max-width: 1400px; }
+        /* Grid-Anpassung: 5 Zeilen, damit 1-5, 6-10 etc. untereinander stehen */
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            grid-template-rows: repeat(5, 1fr); 
+            grid-auto-flow: column; 
+            gap: 15px; 
+            width: 95%; 
+            max-width: 1400px; 
+        }
 
         .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 60px; position: relative; transition: 0.3s; }
-
-        .num { width: 45px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; font-size: 1.1rem; }
-
+        .num { width: 45px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; font-size: 1.1rem; min-width: 45px; }
         .text { padding: 15px; text-transform: uppercase; font-size: 0.8rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; }
-
         .text:hover { background: #003d8f; color: #fff; }
 
-
-
-        /* BOX 21 & 22 SPERRE */
-
         .fundament-container { display: flex; width: 95%; max-width: 1400px; gap: 15px; margin-top: 15px; margin-bottom: 50px; }
-
-        .fundament-box { flex: 1; border-color: #333; }
-
-        .locked-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; text-align: center; font-size: 0.7rem; color: #666; z-index: 10; cursor: not-allowed; }
-
-
-
-        /* INTERAKTIVER KANAL (HOMEOFFICE) */
+        .fundament-box { flex: 1; border-color: #003d8f; }
+        .locked-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; text-align: center; font-size: 0.75rem; color: #fff; z-index: 10; cursor: not-allowed; font-weight: bold; }
 
         #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; }
-
         .panorama-container { width: 95%; max-width: 1400px; height: 35vh; background-color: #111; background-size: cover; background-position: center; border: 2px solid #003d8f; margin-bottom: 20px; }
-
-        
-
         .content-area { width: 95%; max-width: 1400px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-
         .function-block { border: 1px solid #003d8f; padding: 25px; background: #050505; }
-
-        
-
-        /* KOMMUNIKATION OHNE LABELS */
-
         .full-width { grid-column: span 2; border-top: 2px solid #003d8f; padding-top: 30px; }
-
         textarea { width: 100%; background: #0a0a0a; color: #fff; border: 1px solid #003d8f; padding: 15px; box-sizing: border-box; font-size: 1rem; margin-bottom: 15px; }
-
         .action-btn { background: #003d8f; color: #fff; border: none; padding: 15px 30px; cursor: pointer; width: 100%; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; }
-
-        
-
         .back-btn { margin: 50px 0; padding: 15px 40px; border: 2px solid #fff; background: none; color: #fff; cursor: pointer; font-weight: bold; text-transform: uppercase; }
-
     </style>
-
 </head>
-
 <body>
 
-
-
     <div id="dashboard">
-
         <div class="dashboard-header">
-
             <div class="logo-ring">
-
                 <div class="logo-mm">M&M</div>
-
                 <div class="logo-community">COMMUNITY</div>
-
             </div>
-
             <div class="story-trigger" onclick="alert('Live Story Modul...')">STORY</div>
-
         </div>
-
-
 
         <div class="info-section">
-
             <h1 style="font-size: 3rem; margin: 0; font-weight: 900; letter-spacing: -1px;">DAS WAS & WARUM</h1>
-
             <h2 style="color: #003d8f; font-size: 1.8rem; margin: 10px 0 25px 0;">DIE STILLE MILLION</h2>
-
             <p style="text-align: justify; line-height: 1.8; color: #ccc;">
-
                 Die M&M-Community ist das Fundament für alle, die im Kollektiv wachsen wollen. Die Wahl der Vorsitzenden erfolgt erst nach Erreichen der stillen Million.
-
             </p>
-
         </div>
-
-
 
         <div class="grid" id="main-grid"></div>
 
-
-
         <div class="fundament-container">
-
             <div class="fundament-box">
-
                 <div class="num">22</div>
-
-                <div class="text">Das Kollektiv</div>
-
+                <div class="text">DAS KOLLEKTIV</div>
                 <div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div>
-
             </div>
-
             <div class="fundament-box">
-
                 <div class="num">21</div>
-
-                <div class="text">Kapital und Verwaltung</div>
-
+                <div class="text">KAPITAL UND VERWALTUNG</div>
                 <div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div>
-
             </div>
-
         </div>
-
     </div>
-
-
 
     <div id="info-kanal">
-
         <div class="dashboard-header">
-
             <div class="logo-ring">
-
                 <div class="logo-mm">M&M</div>
-
                 <div class="logo-community">COMMUNITY</div>
-
             </div>
-
             <div class="story-trigger">STORY</div>
-
         </div>
-
-
-
         <div class="panorama-container" id="pano-box"></div>
-
-        
-
         <h1 id="info-titel" style="color: #003d8f; font-size: 2.5rem; text-transform: uppercase; margin-bottom: 30px;"></h1>
-
-
-
         <div class="content-area">
-
             <div class="function-block">
-
                 <p id="anregung-live" style="font-size: 1.2rem; line-height: 1.6;"></p>
-
                 <p id="ziel-live" style="font-size: 1.1rem; color: #888; margin-top: 20px;"></p>
-
             </div>
-
-
-
             <div class="function-block">
-
                 <textarea rows="4" placeholder="Hier entsteht deine Story..."></textarea>
-
                 <button class="action-btn" onclick="alert('Kamera-Freischaltung aktiv...')">VIDEO-FREISCHALTUNG</button>
-
             </div>
-
-
-
-            <div class="function-block full-width">
-
-                <textarea rows="2" placeholder="Deine Gedanken zum Kollektiv mitteilen..."></textarea>
-
-                <div id="comment-feed" style="border-left: 3px solid #003d8f; padding-left: 20px; color: #555;">
-
-                    Warte auf Interaktion der Gemeinschaft...
-
-                </div>
-
-            </div>
-
         </div>
-
-        
-
         <button class="back-btn" onclick="showDashboard()">ZURÜCK ZUM FUNDAMENT</button>
-
     </div>
 
-
-
     <script>
-
-        const boxInhalte = {
-
-            1: { anr: "Deine Gefühlsforderung gegenüber Geld bestimmt deinen Wert.", ziel: "Ehre vor Kapital.", bild: "https://picsum.photos/id/1/1200/400" },
-
-            9: { anr: "Brückenschlag zwischen LGBTQ und Glauben im Kollektiv.", ziel: "Zerstörung der Spaltung.", bild: "https://picsum.photos/id/10/1200/400" },
-
-            20: { anr: "Die Verbindung zwischen Mensch und technologischer Evolution.", ziel: "Kontrolle behalten.", bild: "https://picsum.photos/id/20/1200/400" }
-
-        };
-
-
-
+        // Exakte Texte von den Zetteln
         const themen = [
-
-            "Gefühlsforderung", "Wie werde ich Mensch", "Glaube an Friede", "Bürgerliche Rechte", 
-
-            "Moral & Verantwortung", "Menschlichkeit", "Kinderschutz", "Wahre Kunst", 
-
-            "LGBTQ & Kirche", "Veranstaltungen", "Religions Bekenntnis", "Arbeitsrecht", 
-
-            "Gesundheitswesen", "Arbeitswelt", "Jugendsprecher", "Pensionisten", 
-
-            "Sozialgehilfen", "Nachbarschaft", "Mensch & Technik", "Die Brücke"
-
+            "Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", 
+            "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", 
+            "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntniss oder Selbstwahl", "Gesundheitswesen und Verhalten", 
+            "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", 
+            "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"
         ];
 
-
-
         const grid = document.getElementById('main-grid');
-
+        
+        // Erstellung der Boxen 1-20
         themen.forEach((thema, index) => {
-
             const box = document.createElement('div');
-
             box.className = 'box';
-
             const nr = index + 1;
-
             box.innerHTML = `<div class="num">${nr}</div><div class="text" onclick="showInfo('${thema}', ${nr})">${thema}</div>`;
-
             grid.appendChild(box);
-
         });
 
-
-
         function showInfo(titel, nr) {
-
-            const inhalt = boxInhalte[nr];
-
             document.getElementById('dashboard').style.display = 'none';
-
             document.getElementById('info-kanal').style.display = 'flex';
-
             document.getElementById('info-titel').innerText = titel;
-
-            
-
-            if (inhalt) {
-
-                document.getElementById('anregung-live').innerText = inhalt.anr;
-
-                document.getElementById('ziel-live').innerText = inhalt.ziel;
-
-                document.getElementById('pano-box').style.backgroundImage = "url('" + inhalt.bild + "')";
-
-            } else {
-
-                document.getElementById('anregung-live').innerText = "Dieses Modul wird gerade durch die Community geformt.";
-
-                document.getElementById('ziel-live').innerText = "Warte auf die Freischaltung...";
-
-                document.getElementById('pano-box').style.backgroundImage = "none";
-
-            }
-
+            document.getElementById('anregung-live').innerText = "Dieses Modul wird gerade durch die Community geformt.";
+            document.getElementById('ziel-live').innerText = "Warte auf die Freischaltung...";
         }
-
-
 
         function showDashboard() {
-
             document.getElementById('info-kanal').style.display = 'none';
-
             document.getElementById('dashboard').style.display = 'flex';
-
         }
-
     </script>
-
 </body>
-
-</html
+</html>
