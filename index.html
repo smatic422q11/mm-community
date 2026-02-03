@@ -75,7 +75,16 @@
             background-color: rgba(0, 0, 0, 0.5);
         }
 
-        /* GRID STRUKTUR - Spalten von oben nach unten */
+        /* SCHRIFTGRÖSSE FÜR DEN BESCHREIBUNGSTEXT */
+        .info-description {
+            max-width: 85%; 
+            color: #ccc; 
+            font-size: 1.4rem; /* Erhöhte Schriftgröße */
+            line-height: 1.4;
+            margin: 10px 0 0 0;
+        }
+
+        /* GRID STRUKTUR */
         .grid { 
             display: grid; 
             grid-template-columns: repeat(4, 1fr); 
@@ -117,7 +126,6 @@
         }
         .text:hover { background: #003d8f; }
 
-        /* UNTERE BOXEN 21 & 22 */
         .fundament-container { 
             display: flex; 
             width: 95%; 
@@ -158,9 +166,9 @@
 
     <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="info-section">
-            <h1 style="font-size: 2.5rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
-            <h2 style="color: #003d8f; font-size: 1.5rem; margin: 5px 0;">DIE STILLE MILLION</h2>
-            <p style="max-width: 80%; color: #ccc; font-size: 0.9rem;">
+            <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
+            <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
+            <p class="info-description">
                 Die M&M-Community ist das Fundament für alle, die im Kollektiv wachsen wollen. Die Wahl der Vorsitzenden erfolgt erst nach Erreichen der stillen Million.
             </p>
         </div>
@@ -187,7 +195,6 @@
     </div>
 
     <script>
-        // Die 20 Themen exakt nach deinen handgeschriebenen Zetteln
         const themen = [
             "Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", 
             "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", 
