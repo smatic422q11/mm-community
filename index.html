@@ -73,13 +73,14 @@
             padding: 20px;
             box-sizing: border-box;
             background-color: rgba(0, 0, 0, 0.5);
+            position: relative;
         }
 
         /* SCHRIFTGRÖSSE FÜR DEN BESCHREIBUNGSTEXT */
         .info-description {
             max-width: 85%; 
             color: #ccc; 
-            font-size: 1.4rem; /* Erhöhte Schriftgröße */
+            font-size: 1.4rem; 
             line-height: 1.4;
             margin: 10px 0 0 0;
         }
@@ -150,13 +151,41 @@
             font-weight: bold; 
         }
 
-        #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; padding-top: 5vh; }
-        .back-btn { margin: 50px 0; padding: 15px 40px; border: 2px solid #fff; background: none; color: #fff; cursor: pointer; text-transform: uppercase; }
+        /* ÄNDERUNGEN NUR FÜR SEITE 2 */
+        #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; padding-top: 2vh; }
+        
+        .werbe-tafel-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            position: relative;
+        }
+
+        .tafel-intern-logo {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            transform: scale(0.65);
+            transform-origin: top left;
+        }
+
+        .info-box-detail {
+            width: 80%;
+            border: 1px solid #003d8f;
+            padding: 20px;
+            margin-top: 15px;
+            text-align: left;
+        }
+        
+        .label-blue { color: #003d8f; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 5px; }
+
+        .back-btn { margin: 30px 0; padding: 15px 40px; border: 2px solid #fff; background: none; color: #fff; cursor: pointer; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
-    <div class="dashboard-header">
+    <div class="dashboard-header" id="header-s1">
         <div class="logo-ring">
             <div class="logo-mm">M&M</div>
             <div class="logo-community">COMMUNITY</div>
@@ -190,17 +219,47 @@
     </div>
 
     <div id="info-kanal">
-        <h1 id="info-titel" style="color: #003d8f; font-size: 2rem;"></h1>
+        <h1 id="info-titel" style="text-transform: uppercase; font-size: 2.2rem; margin-bottom: 10px;"></h1>
+        
+        <div class="werbe-tafel-container">
+            <div class="info-section">
+                <div class="tafel-intern-logo">
+                    <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
+                </div>
+                <span style="color: rgba(255,255,255,0.3); font-weight: bold; font-size: 1.5rem; letter-spacing: 3px;">HIER IST PLATZ FÜR WERBUNG</span>
+            </div>
+            <div style="margin-left: 20px;">
+                <div class="story-trigger">STORY</div>
+            </div>
+        </div>
+
+        <div class="info-box-detail">
+            <span class="label-blue">Wofür</span>
+            <p id="wofuer-text" style="margin: 0; font-size: 1.2rem;"></p>
+        </div>
+
+        <div class="info-box-detail">
+            <span class="label-blue">Wohin</span>
+            <p id="wohin-text" style="margin: 0; font-size: 1rem; color: #ccc;"></p>
+        </div>
+
         <button class="back-btn" onclick="showDashboard()">ZURÜCK ZUM FUNDAMENT</button>
     </div>
 
     <script>
+        const details = {
+            1: { 
+                wofuer: "Jeder darf fühlen, wie er möchte. Unsere Gefühlswelt zeigt uns, dass Wachstum dazu gehört. Das Programm hilft dir zu entscheiden, ob es deine eigenen Gefühle sind oder fremde. Du hast ein Recht auf die Wahrheit.", 
+                wohin: "Zur Unterscheidung eigener und fremder Gefühle und dem Anspruch auf Wahrheit." 
+            }
+        };
+
         const themen = [
             "Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", 
             "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", 
             "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntniss oder Selbstwahl", "Gesundheitswesen und Verhalten", 
             "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", 
-            "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"
+            "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch and Technik", "Die Brücke"
         ];
 
         const grid = document.getElementById('main-grid');
@@ -208,20 +267,28 @@
             const box = document.createElement('div');
             box.className = 'box';
             const nr = index + 1;
-            box.innerHTML = `<div class="num">${nr}</div><div class="text" onclick="showInfo('${thema}')">${thema}</div>`;
+            box.innerHTML = `<div class="num">${nr}</div><div class="text" onclick="showInfo(${nr}, '${thema}')">${thema}</div>`;
             grid.appendChild(box);
         });
 
-        function showInfo(titel) {
+        function showInfo(nr, titel) {
+            document.getElementById('header-s1').style.display = 'none';
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('info-kanal').style.display = 'flex';
             document.getElementById('info-titel').innerText = titel;
+            
+            const data = details[nr] || { wofuer: "Inhalt folgt...", wohin: "Inhalt folgt..." };
+            document.getElementById('wofuer-text').innerText = data.wofuer;
+            document.getElementById('wohin-text').innerText = data.wohin;
         }
 
         function showDashboard() {
             document.getElementById('info-kanal').style.display = 'none';
+            document.getElementById('header-s1').style.display = 'flex';
             document.getElementById('dashboard').style.display = 'flex';
         }
     </script>
 </body>
 </html>
+     
+  
