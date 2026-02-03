@@ -5,6 +5,8 @@
     <title>M&M-COMMUNITY - Interaktives Fundament</title>
     <style>
         body { background-color: #000000; color: #ffffff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        
+        /* LOGO */
         .logo-ring { width: 120px; height: 120px; border: 3px solid #ffffff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin: 30px auto; }
         .logo-mm { font-size: 2.2rem; font-weight: 900; line-height: 0.8; color: #ffffff; }
         .logo-community { font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; margin-top: 2px; color: #ffffff; }
@@ -12,6 +14,7 @@
         #dashboard { width: 100%; display: flex; flex-direction: column; align-items: center; }
         .info-section { width: 90%; max-width: 800px; border: 2px solid #003d8f; padding: 25px; text-align: center; margin-bottom: 40px; background-color: #000; }
         
+        /* GRID: 4 Spalten, von oben nach unten nummeriert */
         .grid { 
             display: grid; 
             grid-template-columns: repeat(4, 1fr); 
@@ -23,24 +26,34 @@
             margin-bottom: 20px; 
         }
 
-        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 60px; transition: 0.3s; }
-        .box:hover { border-color: #ffffff; }
+        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 60px; cursor: pointer; }
         .fundament-container { display: flex; width: 95%; max-width: 1400px; gap: 15px; margin-bottom: 50px; }
-        .fundament-box { flex: 1; border-color: #ffffff; }
+        .fundament-box { flex: 1; }
         
-        .num { width: 45px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; color: #ffffff; }
-        .text { padding: 10px; text-transform: uppercase; font-size: 0.8rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: bold; }
+        /* Nummer und Text Style */
+        .num { width: 45px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; color: #ffffff; flex-shrink: 0; }
+        .text { padding: 10px; text-transform: uppercase; font-size: 0.75rem; display: flex; align-items: center; flex-grow: 1; color: #ffffff; font-weight: bold; }
+        .box:hover, .fundament-box:hover { border-color: #ffffff; }
 
-        /* INFO KANAL */
+        /* INFO SEITE */
         #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; padding-bottom: 100px; }
-        .panorama-container { width: 100%; height: 40vh; position: relative; background-size: cover; background-position: center; border-bottom: 4px solid #003d8f; }
-        .content-area { width: 90%; max-width: 800px; margin-top: 30px; text-align: left; }
+        .panorama-container { width: 100%; height: 45vh; position: relative; background-size: cover; background-position: center; border-bottom: 4px solid #003d8f; background-color: #111; }
         
-        .comment-section { margin-top: 40px; border-top: 1px solid #333; padding-top: 20px; }
-        textarea { width: 100%; height: 100px; background: #111; color: #fff; border: 1px solid #003d8f; padding: 10px; margin-bottom: 10px; resize: none; }
-        .submit-btn { background: #003d8f; color: #fff; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
-        .comments-display { margin-top: 20px; font-size: 0.9rem; color: #ccc; font-style: italic; }
-        .back-btn { margin: 40px 0; padding: 12px 40px; border: 2px solid #ffffff; background: none; color: #ffffff; cursor: pointer; font-weight: bold; text-transform: uppercase; }
+        .logo-overlay { position: absolute; top: 20px; left: 20px; transform: scale(0.6); transform-origin: top left; margin: 0; }
+        
+        .content-area { width: 90%; max-width: 900px; margin-top: 40px; }
+        .text-block { background: rgba(255,255,255,0.05); padding: 20px; border-left: 4px solid #003d8f; margin-bottom: 20px; }
+        
+        h3 { color: #003d8f; text-transform: uppercase; margin-top: 0; }
+        p { line-height: 1.6; font-size: 1.1rem; }
+
+        .back-btn { margin-bottom: 20px; padding: 10px 25px; border: 2px solid #ffffff; background: none; color: #ffffff; cursor: pointer; font-weight: bold; text-transform: uppercase; align-self: flex-start; }
+        .back-btn:hover { background: #fff; color: #000; }
+
+        /* KOMMENTARE */
+        .comment-box { margin-top: 50px; border-top: 1px solid #333; padding-top: 30px; }
+        textarea { width: 100%; height: 100px; background: #111; color: #fff; border: 1px solid #333; padding: 15px; margin-top: 10px; }
+        .send-btn { background: #003d8f; color: white; border: none; padding: 10px 30px; margin-top: 10px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -53,74 +66,55 @@
 
         <div class="info-section">
             <h1 style="font-size: 2.5rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
-            <h2 style="color: #003d8f; font-size: 1.5rem; margin: 5px 0 20px 0;">DAS INTERAKTIVE FUNDAMENT</h2>
-            <p style="text-align: justify; line-height: 1.6;">
-                Willkommen in deinem Kollektiv. Jede Box ist ein Programm, ein Weg, eine Einladung. Klicke ein Thema an, finde heraus, wofür wir stehen, und teile anonym deine Gedanken. Dein Weg zählt.
-            </p>
+            <h2 style="color: #003d8f; font-size: 1.5rem; margin: 5px 0 20px 0;">INTERAKTIVES FUNDAMENT</h2>
+            <p>Wähle ein Programm, informiere dich und gestalte anonym mit.</p>
         </div>
 
         <div class="grid" id="main-grid"></div>
 
         <div class="fundament-container">
-            <div class="fundament-box">
+            <div class="fundament-box" onclick="showInfo('Kapital und Verwaltung', 21)">
                 <div class="num">21</div>
-                <div class="text" onclick="showInfo('Kapital und Verwaltung', 21)">Kapital und Verwaltung</div>
+                <div class="text">Kapital und Verwaltung</div>
             </div>
-            <div class="fundament-box">
+            <div class="fundament-box" onclick="showInfo('Das Kollektiv', 22)">
                 <div class="num">22</div>
-                <div class="text" onclick="showInfo('Das Kollektiv', 22)">Das Kollektiv</div>
+                <div class="text">Das Kollektiv</div>
             </div>
         </div>
     </div>
 
     <div id="info-kanal">
-        <div class="panorama-container" id="pano-box"></div>
+        <div class="panorama-container" id="pano-box">
+            <div class="logo-ring logo-overlay">
+                <div class="logo-mm">M&M</div>
+                <div class="logo-community">COMMUNITY</div>
+            </div>
+        </div>
+        
         <div class="content-area">
-            <button class="back-btn" onclick="showDashboard()">← Zurück</button>
-            <h1 id="info-titel" style="color: #003d8f; font-size: 2.5rem;"></h1>
+            <button class="back-btn" onclick="showDashboard()">Zurück</button>
+            <h1 id="info-titel" style="font-size: 3rem; margin-bottom: 30px;"></h1>
             
-            <div id="info-text">
-                <h3 style="border-left: 4px solid #003d8f; padding-left: 15px;">WOFÜR</h3>
-                <p id="wofuer-inhalt" style="font-size: 1.1rem; line-height: 1.6;"></p>
-                <br>
-                <h3 style="border-left: 4px solid #003d8f; padding-left: 15px;">WOHIN</h3>
-                <p id="wohin-inhalt" style="font-size: 1.1rem; line-height: 1.6;"></p>
+            <div class="text-block">
+                <h3>WOFÜR</h3>
+                <p id="wofuer-inhalt"></p>
+            </div>
+            
+            <div class="text-block">
+                <h3>WOHIN</h3>
+                <p id="wohin-inhalt"></p>
             </div>
 
-            <div class="comment-section">
-                <h3>DEIN BEITRAG (ANONYM)</h3>
-                <p>Teile deine Gedanken oder deinen Weg zu diesem Thema:</p>
-                <textarea id="comment-input" placeholder="Schreibe hier..."></textarea>
-                <button class="submit-btn" onclick="addComment()">Absenden</button>
-                <div id="comments-list" class="comments-display"></div>
+            <div class="comment-box">
+                <h4>DEIN ANONYMER BEITRAG</h4>
+                <textarea id="comment-in" placeholder="Schreibe deine Gedanken zu diesem Thema..."></textarea>
+                <button class="send-btn" onclick="alert('Danke für deinen Beitrag!')">ABSENDEN</button>
             </div>
         </div>
     </div>
 
     <script>
-        const boxInhalte = {
-            1: {
-                wofuer: "Die Gefühlsvorderung ist unsere erste Regel: Komm wie du bist. Unabhängig von deiner Identität, Nationalität, Religion, Hautfarbe oder Sexualität. Hier zählt nur dein Menschsein und deine ehrliche Emotion.",
-                wohin: "Wir bauen eine Brücke zu einer Welt ohne Vorurteile, in der das Individuum in seiner reinsten Form akzeptiert wird.",
-                bild: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1200"
-            },
-            2: {
-                wofuer: "Wie werde ich Mensch? In einer digitalisierten Welt suchen wir gemeinsam nach den Wurzeln unserer Existenz. Dieses Programm lädt dich ein, Masken abzulegen und deine wahre Natur zu entdecken.",
-                wohin: "Zurück zur Authentizität und zur Wiederherstellung der menschlichen Würde im täglichen Miteinander.",
-                bild: "https://images.unsplash.com/photo-1508873696983-2dfd5898f08b?auto=format&fit=crop&w=1200"
-            },
-            10: {
-                wofuer: "Trend und Tradition. Wir bewahren das kostbare Erbe unserer Kultur und verbinden es mutig mit den Trends von morgen. Ein Programm für alle, die Werte schätzen und Fortschritt gestalten wollen.",
-                wohin: "Eine Zukunft, die ihre Wurzeln nicht vergisst, während sie nach den Sternen greift.",
-                bild: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=1200"
-            },
-            22: {
-                wofuer: "Das Kollektiv ist die Summe aller Stimmen. Hier fließen alle Wege zusammen. Es ist der Schutzraum für die 'Stille Million', um gemeinsam laut zu werden.",
-                wohin: "Echte Gemeinschaftliche Kraft durch Einheit in der Vielfalt.",
-                bild: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200"
-            }
-        };
-
         const themen = [
             "Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", 
             "Programm für Bürgerliche Rechte", "Moralische Gesetze und Verantwortung",
@@ -132,49 +126,56 @@
             "Nachbarschaft und Gemeinschaft", "Mensch & Technik", "Die Brücke"
         ];
 
+        // Hier sind alle Daten für JEDE Box gespeichert
+        const datenbank = {
+            1: { 
+                wofuer: "Komm wie du bist – unabhängig von Identität, Nationalität, Religion, Hautfarbe oder Sexualität. Die Gefühlsvorderung stellt den Menschen in den Mittelpunkt.", 
+                wohin: "Eine Gemeinschaft ohne Ausgrenzung.",
+                bild: "https://picsum.photos/id/1011/1200/600"
+            },
+            10: { 
+                wofuer: "Verbindung von bewährten Werten mit modernen Entwicklungen.", 
+                wohin: "Stabilität in einer sich wandelnden Welt.",
+                bild: "https://picsum.photos/id/1059/1200/600"
+            },
+            21: { 
+                wofuer: "Transparente Verwaltung der Ressourcen der Community.", 
+                wohin: "Wirtschaftliche Unabhängigkeit.",
+                bild: "https://picsum.photos/id/1060/1200/600"
+            },
+            22: { 
+                wofuer: "Das Herzstück der M&M-Community. Das Zusammenkommen der stillen Million.", 
+                wohin: "Ein starkes, unerschütterliches Netzwerk.",
+                bild: "https://picsum.photos/id/1074/1200/600"
+            }
+        };
+
         const grid = document.getElementById('main-grid');
-        let currentBox = 0;
 
         themen.forEach((thema, index) => {
+            const nr = index + 1;
             const box = document.createElement('div');
             box.className = 'box';
-            const nummer = index + 1;
-            box.innerHTML = `
-                <div class="num">${nummer}.</div>
-                <div class="text" onclick="showInfo('${thema}', ${nummer})">${thema}</div>
-            `;
+            box.onclick = () => showInfo(thema, nr);
+            box.innerHTML = `<div class="num">${nr}</div><div class="text">${thema}</div>`;
             grid.appendChild(box);
         });
 
         function showInfo(titel, nummer) {
-            currentBox = nummer;
-            const inhalt = boxInhalte[nummer];
+            const info = datenbank[nummer] || { 
+                wofuer: "Text Gemini eingeben: Dieses Programm fördert den Austausch zum Thema " + titel + ".", 
+                wohin: "Ziel ist die Stärkung der Gemeinschaft durch aktive Beteiligung.",
+                bild: "https://picsum.photos/id/" + (nummer + 10) + "/1200/600"
+            };
+            
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('info-kanal').style.display = 'flex';
-            document.getElementById('info-titel').innerText = titel;
-            document.getElementById('comments-list').innerHTML = ""; 
             
-            if (inhalt) {
-                document.getElementById('wofuer-inhalt').innerText = inhalt.wofuer;
-                document.getElementById('wohin-inhalt').innerText = inhalt.wohin;
-                document.getElementById('pano-box').style.backgroundImage = `linear-gradient(to bottom, rgba(0,0,0,0.3), #000), url('${inhalt.bild}')`;
-            } else {
-                document.getElementById('wofuer-inhalt').innerText = "Hier entsteht ein Programm zur aktiven Mitgestaltung. Deine Stimme wird gebraucht.";
-                document.getElementById('wohin-inhalt').innerText = "Ziel ist die gemeinschaftliche Erarbeitung dieses Themas.";
-                document.getElementById('pano-box').style.backgroundImage = "none";
-            }
+            document.getElementById('info-titel').innerText = titel;
+            document.getElementById('wofuer-inhalt').innerText = info.wofuer;
+            document.getElementById('wohin-inhalt').innerText = info.wohin;
+            document.getElementById('pano-box').style.backgroundImage = "url('" + info.bild + "')";
             window.scrollTo(0,0);
-        }
-
-        function addComment() {
-            const val = document.getElementById('comment-input').value;
-            if(val) {
-                const list = document.getElementById('comments-list');
-                const p = document.createElement('p');
-                p.innerHTML = `<strong>Anonym:</strong> "${val}"`;
-                list.prepend(p);
-                document.getElementById('comment-input').value = "";
-            }
         }
 
         function showDashboard() {
