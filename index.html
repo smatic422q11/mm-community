@@ -12,72 +12,65 @@
             height: 100vh; overflow: hidden; 
         }
 
-        /* HEADER BEREICH: TAFEL & ZÄHLER NEBENEINANDER */
+        /* HEADER BEREICH (Tafel & Zähler nebeneinander) */
         .header-section {
             width: 95%; height: 25vh; margin-top: 2vh;
             display: flex; gap: 15px; flex-shrink: 0;
         }
 
-        /* Die Werbetafel */
         .info-section { 
             flex: 2; border: 2px solid #003d8f; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
             background-color: #000; position: relative; overflow: hidden;
         }
 
-        /* Der Zähler in einer Box daneben */
         .counter-box {
             flex: 1; border: 2px solid #003d8f;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            background-color: #111; text-align: center; padding: 10px;
+            background-color: #050505; text-align: center; padding: 10px;
         }
 
-        .million-label { color: #fff; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; }
-        .million-value { color: #ff0000; font-size: 2rem; font-weight: 900; text-shadow: 0 0 10px #ff0000; margin: 5px 0; }
+        .million-label { color: #fff; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; }
+        .million-value { color: #ff0000; font-size: 2.2rem; font-weight: 900; text-shadow: 0 0 15px #ff0000; margin: 2px 0; }
 
-        /* ANIMATIONEN */
-        @keyframes kenburns {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        @keyframes fadeEffect {
-            0% { opacity: 0; } 15% { opacity: 0.4; } 85% { opacity: 0.4; } 100% { opacity: 0; }
-        }
-
+        /* BILD-EFFEKTE */
+        @keyframes kenburns { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        @keyframes fadeEffect { 0% { opacity: 0; } 15% { opacity: 0.4; } 85% { opacity: 0.4; } 100% { opacity: 0; } }
         .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
         .bild-aktiv { animation: kenburns 15s infinite ease-in-out, fadeEffect 10s infinite; }
         .werbe-text-overlay { color: rgba(255, 255, 255, 0.3); font-weight: bold; font-size: 1rem; letter-spacing: 5px; z-index: 5; text-align: center; }
 
-        .logo-ring-small { width: 60px; height: 60px; border: 2px solid #fff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; position: absolute; top: 5px; left: 5px; z-index: 10; transform: scale(0.7); }
-
-        /* CONTENT FREIZONE */
+        /* MAIN AREA & EBENEN */
         .main-content-area {
             width: 95%; flex-grow: 1; margin: 2vh 0 100px 0;
-            display: flex; flex-direction: column; align-items: center; overflow-y: auto;
+            display: flex; flex-direction: column; align-items: center;
         }
 
-        /* GRID (SEITE 1) */
+        .ebene { display: none; width: 100%; height: 100%; flex-direction: column; align-items: center; text-align: center; }
+        .ebene.active { display: flex; }
+
+        /* SEITE 1: GRID */
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; max-width: 1400px; }
-        .box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 50px; cursor: pointer; }
+        .box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 50px; cursor: pointer; transition: 0.3s; }
+        .box:hover { background-color: #003d8f; }
         .num { width: 35px; background-color: #003d8f; display: flex; align-items: center; justify-content: center; font-weight: bold; }
         .text { padding: 10px; font-size: 0.7rem; text-transform: uppercase; display: flex; align-items: center; }
 
-        /* CHAT (SEITE 3) */
+        /* SEITE 3: CHAT */
         .chat-window {
-            width: 100%; max-width: 700px; height: 350px; border: 1px solid #003d8f; 
-            display: none; flex-direction: column; background: #050505;
+            width: 100%; max-width: 700px; height: 300px; border: 1px solid #003d8f; 
+            display: flex; flex-direction: column; background: #050505; text-align: left;
         }
         .chat-msgs { flex-grow: 1; padding: 15px; overflow-y: auto; font-size: 0.9rem; color: #ccc; }
         .chat-input-row { display: flex; border-top: 1px solid #003d8f; }
         .chat-input-row input { flex: 1; background: transparent; border: none; color: #fff; padding: 15px; outline: none; }
-        .chat-input-row button { background: #003d8f; color: #fff; border: none; padding: 0 25px; cursor: pointer; text-transform: uppercase; font-size: 0.7rem; }
+        .chat-input-row button { background: #003d8f; color: #fff; border: none; padding: 0 20px; cursor: pointer; text-transform: uppercase; font-size: 0.7rem; }
 
         /* NAVIGATION */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 80px; background: #000; border-top: 1px solid #222; display: flex; justify-content: space-between; align-items: center; padding: 0 5%; box-sizing: border-box; }
         .nav-btn { padding: 12px 20px; border: 1px solid #fff; background: none; color: #fff; cursor: pointer; text-transform: uppercase; font-size: 0.75rem; visibility: hidden; }
-        .dot-container { display: flex; gap: 10px; }
-        .dot { width: 10px; height: 10px; border: 1px solid #fff; border-radius: 50%; opacity: 0.2; }
+        .dot-container { display: flex; gap: 8px; }
+        .dot { width: 8px; height: 8px; border: 1px solid #fff; border-radius: 50%; opacity: 0.2; }
         .dot.active { background: #fff; opacity: 1; }
     </style>
 </head>
@@ -85,89 +78,98 @@
 
     <div class="header-section">
         <div class="info-section">
-            <div class="logo-ring-small"><div style="font-size:0.8rem; font-weight:900;">M&M</div></div>
             <div class="werbe-bild-bg" id="werbe-bg"></div>
-            <span class="werbe-text-overlay" id="werbe-text">HIER IST PLATZ FÜR WERBUNG</span>
+            <span class="werbe-text-overlay">HIER IST PLATZ FÜR WERBUNG</span>
         </div>
         <div class="counter-box">
-            <span class="million-label">Wahl der Vorsitzenden erst bei</span>
+            <span class="million-label">Vorsitzendenwahl nach Erreichen der</span>
             <span class="million-value" id="live-counter">842.319</span>
-            <span class="million-label">STILLE MILLION</span>
+            <span class="million-label">STILLEN MILLION</span>
         </div>
     </div>
 
     <div class="main-content-area">
-        <div id="page1" class="grid"></div>
+        <div id="ebene1" class="ebene active"><div id="grid-container" class="grid"></div></div>
 
-        <div id="page2" style="display:none; text-align:center; max-width:800px;">
-            <h1 id="page2-titel" style="text-transform:uppercase; color:#003d8f;"></h1>
-            <p id="page2-text" style="font-size:1.3rem; line-height:1.6;"></p>
+        <div id="ebene2" class="ebene">
+            <h1 id="ebene2-titel" style="color:#003d8f; text-transform:uppercase;"></h1>
+            <p id="ebene2-text" style="font-size:1.3rem; line-height:1.6; max-width:800px;"></p>
         </div>
 
-        <div id="page3" class="chat-window">
-            <div style="padding: 10px; border-bottom: 1px solid #003d8f; font-size: 0.8rem; text-transform: uppercase;">Themen-Chat Live</div>
-            <div class="chat-msgs" id="chat-box"><div><i>System: Herzen sind geweckt. Tauscht euch aus...</i></div></div>
-            <div class="chat-input-row">
-                <input type="text" id="chat-in" placeholder="Nachricht schreiben...">
-                <button onclick="send()">Senden</button>
+        <div id="ebene3" class="ebene">
+            <h2 style="text-transform:uppercase; font-size: 1rem;">Themen-Chat Live</h2>
+            <div class="chat-window">
+                <div class="chat-msgs" id="chat-box"><div><i>System: Herzen sind geweckt. Tauscht euch aus...</i></div></div>
+                <div class="chat-input-row">
+                    <input type="text" id="chat-in" placeholder="Nachricht schreiben...">
+                    <button onclick="sendMsg()">Senden</button>
+                </div>
             </div>
         </div>
 
-        <div id="page4" style="display:none; text-align:center;">
-            <h2 style="color:#ff0000;">FREIZONE EBENE 4</h2>
-            <p>Hier ist Platz für zukünftige Funktionen nach der Stillen Million.</p>
-        </div>
+        <div id="ebene4" class="ebene"><h2>FREIZONE EBENE 4</h2><p>Platz für zukünftige Entwicklungen.</p></div>
+        <div id="ebene5" class="ebene"><h2>FREIZONE EBENE 5</h2><p>Platz für zukünftige Entwicklungen.</p></div>
+        <div id="ebene6" class="ebene"><h2>FREIZONE EBENE 6</h2><p>Platz für zukünftige Entwicklungen.</p></div>
+        <div id="ebene7" class="ebene"><h2>FREIZONE EBENE 7</h2><p>Platz für zukünftige Entwicklungen.</p></div>
     </div>
 
     <div class="bottom-nav">
-        <button id="btn-back" class="nav-btn" onclick="goBack()">← Zurück</button>
-        <div class="dot-container">
-            <div id="d1" class="dot active"></div><div id="d2" class="dot"></div>
-            <div id="d3" class="dot"></div><div id="d4" class="dot"></div>
-        </div>
-        <button id="btn-next" class="nav-btn" onclick="goNext()">Weiter →</button>
+        <button id="btn-back" class="nav-btn" onclick="nav(-1)">← Zurück</button>
+        <div id="dot-box" class="dot-container"></div>
+        <button id="btn-next" class="nav-btn" onclick="nav(1)">Weiter →</button>
     </div>
 
     <script>
-        let ebene = 1;
+        let currentEbene = 1;
         let gewähltesThema = "";
-        const texte = { "Recht auf Gefühlsforderung": "Jeder darf fühlen, wie er möchte. Wachstum gehört dazu. Das Programm hilft dir zu entscheiden, ob es deine eigenen Gefühle sind oder fremde.", "Wie werde ich Mensch": "Der Weg zum Menschsein ist eine Entscheidung gegen die Mechanisierung des Geistes." };
+        const maxEbenen = 7;
+
+        const texte = { 
+            "Recht auf Gefühlsforderung": "Jeder darf fühlen, wie er möchte. Wachstum gehört dazu. Das Programm hilft dir zu entscheiden, ob es deine eigenen Gefühle sind oder fremde.",
+            "Wie werde ich Mensch": "Der Weg zum Menschsein ist eine Entscheidung gegen die Mechanisierung des Geistes."
+        };
         const themen = Object.keys(texte).concat(["Glaube an Friede", "Bürgerliche Rechte", "Moralische Pflicht", "Menschlichkeit", "Kinderschutz", "Wahre Richtung", "LGBTQ und Kirche", "Tradition", "Religionswahl", "Gesundheit", "Arbeitswelt", "Mobbing", "Jugendsprecher", "Pensionisten", "Sozialgefallen", "Nachbarschaft", "Technik", "Die Brücke"]);
 
-        // Grid füllen
-        const grid = document.getElementById('page1');
+        // Grid & Dots initialisieren
+        const grid = document.getElementById('grid-container');
+        const dotBox = document.getElementById('dot-box');
+        
         themen.forEach((t, i) => {
-            grid.innerHTML += `<div class="box" onclick="selectThema('${t}')"><div class="num">${i+1}</div><div class="text">${t}</div></div>`;
+            grid.innerHTML += `<div class="box" onclick="startThema('${t}')"><div class="num">${i+1}</div><div class="text">${t}</div></div>`;
         });
-
-        function selectThema(t) {
-            gewähltesThema = t;
-            goPage(2);
+        for(let i=1; i<=maxEbenen; i++) {
+            dotBox.innerHTML += `<div id="d${i}" class="dot ${i==1?'active':''}"></div>`;
         }
 
-        function goPage(n) {
-            ebene = n;
-            document.getElementById('page1').style.display = n==1 ? 'grid' : 'none';
-            document.getElementById('page2').style.display = n==2 ? 'block' : 'none';
-            document.getElementById('page3').style.display = n==3 ? 'flex' : 'none';
-            document.getElementById('page4').style.display = n==4 ? 'block' : 'none';
+        function startThema(t) {
+            gewähltesThema = t;
+            navTo(2);
+        }
+
+        function nav(dir) {
+            let target = currentEbene + dir;
+            if(target >= 1 && target <= maxEbenen) navTo(target);
+        }
+
+        function navTo(n) {
+            currentEbene = n;
+            // Ebenen umschalten
+            for(let i=1; i<=maxEbenen; i++) {
+                document.getElementById('ebene'+i).classList.toggle('active', i==n);
+                document.getElementById('d'+i).classList.toggle('active', i==n);
+            }
 
             if(n==2) {
-                document.getElementById('page2-titel').innerText = gewähltesThema;
-                document.getElementById('page2-text').innerText = texte[gewähltesThema] || "Inhalt wird im Kollektiv erarbeitet...";
-                startWerbung(gewähltesThema);
+                document.getElementById('ebene2-titel').innerText = gewähltesThema;
+                document.getElementById('ebene2-text').innerText = texte[gewähltesThema] || "Inhalt wird im Kollektiv erarbeitet...";
+                updateWerbung(gewähltesThema);
             }
 
             document.getElementById('btn-back').style.visibility = n > 1 ? 'visible' : 'hidden';
-            document.getElementById('btn-next').style.visibility = (n > 1 && n < 4) ? 'visible' : 'hidden';
-            
-            for(let i=1; i<=4; i++) document.getElementById('d'+i).className = 'dot' + (i==n?' active':'');
+            document.getElementById('btn-next').style.visibility = (n > 1 && n < maxEbenen) ? 'visible' : 'hidden';
         }
 
-        function goNext() { if(ebene < 4) goPage(ebene + 1); }
-        function goBack() { if(ebene > 1) goPage(ebene - 1); }
-
-        function startWerbung(t) {
+        function updateWerbung(t) {
             const bg = document.getElementById('werbe-bg');
             let i = 0;
             clearInterval(window.wInt);
@@ -183,22 +185,22 @@
             window.wInt = setInterval(upd, 10000);
         }
 
-        function send() {
-            const i = document.getElementById('chat-in');
-            if(i.value) {
-                document.getElementById('chat-box').innerHTML += `<div><b>Du:</b> ${i.value}</div>`;
-                i.value = "";
+        function sendMsg() {
+            const inp = document.getElementById('chat-in');
+            if(inp.value) {
+                document.getElementById('chat-box').innerHTML += `<div><b style="color:#003d8f">Du:</b> ${inp.value}</div>`;
+                inp.value = "";
+                const b = document.getElementById('chat-box');
+                b.scrollTop = b.scrollHeight;
             }
         }
 
-        // Zähler Animation
         setInterval(() => {
             const c = document.getElementById('live-counter');
-            let v = parseInt(c.innerText.replace('.','')) + Math.floor(Math.random()*3);
+            let v = parseInt(c.innerText.replace('.','')) + Math.floor(Math.random()*2);
             c.innerText = v.toLocaleString('de-DE');
-        }, 3000);
+        }, 4000);
     </script>
 </body>
 </html>
-  
- 
+
