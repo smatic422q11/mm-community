@@ -9,39 +9,15 @@
             font-family: 'Segoe UI', Arial, sans-serif; 
             margin: 0; padding: 0; 
             display: flex; flex-direction: column; align-items: center; 
-            min-height: 100vh; overflow-x: hidden; 
+            height: 100vh; overflow: hidden; 
         }
 
-        /* ANIMATIONEN */
-        @keyframes kenburns {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.15) translate(-1%, -1%); }
-            100% { transform: scale(1); }
+        /* HEADER BEREICH */
+        .top-container { 
+            width: 100%; display: flex; flex-direction: column; align-items: center; 
+            margin-top: 2vh; flex-shrink: 0; position: relative; 
         }
-
-        @keyframes fadeEffect {
-            0% { opacity: 0; }
-            15% { opacity: 0.5; } 
-            85% { opacity: 0.5; }
-            100% { opacity: 0; }
-        }
-
-        /* HEADER & LOGO */
-        .dashboard-header { 
-            width: 100%; position: absolute; top: 3%; 
-            display: flex; justify-content: flex-start; padding: 0 2%; 
-            box-sizing: border-box; z-index: 20;
-        }
-
-        .logo-ring { 
-            width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; 
-            border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; 
-        }
-        .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
-        .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
-
-        .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 2vh; flex-shrink: 0; position: relative; }
-        .page-title-white { text-transform: uppercase; font-size: 2.2rem; margin: 0 0 10px 0; font-weight: 900; color: #fff; }
+        .page-title-white { text-transform: uppercase; font-size: 2.2rem; margin: 0 0 10px 0; font-weight: 900; }
 
         .info-section { 
             width: 80%; height: 27.5vh; border: 2px solid #003d8f; 
@@ -49,233 +25,155 @@
             background-color: #000; position: relative; overflow: hidden;
         }
 
-        /* DER ZÄHLER - Frei in der 10% Zone, Button-Größe, erst ab Ebene 3 */
+        /* ZÄHLER - Kompakt & Bündig mit Tafel-Oberkante */
         .counter-button-box {
             position: absolute;
-            right: 5%; /* Mitten in der 10% Zone (80% Tafel + 10% Luft + 10% Rand) */
-            top: 50%;
-            transform: translateY(-50%);
-            width: 140px; 
-            padding: 10px;
+            right: 2%; 
+            top: 52px; /* Ausgerichtet an Oberkante der Werbetafel */
+            width: 110px; 
+            padding: 5px;
             border: 2px solid #003d8f;
             background-color: #000;
             text-align: center;
-            display: none; /* Initial versteckt */
+            display: none; 
             z-index: 30;
         }
-        .counter-label { font-size: 0.5rem; text-transform: uppercase; color: #fff; display: block; }
-        .counter-value { font-size: 1.1rem; font-weight: 900; color: #ff0000; text-shadow: 0 0 5px #ff0000; }
+        .counter-label { font-size: 0.45rem; text-transform: uppercase; color: #fff; display: block; line-height: 1; margin-bottom: 2px; }
+        .counter-value { font-size: 1rem; font-weight: 900; color: #ff0000; text-shadow: 0 0 5px #ff0000; }
 
         .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; transition: opacity 1s; }
         .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
-
-        .tafel-intern-logo { position: absolute; top: 10px; left: 10px; transform: scale(0.6); transform-origin: top left; z-index: 5; }
-        .werbe-text-overlay { color: rgba(255, 255, 255, 0.3); font-weight: bold; font-size: 1.2rem; letter-spacing: 5px; z-index: 5; text-align: center; text-shadow: 2px 2px 5px #000; }
+        .werbe-text-overlay { color: rgba(255, 255, 255, 0.3); font-weight: bold; font-size: 1.2rem; letter-spacing: 5px; z-index: 5; text-align: center; }
 
         /* CONTENT ZONEN */
-        .content-free-zone { width: 90%; flex-grow: 1; margin-top: 4vh; margin-bottom: 120px; display: flex; flex-direction: column; align-items: center; }
-        .info-text-flow { font-size: 1.2rem; line-height: 1.6; color: #ccc; max-width: 800px; text-align: center; }
+        .content-free-zone { 
+            width: 100%; flex-grow: 1; 
+            display: flex; flex-direction: column; align-items: center; 
+            padding-bottom: 100px; /* Platz für Nav */
+        }
 
-        /* CHAT BEREICH EBENE 3 */
+        /* CHAT BEREICH - 90% BREITE & MAXIMALE HÖHE */
         #chat-area {
-            width: 80%; /* Gleiche Breite wie Werbetafel */
-            height: 30vh;
-            margin-top: 10vh; /* 10% Abstand unter der Tafel */
-            border: 1px solid #003d8f;
+            width: 90%; 
+            height: 50vh; /* Maximale Ausnutzung */
+            margin-top: 3vh; 
+            border: 2px solid #003d8f;
             display: none;
             flex-direction: column;
-            background: rgba(10, 10, 10, 0.9);
+            background: #050505;
         }
-        .chat-msgs { flex-grow: 1; padding: 15px; overflow-y: auto; color: #aaa; font-size: 0.9rem; text-align: left; }
-        .chat-input-row { display: flex; border-top: 1px solid #003d8f; }
-        .chat-input-row input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 12px; outline: none; }
-        .chat-input-row button { background: #003d8f; color: #fff; border: none; padding: 0 20px; cursor: pointer; text-transform: uppercase; font-size: 0.7rem; }
+        .chat-msgs { flex-grow: 1; padding: 20px; overflow-y: auto; color: #ccc; font-size: 1rem; text-align: left; }
+        .chat-input-row { display: flex; border-top: 2px solid #003d8f; background: #000; }
+        .chat-input-row input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 15px; outline: none; font-size: 1rem; }
+        .chat-input-row button { background: #003d8f; color: #fff; border: none; padding: 0 30px; cursor: pointer; text-transform: uppercase; font-weight: bold; }
 
-        /* GRID */
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 15px; width: 95%; max-width: 1400px; margin-top: 40px; }
-        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 60px; position: relative; }
-        .num { width: 45px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; }
+        /* DASHBOARD GRID */
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; width: 95%; max-width: 1400px; margin-top: 40px; }
+        .box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 60px; }
+        .num { width: 45px; background-color: #003d8f; display: flex; align-items: center; justify-content: center; font-weight: bold; }
         .text { padding: 15px; text-transform: uppercase; font-size: 0.75rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; }
 
-        .fundament-container { display: flex; width: 95%; max-width: 1400px; gap: 15px; margin-top: 15px; margin-bottom: 80px; }
-        .fundament-box { flex: 1; }
-        .locked-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; }
-
         /* NAVIGATION */
-        .bottom-nav { position: fixed; bottom: 20px; width: 95%; display: flex; justify-content: space-between; align-items: center; z-index: 100; background: rgba(0,0,0,0.8); padding: 10px 0; }
-        .nav-btn { padding: 12px 25px; border: 1px solid #fff; background: none; color: #fff; cursor: pointer; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
-        .dot-container { display: flex; gap: 8px; }
-        .dot { width: 8px; height: 8px; border: 1px solid #fff; border-radius: 50%; opacity: 0.3; }
+        .bottom-nav { position: fixed; bottom: 20px; width: 95%; display: flex; justify-content: space-between; align-items: center; z-index: 100; background: rgba(0,0,0,0.9); padding: 10px 0; border-top: 1px solid #222; }
+        .nav-btn { padding: 12px 25px; border: 1px solid #fff; background: none; color: #fff; cursor: pointer; text-transform: uppercase; }
+        .dot-container { display: flex; gap: 10px; }
+        .dot { width: 10px; height: 10px; border: 1px solid #fff; border-radius: 50%; opacity: 0.3; }
         .dot.active { background: #fff; opacity: 1; }
     </style>
 </head>
 <body>
 
     <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 3vh;">
-        <div class="dashboard-header"><div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div></div>
         <div class="info-section">
             <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
             <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
-            <p style="max-width: 85%; color: #ccc; font-size: 1.4rem; margin: 10px 0 0 0;">Die M&M-Community ist das Fundament für alle, die im Kollektiv wachsen wollen.</p>
         </div>
         <div class="grid" id="main-grid"></div>
-        <div class="fundament-container">
-            <div class="fundament-box"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div><div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div></div>
-            <div class="fundament-box"><div class="num">21</div><div class="text">KAPITAL UND VERWALTUNG</div><div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div></div>
-        </div>
     </div>
 
-    <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; min-height: 100vh;">
+    <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100%;">
         <div class="top-container">
             <h1 id="info-titel" class="page-title-white"></h1>
             <div class="info-section">
                 <div class="werbe-bild-bg" id="werbe-bg"></div>
-                <div class="tafel-intern-logo"><div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div></div>
                 <span class="werbe-text-overlay">HIER IST PLATZ FÜR WERBUNG</span>
             </div>
             
             <div id="counter-box" class="counter-button-box">
-                <span class="counter-label">Stille Million bei</span>
-                <span class="counter-value" id="val-counter">842.319</span>
+                <span class="counter-label">STILLE MILLION</span>
+                <span class="counter-value" id="val-counter">842.336</span>
             </div>
         </div>
         
         <div class="content-free-zone">
-            <p id="main-text" class="info-text-flow"></p>
+            <p id="main-text" style="width: 80%; text-align: center; font-size: 1.3rem; margin-top: 5vh;"></p>
             
             <div id="chat-area">
                 <div class="chat-msgs" id="chat-box"><div><i>System: Herzen sind geweckt. Tauscht euch aus...</i></div></div>
                 <div class="chat-input-row">
                     <input type="text" id="chat-in" placeholder="Nachricht schreiben...">
-                    <button onclick="sendMsg()">Senden</button>
+                    <button onclick="sendMsg()">SENDEN</button>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="bottom-nav">
-        <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Zurück</button>
+        <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="goBack()">← Zurück</button>
         <div class="dot-container" id="dot-holder"></div>
         <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
     </div>
 
     <script>
-        const themenDetails = {
-            "Recht auf Gefühlsforderung": { id: 10, txt: "Jeder darf fühlen, wie er möchte. Unsere Gefühlswelt zeigt uns, dass Wachstum dazu gehört." },
-            "Wie werde ich Mensch": { id: 20, txt: "Der Weg zum Menschsein ist eine bewusste Entscheidung gegen die Mechanisierung des Geistes." },
-            "Glaube an Friede": { id: 30, txt: "Frieden beginnt im Inneren und strahlt nach außen." },
-            "Programm für Bürgerliche Rechte": { id: 40, txt: "Rechte sind das Schutzschild der Freiheit." },
-            "Moralische Pflicht und Verantwortung": { id: 50, txt: "Verantwortung zu tragen bedeutet, die Zukunft zu gestalten." },
-            "Menschlichkeit Wiederherstellung": { id: 60, txt: "Wir bringen den Fokus zurück auf das, was uns verbindet." },
-            "Kinderschutz-Pflicht-Elternrechte": { id: 70, txt: "Die Kleinsten brauchen den stärksten Schutz." },
-            "Wahre Richtung und Kunst": { id: 80, txt: "Kunst weist den Weg, den Worte oft nicht finden." },
-            "LGBTQ und Kirche": { id: 90, txt: "Ein Dialog über Respekt und Akzeptanz." },
-            "Trend und Tradition": { id: 100, txt: "Werte bewahren, während wir uns weiterentwickeln." },
-            "Religionsbekenntnis oder Selbstwahl": { id: 110, txt: "Der Glaube ist eine persönliche Reise." },
-            "Gesundheitswesen und Verhalten": { id: 120, txt: "Gesundheit ist ein Zusammenspiel von Körper und Geist." },
-            "Arbeitswelt und Du": { id: 130, txt: "Du bist mehr als nur deine Arbeitskraft." },
-            "Mobbing am Arbeitsplatz": { id: 140, txt: "Gemeinsam gegen Ausgrenzung und für Respekt." },
-            "Jugendsprecher": { id: 150, txt: "Die Stimme der nächsten Generation." },
-            "Ratgeber für Pensionisten": { id: 160, txt: "Erfahrung ist der Schatz unserer Gesellschaft." },
-            "Sozialgefallen und Widerkehr": { id: 170, txt: "Was wir geben, kommt auf neuen Wegen zu uns zurück." },
-            "Nachbarschaft und Gemeinschaft": { id: 180, txt: "Zusammenhalt beginnt vor der eigenen Haustür." },
-            "Mensch und Technik": { id: 190, txt: "Technik soll dem Menschen dienen, nicht umgekehrt." },
-            "Die Brücke": { id: 200, txt: "Wir verbinden Welten und Herzen." }
-        };
+        const details = { "Recht auf Gefühlsforderung": "Jeder darf fühlen, wie er möchte...", "Wie werde ich Mensch": "Der Weg zum Menschsein..." };
+        const themen = Object.keys(details).concat(["Glaube an Friede", "Bürgerliche Rechte", "Moralische Pflicht", "Menschlichkeit", "Kinderschutz", "Wahre Richtung", "LGBTQ und Kirche", "Trend und Tradition", "Religionswahl", "Gesundheit", "Arbeitswelt", "Mobbing", "Jugendsprecher", "Pensionisten", "Sozialgefallen", "Nachbarschaft", "Technik", "Die Brücke"]);
 
-        const themen = Object.keys(themenDetails);
-        let bildIndex = 1;
-        let wechselInterval;
-        let aktuellesThemaId = 10;
         let aktuelleEbene = 1;
-        const maxEbenen = 7;
+        let gewähltesThema = "";
 
-        // Init Dots
+        // Init Dots & Grid
         const dotHolder = document.getElementById('dot-holder');
-        for(let i=1; i<=maxEbenen; i++) {
-            dotHolder.innerHTML += `<div id="dot${i}" class="dot ${i==1?'active':''}"></div>`;
-        }
-
+        for(let i=1; i<=7; i++) dotHolder.innerHTML += `<div id="dot${i}" class="dot ${i==1?'active':''}"></div>`;
+        
         const grid = document.getElementById('main-grid');
-        themen.forEach((thema, index) => {
-            const box = document.createElement('div');
-            box.className = 'box';
-            box.innerHTML = `<div class="num">${index + 1}</div><div class="text" onclick="showInfo('${thema}')">${thema}</div>`;
-            grid.appendChild(box);
+        themen.forEach((t, i) => {
+            grid.innerHTML += `<div class="box" onclick="showInfo('${t}')"><div class="num">${i+1}</div><div class="text">${t}</div></div>`;
         });
 
         function showInfo(titel) {
+            gewähltesThema = titel;
             aktuelleEbene = 2;
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('page-skelett').style.display = 'flex';
-            document.getElementById('chat-area').style.display = 'none';
-            document.getElementById('counter-box').style.display = 'none'; // Auf Seite 2 noch weg
-            document.getElementById('info-titel').innerText = titel;
-            
-            const data = themenDetails[titel];
-            document.getElementById('main-text').innerText = data.txt;
-            document.getElementById('main-text').style.display = 'block';
-            aktuellesThemaId = data.id;
-            
-            updateImage();
-            startImageRotation();
+            updatePageContent();
+        }
+
+        function updatePageContent() {
+            const isEbene3 = aktuelleEbene === 3;
+            document.getElementById('info-titel').innerText = isEbene3 ? "LIVE CHAT - DIALOG" : gewähltesThema;
+            document.getElementById('main-text').style.display = isEbene3 ? 'none' : 'block';
+            document.getElementById('main-text').innerText = details[gewähltesThema] || "Hier wächst das Kollektiv...";
+            document.getElementById('chat-area').style.display = isEbene3 ? 'flex' : 'none';
+            document.getElementById('counter-box').style.display = aktuelleEbene >= 3 ? 'block' : 'none';
 
             document.getElementById('btn-back').style.visibility = 'visible';
-            document.getElementById('btn-next').style.visibility = 'visible';
-            updateDots(2);
+            document.getElementById('btn-next').style.visibility = aktuelleEbene < 7 ? 'visible' : 'hidden';
+            
+            for(let i=1; i<=7; i++) document.getElementById('dot'+i).classList.toggle('active', i === aktuelleEbene);
         }
 
-        function nextPage() {
-            if(aktuelleEbene < maxEbenen) {
-                aktuelleEbene++;
-                updateDots(aktuelleEbene);
-                
-                // EBENE 3 LOGIK
-                if(aktuelleEbene === 3) {
-                    document.getElementById('info-titel').innerText = "Live Chat - Dialog";
-                    document.getElementById('main-text').style.display = 'none';
-                    document.getElementById('chat-area').style.display = 'flex';
-                    document.getElementById('counter-box').style.display = 'block'; // Zähler erscheint!
-                } else {
-                    document.getElementById('chat-area').style.display = 'none';
-                    document.getElementById('main-text').style.display = 'block';
-                    document.getElementById('info-titel').innerText = "Freizone Ebene " + aktuelleEbene;
-                    document.getElementById('main-text').innerText = "Hier bleibt Platz für deine zukünftigen Visionen.";
-                }
+        function nextPage() { if(aktuelleEbene < 7) { aktuelleEbene++; updatePageContent(); } }
+        function goBack() { 
+            if(aktuelleEbene === 2) {
+                aktuelleEbene = 1;
+                document.getElementById('page-skelett').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'flex';
+                document.getElementById('btn-back').style.visibility = 'hidden';
+                document.getElementById('btn-next').style.visibility = 'hidden';
+                for(let i=1; i<=7; i++) document.getElementById('dot'+i).classList.toggle('active', i === 1);
+            } else {
+                aktuelleEbene--; updatePageContent();
             }
-        }
-
-        function showDashboard() {
-            aktuelleEbene = 1;
-            clearInterval(wechselInterval);
-            document.getElementById('page-skelett').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'flex';
-            document.getElementById('btn-back').style.visibility = 'hidden';
-            document.getElementById('btn-next').style.visibility = 'hidden';
-            updateDots(1);
-        }
-
-        function updateDots(lvl) {
-            for(let i=1; i<=maxEbenen; i++) {
-                document.getElementById('dot'+i).classList.toggle('active', i === lvl);
-            }
-        }
-
-        function updateImage() {
-            const bgDiv = document.getElementById('werbe-bg');
-            bgDiv.classList.remove('bild-aktiv');
-            setTimeout(() => {
-                bgDiv.style.backgroundImage = `url('https://picsum.photos/seed/${aktuellesThemaId + bildIndex}/1200/600')`;
-                bgDiv.classList.add('bild-aktiv');
-            }, 50);
-        }
-
-        function startImageRotation() {
-            clearInterval(wechselInterval);
-            wechselInterval = setInterval(() => {
-                bildIndex = (bildIndex % 11) + 1;
-                updateImage();
-            }, 10000);
         }
 
         function sendMsg() {
@@ -286,16 +184,11 @@
                 const b = document.getElementById('chat-box'); b.scrollTop = b.scrollHeight;
             }
         }
-
-        // Simulierter Zähler
-        setInterval(() => {
-            const c = document.getElementById('val-counter');
-            let v = parseInt(c.innerText.replace('.','')) + Math.floor(Math.random()*2);
-            c.innerText = v.toLocaleString('de-DE');
-        }, 4000);
     </script>
 </body>
 </html>
+    
+
 
     
  
