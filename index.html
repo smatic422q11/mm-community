@@ -44,7 +44,7 @@
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
 
-        /* ZENTRALE TAFEL */
+        /* ZENTRALE INFO BOX / WERBETAFEL */
         .info-section { 
             width: 80%; 
             height: 27.5vh; 
@@ -60,7 +60,7 @@
             position: relative;
         }
 
-        /* GRID */
+        /* GRID STRUKTUR */
         .grid { 
             display: grid; 
             grid-template-columns: repeat(4, 1fr); 
@@ -87,6 +87,7 @@
             justify-content: center; 
             background-color: #003d8f; 
             font-weight: bold; 
+            font-size: 1.1rem; 
         }
 
         .text { 
@@ -99,41 +100,61 @@
             flex-grow: 1; 
         }
 
-        /* EBENEN NAVIGATION (FREIZONE FÜR SEITE 3-6) */
+        .fundament-container { 
+            display: flex; 
+            width: 95%; 
+            max-width: 1400px; 
+            gap: 15px; 
+            margin-top: 15px; 
+            margin-bottom: 50px; 
+            min-height: 60px; /* Sicherstellen der Höhe */
+        }
+        .fundament-box { flex: 1; }
+        .locked-overlay { 
+            position: absolute; 
+            top:0; left:0; width:100%; height:100%; 
+            background: rgba(0,0,0,0.85); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            text-align: center; 
+            font-size: 0.75rem; 
+            color: #fff; 
+            z-index: 10; 
+            font-weight: bold; 
+        }
+
+        /* EBENEN NAVIGATION - ABSOLUT POSITIONIERT */
         .level-nav {
             position: fixed;
-            bottom: 0;
-            width: 100%;
-            height: 40px;
-            background: rgba(0, 61, 143, 0.2);
-            border-top: 1px solid #003d8f;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
+            gap: 15px;
             z-index: 100;
+            padding: 5px 15px;
+            background: rgba(0, 61, 143, 0.3);
+            border-radius: 20px;
         }
         .level-dot {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             border: 1px solid #fff;
             border-radius: 50%;
             cursor: pointer;
-            opacity: 0.5;
+            opacity: 0.4;
         }
         .level-dot.active {
             background: #fff;
             opacity: 1;
-            box-shadow: 0 0 10px #fff;
+            box-shadow: 0 0 8px #fff;
         }
 
-        /* INFO KANAL */
+        /* SEITE 2 */
         #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; padding-top: 2vh; }
         .tafel-intern-logo { position: absolute; top: 10px; left: 10px; transform: scale(0.6); transform-origin: top left; }
         .back-btn { margin-top: 40px; padding: 15px 40px; border: 2px solid #fff; background: none; color: #fff; cursor: pointer; text-transform: uppercase; }
-        
-        .fundament-container { display: flex; width: 95%; max-width: 1400px; gap: 15px; margin-top: 15px; margin-bottom: 60px; }
-        .locked-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -155,8 +176,14 @@
         </div>
         <div class="grid" id="main-grid"></div>
         <div class="fundament-container">
-            <div class="fundament-box"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div><div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div></div>
-            <div class="fundament-box"><div class="num">21</div><div class="text">KAPITAL UND VERWALTUNG</div><div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div></div>
+            <div class="fundament-box">
+                <div class="num">22</div><div class="text">DAS KOLLEKTIV</div>
+                <div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div>
+            </div>
+            <div class="fundament-box">
+                <div class="num">21</div><div class="text">KAPITAL UND VERWALTUNG</div>
+                <div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div>
+            </div>
         </div>
     </div>
 
@@ -172,12 +199,12 @@
     </div>
 
     <div class="level-nav">
-        <div class="level-dot active" title="Seite 1"></div>
-        <div class="level-dot" title="Seite 2"></div>
-        <div class="level-dot" title="Seite 3"></div>
-        <div class="level-dot" title="Seite 4"></div>
-        <div class="level-dot" title="Seite 5"></div>
-        <div class="level-dot" title="Seite 6"></div>
+        <div class="level-dot active"></div>
+        <div class="level-dot"></div>
+        <div class="level-dot"></div>
+        <div class="level-dot"></div>
+        <div class="level-dot"></div>
+        <div class="level-dot"></div>
     </div>
 
     <script>
@@ -221,4 +248,3 @@
     </script>
 </body>
 </html>
-  
