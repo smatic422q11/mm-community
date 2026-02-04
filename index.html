@@ -36,6 +36,15 @@
             margin-top: 2vh;
         }
 
+        /* ÜBERSCHRIFT SEITE 2 - JETZT WEISS */
+        .page-title-white {
+            text-transform: uppercase; 
+            font-size: 2.2rem; 
+            margin: 0 0 10px 0; 
+            font-weight: 900; 
+            color: #fff; 
+        }
+
         .info-section { 
             width: 80%; height: 27.5vh; border: 2px solid #003d8f; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
@@ -47,15 +56,15 @@
         /* FREIZONE FÜR TEXT */
         .content-free-zone {
             width: 80%;
-            margin-top: 4vh; /* Abstand nach der Box */
+            margin-top: 5vh; 
             text-align: center;
         }
 
         .info-text-flow { 
-            font-size: 0.75rem; /* Schriftgröße halbiert */
+            font-size: 1rem; /* Schriftgröße leicht erhöht wie gewünscht */
             line-height: 1.6; 
             color: #ccc; 
-            max-width: 700px;
+            max-width: 800px;
             margin: 0 auto;
         }
 
@@ -106,7 +115,7 @@
 
     <div id="info-kanal" style="display: none; width: 100%; flex-direction: column; align-items: center;">
         <div class="top-container">
-            <h1 id="info-titel" style="text-transform: uppercase; font-size: 2.2rem; margin: 0 0 10px 0; font-weight: 900; color: #003d8f;"></h1>
+            <h1 id="info-titel" class="page-title-white"></h1>
             <div class="info-section">
                 <div class="tafel-intern-logo">
                     <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
