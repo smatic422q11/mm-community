@@ -12,186 +12,203 @@
             height: 100vh; overflow: hidden; 
         }
 
-        /* HEADER BEREICH (Tafel & Zähler nebeneinander) */
-        .header-section {
-            width: 95%; height: 25vh; margin-top: 2vh;
-            display: flex; gap: 15px; flex-shrink: 0;
+        /* HEADER BEREICH - FIXIERT DAMIT NICHTS VERRUTSCHT */
+        .header-wrapper {
+            width: 100%; height: 35vh; 
+            display: flex; justify-content: center; align-items: center;
+            position: relative; flex-shrink: 0;
         }
 
+        /* Werbetafel (Exakt 80% Breite) */
         .info-section { 
-            flex: 2; border: 2px solid #003d8f; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            width: 80%; height: 27.5vh; border: 2px solid #003d8f; 
             background-color: #000; position: relative; overflow: hidden;
-        }
-
-        .counter-box {
-            flex: 1; border: 2px solid #003d8f;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            background-color: #050505; text-align: center; padding: 10px;
+            z-index: 10;
         }
 
-        .million-label { color: #fff; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; }
-        .million-value { color: #ff0000; font-size: 2.2rem; font-weight: 900; text-shadow: 0 0 15px #ff0000; margin: 2px 0; }
-
-        /* BILD-EFFEKTE */
-        @keyframes kenburns { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-        @keyframes fadeEffect { 0% { opacity: 0; } 15% { opacity: 0.4; } 85% { opacity: 0.4; } 100% { opacity: 0; } }
-        .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
-        .bild-aktiv { animation: kenburns 15s infinite ease-in-out, fadeEffect 10s infinite; }
-        .werbe-text-overlay { color: rgba(255, 255, 255, 0.3); font-weight: bold; font-size: 1rem; letter-spacing: 5px; z-index: 5; text-align: center; }
-
-        /* MAIN AREA & EBENEN */
-        .main-content-area {
-            width: 95%; flex-grow: 1; margin: 2vh 0 100px 0;
-            display: flex; flex-direction: column; align-items: center;
+        /* Zähler Box (Exakt 7.5% Breite, rechts neben der Tafel) */
+        .counter-box {
+            position: absolute; right: 2.5%; width: 7.5%; height: 27.5vh;
+            border: 2px solid #003d8f; background-color: #050505;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; padding: 5px; box-sizing: border-box;
         }
 
-        .ebene { display: none; width: 100%; height: 100%; flex-direction: column; align-items: center; text-align: center; }
+        .million-label { color: #fff; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 1px; }
+        .million-value { color: #ff0000; font-size: 1.2rem; font-weight: 900; text-shadow: 0 0 10px #ff0000; margin: 5px 0; }
+
+        /* Animationen */
+        @keyframes kenburns { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
+        @keyframes fadeEffect { 0% { opacity: 0; } 15% { opacity: 0.5; } 85% { opacity: 0.5; } 100% { opacity: 0; } }
+        .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; transition: opacity 1s; }
+        .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
+        .tafel-intern-logo { position: absolute; top: 10px; left: 10px; transform: scale(0.6); transform-origin: top left; z-index: 5; }
+        .werbe-text-overlay { color: rgba(255, 255, 255, 0.3); font-weight: bold; font-size: 1.2rem; letter-spacing: 5px; z-index: 5; text-align: center; }
+
+        /* CONTENT ZONEN */
+        .main-container { width: 100%; flex-grow: 1; position: relative; display: flex; flex-direction: column; align-items: center; }
+        
+        .ebene { display: none; width: 100%; flex-direction: column; align-items: center; }
         .ebene.active { display: flex; }
 
-        /* SEITE 1: GRID */
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; max-width: 1400px; }
-        .box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 50px; cursor: pointer; transition: 0.3s; }
-        .box:hover { background-color: #003d8f; }
-        .num { width: 35px; background-color: #003d8f; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        /* Ebene 1: Grid */
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; width: 95%; max-width: 1400px; margin-top: 20px; }
+        .box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 55px; cursor: pointer; }
+        .num { width: 40px; background-color: #003d8f; display: flex; align-items: center; justify-content: center; font-weight: bold; }
         .text { padding: 10px; font-size: 0.7rem; text-transform: uppercase; display: flex; align-items: center; }
 
-        /* SEITE 3: CHAT */
-        .chat-window {
-            width: 100%; max-width: 700px; height: 300px; border: 1px solid #003d8f; 
-            display: flex; flex-direction: column; background: #050505; text-align: left;
+        /* Ebene 3: Chat (10% Abstand unter Tafel, 80% Breite) */
+        .chat-container {
+            margin-top: 10%; width: 80%; height: 30vh; border: 1px solid #003d8f;
+            background: #050505; display: flex; flex-direction: column;
         }
-        .chat-msgs { flex-grow: 1; padding: 15px; overflow-y: auto; font-size: 0.9rem; color: #ccc; }
-        .chat-input-row { display: flex; border-top: 1px solid #003d8f; }
-        .chat-input-row input { flex: 1; background: transparent; border: none; color: #fff; padding: 15px; outline: none; }
-        .chat-input-row button { background: #003d8f; color: #fff; border: none; padding: 0 20px; cursor: pointer; text-transform: uppercase; font-size: 0.7rem; }
+        .chat-messages { flex: 1; padding: 10px; overflow-y: auto; color: #ccc; font-size: 0.9rem; }
+        .chat-input-area { display: flex; border-top: 1px solid #003d8f; }
+        .chat-input-area input { flex: 1; background: transparent; border: none; color: #fff; padding: 10px; outline: none; }
+        .chat-input-area button { background: #003d8f; color: #fff; border: none; padding: 0 20px; cursor: pointer; text-transform: uppercase; font-size: 0.7rem; }
 
-        /* NAVIGATION */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 80px; background: #000; border-top: 1px solid #222; display: flex; justify-content: space-between; align-items: center; padding: 0 5%; box-sizing: border-box; }
-        .nav-btn { padding: 12px 20px; border: 1px solid #fff; background: none; color: #fff; cursor: pointer; text-transform: uppercase; font-size: 0.75rem; visibility: hidden; }
+        /* Navigation */
+        .bottom-nav { position: fixed; bottom: 20px; width: 95%; display: flex; justify-content: space-between; align-items: center; z-index: 100; background: rgba(0,0,0,0.8); padding: 10px 0; }
+        .nav-btn { padding: 12px 25px; border: 1px solid #fff; background: none; color: #fff; cursor: pointer; text-transform: uppercase; font-size: 0.8rem; }
         .dot-container { display: flex; gap: 8px; }
-        .dot { width: 8px; height: 8px; border: 1px solid #fff; border-radius: 50%; opacity: 0.2; }
+        .dot { width: 8px; height: 8px; border: 1px solid #fff; border-radius: 50%; opacity: 0.3; }
         .dot.active { background: #fff; opacity: 1; }
     </style>
 </head>
 <body>
 
-    <div class="header-section">
-        <div class="info-section">
+    <div class="header-wrapper">
+        <div class="info-section" id="universal-tafel">
             <div class="werbe-bild-bg" id="werbe-bg"></div>
-            <span class="werbe-text-overlay">HIER IST PLATZ FÜR WERBUNG</span>
+            <div class="tafel-intern-logo">
+                <div style="width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                    <div style="font-size: 2rem; font-weight: 900; line-height: 0.8;">M&M</div>
+                    <div style="font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold;">COMMUNITY</div>
+                </div>
+            </div>
+            <span class="werbe-text-overlay" id="tafel-h1">DAS WAS & WARUM</span>
+            <span class="werbe-text-overlay" id="tafel-h2" style="color: #003d8f; font-size: 1.4rem;">DIE STILLE MILLION</span>
         </div>
+
         <div class="counter-box">
-            <span class="million-label">Vorsitzendenwahl nach Erreichen der</span>
+            <span class="million-label">Wahl bei</span>
             <span class="million-value" id="live-counter">842.319</span>
-            <span class="million-label">STILLEN MILLION</span>
+            <span class="million-label">STILLE MILLION</span>
         </div>
     </div>
 
-    <div class="main-content-area">
-        <div id="ebene1" class="ebene active"><div id="grid-container" class="grid"></div></div>
+    <div class="main-container">
+        <div id="ebene1" class="ebene active">
+            <div class="grid" id="main-grid"></div>
+        </div>
 
         <div id="ebene2" class="ebene">
-            <h1 id="ebene2-titel" style="color:#003d8f; text-transform:uppercase;"></h1>
-            <p id="ebene2-text" style="font-size:1.3rem; line-height:1.6; max-width:800px;"></p>
+            <h1 id="info-titel" style="text-transform: uppercase; margin-top: 20px;"></h1>
+            <p id="main-text" style="width: 80%; text-align: center; color: #ccc; line-height: 1.6;"></p>
         </div>
 
         <div id="ebene3" class="ebene">
-            <h2 style="text-transform:uppercase; font-size: 1rem;">Themen-Chat Live</h2>
-            <div class="chat-window">
-                <div class="chat-msgs" id="chat-box"><div><i>System: Herzen sind geweckt. Tauscht euch aus...</i></div></div>
-                <div class="chat-input-row">
-                    <input type="text" id="chat-in" placeholder="Nachricht schreiben...">
+            <div class="chat-container">
+                <div class="chat-messages" id="chat-box"><i>System: Herzen sind geweckt. Willkommen im Chat...</i></div>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-in" placeholder="Nachricht...">
                     <button onclick="sendMsg()">Senden</button>
                 </div>
             </div>
         </div>
 
-        <div id="ebene4" class="ebene"><h2>FREIZONE EBENE 4</h2><p>Platz für zukünftige Entwicklungen.</p></div>
-        <div id="ebene5" class="ebene"><h2>FREIZONE EBENE 5</h2><p>Platz für zukünftige Entwicklungen.</p></div>
-        <div id="ebene6" class="ebene"><h2>FREIZONE EBENE 6</h2><p>Platz für zukünftige Entwicklungen.</p></div>
-        <div id="ebene7" class="ebene"><h2>FREIZONE EBENE 7</h2><p>Platz für zukünftige Entwicklungen.</p></div>
+        <div id="ebene4" class="ebene"><h2 style="margin-top:50px;">FREIZONE EBENE 4</h2></div>
+        <div id="ebene5" class="ebene"><h2 style="margin-top:50px;">FREIZONE EBENE 5</h2></div>
+        <div id="ebene6" class="ebene"><h2 style="margin-top:50px;">FREIZONE EBENE 6</h2></div>
+        <div id="ebene7" class="ebene"><h2 style="margin-top:50px;">FREIZONE EBENE 7</h2></div>
     </div>
 
     <div class="bottom-nav">
-        <button id="btn-back" class="nav-btn" onclick="nav(-1)">← Zurück</button>
-        <div id="dot-box" class="dot-container"></div>
-        <button id="btn-next" class="nav-btn" onclick="nav(1)">Weiter →</button>
+        <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="goBack()">← Zurück</button>
+        <div class="dot-container" id="dot-box"></div>
+        <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="goNext()">Weiter →</button>
     </div>
 
     <script>
-        let currentEbene = 1;
-        let gewähltesThema = "";
-        const maxEbenen = 7;
-
-        const texte = { 
-            "Recht auf Gefühlsforderung": "Jeder darf fühlen, wie er möchte. Wachstum gehört dazu. Das Programm hilft dir zu entscheiden, ob es deine eigenen Gefühle sind oder fremde.",
-            "Wie werde ich Mensch": "Der Weg zum Menschsein ist eine Entscheidung gegen die Mechanisierung des Geistes."
+        const details = {
+            "Recht auf Gefühlsforderung": "Jeder darf fühlen, wie er möchte. Unsere Gefühlswelt zeigt uns, dass Wachstum dazu gehört.",
+            "Wie werde ich Mensch": "Der Weg zum Menschsein ist eine bewusste Entscheidung gegen die Mechanisierung des Geistes."
+            // ... weitere Themen wie gehabt
         };
-        const themen = Object.keys(texte).concat(["Glaube an Friede", "Bürgerliche Rechte", "Moralische Pflicht", "Menschlichkeit", "Kinderschutz", "Wahre Richtung", "LGBTQ und Kirche", "Tradition", "Religionswahl", "Gesundheit", "Arbeitswelt", "Mobbing", "Jugendsprecher", "Pensionisten", "Sozialgefallen", "Nachbarschaft", "Technik", "Die Brücke"]);
+        const themen = Object.keys(details).concat(["Glaube an Friede", "Bürgerliche Rechte", "Moralische Pflicht", "Menschlichkeit", "Kinderschutz", "Wahre Richtung", "LGBTQ und Kirche", "Trend und Tradition", "Religionswahl", "Gesundheit", "Arbeitswelt", "Mobbing", "Jugendsprecher", "Pensionisten", "Sozialgefallen", "Nachbarschaft", "Technik", "Die Brücke"]);
 
-        // Grid & Dots initialisieren
-        const grid = document.getElementById('grid-container');
-        const dotBox = document.getElementById('dot-box');
-        
+        let ebene = 1;
+        let gewähltesThema = "";
+        let wInterval;
+
+        // Init Grid & Dots
+        const grid = document.getElementById('main-grid');
         themen.forEach((t, i) => {
-            grid.innerHTML += `<div class="box" onclick="startThema('${t}')"><div class="num">${i+1}</div><div class="text">${t}</div></div>`;
+            grid.innerHTML += `<div class="box" onclick="selectThema('${t}')"><div class="num">${i+1}</div><div class="text">${t}</div></div>`;
         });
-        for(let i=1; i<=maxEbenen; i++) {
-            dotBox.innerHTML += `<div id="d${i}" class="dot ${i==1?'active':''}"></div>`;
-        }
 
-        function startThema(t) {
+        const dotBox = document.getElementById('dot-box');
+        for(let i=1; i<=7; i++) dotBox.innerHTML += `<div id="d${i}" class="dot ${i==1?'active':''}"></div>`;
+
+        function selectThema(t) {
             gewähltesThema = t;
-            navTo(2);
+            setEbene(2);
         }
 
-        function nav(dir) {
-            let target = currentEbene + dir;
-            if(target >= 1 && target <= maxEbenen) navTo(target);
-        }
-
-        function navTo(n) {
-            currentEbene = n;
-            // Ebenen umschalten
-            for(let i=1; i<=maxEbenen; i++) {
+        function setEbene(n) {
+            ebene = n;
+            for(let i=1; i<=7; i++) {
                 document.getElementById('ebene'+i).classList.toggle('active', i==n);
                 document.getElementById('d'+i).classList.toggle('active', i==n);
             }
+            
+            // Header-Inhalte anpassen
+            if(n === 1) {
+                document.getElementById('tafel-h1').style.display = "block";
+                document.getElementById('tafel-h2').style.display = "block";
+                document.getElementById('werbe-bg').classList.remove('bild-aktiv');
+                clearInterval(wInterval);
+            } else {
+                document.getElementById('tafel-h1').style.display = "none";
+                document.getElementById('tafel-h2').style.display = "none";
+                startWerbung();
+            }
 
-            if(n==2) {
-                document.getElementById('ebene2-titel').innerText = gewähltesThema;
-                document.getElementById('ebene2-text').innerText = texte[gewähltesThema] || "Inhalt wird im Kollektiv erarbeitet...";
-                updateWerbung(gewähltesThema);
+            if(n === 2) {
+                document.getElementById('info-titel').innerText = gewähltesThema;
+                document.getElementById('main-text').innerText = details[gewähltesThema] || "Inhalt wird im Kollektiv erarbeitet...";
             }
 
             document.getElementById('btn-back').style.visibility = n > 1 ? 'visible' : 'hidden';
-            document.getElementById('btn-next').style.visibility = (n > 1 && n < maxEbenen) ? 'visible' : 'hidden';
+            document.getElementById('btn-next').style.visibility = (n > 1 && n < 7) ? 'visible' : 'hidden';
         }
 
-        function updateWerbung(t) {
+        function goNext() { if(ebene < 7) setEbene(ebene + 1); }
+        function goBack() { if(ebene > 1) ebene == 2 ? setEbene(1) : setEbene(ebene - 1); }
+
+        function startWerbung() {
+            clearInterval(wInterval);
             const bg = document.getElementById('werbe-bg');
-            let i = 0;
-            clearInterval(window.wInt);
+            let i = 1;
             const upd = () => {
                 bg.classList.remove('bild-aktiv');
                 setTimeout(() => {
-                    bg.style.backgroundImage = `url('https://picsum.photos/seed/${t+i}/1200/600')`;
+                    bg.style.backgroundImage = `url('https://picsum.photos/seed/${gewähltesThema+i}/1200/600')`;
                     bg.classList.add('bild-aktiv');
-                    i++;
+                    i = (i % 11) + 1;
                 }, 50);
             };
             upd();
-            window.wInt = setInterval(upd, 10000);
+            wInterval = setInterval(upd, 10000);
         }
 
         function sendMsg() {
             const inp = document.getElementById('chat-in');
             if(inp.value) {
-                document.getElementById('chat-box').innerHTML += `<div><b style="color:#003d8f">Du:</b> ${inp.value}</div>`;
+                document.getElementById('chat-box').innerHTML += `<div><b>Du:</b> ${inp.value}</div>`;
                 inp.value = "";
-                const b = document.getElementById('chat-box');
-                b.scrollTop = b.scrollHeight;
+                const b = document.getElementById('chat-box'); b.scrollTop = b.scrollHeight;
             }
         }
 
@@ -203,4 +220,5 @@
     </script>
 </body>
 </html>
+  
 
