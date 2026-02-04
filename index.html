@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>M&M-COMMUNITY - Das Fundament</title>
     <style>
-        /* BASIS-LAYOUT */
         body { 
             background-color: #000; color: #fff; 
             font-family: 'Segoe UI', Arial, sans-serif; 
@@ -13,21 +12,20 @@
             min-height: 100vh; overflow-x: hidden; 
         }
 
-        /* ANIMATIONEN FÜR DIE LEBENDIGE WERBUNG */
+        /* ANIMATIONEN */
         @keyframes kenburns {
-            0% { transform: scale(1) translate(0, 0); }
-            50% { transform: scale(1.15) translate(-1%, -1%); }
-            100% { transform: scale(1) translate(0, 0); }
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2) translate(-1%, -1%); }
+            100% { transform: scale(1); }
         }
 
         @keyframes fadeEffect {
             0% { opacity: 0; }
-            15% { opacity: 0.4; } /* Sanftes Auftauchen */
-            85% { opacity: 0.4; } /* Halten */
-            100% { opacity: 0; }  /* Sanftes Abtauchen */
+            15% { opacity: 0.5; } 
+            85% { opacity: 0.5; }
+            100% { opacity: 0; }
         }
 
-        /* HEADER */
         .dashboard-header { 
             width: 100%; position: absolute; top: 3%; 
             display: flex; justify-content: flex-start; padding: 0 2%; 
@@ -41,55 +39,25 @@
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
 
-        /* FIXER BEREICH OBEN */
-        .top-container {
-            width: 100%; display: flex; flex-direction: column; align-items: center;
-            margin-top: 2vh; flex-shrink: 0;
-        }
+        .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 2vh; flex-shrink: 0; }
+        .page-title-white { text-transform: uppercase; font-size: 2.2rem; margin: 0 0 10px 0; font-weight: 900; color: #fff; }
 
-        .page-title-white {
-            text-transform: uppercase; font-size: 2.2rem; margin: 0 0 10px 0; font-weight: 900; color: #fff; 
-        }
-
-        /* DIE WERBEBOX (DIE TAFEL) */
         .info-section { 
             width: 80%; height: 27.5vh; border: 2px solid #003d8f; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
             background-color: #000; position: relative; overflow: hidden;
         }
 
-        /* Die tauchenden Bilder */
-        .werbe-bild-bg {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-size: cover; background-position: center;
-            opacity: 0; z-index: 1;
-        }
-
-        /* Klasse für Animation-Trigger */
-        .bild-aktiv {
-            animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite;
-        }
+        .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
+        .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
 
         .tafel-intern-logo { position: absolute; top: 10px; left: 10px; transform: scale(0.6); transform-origin: top left; z-index: 5; }
+        .werbe-text-overlay { color: rgba(255, 255, 255, 0.3); font-weight: bold; font-size: 1.2rem; letter-spacing: 5px; z-index: 5; text-align: center; text-shadow: 2px 2px 5px #000; }
 
-        .werbe-text-overlay {
-            color: rgba(255, 255, 255, 0.3); font-weight: bold; font-size: 1.2rem; 
-            letter-spacing: 5px; z-index: 5; text-align: center; text-shadow: 2px 2px 5px #000;
-        }
-
-        /* DIE SCHWARZE FREIZONE */
-        .content-free-zone {
-            width: 90%; flex-grow: 1; margin-top: 4vh; margin-bottom: 80px;
-            display: flex; flex-direction: column; align-items: center;
-        }
-
+        .content-free-zone { width: 90%; flex-grow: 1; margin-top: 4vh; margin-bottom: 80px; display: flex; flex-direction: column; align-items: center; }
         .info-text-flow { font-size: 1.1rem; line-height: 1.6; color: #ccc; max-width: 800px; text-align: center; }
 
-        /* DASHBOARD GRID */
-        .grid { 
-            display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); 
-            grid-auto-flow: column; gap: 15px; width: 95%; max-width: 1400px; margin-top: 40px;
-        }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 15px; width: 95%; max-width: 1400px; margin-top: 40px; }
         .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 60px; position: relative; }
         .num { width: 45px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; }
         .text { padding: 15px; text-transform: uppercase; font-size: 0.75rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; }
@@ -98,11 +66,7 @@
         .fundament-box { flex: 1; }
         .locked-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; }
 
-        /* NAVIGATION */
-        .bottom-nav {
-            position: fixed; bottom: 20px; width: 95%; 
-            display: flex; justify-content: space-between; align-items: center; z-index: 100;
-        }
+        .bottom-nav { position: fixed; bottom: 20px; width: 95%; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
         .nav-btn { padding: 12px 25px; border: 1px solid #fff; background: none; color: #fff; cursor: pointer; text-transform: uppercase; font-size: 0.8rem; }
         .dot-container { display: flex; gap: 8px; }
         .dot { width: 6px; height: 6px; border: 1px solid #fff; border-radius: 50%; opacity: 0.3; }
@@ -112,15 +76,11 @@
 <body>
 
     <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 3vh;">
-        <div class="dashboard-header">
-            <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
-        </div>
+        <div class="dashboard-header"><div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div></div>
         <div class="info-section">
             <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
             <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
-            <p style="max-width: 85%; color: #ccc; font-size: 1.4rem; margin: 10px 0 0 0;">
-                Die M&M-Community ist das Fundament für alle, die im Kollektiv wachsen wollen. Die Wahl der Vorsitzenden erfolgt erst nach Erreichen der stillen Million.
-            </p>
+            <p style="max-width: 85%; color: #ccc; font-size: 1.4rem; margin: 10px 0 0 0;">Die M&M-Community ist das Fundament für alle, die im Kollektiv wachsen wollen.</p>
         </div>
         <div class="grid" id="main-grid"></div>
         <div class="fundament-container">
@@ -134,45 +94,47 @@
             <h1 id="info-titel" class="page-title-white"></h1>
             <div class="info-section">
                 <div class="werbe-bild-bg" id="werbe-bg"></div>
-                <div class="tafel-intern-logo">
-                    <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
-                </div>
+                <div class="tafel-intern-logo"><div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div></div>
                 <span class="werbe-text-overlay">HIER IST PLATZ FÜR WERBUNG</span>
             </div>
         </div>
-
-        <div class="content-free-zone">
-            <p id="main-text" class="info-text-flow"></p>
-        </div>
+        <div class="content-free-zone"><p id="main-text" class="info-text-flow"></p></div>
     </div>
 
     <div class="bottom-nav">
         <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Zurück</button>
-        <div class="dot-container">
-            <div id="dot1" class="dot active"></div><div id="dot2" class="dot"></div>
-            <div id="dot3" class="dot"></div><div id="dot4" class="dot"></div>
-            <div id="dot5" class="dot"></div><div id="dot6" class="dot"></div>
-        </div>
+        <div class="dot-container"><div id="dot1" class="dot active"></div><div id="dot2" class="dot"></div><div id="dot3" class="dot"></div><div id="dot4" class="dot"></div><div id="dot5" class="dot"></div><div id="dot6" class="dot"></div></div>
         <button id="btn-next" class="nav-btn" style="visibility: hidden;">Weiter →</button>
     </div>
 
     <script>
-        // Bilder-Pool für den automatischen Wechsel
-        const wechselBilder = [
-            "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=1000",
-            "https://images.unsplash.com/photo-1516733725897-1aa73b87c8e8?auto=format&fit=crop&q=80&w=1000",
-            "https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&q=80&w=1000"
-        ];
-
-        let bildIndex = 0;
-        let wechselInterval;
-
-        const details = {
-            "Recht auf Gefühlsvorderung": "Jeder darf fühlen, wie er möchte. Unsere Gefühlswelt zeigt uns, dass Wachstum dazu gehört. Das Programm hilft dir zu entscheiden, ob es deine eigenen Gefühle sind oder fremde. In der Freiheit des Fühlens liegt der Anspruch auf die eigene Wahrheit.",
-            "Wie werde ich Mensch": "Der Weg zum Menschsein ist eine bewusste Entscheidung gegen die Mechanisierung des Geistes. Es geht darum, Empathie und Eigenverantwortung wieder als Kernkraft zu entdecken."
+        const themenDetails = {
+            "Recht auf Gefühlsforderung": { kw: "emotions,abstract,freedom", txt: "Jeder darf fühlen, wie er möchte. Wachstum gehört dazu." },
+            "Wie werde ich Mensch": { kw: "human,soul,empathy", txt: "Der Weg zum Menschsein ist eine Entscheidung gegen die Mechanisierung." },
+            "Glaube an Friede": { kw: "peace,dove,serenity", txt: "Frieden beginnt im Inneren und strahlt nach außen." },
+            "Programm für Bürgerliche Rechte": { kw: "justice,law,liberty", txt: "Rechte sind das Schutzschild der Freiheit." },
+            "Moralische Pflicht und Verantwortung": { kw: "ethics,hands,support", txt: "Verantwortung zu tragen bedeutet, die Zukunft zu gestalten." },
+            "Menschlichkeit Wiederherstellung": { kw: "humanity,kindness,together", txt: "Wir bringen den Fokus zurück auf das, was uns verbindet." },
+            "Kinderschutz-Pflicht-Elternrechte": { kw: "children,protection,family", txt: "Die Kleinsten brauchen den stärksten Schutz." },
+            "Wahre Richtung und Kunst": { kw: "art,direction,creative", txt: "Kunst weist den Weg, den Worte oft nicht finden." },
+            "LGBTQ und Kirche": { kw: "rainbow,church,diversity", txt: "Ein Dialog über Respekt und Akzeptanz." },
+            "Trend und Tradition": { kw: "modern,vintage,heritage", txt: "Werte bewahren, während wir uns weiterentwickeln." },
+            "Religionsbekenntnis oder Selbstwahl": { kw: "spirituality,choice,faith", txt: "Der Glaube ist eine persönliche Reise." },
+            "Gesundheitswesen und Verhalten": { kw: "health,nature,wellbeing", txt: "Gesundheit ist ein Zusammenspiel von Körper und Geist." },
+            "Arbeitswelt und Du": { kw: "work,future,vision", txt: "Du bist mehr als nur deine Arbeitskraft." },
+            "Mobbing am Arbeitsplatz": { kw: "lonely,office,strong", txt: "Gemeinsam gegen Ausgrenzung und für Respekt." },
+            "Jugendsprecher": { kw: "youth,speaking,future", txt: "Die Stimme der nächsten Generation." },
+            "Ratgeber für Pensionisten": { kw: "senior,happiness,wisdom", txt: "Erfahrung ist der Schatz unserer Gesellschaft." },
+            "Sozialgefallen und Widerkehr": { kw: "help,community,circle", txt: "Was wir geben, kommt auf neuen Wegen zu uns zurück." },
+            "Nachbarschaft und Gemeinschaft": { kw: "neighbor,village,community", txt: "Zusammenhalt beginnt vor der eigenen Haustür." },
+            "Mensch und Technik": { kw: "technology,human,future", txt: "Technik soll dem Menschen dienen, nicht umgekehrt." },
+            "Die Brücke": { kw: "bridge,connection,trust", txt: "Wir verbinden Welten und Herzen." }
         };
 
-        const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
+        const themen = Object.keys(themenDetails);
+        let bildIndex = 0;
+        let wechselInterval;
+        let aktuelleBilder = [];
 
         const grid = document.getElementById('main-grid');
         themen.forEach((thema, index) => {
@@ -182,36 +144,46 @@
             grid.appendChild(box);
         });
 
+        function generateImageUrls(keyword) {
+            let pool = [];
+            for(let i=1; i<=11; i++) {
+                // Nutzt Unsplash Source mit zufälligen IDs für 11 verschiedene Bilder pro Keyword
+                pool.push(`https://source.unsplash.com/featured/1200x600/?${keyword}&sig=${i}`);
+            }
+            return pool;
+        }
+
         function showInfo(titel) {
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('page-skelett').style.display = 'flex';
             document.getElementById('info-titel').innerText = titel;
-            document.getElementById('main-text').innerText = details[titel] || "Inhalt wird im Kollektiv erarbeitet...";
+            
+            const data = themenDetails[titel];
+            document.getElementById('main-text').innerText = data.txt;
+            
+            aktuelleBilder = generateImageUrls(data.kw);
+            bildIndex = 0;
             
             const bgDiv = document.getElementById('werbe-bg');
-            bgDiv.style.backgroundImage = `url('${wechselBilder[0]}')`;
+            bgDiv.style.backgroundImage = `url('${aktuelleBilder[0]}')`;
             bgDiv.classList.add('bild-aktiv');
 
             startImageRotation();
-
             document.getElementById('btn-back').style.visibility = 'visible';
-            document.getElementById('btn-next').style.visibility = 'visible';
             updateDots(2);
         }
 
         function startImageRotation() {
             clearInterval(wechselInterval);
             const bgDiv = document.getElementById('werbe-bg');
-            
             wechselInterval = setInterval(() => {
-                bgDiv.classList.remove('bild-aktiv'); // Animation resetten
-                
+                bgDiv.classList.remove('bild-aktiv');
                 setTimeout(() => {
-                    bildIndex = (bildIndex + 1) % wechselBilder.length;
-                    bgDiv.style.backgroundImage = `url('${wechselBilder[bildIndex]}')`;
+                    bildIndex = (bildIndex + 1) % aktuelleBilder.length;
+                    bgDiv.style.backgroundImage = `url('${aktuelleBilder[bildIndex]}')`;
                     bgDiv.classList.add('bild-aktiv');
-                }, 50); // Kleiner Moment für den Browser
-            }, 10000); // Alle 10 Sekunden Tauchgang
+                }, 50);
+            }, 10000);
         }
 
         function showDashboard() {
@@ -219,7 +191,6 @@
             document.getElementById('page-skelett').style.display = 'none';
             document.getElementById('dashboard').style.display = 'flex';
             document.getElementById('btn-back').style.visibility = 'hidden';
-            document.getElementById('btn-next').style.visibility = 'hidden';
             updateDots(1);
         }
 
