@@ -16,93 +16,78 @@
         /* ANIMATIONEN */
         @keyframes kenburns {
             0% { transform: scale(1) translate(0, 0); }
-            50% { transform: scale(1.15) translate(-1%, -1%); }
+            50% { transform: scale(1.1) translate(-0.5%, -0.5%); }
             100% { transform: scale(1) translate(0, 0); }
         }
         @keyframes fadeEffect {
             0% { opacity: 0; }
-            15% { opacity: 0.4; } 
-            85% { opacity: 0.4; } 
+            15% { opacity: 0.35; } 
+            85% { opacity: 0.35; } 
             100% { opacity: 0; }  
         }
 
         /* HEADER & LOGO */
         .dashboard-header { 
-            width: 100%; position: absolute; top: 3%; 
+            width: 100%; position: absolute; top: 2%; 
             display: flex; justify-content: flex-start; padding: 0 2%; 
             box-sizing: border-box; z-index: 20;
         }
         .logo-ring { 
-            width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; 
+            width: 100px; height: 100px; border: 3px solid #fff; background-color: #003d8f; 
             border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; 
         }
-        .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
-        .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
+        .logo-mm { font-size: 1.8rem; font-weight: 900; line-height: 0.8; }
+        .logo-community { font-size: 0.55rem; letter-spacing: 1.2px; text-transform: uppercase; font-weight: bold; }
 
         /* TAFEL (INFO-SECTION) */
         .info-section { 
-            width: 80%; height: 26vh; border: 2px solid #003d8f; 
+            width: 80%; height: 25vh; border: 2px solid #003d8f; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
             background-color: #000; position: relative; overflow: hidden; margin-top: 2vh;
         }
         .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
-        .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
+        .bild-aktiv { animation: kenburns 15s infinite ease-in-out, fadeEffect 8s infinite; }
         .tafel-intern-logo { position: absolute; top: 10px; left: 10px; transform: scale(0.6); transform-origin: top left; z-index: 5; }
-        .werbe-text-overlay { color: rgba(255, 255, 255, 0.3); font-weight: bold; font-size: 1.2rem; letter-spacing: 5px; z-index: 5; text-align: center; text-shadow: 2px 2px 5px #000; }
+        .werbe-text-overlay { color: rgba(255, 255, 255, 0.3); font-weight: bold; font-size: 1.2rem; letter-spacing: 5px; z-index: 5; text-align: center; }
 
-        /* GRID - WIEDER VERTIKAL SORTIERT */
+        /* GRID - JETZT WIEDER VERTIKAL (1-5 in der ersten Spalte) */
         .grid { 
             display: grid; 
             grid-template-columns: repeat(4, 1fr); 
             grid-template-rows: repeat(5, 1fr); 
-            grid-auto-flow: column; /* 1-5 untereinander in Spalte 1 */
+            grid-auto-flow: column; 
             gap: 10px; 
             width: 95%; 
             max-width: 1450px; 
             margin-top: 30px;
         }
-        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; overflow: hidden; }
-        .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
-        
-        .text { 
-            padding: 4px 8px; text-transform: uppercase; 
-            font-size: 0.6rem; 
-            display: flex; align-items: center; cursor: pointer; flex-grow: 1; 
-            line-height: 1.1; word-wrap: break-word; overflow: hidden;
-            font-weight: 600;
-        }
+        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; height: 58px; position: relative; overflow: hidden; }
+        .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.9rem; }
+        .text { padding: 4px 10px; text-transform: uppercase; font-size: 0.65rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 700; line-height: 1.1; }
 
         /* FUNDAMENT */
         .fundament-container { display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; }
         .fundament-box { flex: 1; }
         .locked-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: bold; text-align: center; }
 
-        /* SEITE 2 OPTIMIERUNG */
+        /* SEITE 2 OPTIMIERUNG - VOLLER TEXTBEREICH */
         #page-skelett { display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh; }
-        .story-text-area {
-            width: 85%; margin-top: 4vh; text-align: center;
-            font-size: 1.5rem; line-height: 1.5; color: #ccc;
-            flex-grow: 1; display: flex; align-items: center; justify-content: center;
+        .story-container {
+            width: 80%; flex-grow: 1; display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; text-align: center;
+            padding: 40px 0; gap: 25px;
         }
-
-        #counter-box {
-            position: absolute; right: 0; top: 0; width: 100px; padding: 5px;
-            border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f;
-            background: #000; text-align: center; display: none; z-index: 100;
-        }
-        .counter-label { font-size: 0.4rem; color: #fff; display: block; }
-        .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
+        .story-headline { font-size: 3rem; font-weight: 900; text-transform: uppercase; color: #fff; margin: 0; }
+        .story-text { font-size: 1.6rem; line-height: 1.4; color: #ccc; max-width: 900px; font-weight: 400; }
+        .highlight-v { color: #003d8f; font-weight: 900; }
 
         /* CHAT BEREICH */
-        #chat-area {
-            width: 90%; height: 50vh; border: 2px solid #003d8f; 
-            display: none; flex-direction: column; background: #050505; margin-top: 1vh;
-        }
+        #chat-area { width: 90%; height: 45vh; border: 2px solid #003d8f; display: none; flex-direction: column; background: #050505; margin-top: 1vh; }
 
         /* NAVIGATION */
-        .bottom-nav { position: fixed; bottom: 10px; width: 95%; display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-top: 1px solid #222; background: black; z-index: 100; }
-        .nav-btn { padding: 8px 20px; border: 1px solid #fff; background: none; color: #fff; cursor: pointer; text-transform: uppercase; font-size: 0.75rem; }
-        .dot { width: 6px; height: 6px; border: 1px solid #fff; border-radius: 50%; opacity: 0.3; }
+        .bottom-nav { position: fixed; bottom: 10px; width: 95%; display: flex; justify-content: space-between; align-items: center; padding: 5px 0; background: black; z-index: 100; }
+        .nav-btn { padding: 8px 25px; border: 1px solid #fff; background: none; color: #fff; cursor: pointer; text-transform: uppercase; font-size: 0.8rem; font-weight: bold; }
+        .dot { width: 8px; height: 8px; border: 1px solid #fff; border-radius: 50%; opacity: 0.3; }
         .dot.active { background: #fff; opacity: 1; }
     </style>
 </head>
@@ -116,7 +101,7 @@
             <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
             <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
             <p style="max-width: 85%; color: #ccc; font-size: 1.1rem; margin: 10px 0 0 0; text-align: center;">
-                Die M&M-Community ist das Fundament für alle, die im Kollektiv wachsen wollen. Die Wahl der Vorsitzenden erfolgt erst nach Erreichen der stillen Million. [cite: 2026-02-03]
+                Wahl der Vorsitzenden erst nach Erreichen der stillen Million. Das Kollektiv ist der Weg.
             </p>
         </div>
         <div class="grid" id="main-grid"></div>
@@ -127,28 +112,27 @@
     </div>
 
     <div id="page-skelett">
-        <div class="top-container">
-            <h1 id="info-titel" class="page-title-white"></h1>
-            <div class="info-section">
-                <div class="werbe-bild-bg" id="werbe-bg"></div>
-                <div class="tafel-intern-logo">
-                    <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
-                </div>
-                <span class="werbe-text-overlay">HIER IST PLATZ FÜR WERBUNG</span>
-                <div id="counter-box"><span class="counter-label">STILLE MILLION</span><span class="counter-value">842.336</span></div>
+        <div class="info-section" style="margin-top: 4vh;">
+            <div class="werbe-bild-bg" id="werbe-bg"></div>
+            <div class="tafel-intern-logo">
+                <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
             </div>
+            <span class="werbe-text-overlay">HIER IST PLATZ FÜR WERBUNG</span>
         </div>
+        
+        <div class="story-container">
+            <h1 id="info-titel" class="story-headline"></h1>
+            <p id="main-text" class="story-text"></p>
+        </div>
+
         <div id="chat-area">
-            <div style="flex-grow: 1; padding: 10px; color: #ccc;">Dialog bereit...</div>
-        </div>
-        <div class="story-text-area">
-            <p id="main-text"></p>
+            <div style="flex-grow: 1; padding: 20px; color: #666;">Dialog-Modus aktiv...</div>
         </div>
     </div>
 
     <div class="bottom-nav">
         <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Zurück</button>
-        <div style="display: flex; gap: 8px;" id="dot-holder"></div>
+        <div style="display: flex; gap: 10px;" id="dot-holder"></div>
         <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
     </div>
 
@@ -161,17 +145,17 @@
             "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"
         ];
 
-        const storyInhalte = {
-            "Recht auf Gefühlsforderung": "Ich biete an, aber ich verlange auch. Lerne den Unterschied zwischen 'Gefühlsvorderung' und der echten Gefühlsforderung (mit Vogel-V). [cite: 2026-02-03]",
-            "Wie werde ich Mensch": "Das Diplom hat Gott mir gegeben, um die Welt in Ordnung zu bringen. Lege die Masken ab, die dich von deinem Menschsein trennen. [cite: 2026-02-04]",
-            "Glaube an Friede": "Friede auf Erden beginnt mit dem Glauben daran. Übernimm die Verantwortung, den Weg zu Friede selbst zu gehen. [cite: 2026-02-04]",
-            "Programm für Bürgerliche Rechte": "Deine Rechte sind an deine Menschlichkeit geknüpft. Sei bereit, die Lehren selbst zu übernehmen. [cite: 2026-02-04]",
-            "Moralische Pflicht und Verantwortung": "Es ist schwer, die Wahrheit an die Menschen zu überbringen. Es ist deine moralische Pflicht, nicht mehr nur zu folgen, sondern selbst zu handeln. [cite: 2026-02-04]",
-            "Menschlichkeit Wiederherstellung": "Heile die unbewusste Spaltung in dir. Nur so verhinderst du, dass Schmerz schleichend weitergegeben wird.",
-            "Kinderschutz-Pflicht-Elternrechte": "Elternrechte sind kein Freibrief. Nutze nicht die Waffen deiner eigenen Tradition gegen deine Kinder. Schütze sie vor der Flucht in den Missbrauch.",
-            "Wahre Richtung und Kunst": "Kanalisiere deine stärkste Energie. Wenn sie verrutscht, verlierst du die Richtung. In der Kunst und Schöpfung findest du sie wieder.",
-            "LGBTQ und Kirche": "Wenn Energie unkontrollierbar wird, entsteht Scham. Die Gemeinschaft und die Kirche fangen dich auf, um diese Kraft positiv zu nutzen.",
-            "Trend und Tradition": "Der Riesenspagat: Kinder sind der Trend, Eltern die Tradition. Hör auf, sie mit den Waffen deiner Vergangenheit zu jagen."
+        const inhalte = {
+            "Recht auf Gefühlsforderung": "Der Beginn von allem. Ich biete dir alles an, aber ich verlange auch alles von dir. Lerne den geistigen Unterschied zwischen einer Forderung und der <span class='highlight-v'>Gefühlsforderung</span> kennen.",
+            "Wie werde ich Mensch": "Ein diplom von Gott, um die Welt in Ordnung zu bringen. Lege die Masken ab und finde zurück zu dem Wesen, das du wirklich bist.",
+            "Glaube an Friede": "Der Weg zum Frieden führt über das Herz. Glaube an den Frieden auf Erden durch die Heilung deiner eigenen Geschichte.",
+            "Programm für Bürgerliche Rechte": "Wahre Freiheit braucht ein Fundament. Bürgerliche Rechte sind wertlos, wenn der Mensch dahinter seine Menschlichkeit verloren hat.",
+            "Moralische Pflicht und Verantwortung": "Die Welt in Ordnung zu bringen ist kein Job, es ist eine Pflicht. Übernimm die Verantwortung für dein Handeln im Kollektiv.",
+            "Menschlichkeit Wiederherstellung": "Heile die Spaltung in dir. Nur wenn du innerlich ganz wirst, hörst du auf, unbewusst Schmerz an die nächste Generation weiterzugeben.",
+            "Kinderschutz-Pflicht-Elternrechte": "Beende den Krieg im Wohnzimmer. Elternrechte sind kein Freibrief für Waffen. Schütze die Kinder vor der Flucht in den Abgrund.",
+            "Wahre Richtung und Kunst": "Deine sexuelle Energie ist deine Schöpfungskraft. Kanalisiere sie in wahre Kunst und Richtung, anstatt sie unkontrolliert verrutschen zu lassen.",
+            "LGBTQ und Kirche": "In der Gemeinschaft finden wir Halt. Wenn Energien unkontrollierbar werden, wandeln wir Scham gemeinsam in Heilung um.",
+            "Trend und Tradition": "Der Riesenspagat unserer Zeit: Jage die Kinder (Trend) nicht mit den Waffen deiner eigenen Vergangenheit (Tradition)."
         };
         
         let ebene = 1; let tId = 10; let wechselInterval;
@@ -189,7 +173,7 @@
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('page-skelett').style.display = 'flex';
             document.getElementById('info-titel').innerText = t;
-            document.getElementById('main-text').innerText = storyInhalte[t] || "Inhalt für '" + t + "' wird im Kollektiv erarbeitet...";
+            document.getElementById('main-text').innerHTML = inhalte[t] || "Die Vision für diesen Punkt wird im Kollektiv vertieft...";
             updateUI();
         }
 
@@ -197,7 +181,6 @@
             const isChat = ebene === 3;
             document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
             document.getElementById('main-text').style.display = isChat ? 'none' : 'block';
-            document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
             document.getElementById('btn-back').style.visibility = 'visible';
             document.getElementById('btn-next').style.visibility = 'visible';
             for(let i=1; i<=7; i++) document.getElementById('dot'+i).classList.toggle('active', i === ebene);
@@ -215,7 +198,7 @@
                     bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene + Math.random()}/1200/600')`;
                     bg.classList.add('bild-aktiv');
                 }, 50);
-            }, 10000);
+            }, 8000);
         }
 
         function nextPage() { if(ebene < 7) { ebene++; updateUI(); } }
@@ -230,7 +213,3 @@
     </script>
 </body>
 </html>
-
- 
-  
-   
