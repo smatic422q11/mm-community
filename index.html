@@ -1,449 +1,245 @@
 <!DOCTYPE html>
-
 <html lang="de">
-
 <head>
-
     <meta charset="UTF-8">
-
     <title>M&M-COMMUNITY - Das Fundament</title>
-
     <style>
-
         /* BASIS-LAYOUT */
-
         body { 
-
             background-color: #000; color: #fff; 
-
             font-family: 'Segoe UI', Arial, sans-serif; 
-
             margin: 0; padding: 0; 
-
             display: flex; flex-direction: column; align-items: center; 
-
             height: 100vh; overflow: hidden; 
-
         }
-
-
 
         /* ANIMATIONEN */
-
         @keyframes kenburns {
-
             0% { transform: scale(1) translate(0, 0); }
-
             50% { transform: scale(1.15) translate(-1%, -1%); }
-
             100% { transform: scale(1) translate(0, 0); }
-
         }
-
         @keyframes fadeEffect {
-
             0% { opacity: 0; }
-
             15% { opacity: 0.4; } 
-
             85% { opacity: 0.4; } 
-
             100% { opacity: 0; }  
-
         }
-
-
 
         /* HEADER & LOGO */
-
         .dashboard-header { 
-
             width: 100%; position: absolute; top: 3%; 
-
             display: flex; justify-content: flex-start; padding: 0 2%; 
-
             box-sizing: border-box; z-index: 20;
-
         }
-
         .logo-ring { 
-
             width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; 
-
             border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; 
-
         }
-
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
-
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
 
-
-
         /* TAFEL (INFO-SECTION) */
-
         .info-section { 
-
             width: 80%; height: 26vh; border: 2px solid #003d8f; 
-
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
-
             background-color: #000; position: relative; overflow: hidden; margin-top: 2vh;
-
         }
-
         .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
-
         .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
-
         .tafel-intern-logo { position: absolute; top: 10px; left: 10px; transform: scale(0.6); transform-origin: top left; z-index: 5; }
-
         .werbe-text-overlay { color: rgba(255, 255, 255, 0.3); font-weight: bold; font-size: 1.2rem; letter-spacing: 5px; z-index: 5; text-align: center; text-shadow: 2px 2px 5px #000; }
 
-
-
-        /* GRID - SEITLICHE SORTIERUNG & OPTIMIERUNG */
-
+        /* GRID */
         .grid { 
-
             display: grid; 
-
             grid-template-columns: repeat(4, 1fr); 
-
             grid-template-rows: repeat(5, 1fr); 
-
-           grid-auto-flow: column; /* JETZT VERTIKAL (1 bis 5 untereinander) */
-
+            grid-auto-flow: column;
             gap: 10px; 
-
             width: 95%; 
-
             max-width: 1450px; 
-
             margin-top: 30px;
-
         }
-
         .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; overflow: hidden; }
-
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
-
-        
-
         .text { 
-
             padding: 4px 8px; text-transform: uppercase; 
-
             font-size: 0.6rem; 
-
             display: flex; align-items: center; cursor: pointer; flex-grow: 1; 
-
             line-height: 1.1; word-wrap: break-word; overflow: hidden;
-
             font-weight: 600;
-
         }
-
-
 
         /* FUNDAMENT */
-
         .fundament-container { display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; }
-
         .fundament-box { flex: 1; }
-
         .locked-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: bold; text-align: center; }
 
-
-
         /* EBENE 2 & 3 SPEZIFIKATIONEN */
-
         .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh; position: relative; }
-
         .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
 
-
-
         #counter-box {
-
             position: absolute; right: 0; top: 0; width: 100px; padding: 5px;
-
             border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f;
-
             background: #000; text-align: center; display: none; z-index: 100;
-
         }
-
         .counter-label { font-size: 0.4rem; color: #fff; display: block; }
-
         .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
 
-
-
         /* CHAT BEREICH */
-
         #chat-area {
-
             width: 90%; height: 50vh; border: 2px solid #003d8f; 
-
             display: none; flex-direction: column; background: #050505; margin-top: 1vh;
-
         }
-
         .chat-msgs { flex-grow: 1; padding: 10px; overflow-y: auto; color: #ccc; font-size: 0.9rem; text-align: left; }
-
         .chat-input-row { display: flex; border-top: 2px solid #003d8f; }
-
         .chat-input-row input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 10px; outline: none; }
-
         .chat-input-row button { background: #003d8f; color: #fff; border: none; padding: 0 20px; cursor: pointer; font-weight: bold; }
 
-
-
         /* NAVIGATION */
-
         .bottom-nav { position: fixed; bottom: 10px; width: 95%; display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-top: 1px solid #222; background: black; z-index: 100; }
-
         .nav-btn { padding: 8px 20px; border: 1px solid #fff; background: none; color: #fff; cursor: pointer; text-transform: uppercase; font-size: 0.75rem; }
-
         .dot { width: 6px; height: 6px; border: 1px solid #fff; border-radius: 50%; opacity: 0.3; }
-
         .dot.active { background: #fff; opacity: 1; }
-
     </style>
-
 </head>
-
 <body>
 
-
-
     <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-
         <div class="dashboard-header">
-
             <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
-
         </div>
-
         <div class="info-section">
-
             <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
-
             <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
-
             <p style="max-width: 85%; color: #ccc; font-size: 1.1rem; margin: 10px 0 0 0; text-align: center;">
-
                 Die M&M-Community ist das Fundament für alle, die im Kollektiv wachsen wollen. Die Wahl der Vorsitzenden erfolgt erst nach Erreichen der stillen Million.
-
             </p>
-
         </div>
-
         <div class="grid" id="main-grid"></div>
-
         <div class="fundament-container">
-
             <div class="fundament-box"><div class="num">21</div><div class="text">Kapital und Verwaltung</div><div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div></div>
-
             <div class="fundament-box"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div><div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div></div>
-
         </div>
-
     </div>
-
-
 
     <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
-
         <div class="top-container">
-
             <h1 id="info-titel" class="page-title-white"></h1>
-
             <div class="info-section">
-
                 <div class="werbe-bild-bg" id="werbe-bg"></div>
-
                 <div class="tafel-intern-logo">
-
                     <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
-
                 </div>
-
                 <span class="werbe-text-overlay">HIER IST PLATZ FÜR WERBUNG</span>
-
                 <div id="counter-box"><span class="counter-label">STILLE MILLION</span><span class="counter-value">842.336</span></div>
-
             </div>
-
         </div>
-
         <div id="chat-area">
-
             <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit...</i></div>
-
             <div class="chat-input-row"><input type="text" placeholder="Nachricht..."><button>SENDEN</button></div>
-
         </div>
-
-        <p id="main-text" style="width: 80%; text-align: center; color: #ccc; margin-top: 2vh; font-size: 1.1rem;"></p>
-
+        <p id="main-text" style="width: 80%; text-align: justify; color: #ccc; margin-top: 2vh; font-size: 1.1rem; line-height: 1.6; max-width: 1200px;"></p>
     </div>
-
-
 
     <div class="bottom-nav">
-
         <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Zurück</button>
-
         <div style="display: flex; gap: 8px;" id="dot-holder"></div>
-
         <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
-
     </div>
 
-
-
     <script>
-
-        // Deine Namen exakt nach Foto (Gefühlsforderung mit v)
-
         const themen = [
-
             "Recht auf Gefühlsforderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte",
-
             "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst",
-
             "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten",
-
             "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten",
-
             "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"
-
         ];
 
-        
+        // Hier wird nur der Text für das erste Thema hinterlegt
+        const inhaltsTexte = {
+            "Recht auf Gefühlsforderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühlsforderung zu etablieren. Wahre Gemeinschaft basiert nicht auf einer Rechnung, sondern auf Resonanz. Wer Schutz und Wachstum im Kollektiv sucht, muss bereit sein, sein Innerstes als Währung einzubringen. Dieser Weg führt uns unweigerlich an einen Ort, an dem die Masken der Gesellschaft ihre Macht verlieren und das bloße Sein wieder zur höchsten Währung wird. Es ist die Reise in eine Zukunft, in der wir uns nicht mehr über das definieren, was wir besitzen oder darstellen, sondern über die Tiefe unserer Resonanz zum Gegenüber. Wohin wir steuern, ist ein Zustand des kollektiven Bewusstseins, in dem die Heilung des Einzelnen die Immunität der gesamten Gemeinschaft stärkt. In dieser neuen Ordnung wird Menschlichkeit nicht mehr als Schwäche ausgelegt, sondern als das stabilste Fundament erkannt, auf dem eine Gesellschaft ruhen kann, die keine Angst mehr vor ihrer eigenen Geschichte hat. Dieser Weg führt uns unweigerlich an einen Ort, an dem die künstlichen Masken der Gesellschaft ihre Macht verlieren und das bloße, nackte Sein wieder zur höchsten Währung des Lebens wird. Es ist die Reise in eine Zukunft, in der wir uns nicht mehr über das definieren, was wir besitzen, leisten oder darstellen, sondern über die Tiefe unserer Resonanz und die Wahrhaftigkeit unserer Begegnungen. Wohin wir steuern, ist ein Zustand des kollektiven Bewusstseins, in dem die individuelle Heilung die Immunität der gesamten Gemeinschaft stärkt und eine neue Form der sozialen Architektur erschafft. In dieser neuen Ordnung wird Menschlichkeit nicht länger als Zerbrechlichkeit oder Schwäche ausgelegt, sondern als das einzig stabile Fundament erkannt, auf dem eine Gesellschaft ruhen kann, die keine Angst mehr vor ihrer eigenen Geschichte oder ihren inneren Schatten hat. Es ist das Ziel einer Welt, in der die Empathie das Gesetz ersetzt und die Verbundenheit zur natürlichen Pflicht wird, die aus dem Herzen und nicht aus dem Zwang entspringt."
+        };
 
         let ebene = 1;
-
         let tId = 10;
-
+        let aktuellesThema = "";
         let wechselInterval;
 
-
-
         const grid = document.getElementById('main-grid');
-
         themen.forEach((t, i) => {
-
             grid.innerHTML += `<div class="box"><div class="num">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i*5})">${t}</div></div>`;
-
         });
 
-
-
         const dots = document.getElementById('dot-holder');
-
         for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i==1?'active':''}"></div>`;
 
-
-
         function showInfo(t, id) {
-
-            ebene = 2; tId = id;
-
+            ebene = 2; 
+            tId = id;
+            aktuellesThema = t;
             document.getElementById('dashboard').style.display = 'none';
-
             document.getElementById('page-skelett').style.display = 'flex';
-
-            document.getElementById('info-titel').innerText = t;
-
-            document.getElementById('main-text').innerText = "Inhalt für '" + t + "' wird im Kollektiv erarbeitet...";
-
             updateUI();
-
         }
-
-
 
         function updateUI() {
-
             const isChat = ebene === 3;
+            const textElement = document.getElementById('main-text');
+            const titelElement = document.getElementById('info-titel');
 
             document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
-
-            document.getElementById('main-text').style.display = isChat ? 'none' : 'block';
-
             document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
-
             document.getElementById('btn-back').style.visibility = 'visible';
-
             document.getElementById('btn-next').style.visibility = 'visible';
 
-            if(isChat) document.getElementById('info-titel').innerText = "LIVE CHAT - DIALOG";
+            if (ebene === 2) {
+                titelElement.innerText = aktuellesThema;
+                textElement.style.display = 'block';
+                // Zeigt den spezifischen Text oder einen Platzhalter
+                textElement.innerText = inhaltsTexte[aktuellesThema] || "Inhalt für '" + aktuellesThema + "' wird im Kollektiv erarbeitet...";
+            } else if (isChat) {
+                titelElement.innerText = "LIVE CHAT - DIALOG";
+                textElement.style.display = 'none';
+            } else {
+                // Freizonen ab Ebene 4
+                titelElement.innerText = "FREIZONE - EBENE " + ebene;
+                textElement.style.display = 'block';
+                textElement.innerText = ""; 
+            }
 
             for(let i=1; i<=7; i++) document.getElementById('dot'+i).classList.toggle('active', i === ebene);
-
-            
-
             startRotation();
-
         }
-
-
 
         function startRotation() {
-
             clearInterval(wechselInterval);
-
             const bg = document.getElementById('werbe-bg');
-
             bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`;
-
             bg.classList.add('bild-aktiv');
-
             wechselInterval = setInterval(() => {
-
                 bg.classList.remove('bild-aktiv');
-
                 setTimeout(() => {
-
                     bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene + Math.random()}/1200/600')`;
-
                     bg.classList.add('bild-aktiv');
-
                 }, 50);
-
             }, 10000);
-
         }
-
-
 
         function nextPage() { if(ebene < 7) { ebene++; updateUI(); } }
-
         
-
         function showDashboard() {
-
             ebene = 1;
-
             clearInterval(wechselInterval);
-
             document.getElementById('page-skelett').style.display = 'none';
-
             document.getElementById('dashboard').style.display = 'flex';
-
             document.getElementById('btn-back').style.visibility = 'hidden';
-
             document.getElementById('btn-next').style.visibility = 'hidden';
-
             for(let i=1; i<=7; i++) document.getElementById('dot'+i).classList.toggle('active', i === 1);
-
         }
-
     </script>
-
 </body>
-
 </html>
