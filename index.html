@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>M&M-COMMUNITY - Das Fundament</title>
     <style>
+        /* BASIS-LAYOUT AUS CODE 1 */
         body { 
             background-color: #000; color: #fff; 
             font-family: 'Segoe UI', Arial, sans-serif; 
@@ -12,63 +13,60 @@
             height: 100vh; overflow: hidden; 
         }
 
-        /* ANIMATIONEN */
-        @keyframes kenburns { 0% { transform: scale(1); } 50% { transform: scale(1.1) translate(-1%, -1%); } 100% { transform: scale(1); } }
-        @keyframes fadeEffect { 0% { opacity: 0; } 15% { opacity: 0.5; } 85% { opacity: 0.5; } 100% { opacity: 0; } }
+        /* ANIMATIONEN AUS CODE 1 */
+        @keyframes kenburns {
+            0% { transform: scale(1) translate(0, 0); }
+            50% { transform: scale(1.15) translate(-1%, -1%); }
+            100% { transform: scale(1) translate(0, 0); }
+        }
+        @keyframes fadeEffect {
+            0% { opacity: 0; }
+            15% { opacity: 0.4; } 
+            85% { opacity: 0.4; } 
+            100% { opacity: 0; }  
+        }
 
-        /* HEADER & LOGO */
+        /* HEADER & LOGO AUS CODE 1 */
         .dashboard-header { 
-            width: 100%; position: absolute; top: 2%; 
+            width: 100%; position: absolute; top: 3%; 
             display: flex; justify-content: flex-start; padding: 0 2%; 
             box-sizing: border-box; z-index: 20;
         }
-
         .logo-ring { 
-            width: 100px; height: 100px; border: 3px solid #fff; background-color: #003d8f; 
+            width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; 
             border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; 
         }
-        .logo-mm { font-size: 1.8rem; font-weight: 900; line-height: 0.8; }
-        .logo-community { font-size: 0.5rem; letter-spacing: 1px; text-transform: uppercase; }
+        .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
+        .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
 
-        /* TAFEL OBEN - Mit mehr Freiraum zum Rand */
+        /* TAFEL (INFO-SECTION) AUS CODE 1 */
         .info-section { 
-            width: 85%; height: 25vh; border: 2px solid #003d8f; 
+            width: 80%; height: 27.5vh; border: 2px solid #003d8f; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            background-color: #000; position: relative; overflow: hidden; margin-top: 3vh;
+            background-color: #000; position: relative; overflow: hidden; margin-top: 2vh;
         }
+        .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
+        .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
+        .tafel-intern-logo { position: absolute; top: 10px; left: 10px; transform: scale(0.6); transform-origin: top left; z-index: 5; }
+        .werbe-text-overlay { color: rgba(255, 255, 255, 0.3); font-weight: bold; font-size: 1.2rem; letter-spacing: 5px; z-index: 5; text-align: center; text-shadow: 2px 2px 5px #000; }
 
-        /* GRID SYSTEM DASHBOARD - BOXEN OPTIMIERT */
+        /* GRID AUS CODE 1 */
         .grid { 
-            display: grid; grid-template-columns: repeat(4, 1fr); 
-            gap: 10px; width: 95%; max-width: 1400px; margin-top: 15px; 
+            display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); 
+            grid-auto-flow: column; gap: 15px; width: 95%; max-width: 1400px; margin-top: 40px;
         }
-        .box, .fundament-box { 
-            display: flex; border: 1.5px solid #003d8f; background-color: #000; 
-            height: 55px; position: relative; overflow: hidden;
-        }
-        .num { 
-            width: 40px; background-color: #003d8f; 
-            display: flex; align-items: center; justify-content: center; 
-            font-weight: bold; flex-shrink: 0; font-size: 0.9rem;
-        }
-        .text { 
-            padding: 2px 8px; text-transform: uppercase; 
-            font-size: 0.6rem; /* Leicht verkleinert für volle Lesbarkeit */
-            display: flex; align-items: center; cursor: pointer; flex-grow: 1; 
-            line-height: 1.1; word-wrap: break-word;
-        }
+        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 60px; position: relative; overflow: hidden; }
+        .num { width: 45px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; }
+        .text { padding: 10px; text-transform: uppercase; font-size: 0.7rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; line-height: 1.2; }
 
-        .fundament-container { display: flex; width: 95%; max-width: 1400px; gap: 10px; margin-top: 10px; }
+        /* FUNDAMENT AUS CODE 1 */
+        .fundament-container { display: flex; width: 95%; max-width: 1400px; gap: 15px; margin-top: 15px; }
         .fundament-box { flex: 1; }
-        .locked-overlay { 
-            position: absolute; top:0; left:0; width:100%; height:100%; 
-            background: rgba(0,0,0,0.85); display: flex; align-items: center; 
-            justify-content: center; font-size: 0.55rem; font-weight: bold; text-align: center;
-        }
+        .locked-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: bold; text-align: center; }
 
-        /* EBENE 2 & 3 SPEZIFIKATIONEN (STABIL GEHALTEN) */
+        /* EBENE 2 & 3 SPEZIFIKATIONEN AUS CODE 2 */
         .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh; position: relative; }
-        .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; }
+        .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
 
         #counter-box {
             position: absolute; right: 0; top: 0; width: 100px; padding: 5px;
@@ -78,12 +76,7 @@
         .counter-label { font-size: 0.4rem; color: #fff; display: block; }
         .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
 
-        .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; transition: opacity 1s; }
-        .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
-        .tafel-intern-logo { position: absolute; top: 5px; left: 5px; transform: scale(0.5); transform-origin: top left; z-index: 5; }
-        .werbe-text-overlay { color: rgba(255, 255, 255, 0.2); font-weight: bold; font-size: 1rem; letter-spacing: 3px; z-index: 5; text-align: center; }
-
-        /* CHAT BEREICH - 90% BREIT */
+        /* CHAT BEREICH AUS CODE 2 */
         #chat-area {
             width: 90%; height: 50vh; border: 2px solid #003d8f; 
             display: none; flex-direction: column; background: #050505; margin-top: 1vh;
@@ -93,9 +86,9 @@
         .chat-input-row input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 10px; outline: none; }
         .chat-input-row button { background: #003d8f; color: #fff; border: none; padding: 0 20px; cursor: pointer; font-weight: bold; }
 
-        /* NAVI UNTEN */
-        .bottom-nav { position: fixed; bottom: 5px; width: 95%; display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-top: 1px solid #222; background: black; }
-        .nav-btn { padding: 5px 15px; border: 1px solid #fff; background: none; color: #fff; cursor: pointer; text-transform: uppercase; font-size: 0.7rem; }
+        /* NAVIGATION */
+        .bottom-nav { position: fixed; bottom: 10px; width: 95%; display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-top: 1px solid #222; background: black; z-index: 100; }
+        .nav-btn { padding: 8px 20px; border: 1px solid #fff; background: none; color: #fff; cursor: pointer; text-transform: uppercase; font-size: 0.75rem; }
         .dot { width: 6px; height: 6px; border: 1px solid #fff; border-radius: 50%; opacity: 0.3; }
         .dot.active { background: #fff; opacity: 1; }
     </style>
@@ -103,16 +96,20 @@
 <body>
 
     <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-        <div class="dashboard-header"><div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div></div>
+        <div class="dashboard-header">
+            <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
+        </div>
         <div class="info-section">
-            <h1 style="font-size: 2.2rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
-            <h2 style="color: #003d8f; font-size: 1.4rem; margin: 0;">DIE STILLE MILLION</h2>
-            <p style="color: #ccc; font-size: 1rem; margin-top: 5px;">Das Fundament für das Kollektiv.</p>
+            <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
+            <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
+            <p style="max-width: 85%; color: #ccc; font-size: 1.1rem; margin: 10px 0 0 0; text-align: center;">
+                Die M&M-Community ist das Fundament für alle, die im Kollektiv wachsen wollen. Die Wahl der Vorsitzenden erfolgt erst nach Erreichen der stillen Million.
+            </p>
         </div>
         <div class="grid" id="main-grid"></div>
         <div class="fundament-container">
-            <div class="fundament-box"><div class="num">21</div><div class="text">KAPITAL & VERWALTUNG</div><div class="locked-overlay">TRANSPARENZ NACH DER MILLION</div></div>
-            <div class="fundament-box"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div><div class="locked-overlay">TRANSPARENZ NACH DER MILLION</div></div>
+            <div class="fundament-box"><div class="num">21</div><div class="text">KAPITAL & VERWALTUNG</div><div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div></div>
+            <div class="fundament-box"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div><div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div></div>
         </div>
     </div>
 
@@ -121,7 +118,9 @@
             <h1 id="info-titel" class="page-title-white"></h1>
             <div class="info-section">
                 <div class="werbe-bild-bg" id="werbe-bg"></div>
-                <div class="tafel-intern-logo"><div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div></div>
+                <div class="tafel-intern-logo">
+                    <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
+                </div>
                 <span class="werbe-text-overlay">HIER IST PLATZ FÜR WERBUNG</span>
                 <div id="counter-box"><span class="counter-label">STILLE MILLION</span><span class="counter-value">842.336</span></div>
             </div>
@@ -130,7 +129,7 @@
             <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit...</i></div>
             <div class="chat-input-row"><input type="text" placeholder="Nachricht..."><button>SENDEN</button></div>
         </div>
-        <p id="main-text" style="width: 80%; text-align: center; color: #ccc; margin-top: 2vh;"></p>
+        <p id="main-text" style="width: 80%; text-align: center; color: #ccc; margin-top: 2vh; font-size: 1.1rem;"></p>
     </div>
 
     <div class="bottom-nav">
@@ -140,9 +139,12 @@
     </div>
 
     <script>
+        // Themenliste (Gefühlsforderung mit v)
         const themen = ["Recht auf Gefühlsforderung", "Wie werde ich Mensch", "Glaube an Friede", "Bürgerliche Rechte", "Moralische Pflicht", "Menschlichkeit", "Kinderschutz", "Wahre Richtung", "LGBTQ und Kirche", "Trend und Tradition", "Religionswahl", "Gesundheit", "Arbeitswelt", "Mobbing", "Jugendsprecher", "Pensionisten", "Sozialgefallen", "Nachbarschaft", "Technik", "Die Brücke"];
+        
         let ebene = 1;
         let tId = 10;
+        let wechselInterval;
 
         const grid = document.getElementById('main-grid');
         themen.forEach((t, i) => {
@@ -157,6 +159,7 @@
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('page-skelett').style.display = 'flex';
             document.getElementById('info-titel').innerText = t;
+            document.getElementById('main-text').innerText = "Inhalt für " + t + " wird im Kollektiv erarbeitet...";
             updateUI();
         }
 
@@ -170,14 +173,28 @@
             if(isChat) document.getElementById('info-titel').innerText = "LIVE CHAT - DIALOG";
             for(let i=1; i<=7; i++) document.getElementById('dot'+i).classList.toggle('active', i === ebene);
             
+            startRotation();
+        }
+
+        function startRotation() {
+            clearInterval(wechselInterval);
             const bg = document.getElementById('werbe-bg');
             bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`;
             bg.classList.add('bild-aktiv');
+            wechselInterval = setInterval(() => {
+                bg.classList.remove('bild-aktiv');
+                setTimeout(() => {
+                    bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene + Math.random()}/1200/600')`;
+                    bg.classList.add('bild-aktiv');
+                }, 50);
+            }, 10000);
         }
 
         function nextPage() { if(ebene < 7) { ebene++; updateUI(); } }
+        
         function showDashboard() {
             ebene = 1;
+            clearInterval(wechselInterval);
             document.getElementById('page-skelett').style.display = 'none';
             document.getElementById('dashboard').style.display = 'flex';
             document.getElementById('btn-back').style.visibility = 'hidden';
@@ -187,7 +204,5 @@
     </script>
 </body>
 </html>
-       
-         
-
-     
+  
+  
