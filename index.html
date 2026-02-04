@@ -13,11 +13,18 @@
             min-height: 100vh; overflow-x: hidden; 
         }
 
-        /* ANIMATION FÜR LEBENDIGE WERBUNG */
-        @keyframes lebendig {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+        /* ANIMATIONEN FÜR DIE LEBENDIGE WERBUNG */
+        @keyframes kenburns {
+            0% { transform: scale(1) translate(0, 0); }
+            50% { transform: scale(1.15) translate(-1%, -1%); }
+            100% { transform: scale(1) translate(0, 0); }
+        }
+
+        @keyframes fadeEffect {
+            0% { opacity: 0; }
+            15% { opacity: 0.4; } /* Sanftes Auftauchen */
+            85% { opacity: 0.4; } /* Halten */
+            100% { opacity: 0; }  /* Sanftes Abtauchen */
         }
 
         /* HEADER */
@@ -51,17 +58,23 @@
             background-color: #000; position: relative; overflow: hidden;
         }
 
+        /* Die tauchenden Bilder */
         .werbe-bild-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover; background-position: center;
-            opacity: 0.4; animation: lebendig 15s infinite ease-in-out; z-index: 1;
+            opacity: 0; z-index: 1;
+        }
+
+        /* Klasse für Animation-Trigger */
+        .bild-aktiv {
+            animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite;
         }
 
         .tafel-intern-logo { position: absolute; top: 10px; left: 10px; transform: scale(0.6); transform-origin: top left; z-index: 5; }
 
         .werbe-text-overlay {
             color: rgba(255, 255, 255, 0.3); font-weight: bold; font-size: 1.2rem; 
-            letter-spacing: 5px; z-index: 5; text-align: center;
+            letter-spacing: 5px; z-index: 5; text-align: center; text-shadow: 2px 2px 5px #000;
         }
 
         /* DIE SCHWARZE FREIZONE */
@@ -144,16 +157,19 @@
     </div>
 
     <script>
-        // Hier pflegst du Bilder und Texte ein
+        // Bilder-Pool für den automatischen Wechsel
+        const wechselBilder = [
+            "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=1000",
+            "https://images.unsplash.com/photo-1516733725897-1aa73b87c8e8?auto=format&fit=crop&q=80&w=1000",
+            "https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&q=80&w=1000"
+        ];
+
+        let bildIndex = 0;
+        let wechselInterval;
+
         const details = {
-            "Recht auf Gefühlsvorderung": {
-                text: "Jeder darf fühlen, wie er möchte. Unsere Gefühlswelt zeigt uns, dass Wachstum dazu gehört. Das Programm hilft dir zu entscheiden, ob es deine eigenen Gefühle sind oder fremde. In der Freiheit des Fühlens liegt der Anspruch auf die eigene Wahrheit.",
-                bild: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=1000" // Beispiel: Berge/Weite
-            },
-            "Wie werde ich Mensch": {
-                text: "Der Weg zum Menschsein ist eine bewusste Entscheidung gegen die Mechanisierung des Geistes. Es geht darum, Empathie und Eigenverantwortung wieder als Kernkraft zu entdecken.",
-                bild: "https://images.unsplash.com/photo-1516733725897-1aa73b87c8e8?auto=format&fit=crop&q=80&w=1000" // Beispiel: Licht/Hoffnung
-            }
+            "Recht auf Gefühlsvorderung": "Jeder darf fühlen, wie er möchte. Unsere Gefühlswelt zeigt uns, dass Wachstum dazu gehört. Das Programm hilft dir zu entscheiden, ob es deine eigenen Gefühle sind oder fremde. In der Freiheit des Fühlens liegt der Anspruch auf die eigene Wahrheit.",
+            "Wie werde ich Mensch": "Der Weg zum Menschsein ist eine bewusste Entscheidung gegen die Mechanisierung des Geistes. Es geht darum, Empathie und Eigenverantwortung wieder als Kernkraft zu entdecken."
         };
 
         const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
@@ -170,17 +186,36 @@
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('page-skelett').style.display = 'flex';
             document.getElementById('info-titel').innerText = titel;
+            document.getElementById('main-text').innerText = details[titel] || "Inhalt wird im Kollektiv erarbeitet...";
             
-            const data = details[titel] || { text: "Inhalt wird erarbeitet...", bild: "" };
-            document.getElementById('main-text').innerText = data.text;
-            document.getElementById('werbe-bg').style.backgroundImage = `url('${data.bild}')`;
+            const bgDiv = document.getElementById('werbe-bg');
+            bgDiv.style.backgroundImage = `url('${wechselBilder[0]}')`;
+            bgDiv.classList.add('bild-aktiv');
+
+            startImageRotation();
 
             document.getElementById('btn-back').style.visibility = 'visible';
             document.getElementById('btn-next').style.visibility = 'visible';
             updateDots(2);
         }
 
+        function startImageRotation() {
+            clearInterval(wechselInterval);
+            const bgDiv = document.getElementById('werbe-bg');
+            
+            wechselInterval = setInterval(() => {
+                bgDiv.classList.remove('bild-aktiv'); // Animation resetten
+                
+                setTimeout(() => {
+                    bildIndex = (bildIndex + 1) % wechselBilder.length;
+                    bgDiv.style.backgroundImage = `url('${wechselBilder[bildIndex]}')`;
+                    bgDiv.classList.add('bild-aktiv');
+                }, 50); // Kleiner Moment für den Browser
+            }, 10000); // Alle 10 Sekunden Tauchgang
+        }
+
         function showDashboard() {
+            clearInterval(wechselInterval);
             document.getElementById('page-skelett').style.display = 'none';
             document.getElementById('dashboard').style.display = 'flex';
             document.getElementById('btn-back').style.visibility = 'hidden';
@@ -194,5 +229,3 @@
     </script>
 </body>
 </html>
-  
-    
