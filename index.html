@@ -5,185 +5,226 @@
     <title>M&M-COMMUNITY - Das Fundament</title>
     <style>
         body { 
-            background-color: #000; color: #fff; 
+            background-color: #000; 
+            color: #fff; 
             font-family: 'Segoe UI', Arial, sans-serif; 
-            margin: 0; padding: 0; 
-            display: flex; flex-direction: column; align-items: center; 
-            height: 100vh; overflow: hidden; 
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh; 
+            overflow-x: hidden; 
         }
-
-        /* ANIMATIONEN */
-        @keyframes kenburns { 0% { transform: scale(1); } 50% { transform: scale(1.1) translate(-1%, -1%); } 100% { transform: scale(1); } }
-        @keyframes fadeEffect { 0% { opacity: 0; } 15% { opacity: 0.5; } 85% { opacity: 0.5; } 100% { opacity: 0; } }
-
-        /* HEADER & LOGO */
+        
+        /* HEADER BEREICH */
         .dashboard-header { 
-            width: 100%; position: absolute; top: 2%; 
-            display: flex; justify-content: flex-start; padding: 0 2%; 
-            box-sizing: border-box; z-index: 20;
+            width: 100%; 
+            position: absolute; 
+            top: 3%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-start; 
+            padding: 0 2%; 
+            box-sizing: border-box;
+            z-index: 20;
         }
 
         .logo-ring { 
-            width: 100px; height: 100px; border: 3px solid #fff; background-color: #003d8f; 
-            border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            width: 110px; 
+            height: 110px; 
+            border: 3px solid #fff; 
+            background-color: #003d8f; 
+            border-radius: 50%; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            text-align: center; 
         }
-        .logo-mm { font-size: 1.8rem; font-weight: 900; line-height: 0.8; }
-        .logo-community { font-size: 0.5rem; letter-spacing: 1px; text-transform: uppercase; }
+        .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
+        .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
+        
+        .story-trigger { 
+            width: 85px; 
+            height: 85px; 
+            border: 3px solid #25D366; 
+            border-radius: 50%; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: #111; 
+            font-weight: bold; 
+            transition: transform 0.3s; 
+        }
 
-        /* TAFEL OBEN - Mit mehr Freiraum zum Rand */
+        /* ZENTRALE INFO BOX (DAS WAS & WARUM) */
         .info-section { 
-            width: 85%; height: 25vh; border: 2px solid #003d8f; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            background-color: #000; position: relative; overflow: hidden; margin-top: 3vh;
+            width: 80%; 
+            height: 27.5vh; 
+            margin-top: 3vh; 
+            border: 2px solid #003d8f; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            text-align: center; 
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: rgba(0, 0, 0, 0.5);
         }
 
-        /* GRID SYSTEM DASHBOARD - BOXEN OPTIMIERT */
+        /* SCHRIFTGRÖSSE FÜR DEN BESCHREIBUNGSTEXT */
+        .info-description {
+            max-width: 85%; 
+            color: #ccc; 
+            font-size: 1.4rem; /* Erhöhte Schriftgröße */
+            line-height: 1.4;
+            margin: 10px 0 0 0;
+        }
+
+        /* GRID STRUKTUR */
         .grid { 
-            display: grid; grid-template-columns: repeat(4, 1fr); 
-            gap: 10px; width: 95%; max-width: 1400px; margin-top: 15px; 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            grid-template-rows: repeat(5, 1fr); 
+            grid-auto-flow: column; 
+            gap: 15px; 
+            width: 95%; 
+            max-width: 1400px; 
+            margin-top: 40px;
         }
+
         .box, .fundament-box { 
-            display: flex; border: 1.5px solid #003d8f; background-color: #000; 
-            height: 55px; position: relative; overflow: hidden;
+            display: flex; 
+            border: 2px solid #003d8f; 
+            background-color: #000; 
+            min-height: 60px; 
+            position: relative; 
         }
+
         .num { 
-            width: 40px; background-color: #003d8f; 
-            display: flex; align-items: center; justify-content: center; 
-            font-weight: bold; flex-shrink: 0; font-size: 0.9rem;
+            width: 45px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background-color: #003d8f; 
+            font-weight: bold; 
+            font-size: 1.1rem; 
+            min-width: 45px;
         }
+
         .text { 
-            padding: 2px 8px; text-transform: uppercase; 
-            font-size: 0.6rem; /* Leicht verkleinert für volle Lesbarkeit */
-            display: flex; align-items: center; cursor: pointer; flex-grow: 1; 
-            line-height: 1.1; word-wrap: break-word;
+            padding: 15px; 
+            text-transform: uppercase; 
+            font-size: 0.75rem; 
+            display: flex; 
+            align-items: center; 
+            cursor: pointer; 
+            flex-grow: 1; 
         }
+        .text:hover { background: #003d8f; }
 
-        .fundament-container { display: flex; width: 95%; max-width: 1400px; gap: 10px; margin-top: 10px; }
-        .fundament-box { flex: 1; }
+        .fundament-container { 
+            display: flex; 
+            width: 95%; 
+            max-width: 1400px; 
+            gap: 15px; 
+            margin-top: 15px; 
+            margin-bottom: 50px; 
+        }
+        .fundament-box { flex: 1; border-color: #003d8f; }
         .locked-overlay { 
-            position: absolute; top:0; left:0; width:100%; height:100%; 
-            background: rgba(0,0,0,0.85); display: flex; align-items: center; 
-            justify-content: center; font-size: 0.55rem; font-weight: bold; text-align: center;
+            position: absolute; 
+            top:0; left:0; width:100%; height:100%; 
+            background: rgba(0,0,0,0.85); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            text-align: center; 
+            font-size: 0.75rem; 
+            color: #fff; 
+            z-index: 10; 
+            cursor: not-allowed; 
+            font-weight: bold; 
         }
 
-        /* EBENE 2 & 3 SPEZIFIKATIONEN (STABIL GEHALTEN) */
-        .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh; position: relative; }
-        .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; }
-
-        #counter-box {
-            position: absolute; right: 0; top: 0; width: 100px; padding: 5px;
-            border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f;
-            background: #000; text-align: center; display: none; z-index: 100;
-        }
-        .counter-label { font-size: 0.4rem; color: #fff; display: block; }
-        .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
-
-        .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; transition: opacity 1s; }
-        .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
-        .tafel-intern-logo { position: absolute; top: 5px; left: 5px; transform: scale(0.5); transform-origin: top left; z-index: 5; }
-        .werbe-text-overlay { color: rgba(255, 255, 255, 0.2); font-weight: bold; font-size: 1rem; letter-spacing: 3px; z-index: 5; text-align: center; }
-
-        /* CHAT BEREICH - 90% BREIT */
-        #chat-area {
-            width: 90%; height: 50vh; border: 2px solid #003d8f; 
-            display: none; flex-direction: column; background: #050505; margin-top: 1vh;
-        }
-        .chat-msgs { flex-grow: 1; padding: 10px; overflow-y: auto; color: #ccc; font-size: 0.9rem; text-align: left; }
-        .chat-input-row { display: flex; border-top: 2px solid #003d8f; }
-        .chat-input-row input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 10px; outline: none; }
-        .chat-input-row button { background: #003d8f; color: #fff; border: none; padding: 0 20px; cursor: pointer; font-weight: bold; }
-
-        /* NAVI UNTEN */
-        .bottom-nav { position: fixed; bottom: 5px; width: 95%; display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-top: 1px solid #222; background: black; }
-        .nav-btn { padding: 5px 15px; border: 1px solid #fff; background: none; color: #fff; cursor: pointer; text-transform: uppercase; font-size: 0.7rem; }
-        .dot { width: 6px; height: 6px; border: 1px solid #fff; border-radius: 50%; opacity: 0.3; }
-        .dot.active { background: #fff; opacity: 1; }
+        #info-kanal { display: none; width: 100%; flex-direction: column; align-items: center; padding-top: 5vh; }
+        .back-btn { margin: 50px 0; padding: 15px 40px; border: 2px solid #fff; background: none; color: #fff; cursor: pointer; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
-    <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-        <div class="dashboard-header"><div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div></div>
-        <div class="info-section">
-            <h1 style="font-size: 2.2rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
-            <h2 style="color: #003d8f; font-size: 1.4rem; margin: 0;">DIE STILLE MILLION</h2>
-            <p style="color: #ccc; font-size: 1rem; margin-top: 5px;">Das Fundament für das Kollektiv.</p>
+    <div class="dashboard-header">
+        <div class="logo-ring">
+            <div class="logo-mm">M&M</div>
+            <div class="logo-community">COMMUNITY</div>
         </div>
-        <div class="grid" id="main-grid"></div>
-        <div class="fundament-container">
-            <div class="fundament-box"><div class="num">21</div><div class="text">KAPITAL & VERWALTUNG</div><div class="locked-overlay">TRANSPARENZ NACH DER MILLION</div></div>
-            <div class="fundament-box"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div><div class="locked-overlay">TRANSPARENZ NACH DER MILLION</div></div>
-        </div>
+        <div class="story-trigger" onclick="alert('Story Modul...')">STORY</div>
     </div>
 
-    <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
-        <div class="top-container">
-            <h1 id="info-titel" class="page-title-white"></h1>
-            <div class="info-section">
-                <div class="werbe-bild-bg" id="werbe-bg"></div>
-                <div class="tafel-intern-logo"><div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div></div>
-                <span class="werbe-text-overlay">HIER IST PLATZ FÜR WERBUNG</span>
-                <div id="counter-box"><span class="counter-label">STILLE MILLION</span><span class="counter-value">842.336</span></div>
+    <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+        <div class="info-section">
+            <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
+            <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
+            <p class="info-description">
+                Die M&M-Community ist das Fundament für alle, die im Kollektiv wachsen wollen. Die Wahl der Vorsitzenden erfolgt erst nach Erreichen der stillen Million.
+            </p>
+        </div>
+
+        <div class="grid" id="main-grid"></div>
+
+        <div class="fundament-container">
+            <div class="fundament-box">
+                <div class="num">22</div>
+                <div class="text">DAS KOLLEKTIV</div>
+                <div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div>
+            </div>
+            <div class="fundament-box">
+                <div class="num">21</div>
+                <div class="text">KAPITAL UND VERWALTUNG</div>
+                <div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div>
             </div>
         </div>
-        <div id="chat-area">
-            <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit...</i></div>
-            <div class="chat-input-row"><input type="text" placeholder="Nachricht..."><button>SENDEN</button></div>
-        </div>
-        <p id="main-text" style="width: 80%; text-align: center; color: #ccc; margin-top: 2vh;"></p>
     </div>
 
-    <div class="bottom-nav">
-        <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Zurück</button>
-        <div style="display: flex; gap: 8px;" id="dot-holder"></div>
-        <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
+    <div id="info-kanal">
+        <h1 id="info-titel" style="color: #003d8f; font-size: 2rem;"></h1>
+        <button class="back-btn" onclick="showDashboard()">ZURÜCK ZUM FUNDAMENT</button>
     </div>
 
     <script>
-        const themen = ["Recht auf Gefühlsforderung", "Wie werde ich Mensch", "Glaube an Friede", "Bürgerliche Rechte", "Moralische Pflicht", "Menschlichkeit", "Kinderschutz", "Wahre Richtung", "LGBTQ und Kirche", "Trend und Tradition", "Religionswahl", "Gesundheit", "Arbeitswelt", "Mobbing", "Jugendsprecher", "Pensionisten", "Sozialgefallen", "Nachbarschaft", "Technik", "Die Brücke"];
-        let ebene = 1;
-        let tId = 10;
+        const themen = [
+            "Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", 
+            "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", 
+            "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntniss oder Selbstwahl", "Gesundheitswesen und Verhalten", 
+            "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", 
+            "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"
+        ];
 
         const grid = document.getElementById('main-grid');
-        themen.forEach((t, i) => {
-            grid.innerHTML += `<div class="box"><div class="num">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i*5})">${t}</div></div>`;
+        themen.forEach((thema, index) => {
+            const box = document.createElement('div');
+            box.className = 'box';
+            const nr = index + 1;
+            box.innerHTML = `<div class="num">${nr}</div><div class="text" onclick="showInfo('${thema}')">${thema}</div>`;
+            grid.appendChild(box);
         });
 
-        const dots = document.getElementById('dot-holder');
-        for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i==1?'active':''}"></div>`;
-
-        function showInfo(t, id) {
-            ebene = 2; tId = id;
+        function showInfo(titel) {
             document.getElementById('dashboard').style.display = 'none';
-            document.getElementById('page-skelett').style.display = 'flex';
-            document.getElementById('info-titel').innerText = t;
-            updateUI();
+            document.getElementById('info-kanal').style.display = 'flex';
+            document.getElementById('info-titel').innerText = titel;
         }
 
-        function updateUI() {
-            const isChat = ebene === 3;
-            document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
-            document.getElementById('main-text').style.display = isChat ? 'none' : 'block';
-            document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
-            document.getElementById('btn-back').style.visibility = 'visible';
-            document.getElementById('btn-next').style.visibility = 'visible';
-            if(isChat) document.getElementById('info-titel').innerText = "LIVE CHAT - DIALOG";
-            for(let i=1; i<=7; i++) document.getElementById('dot'+i).classList.toggle('active', i === ebene);
-            
-            const bg = document.getElementById('werbe-bg');
-            bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`;
-            bg.classList.add('bild-aktiv');
-        }
-
-        function nextPage() { if(ebene < 7) { ebene++; updateUI(); } }
         function showDashboard() {
-            ebene = 1;
-            document.getElementById('page-skelett').style.display = 'none';
+            document.getElementById('info-kanal').style.display = 'none';
             document.getElementById('dashboard').style.display = 'flex';
-            document.getElementById('btn-back').style.visibility = 'hidden';
-            document.getElementById('btn-next').style.visibility = 'hidden';
-            for(let i=1; i<=7; i++) document.getElementById('dot'+i).classList.toggle('active', i === 1);
         }
     </script>
 </body>
 </html>
+        
+    
+
