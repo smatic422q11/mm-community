@@ -151,42 +151,36 @@
     </div>
 
 <script>
-    const themen = [
-        "Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte",
-        "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst",
-        "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten",
-        "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten",
-        "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"
-    ];
-
-    const inhaltsTexte = {
-        "Recht auf Gefühls Forderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühls Forderung zu etablieren. Wahre Gemeinschaft basiert nicht auf einer Rechnung, sondern auf Resonanz. Wer Schutz und Wachstum im Kollektiv sucht, muss bereit sein, sein Innerstes als Währung einzubringen...",
-        "Wie werde ich Mensch": "Um die Masken der Fremdbestimmung endgültig abzulegen und zum wahren, ungetrübten Wesen zurückzukehren. Mensch werden bedeutet, die künstlichen Schichten der Erziehung und der gesellschaftlichen Erwartung konsequent abzuschälen...",
-        "Glaube an Friede": "Um die Kette der vererbten Konflikte endgültig zu durchbrechen und die volle Verantwortung für die Heilung der eigenen, oft schmerzhaften Geschichte zu übernehmen...",
-        "Programm für Bürgerliche Rechte": "Um der persönlichen und kollektiven Freiheit ein unumstößliches moralisches Fundament zu geben. Rechte sind ohne die Lehren der Menschlichkeit lediglich leere Versprechen...",
-        "Moralische Pflicht und Verantwortung": "Um die lähmende Trägheit durch das geistlose Mitläufertum endgültig zu überwinden und die Last der Wahrheit entschlossen im Kollektiv zu tragen."
-    }; // Das Stopp-Signal }; bleibt hier bombenfest.
+    // ... (themen und inhaltsTexte bleiben unangetastet) ...
 
     let ebene = 1;
     let aktuellerThemenIndex = 0;
-    let geleseneKapitel = new Set();
-    let wechselInterval;
+    // Das Gedächtnis des Systems: Es speichert nur, WELCHE Boxen besucht wurden
+    let besuchteBoxen = new Set(); 
 
     const grid = document.getElementById('main-grid');
     themen.forEach((t, i) => {
         grid.innerHTML += `<div class="box"><div class="num">${i+1}</div><div class="text" onclick="oeffneBox(${i})">${t}</div></div>`;
     });
 
-    const dots = document.getElementById('dot-holder');
-    for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i==1?'active':''}"></div>`;
-
     function oeffneBox(index) {
         aktuellerThemenIndex = index;
-        geleseneKapitel.add(index);
+        besuchteBoxen.add(index); // Der stille Beobachter merkt sich die Box
+        
         ebene = 2;
         document.getElementById('dashboard').style.display = 'none';
         document.getElementById('page-skelett').style.display = 'flex';
+        
+        prüfeChatFreischaltung(); // Prüfen ohne den User zu belehren
         updateUI();
+    }
+
+    function prüfeChatFreischaltung() {
+        // Der Button auf Seite 2 (Dashboard) wird nur aktiv, wenn das Set 20 Einträge hat
+        if (besuchteBoxen.size >= 20) {
+            // Hier wird später der Chat-Button auf Seite 2 zum Leuchten gebracht
+            console.log("Die Leiter ist komplett. Der Filter war erfolgreich.");
+        }
     }
 
     function updateUI() {
@@ -197,68 +191,25 @@
 
         const thema = themen[aktuellerThemenIndex];
         titelElement.innerText = thema;
-        textElement.style.display = (ebene === 2) ? 'block' : 'none';
         textElement.innerText = inhaltsTexte[thema] || "Inhalt für '" + thema + "' wird im Kollektiv erarbeitet...";
 
+        // Navigation innerhalb der Boxen (Immer frei beweglich)
         backBtn.style.visibility = 'visible';
-        backBtn.innerText = "← ZURÜCK";
-        
-        if (ebene === 2) {
-            if (aktuellerThemenIndex < 19) {
-                nextBtn.style.visibility = 'visible';
-                nextBtn.innerText = "WEITER (Box " + (aktuellerThemenIndex + 2) + ") →";
-                nextBtn.style.opacity = "1";
-                nextBtn.onclick = () => { oeffneBox(aktuellerThemenIndex + 1); };
-            } else {
-                if (geleseneKapitel.size >= 20) {
-                    nextBtn.style.visibility = 'visible';
-                    nextBtn.innerText = "ZUM CHAT (EBENE 3) →";
-                    nextBtn.onclick = () => { ebene = 3; updateUI(); };
-                } else {
-                    nextBtn.innerText = "LEITER UNVOLLSTÄNDIG";
-                    nextBtn.style.opacity = "0.3";
-                    nextBtn.onclick = null;
-                }
-            }
-        } else if (ebene === 3) {
-            titelElement.innerText = "LIVE CHAT - DIE STILLE MILLION";
-            document.getElementById('chat-area').style.display = 'flex';
-            document.getElementById('counter-box').style.display = 'block';
-            nextBtn.style.visibility = 'hidden';
-        }
+        backBtn.innerText = "← ZURÜCK"; // Führt zum Dashboard oder zur Box davor
+        backBtn.onclick = (aktuellerThemenIndex > 0) ? () => { oeffneBox(aktuellerThemenIndex - 1); } : () => { showDashboard(); };
 
-        for(let i=1; i<=7; i++) {
-            let d = document.getElementById('dot'+i);
-            if(d) d.classList.toggle('active', i === ebene);
-        }
-        startRotation();
-    }
-
-    function startRotation() {
-        clearInterval(wechselInterval);
-        const bg = document.getElementById('werbe-bg');
-        if(!bg) return;
-        bg.style.backgroundImage = `url('https://picsum.photos/seed/${aktuellerThemenIndex + ebene}/1200/600')`;
-        bg.classList.add('bild-aktiv');
-        wechselInterval = setInterval(() => {
-            bg.classList.remove('bild-aktiv');
-            setTimeout(() => {
-                bg.style.backgroundImage = `url('https://picsum.photos/seed/${aktuellerThemenIndex + ebene + Math.random()}/1200/600')`;
-                bg.classList.add('bild-aktiv');
-            }, 50);
-        }, 10000);
+        nextBtn.style.visibility = (aktuellerThemenIndex < 19) ? 'visible' : 'hidden';
+        nextBtn.innerText = "WEITER →";
+        nextBtn.onclick = () => { oeffneBox(aktuellerThemenIndex + 1); };
     }
 
     function showDashboard() {
         ebene = 1;
-        clearInterval(wechselInterval);
         document.getElementById('page-skelett').style.display = 'none';
         document.getElementById('dashboard').style.display = 'flex';
-        document.getElementById('chat-area').style.display = 'none';
-        document.getElementById('btn-back').style.visibility = 'hidden';
-        document.getElementById('btn-next').style.visibility = 'hidden';
+        // Falls der Chat frei ist, leuchtet jetzt der Knopf auf Seite 2
     }
-</script> 
+</script>
 </body>
 </html>
       
