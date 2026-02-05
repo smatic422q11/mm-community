@@ -176,10 +176,18 @@
         let tId = 10;
         let aktuellesThema = "";
         let wechselInterval;
+        
+        // NEU: Wir merken uns die gelesenen Themen
+        let geleseneThemen = new Set();
 
         const grid = document.getElementById('main-grid');
         themen.forEach((t, i) => {
-            grid.innerHTML += `<div class="box"><div class="num">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i*5})">${t}</div></div>`;
+            // Wir geben jeder Box eine ID, damit wir die Farbe ändern können
+            grid.innerHTML += `
+                <div class="box" id="box-${i}">
+                    <div class="num" id="num-${i}">${i+1}</div>
+                    <div class="text" onclick="showInfo('${t}', ${i})">${t}</div>
+                </div>`;
         });
 
         const dots = document.getElementById('dot-holder');
@@ -189,6 +197,12 @@
             ebene = 2; 
             tId = id;
             aktuellesThema = t;
+            
+            // NEU: Thema als gelesen markieren und Farbe im Dashboard ändern
+            geleseneThemen.add(id);
+            document.getElementById(`num-${id}`).style.backgroundColor = "#ffd700"; // Gold
+            document.getElementById(`num-${id}`).style.color = "#000";
+
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('page-skelett').style.display = 'flex';
             updateUI();
@@ -198,11 +212,18 @@
             const isChat = ebene === 3;
             const textElement = document.getElementById('main-text');
             const titelElement = document.getElementById('info-titel');
+            const btnNext = document.getElementById('btn-next');
 
             document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
             document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
             document.getElementById('btn-back').style.visibility = 'visible';
-            document.getElementById('btn-next').style.visibility = 'visible';
+            
+            // NEU: Logik für die Freischaltung von Ebene 3
+            if (ebene === 2 && geleseneThemen.size < 3) {
+                btnNext.style.visibility = 'hidden'; // Button versteckt, bis 3 Themen gelesen sind
+            } else {
+                btnNext.style.visibility = 'visible';
+            }
 
             if (ebene === 2) {
                 titelElement.innerText = aktuellesThema;
@@ -214,7 +235,7 @@
             } else if (ebene >= 4) {
                 titelElement.innerText = "FREIZONE - EBENE " + ebene;
                 textElement.style.display = 'block';
-                textElement.innerText = "Diese Zone ist reserviert, um das System später flexibel erweitern zu können, ohne die bestehende Struktur zu gefährden."; 
+                textElement.innerText = "Diese Zone ist reserviert für zukünftige Erweiterungen."; 
             }
 
             for(let i=1; i<=7; i++) document.getElementById('dot'+i).classList.toggle('active', i === ebene);
@@ -224,6 +245,7 @@
         function startRotation() {
             clearInterval(wechselInterval);
             const bg = document.getElementById('werbe-bg');
+            if(!bg) return;
             bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`;
             bg.classList.add('bild-aktiv');
             wechselInterval = setInterval(() => {
