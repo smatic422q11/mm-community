@@ -13,19 +13,6 @@
             min-height: 100vh; overflow-x: hidden; overflow-y: auto; 
         }
 
-        /* ANIMATIONEN */
-        @keyframes kenburns {
-            0% { transform: scale(1) translate(0, 0); }
-            50% { transform: scale(1.15) translate(-1%, -1%); }
-            100% { transform: scale(1) translate(0, 0); }
-        }
-        @keyframes fadeEffect {
-            0% { opacity: 0; }
-            15% { opacity: 0.4; } 
-            85% { opacity: 0.4; } 
-            100% { opacity: 0; }  
-        }
-
         /* HEADER & LOGO */
         .dashboard-header { 
             width: 100%; padding: 20px 2%; 
@@ -46,38 +33,46 @@
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
             background-color: #000; position: relative; overflow: hidden; margin: 2vh 0;
         }
-        .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
-        .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
-        .tafel-intern-logo { position: absolute; top: 10px; left: 10px; transform: scale(0.6); transform-origin: top left; z-index: 5; }
-        .werbe-text-overlay { color: rgba(255, 255, 255, 0.3); font-weight: bold; font-size: 1.2rem; letter-spacing: 5px; z-index: 5; text-align: center; text-shadow: 2px 2px 5px #000; }
+        .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; transition: opacity 1s; }
+        .bild-aktiv { opacity: 0.4 !important; }
 
-        /* GRID */
+        /* DAS PRÄZISE GRID (KEIN VERRUTSCHEN) */
         .grid { 
-            display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); 
-            grid-auto-flow: column; gap: 10px; width: 95%; max-width: 1450px; margin-top: 20px;
+            display: grid; 
+            /* 4 Spalten zu je exakt 24% - der Rest ist Puffer */
+            grid-template-columns: 24% 24% 24% 24%; 
+            /* 5 Zeilen mit fester Höhe */
+            grid-template-rows: repeat(5, 70px); 
+            /* Füllung strikt von oben nach unten (Säulen-Prinzip) */
+            grid-auto-flow: column;
+            gap: 12px; 
+            width: 95%; 
+            max-width: 1450px; 
+            margin-top: 20px;
         }
-        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; }
+
+        .box, .fundament-box { 
+            display: flex; border: 2px solid #003d8f; background-color: #000; 
+            height: 100%; width: 100%; position: relative; overflow: hidden; 
+        }
+
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
-        .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
+        .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.65rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; line-height: 1.2; }
 
-        /* EBENE 2 & 3 */
-        .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; padding-top: 2vh; }
-        .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
-
+        /* EBENE 2 & 3 FREIZONEN */
         #counter-box {
             position: absolute; right: 0; top: 0; width: 100px; padding: 5px;
             border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f;
             background: #000; text-align: center; display: none; z-index: 100;
         }
-        .counter-label { font-size: 0.4rem; color: #fff; }
-        .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; display: block; }
+        .counter-label { font-size: 0.4rem; color: #fff; display: block; }
+        .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
 
-        /* CHAT BEREICH */
         #chat-area {
             width: 90%; min-height: 50vh; border: 2px solid #003d8f; 
-            display: none; flex-direction: column; background: #050505; margin-top: 2vh;
+            display: none; flex-direction: column; background: #050505; margin-top: 1vh;
         }
-        .chat-msgs { flex-grow: 1; padding: 10px; color: #ccc; font-size: 0.9rem; }
+        .chat-msgs { flex-grow: 1; padding: 10px; color: #ccc; }
         .chat-input-row { display: flex; border-top: 2px solid #003d8f; }
         .chat-input-row input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 10px; outline: none; }
         .chat-input-row button { background: #003d8f; color: #fff; border: none; padding: 0 20px; cursor: pointer; }
@@ -98,28 +93,27 @@
         <div class="info-section">
             <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
             <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
-            <p style="max-width: 85%; color: #ccc; font-size: 1.1rem; margin: 10px 0 0 0; text-align: center;">Die M&M-Community ist das Fundament...</p>
+            <p style="max-width: 85%; color: #ccc; font-size: 1.1rem; margin: 10px 0 0 0; text-align: center;">
+                Die Wahl der Vorsitzenden erfolgt erst nach Erreichen der stillen Million.
+            </p>
         </div>
         <div class="grid" id="main-grid"></div>
     </div>
 
     <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; padding-bottom: 150px;">
-        <div class="top-container">
-            <h1 id="info-titel" class="page-title-white"></h1>
+        <div style="width:100%; display:flex; flex-direction:column; align-items:center; padding-top:2vh; position:relative;">
+            <h1 id="info-titel" style="text-transform:uppercase; font-size:1.8rem; font-weight:900;"></h1>
             <div class="info-section">
                 <div class="werbe-bild-bg" id="werbe-bg"></div>
-                <div class="tafel-intern-logo">
-                    <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
-                </div>
-                <span class="werbe-text-overlay">HIER IST PLATZ FÜR WERBUNG</span>
                 <div id="counter-box"><span class="counter-label">STILLE MILLION</span><span class="counter-value">842.336</span></div>
+                <span style="color:rgba(255,255,255,0.2); z-index:5;">WERBE-ZONE</span>
             </div>
         </div>
         <div id="chat-area">
-            <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit...</i></div>
+            <div class="chat-msgs"><i>System: Dialog bereit...</i></div>
             <div class="chat-input-row"><input type="text" placeholder="Nachricht..."><button>SENDEN</button></div>
         </div>
-        <p id="main-text" style="width: 85%; text-align: justify; color: #ccc; margin-top: 4vh; font-size: 1.2rem; line-height: 1.8;"></p>
+        <p id="main-text" style="width:85%; color:#ccc; margin-top:4vh; font-size:1.2rem; line-height:1.8; text-align:justify;"></p>
     </div>
 
     <div class="bottom-nav">
@@ -130,13 +124,17 @@
 
     <script>
         const themen = ["Recht auf Gefühlsforderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung"];
-        const inhaltsTexte = { "Recht auf Gefühlsforderung": "Hier steht dein Text zur Gefühlsforderung..." };
+        const inhaltsTexte = { "Recht auf Gefühlsforderung": "Inhalt zur Gefühlsforderung (Ebene 2)..." };
 
-        let ebene = 1; let tId = 10; let aktuellesThema = ""; let wechselInterval;
+        let ebene = 1; let tId = 0; let aktuellesThema = ""; let wechselInterval;
 
+        // Grid initialisieren
         const grid = document.getElementById('main-grid');
-        themen.forEach((t, i) => { grid.innerHTML += `<div class="box"><div class="num">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i*5})">${t}</div></div>`; });
+        themen.forEach((t, i) => {
+            grid.innerHTML += `<div class="box"><div class="num">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`;
+        });
 
+        // Navigation initialisieren
         const dots = document.getElementById('dot-holder');
         for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i==1?'active':''}"></div>`;
 
@@ -148,40 +146,39 @@
         }
 
         function updateUI() {
-            const chatArea = document.getElementById('chat-area');
-            const textElement = document.getElementById('main-text');
-            const counter = document.getElementById('counter-box');
-
-            chatArea.style.display = (ebene === 3) ? 'flex' : 'none';
-            counter.style.display = (ebene >= 3) ? 'block' : 'none';
-            textElement.style.display = (ebene !== 3) ? 'block' : 'none';
+            const isChat = (ebene === 3);
+            document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
+            document.getElementById('counter-box').style.display = (ebene >= 3) ? 'block' : 'none';
+            document.getElementById('main-text').style.display = isChat ? 'none' : 'block';
+            document.getElementById('btn-back').style.visibility = 'visible';
+            document.getElementById('btn-next').style.visibility = 'visible';
 
             if (ebene === 2) {
                 document.getElementById('info-titel').innerText = aktuellesThema;
-                textElement.innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet...";
-            } else if (ebene === 3) {
-                document.getElementById('info-titel').innerText = "DIALOG-ZONE (CHAT)";
+                document.getElementById('main-text').innerText = inhaltsTexte[aktuellesThema] || "Inhalt folgt...";
+            } else if (isChat) {
+                document.getElementById('info-titel').innerText = "DIALOG-ZONE";
             }
 
-            document.getElementById('btn-back').style.visibility = 'visible';
-            document.getElementById('btn-next').style.visibility = 'visible';
-            for(let i=1; i<=7; i++) if(document.getElementById('dot'+i)) document.getElementById('dot'+i).classList.toggle('active', i === ebene);
+            for(let i=1; i<=7; i++) document.getElementById('dot'+i).classList.toggle('active', i === ebene);
             startRotation();
         }
 
         function startRotation() {
             clearInterval(wechselInterval);
             const bg = document.getElementById('werbe-bg');
-            if(!bg) return;
-            bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`;
-            bg.classList.add('bild-aktiv');
+            bg.classList.remove('bild-aktiv');
+            setTimeout(() => {
+                bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId+ebene+Math.random()}/1200/600')`;
+                bg.classList.add('bild-aktiv');
+            }, 100);
             wechselInterval = setInterval(() => {
                 bg.classList.remove('bild-aktiv');
                 setTimeout(() => {
                     bg.style.backgroundImage = `url('https://picsum.photos/seed/${Math.random()}/1200/600')`;
                     bg.classList.add('bild-aktiv');
-                }, 50);
-            }, 10000);
+                }, 100);
+            }, 8000);
         }
 
         function nextPage() { if(ebene < 7) { ebene++; updateUI(); } }
