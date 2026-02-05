@@ -150,102 +150,139 @@
         <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
     </div>
 
-    <script>
-        const themen = [
-            "Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte",
-            "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst",
-            "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten",
-            "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten",
-            "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"
-        ];
+   <script>
+    const themen = [
+        "Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte",
+        "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst",
+        "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten",
+        "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten",
+        "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"
+    ];
 
-        const inhaltsTexte = {
-            "Recht auf Gefühlsvorderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühlsvorderung zu etablieren. Wahre Gemeinschaft basiert nicht auf einer Rechnung, sondern auf Resonanz. Wer Schutz und Wachstum im Kollektiv sucht, muss bereit sein, sein Innerstes als Währung einzubringen. Dieser Weg führt uns unweigerlich an einen Ort, an dem die Masken der Gesellschaft ihre Macht verlieren und das bloße Sein wieder zur höchsten Währung wird. Es ist die Reise in eine Zukunft, in der wir uns nicht mehr über das definieren, was wir besitzen oder darstellen, sondern über die Tiefe unserer Resonanz zum Gegenüber. Wohin wir steuern, ist ein Zustand des kollektiven Bewusstseins, in dem die Heilung des Einzelnen die Immunität der gesamten Gemeinschaft stärkt. In dieser neuen Ordnung wird Menschlichkeit nicht mehr als Schwäche ausgelegt, sondern als das stabilste Fundament erkannt, auf dem eine Gesellschaft ruhen kann, die keine Angst mehr vor ihrer eigenen Geschichte hat. Dieser Weg führt uns unweigerlich an einen Ort, an dem die künstlichen Masken der Gesellschaft ihre Macht verlieren und das bloße, nackte Sein wieder zur höchsten Währung des Lebens wird. Es ist die Reise in eine Zukunft, in der wir uns nicht mehr über das definieren, was wir besitzen, leisten oder darstellen, sondern über die Tiefe unserer Resonanz und die Wahrhaftigkeit unserer Begegnungen. Wohin wir steuern, ist ein Zustand des kollektiven Bewusstseins, in dem die individuelle Heilung die Immunität der gesamten Gemeinschaft stärkt und eine neue Form der sozialen Architektur erschafft. In dieser neuen Ordnung wird Menschlichkeit nicht länger als Zerbrechlichkeit oder Schwäche ausgelegt, sondern als das einzig stabile Fundament erkannt, auf dem eine Gesellschaft ruhen kann, die keine Angst mehr vor ihrer eigenen Geschichte oder ihren inneren Schatten hat. Es ist das Ziel einer Welt, in der die Empathie das Gesetz ersetzt und die Verbundenheit zur natürlichen Pflicht wird, die aus dem Herzen und nicht aus dem Zwang entspringt.",
-            
-            "Wie werde ich Mensch": "Um die Masken der Fremdbestimmung endgültig abzulegen und zum wahren, ungetrübten Wesen zurückzukehren. Mensch werden bedeutet, die künstlichen Schichten der Erziehung und der gesellschaftlichen Erwartung konsequent abzuschälen und das Diplom von Gott anzunehmen, um die Welt eigenverantwortlich in Ordnung zu bringen. Dieser Weg führt uns unweigerlich an einen Ort, an dem die Masken der Gesellschaft ihre Macht verlieren und das bloße Sein wieder zur höchsten Währung wird. Es ist die Reise in eine Zukunft, in der wir uns nicht mehr über das definieren, was wir besitzen oder darstellen, sondern über die Tiefe unserer Resonanz zum Gegenüber. Wohin wir steuern, ist ein Zustand des kollektiven Bewusstseins, in dem die Heilung des Einzelnen die Immunität der gesamten Gemeinschaft stärkt. In dieser neuen Ordnung wird Menschlichkeit nicht mehr als Schwäche ausgelegt, sondern als das stabilste Fundament erkannt, auf dem eine Gesellschaft ruhen kann, die keine Angst mehr vor ihrer eigenen Geschichte hat. Dieser Weg führt uns unweigerlich an einen Ort, an dem die künstlichen Masken der Gesellschaft ihre Macht verlieren und das bloße, nackte Sein wieder zur höchsten Währung des Lebens wird. Es ist die Reise in eine Zukunft, in der wir uns nicht mehr über das definieren, was wir besitzen, leisten oder darstellen, sondern über die Tiefe unserer Resonanz und die Wahrhaftigkeit unserer Begegnungen. Wohin wir steuern, ist ein Zustand des kollektiven Bewusstseins, in dem die individuelle Heilung die Immunität der gesamten Gemeinschaft stärkt und eine neue Form der sozialen Architektur erschafft. In dieser neuen Ordnung wird Menschlichkeit nicht länger als Zerbrechlichkeit oder Schwäche ausgelegt, sondern als das einzig stabile Fundament erkannt, auf dem eine Gesellschaft ruhen kann, die keine Angst mehr vor ihrer eigenen Geschichte oder ihren inneren Schatten hat. Es ist das Ziel einer Welt, in der die Empathie das Gesetz ersetzt und die Verbundenheit zur natürlichen Pflicht wird, die aus dem Herzen und nicht aus dem Zwang entspringt.",
-            
-            "Glaube an Friede": "Um die Kette der vererbten Konflikte endgültig zu durchbrechen und die volle Verantwortung für die Heilung der eigenen, oft schmerzhaften Geschichte zu übernehmen. Friede beginnt nicht im Außen, sondern im konsequenten Waffenstillstand mit der eigenen Biografie und dem Mut zur inneren Versöhnung. Dieser Weg führt uns unweigerlich an einen Ort, an dem die Masken der Gesellschaft ihre Macht verlieren und das bloße Sein wieder zur höchsten Währung wird. Es ist die Reise in eine Zukunft, in der wir uns nicht mehr über das definieren, was wir besitzen oder darstellen, sondern über die Tiefe unserer Resonanz zum Gegenüber. Wohin wir steuern, ist ein Zustand des kollektiven Bewusstseins, in dem die Heilung des Einzelnen die Immunität der gesamten Gemeinschaft stärkt. In dieser neuen Ordnung wird Menschlichkeit nicht mehr als Schwäche ausgelegt, sondern als das stabilste Fundament erkannt, auf dem eine Gesellschaft ruhen kann, die keine Angst mehr vor ihrer eigenen Geschichte hat. Dieser Weg führt uns unweigerlich an einen Ort, an dem die künstlichen Masken der Gesellschaft ihre Macht verlieren und das bloße, nackte Sein wieder zur höchsten Währung des Lebens wird. Es ist die Reise in eine Zukunft, in der wir uns nicht mehr über das definieren, was wir besitzen, leisten oder darstellen, sondern über die Tiefe unserer Resonanz und die Wahrhaftigkeit unserer Begegnungen. Wohin wir steuern, ist ein Zustand des kollektiven Bewusstseins, in dem die individuelle Heilung die Immunität der gesamten Gemeinschaft stärkt und eine neue Form der sozialen Architektur erschafft. In dieser neuen Ordnung wird Menschlichkeit nicht länger als Zerbrechlichkeit oder Schwäche ausgelegt, sondern als das einzig stabile Fundament erkannt, auf dem eine Gesellschaft ruhen kann, die keine Angst mehr vor ihrer eigenen Geschichte oder ihren inneren Schatten hat. Es ist das Ziel einer Welt, in der die Empathie das Gesetz ersetzt und die Verbundenheit zur natürlichen Pflicht wird, die aus dem Herzen und nicht aus dem Zwang entspringt.",
-            
-            "Programm für Bürgerliche Rechte": "Um der persönlichen und kollektiven Freiheit ein unumstößliches moralisches Fundament zu geben. Rechte sind ohne die Lehren der Menschlichkeit, die man aktiv selbst übernehmen muss, lediglich leere Versprechen ohne Bestand in Krisenzeiten. Dieser Weg führt uns unweigerlich an einen Ort, an dem die Masken der Gesellschaft ihre Macht verlieren und das bloße Sein wieder zur höchsten Währung wird. Es ist die Reise in eine Zukunft, in der wir uns nicht mehr über das definieren, was wir besitzen oder darstellen, sondern über die Tiefe unserer Resonanz zum Gegenüber. Wohin wir steuern, ist ein Zustand des kollektiven Bewusstseins, in dem die Heilung des Einzelnen die Immunität der gesamten Gemeinschaft stärkt. In dieser neuen Ordnung wird Menschlichkeit nicht mehr als Schwäche ausgelegt, sondern als das stabilste Fundament erkannt, auf dem eine Gesellschaft ruhen kann, die keine Angst mehr vor ihrer eigenen Geschichte hat. Dieser Weg führt uns unweigerlich an einen Ort, an dem die künstlichen Masken der Gesellschaft ihre Macht verlieren und das bloße, nackte Sein wieder zur höchsten Währung des Lebens wird. Es ist die Reise in eine Zukunft, in der wir uns nicht mehr über das definieren, was wir besitzen, leisten oder darstellen, sondern über die Tiefe unserer Resonanz und die Wahrhaftigkeit unserer Begegnungen. Wohin wir steuern, ist ein Zustand des kollektiven Bewusstseins, in dem die individuelle Heilung die Immunität der gesamten Gemeinschaft stärkt und eine neue Form der sozialen Architektur erschafft. In dieser neuen Ordnung wird Menschlichkeit nicht länger als Zerbrechlichkeit oder Schwäche ausgelegt, sondern als das einzig stabile Fundament erkannt, auf dem eine Gesellschaft ruhen kann, die keine Angst mehr vor ihrer eigenen Geschichte oder ihren inneren Schatten hat. Es ist das Ziel einer Welt, in der die Empathie das Gesetz ersetzt und die Verbundenheit zur natürlichen Pflicht wird, die aus dem Herzen und nicht aus dem Zwang entspringt.",
-            
-            "Moralische Pflicht und Verantwortung": "Um die lähmende Trägheit durch das geistlose Mitläufertum endgültig zu überwinden und die schwere, aber notwendige Last der Wahrheit entschlossen im Kollektiv zu tragen. Verantwortung bedeutet hierbei, eine echte Antwort auf die drängenden Fragen unserer Zeit zu geben, statt stumm zu folgen. Dieser Weg führt uns unweigerlich an einen Ort, an dem die Masken der Gesellschaft ihre Macht verlieren und das bloße Sein wieder zur höchsten Währung wird. Es ist die Reise in eine Zukunft, in der wir uns nicht mehr über das definieren, was wir besitzen oder darstellen, sondern über die Tiefe unserer Resonanz zum Gegenüber. Wohin wir steuern, ist ein Zustand des kollektiven Bewusstseins, in dem die Heilung des Einzelnen die Immunität der gesamten Gemeinschaft stärkt. In dieser neuen Ordnung wird Menschlichkeit nicht mehr als Schwäche ausgelegt, sondern als das stabilste Fundament erkannt, auf dem eine Gesellschaft ruhen kann, die keine Angst mehr vor ihrer eigenen Geschichte hat. Dieser Weg führt uns unweigerlich an einen Ort, an dem die künstlichen Masken der Gesellschaft ihre Macht verlieren und das bloße, nackte Sein wieder zur höchsten Währung des Lebens wird. Es ist die Reise in eine Zukunft, in der wir uns nicht mehr über das definieren, was wir besitzen, leisten oder darstellen, sondern über die Tiefe unserer Resonanz und die Wahrhaftigkeit unserer Begegnungen. Wohin wir steuern, ist ein Zustand des kollektiven Bewusstseins, in dem die individuelle Heilung die Immunität der gesamten Gemeinschaft stärkt und eine neue Form der sozialen Architektur erschafft. In dieser neuen Ordnung wird Menschlichkeit nicht länger als Zerbrechlichkeit oder Schwäche ausgelegt, sondern als das einzig stabile Fundament erkannt, auf dem eine Gesellschaft ruhen kann, die keine Angst mehr vor ihrer eigenen Geschichte oder ihren inneren Schatten hat."
-        };
+    const inhaltsTexte = {
+        "Recht auf Gefühls Forderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühls Forderung zu etablieren. Wahre Gemeinschaft basiert nicht auf einer Rechnung, sondern auf Resonanz. Wer Schutz und Wachstum im Kollektiv sucht, muss bereit sein, sein Innerstes als Währung einzubringen...",
+        "Wie werde ich Mensch": "Um die Masken der Fremdbestimmung endgültig abzulegen und zum wahren, ungetrübten Wesen zurückzukehren. Mensch werden bedeutet, die künstlichen Schichten der Erziehung und der gesellschaftlichen Erwartung konsequent abzuschälen...",
+        "Glaube an Friede": "Um die Kette der vererbten Konflikte endgültig zu durchbrechen und die volle Verantwortung für die Heilung der eigenen, oft schmerzhaften Geschichte zu übernehmen...",
+        "Programm für Bürgerliche Rechte": "Um der persönlichen und kollektiven Freiheit ein unumstößliches moralisches Fundament zu geben. Rechte sind ohne die Lehren der Menschlichkeit lediglich leere Versprechen...",
+        "Moralische Pflicht und Verantwortung": "Um die lähmende Trägheit durch das geistlose Mitläufertum endgültig zu überwinden und die Last der Wahrheit entschlossen im Kollektiv zu tragen."
+    }; // <--- DEIN SAUBERES STOPP-SIGNAL
 
-        let ebene = 1;
-        let tId = 10;
-        let aktuellesThema = "";
-        let wechselInterval;
+    let ebene = 1;
+    let tId = 10;
+    let aktuellesThema = "";
+    let wechselInterval;
+    
+    // DIE LEITER-LOGIK (M&M-Prinzip)
+    let geleseneKapitel = []; // Hier speichert das System, was der User wirklich gesehen hat
 
-        const grid = document.getElementById('main-grid');
-        themen.forEach((t, i) => {
-            grid.innerHTML += `<div class="box"><div class="num">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i*5})">${t}</div></div>`;
-        });
+    const grid = document.getElementById('main-grid');
+    themen.forEach((t, i) => {
+        grid.innerHTML += `<div class="box"><div class="num">${i+1}</div><div class="text" onclick="checkLeiter('${t}', ${i})">${t}</div></div>`;
+    });
 
-        const dots = document.getElementById('dot-holder');
-        for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i==1?'active':''}"></div>`;
+    const dots = document.getElementById('dot-holder');
+    for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i==1?'active':''}"></div>`;
 
-        function showInfo(t, id) {
-            ebene = 2; 
-            tId = id;
-            aktuellesThema = t;
-            document.getElementById('dashboard').style.display = 'none';
-            document.getElementById('page-skelett').style.display = 'flex';
-            updateUI();
-        }
-
-        function updateUI() {
-            const isChat = ebene === 3;
-            const textElement = document.getElementById('main-text');
-            const titelElement = document.getElementById('info-titel');
-
-            document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
-            document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
-            document.getElementById('btn-back').style.visibility = 'visible';
-            document.getElementById('btn-next').style.visibility = 'visible';
-
-            if (ebene === 2) {
-                titelElement.innerText = aktuellesThema;
-                textElement.style.display = 'block';
-                textElement.innerText = inhaltsTexte[aktuellesThema] || "Inhalt für '" + aktuellesThema + "' wird im Kollektiv erarbeitet...";
-            } else if (isChat) {
-                titelElement.innerText = "LIVE CHAT - DIALOG";
-                textElement.style.display = 'none';
-            } else {
-                titelElement.innerText = "FREIZONE - EBENE " + ebene;
-                textElement.style.display = 'block';
-                textElement.innerText = ""; 
-            }
-
-            for(let i=1; i<=7; i++) document.getElementById('dot'+i).classList.toggle('active', i === ebene);
-            startRotation();
-        }
-
-        function startRotation() {
-            clearInterval(wechselInterval);
-            const bg = document.getElementById('werbe-bg');
-            bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`;
-            bg.classList.add('bild-aktiv');
-            wechselInterval = setInterval(() => {
-                bg.classList.remove('bild-aktiv');
-                setTimeout(() => {
-                    bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene + Math.random()}/1200/600')`;
-                    bg.classList.add('bild-aktiv');
-                }, 50);
-            }, 10000);
-        }
-
-        function nextPage() { if(ebene < 7) { ebene++; updateUI(); } }
+    function checkLeiter(t, index) {
+        const kapitelNummer = index + 1;
         
-        function showDashboard() {
-            ebene = 1;
-            clearInterval(wechselInterval);
-            document.getElementById('page-skelett').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'flex';
-            document.getElementById('btn-back').style.visibility = 'hidden';
-            document.getElementById('btn-next').style.visibility = 'hidden';
-            for(let i=1; i<=7; i++) document.getElementById('dot'+i).classList.toggle('active', i === 1);
+        // Prüfen: Darf er das lesen? (Er darf immer lesen, aber der "Weiter"-Knopf reagiert nur bei Reihenfolge)
+        if (!geleseneKapitel.includes(kapitelNummer)) {
+            if (kapitelNummer === 1 || geleseneKapitel.includes(kapitelNummer - 1)) {
+                geleseneKapitel.push(kapitelNummer);
+            }
         }
-    </script>
+        showInfo(t, index * 5);
+    }
+
+    function showInfo(t, id) {
+        ebene = 2; 
+        tId = id;
+        aktuellesThema = t;
+        document.getElementById('dashboard').style.display = 'none';
+        document.getElementById('page-skelett').style.display = 'flex';
+        updateUI();
+    }
+
+    function updateUI() {
+        const isChat = ebene === 3;
+        const textElement = document.getElementById('main-text');
+        const titelElement = document.getElementById('info-titel');
+        const nextBtn = document.getElementById('btn-next');
+        const backBtn = document.getElementById('btn-back');
+
+        // NAVIGATION LOGIK (Die Leiter)
+        const aktuellerIndex = themen.indexOf(aktuellesThema);
+        const istLetztesGelesenes = (aktuellerIndex + 1 === geleseneKapitel.length);
+        const alleGelesen = geleseneKapitel.length >= 20;
+
+        document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
+        document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
+        
+        backBtn.style.visibility = 'visible';
+        backBtn.innerText = "← ZURÜCK";
+
+        // WEITER-BUTTON LOGIK
+        if (ebene === 2) {
+            titelElement.innerText = aktuellesThema;
+            textElement.style.display = 'block';
+            textElement.innerText = inhaltsTexte[aktuellesThema] || "Inhalt für '" + aktuellesThema + "' wird im Kollektiv erarbeitet...";
+            
+            // Nur wenn er in der richtigen Reihenfolge ist, leuchtet "Weiter"
+            if (istLetztesGelesenes) {
+                nextBtn.style.visibility = 'visible';
+                nextBtn.style.opacity = "1";
+                nextBtn.innerText = "WEITER →";
+                // Wenn er Box 20 erreicht hat, führt "Weiter" zum Chat
+                nextBtn.onclick = (aktuellerIndex === 19) ? () => { ebene = 3; updateUI(); } : () => { checkLeiter(themen[aktuellerIndex+1], aktuellerIndex+1); };
+            } else {
+                // Wer springt, sieht den Knopf, aber er ist dunkel und führt nur zurück
+                nextBtn.style.visibility = 'visible';
+                nextBtn.style.opacity = "0.2"; 
+                nextBtn.innerText = "SPERRE";
+                nextBtn.onclick = null;
+            }
+        } else if (isChat) {
+            if (alleGelesen) {
+                titelElement.innerText = "LIVE CHAT - DIE STILLE MILLION";
+                document.getElementById('chat-area').style.display = 'flex';
+            } else {
+                ebene = 2; // Notbremse: Ohne 20 Boxen kein Chat
+                updateUI();
+            }
+        }
+
+        for(let i=1; i<=7; i++) {
+            let d = document.getElementById('dot'+i);
+            if(d) d.classList.toggle('active', i === ebene);
+        }
+        startRotation();
+    }
+
+    function startRotation() {
+        clearInterval(wechselInterval);
+        const bg = document.getElementById('werbe-bg');
+        if(!bg) return;
+        bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`;
+        bg.classList.add('bild-aktiv');
+        wechselInterval = setInterval(() => {
+            bg.classList.remove('bild-aktiv');
+            setTimeout(() => {
+                bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene + Math.random()}/1200/600')`;
+                bg.classList.add('bild-aktiv');
+            }, 50);
+        }, 10000);
+    }
+
+    function showDashboard() {
+        ebene = 1;
+        clearInterval(wechselInterval);
+        document.getElementById('page-skelett').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'flex';
+        document.getElementById('btn-back').style.visibility = 'hidden';
+        document.getElementById('btn-next').style.visibility = 'hidden';
+    }
+</script>
 </body>
 </html>
       
