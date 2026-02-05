@@ -150,139 +150,76 @@
         <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
     </div>
 
-   <script>
-    const themen = [
-        "Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte",
-        "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst",
-        "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten",
-        "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten",
-        "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"
-    ];
-
-    const inhaltsTexte = {
-        "Recht auf Gefühls Forderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühls Forderung zu etablieren. Wahre Gemeinschaft basiert nicht auf einer Rechnung, sondern auf Resonanz. Wer Schutz und Wachstum im Kollektiv sucht, muss bereit sein, sein Innerstes als Währung einzubringen...",
-        "Wie werde ich Mensch": "Um die Masken der Fremdbestimmung endgültig abzulegen und zum wahren, ungetrübten Wesen zurückzukehren. Mensch werden bedeutet, die künstlichen Schichten der Erziehung und der gesellschaftlichen Erwartung konsequent abzuschälen...",
-        "Glaube an Friede": "Um die Kette der vererbten Konflikte endgültig zu durchbrechen und die volle Verantwortung für die Heilung der eigenen, oft schmerzhaften Geschichte zu übernehmen...",
-        "Programm für Bürgerliche Rechte": "Um der persönlichen und kollektiven Freiheit ein unumstößliches moralisches Fundament zu geben. Rechte sind ohne die Lehren der Menschlichkeit lediglich leere Versprechen...",
-        "Moralische Pflicht und Verantwortung": "Um die lähmende Trägheit durch das geistlose Mitläufertum endgültig zu überwinden und die Last der Wahrheit entschlossen im Kollektiv zu tragen."
-    }; // <--- DEIN SAUBERES STOPP-SIGNAL
+ <script>
+    // ... (themen und inhaltsTexte bleiben genau wie sie sind) ...
 
     let ebene = 1;
-    let tId = 10;
-    let aktuellesThema = "";
-    let wechselInterval;
-    
-    // DIE LEITER-LOGIK (M&M-Prinzip)
-    let geleseneKapitel = []; // Hier speichert das System, was der User wirklich gesehen hat
+    let aktuellerThemenIndex = 0; // Wir merken uns, wo wir auf der Leiter stehen
+    let geleseneKapitel = new Set(); // Das Gedächtnis des Systems
 
     const grid = document.getElementById('main-grid');
     themen.forEach((t, i) => {
-        grid.innerHTML += `<div class="box"><div class="num">${i+1}</div><div class="text" onclick="checkLeiter('${t}', ${i})">${t}</div></div>`;
+        grid.innerHTML += `<div class="box"><div class="num">${i+1}</div><div class="text" onclick="oeffneBox(${i})">${t}</div></div>`;
     });
 
-    const dots = document.getElementById('dot-holder');
-    for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i==1?'active':''}"></div>`;
-
-    function checkLeiter(t, index) {
-        const kapitelNummer = index + 1;
+    function oeffneBox(index) {
+        aktuellerThemenIndex = index;
+        const thema = themen[index];
+        geleseneKapitel.add(index); // System merkt sich: Box wurde besucht
         
-        // Prüfen: Darf er das lesen? (Er darf immer lesen, aber der "Weiter"-Knopf reagiert nur bei Reihenfolge)
-        if (!geleseneKapitel.includes(kapitelNummer)) {
-            if (kapitelNummer === 1 || geleseneKapitel.includes(kapitelNummer - 1)) {
-                geleseneKapitel.push(kapitelNummer);
-            }
-        }
-        showInfo(t, index * 5);
-    }
-
-    function showInfo(t, id) {
-        ebene = 2; 
-        tId = id;
-        aktuellesThema = t;
+        ebene = 2;
         document.getElementById('dashboard').style.display = 'none';
         document.getElementById('page-skelett').style.display = 'flex';
+        
         updateUI();
     }
 
     function updateUI() {
-        const isChat = ebene === 3;
         const textElement = document.getElementById('main-text');
         const titelElement = document.getElementById('info-titel');
         const nextBtn = document.getElementById('btn-next');
         const backBtn = document.getElementById('btn-back');
 
-        // NAVIGATION LOGIK (Die Leiter)
-        const aktuellerIndex = themen.indexOf(aktuellesThema);
-        const istLetztesGelesenes = (aktuellerIndex + 1 === geleseneKapitel.length);
-        const alleGelesen = geleseneKapitel.length >= 20;
+        // Titel und Text setzen
+        const thema = themen[aktuellerThemenIndex];
+        titelElement.innerText = thema;
+        textElement.innerText = inhaltsTexte[thema] || "Inhalt für '" + thema + "' wird im Kollektiv erarbeitet...";
 
-        document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
-        document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
-        
+        // Buttons steuern
         backBtn.style.visibility = 'visible';
         backBtn.innerText = "← ZURÜCK";
-
-        // WEITER-BUTTON LOGIK
-        if (ebene === 2) {
-            titelElement.innerText = aktuellesThema;
-            textElement.style.display = 'block';
-            textElement.innerText = inhaltsTexte[aktuellesThema] || "Inhalt für '" + aktuellesThema + "' wird im Kollektiv erarbeitet...";
-            
-            // Nur wenn er in der richtigen Reihenfolge ist, leuchtet "Weiter"
-            if (istLetztesGelesenes) {
-                nextBtn.style.visibility = 'visible';
-                nextBtn.style.opacity = "1";
-                nextBtn.innerText = "WEITER →";
-                // Wenn er Box 20 erreicht hat, führt "Weiter" zum Chat
-                nextBtn.onclick = (aktuellerIndex === 19) ? () => { ebene = 3; updateUI(); } : () => { checkLeiter(themen[aktuellerIndex+1], aktuellerIndex+1); };
+        
+        // Der Weiter-Button führt zur NÄCHSTEN BOX, nicht zu Seite 3
+        if (aktuellerThemenIndex < 19) {
+            nextBtn.style.visibility = 'visible';
+            nextBtn.innerText = "WEITER (Box " + (aktuellerThemenIndex + 2) + ") →";
+            nextBtn.onclick = () => { oeffneBox(aktuellerThemenIndex + 1); };
+        } else {
+            // Wenn Box 20 erreicht ist
+            if (geleseneKapitel.size >= 20) {
+                nextBtn.innerText = "ZUM CHAT (EBENE 3) →";
+                nextBtn.onclick = () => { ebene = 3; geheZuChat(); };
             } else {
-                // Wer springt, sieht den Knopf, aber er ist dunkel und führt nur zurück
-                nextBtn.style.visibility = 'visible';
-                nextBtn.style.opacity = "0.2"; 
-                nextBtn.innerText = "SPERRE";
+                nextBtn.innerText = "LEITER UNVOLLSTÄNDIG";
+                nextBtn.style.opacity = "0.3";
                 nextBtn.onclick = null;
             }
-        } else if (isChat) {
-            if (alleGelesen) {
-                titelElement.innerText = "LIVE CHAT - DIE STILLE MILLION";
-                document.getElementById('chat-area').style.display = 'flex';
-            } else {
-                ebene = 2; // Notbremse: Ohne 20 Boxen kein Chat
-                updateUI();
-            }
         }
-
-        for(let i=1; i<=7; i++) {
-            let d = document.getElementById('dot'+i);
-            if(d) d.classList.toggle('active', i === ebene);
-        }
-        startRotation();
     }
 
-    function startRotation() {
-        clearInterval(wechselInterval);
-        const bg = document.getElementById('werbe-bg');
-        if(!bg) return;
-        bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`;
-        bg.classList.add('bild-aktiv');
-        wechselInterval = setInterval(() => {
-            bg.classList.remove('bild-aktiv');
-            setTimeout(() => {
-                bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene + Math.random()}/1200/600')`;
-                bg.classList.add('bild-aktiv');
-            }, 50);
-        }, 10000);
+    function geheZuChat() {
+        document.getElementById('main-text').style.display = 'none';
+        document.getElementById('info-titel').innerText = "LIVE CHAT - DIE STILLE MILLION";
+        document.getElementById('chat-area').style.display = 'flex';
+        document.getElementById('counter-box').style.display = 'block';
     }
 
     function showDashboard() {
         ebene = 1;
-        clearInterval(wechselInterval);
         document.getElementById('page-skelett').style.display = 'none';
         document.getElementById('dashboard').style.display = 'flex';
-        document.getElementById('btn-back').style.visibility = 'hidden';
-        document.getElementById('btn-next').style.visibility = 'hidden';
     }
-</script>
+</script> 
 </body>
 </html>
       
