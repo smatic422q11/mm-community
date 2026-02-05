@@ -115,12 +115,25 @@
 /* 4. Fertig: Alle Nummern Grün */
 .num-fertig { background-color: #00ff00 !important; color: black !important; }
 
-/* Der Goldene Button für den Pfad */
+/* Dein gewünschter grüner Rahmen für das Dashboard */
+#main-grid {
+    border: 2px solid #00ff00; /* Permanenter grüner Rand */
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.2); /* Sanftes Leuchten am Anfang */
+    transition: all 0.5s ease;
+}
+
+/* Wenn alles fertig ist, leuchtet der Rand stärker */
+.dashboard-fertig { 
+    box-shadow: 0 0 25px #00ff00 !important;
+    border-width: 3px !important;
+}
+
 .btn-pfad {
     background-color: #ffd700 !important; 
     color: #000 !important;
     font-weight: bold;
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
     border: 2px solid #fff !important;
 }}</style>
 </head>
