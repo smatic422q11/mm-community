@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>M&M-COMMUNITY - Das Fundament</title>
     <style>
-        /* BASIS-LAYOUT */
         body { 
             background-color: #000; color: #fff; 
             font-family: 'Segoe UI', Arial, sans-serif; 
@@ -13,24 +12,11 @@
             height: 100vh; overflow: hidden; 
         }
 
-        /* ANIMATIONEN */
-        @keyframes kenburns {
-            0% { transform: scale(1) translate(0, 0); }
-            50% { transform: scale(1.15) translate(-1%, -1%); }
-            100% { transform: scale(1) translate(0, 0); }
-        }
-        @keyframes fadeEffect {
-            0% { opacity: 0; }
-            15% { opacity: 0.4; } 
-            85% { opacity: 0.4; } 
-            100% { opacity: 0; }  
-        }
-
-        /* HEADER & LOGO */
+        /* FIXIERTER HEADER-BEREICH */
         .dashboard-header { 
-            width: 100%; height: 120px;
+            width: 100%; height: 140px; 
             display: flex; justify-content: flex-start; padding: 20px; 
-            box-sizing: border-box; z-index: 20;
+            box-sizing: border-box; z-index: 20; flex-shrink: 0;
         }
         .logo-ring { 
             width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; 
@@ -39,18 +25,14 @@
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
 
-        /* TAFEL (INFO-SECTION) */
+        /* TAFEL (INFO-SECTION) - Bleibt stabil */
         .info-section { 
             width: 80%; height: 26vh; border: 2px solid #003d8f; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            background-color: #000; position: relative; overflow: hidden; margin-top: 10px;
+            background-color: #000; position: relative; overflow: hidden; flex-shrink: 0;
         }
-        .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
-        .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
-        .tafel-intern-logo { position: absolute; top: 10px; left: 10px; transform: scale(0.6); transform-origin: top left; z-index: 5; }
-        .werbe-text-overlay { color: rgba(255, 255, 255, 0.3); font-weight: bold; font-size: 1.2rem; letter-spacing: 5px; z-index: 5; text-align: center; text-shadow: 2px 2px 5px #000; }
 
-        /* GRID */
+        /* GRID-POSITIONIERUNG */
         .grid { 
             display: grid; 
             grid-template-columns: repeat(4, 1fr); 
@@ -59,50 +41,23 @@
             gap: 10px; 
             width: 95%; 
             max-width: 1450px; 
-            margin-top: 20px;
+            margin-top: 25px; /* Abstand zur Tafel */
+            flex-grow: 0;
         }
-        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; overflow: hidden; }
+        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 55px; position: relative; }
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
-        .text { 
-            padding: 4px 8px; text-transform: uppercase; 
-            font-size: 0.6rem; 
-            display: flex; align-items: center; cursor: pointer; flex-grow: 1; 
-            line-height: 1.1; word-wrap: break-word; overflow: hidden;
-            font-weight: 600;
-        }
+        .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
-        /* FUNDAMENT */
-        .fundament-container { display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; }
+        .fundament-container { display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 15px; flex-shrink: 0; }
         .fundament-box { flex: 1; }
-        .locked-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: bold; text-align: center; }
+        .locked-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: bold; text-align: center; z-index: 10; }
 
-        /* EBENE 2 & 3 SPEZIFIKATIONEN */
-        .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh; position: relative; }
-        .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
+        /* CHAT BUTTON (Der stille Indikator) */
+        #chat-trigger-btn { opacity: 0.1; cursor: default; transition: all 0.5s ease; }
+        #chat-trigger-btn.active { opacity: 1; cursor: pointer; border-color: #00ff00; color: #00ff00; }
 
-        #counter-box {
-            position: absolute; right: 0; top: 0; width: 100px; padding: 5px;
-            border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f;
-            background: #000; text-align: center; display: none; z-index: 100;
-        }
-        .counter-label { font-size: 0.4rem; color: #fff; display: block; }
-        .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
-
-        /* CHAT BEREICH */
-        #chat-area {
-            width: 90%; height: 50vh; border: 2px solid #003d8f; 
-            display: none; flex-direction: column; background: #050505; margin-top: 1vh;
-        }
-        .chat-msgs { flex-grow: 1; padding: 10px; overflow-y: auto; color: #ccc; font-size: 0.9rem; text-align: left; }
-        .chat-input-row { display: flex; border-top: 2px solid #003d8f; }
-        .chat-input-row input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 10px; outline: none; }
-        .chat-input-row button { background: #003d8f; color: #fff; border: none; padding: 0 20px; cursor: pointer; font-weight: bold; }
-
-        /* NAVIGATION */
-        .bottom-nav { position: fixed; bottom: 10px; width: 95%; display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-top: 1px solid #222; background: black; z-index: 100; }
+        .bottom-nav { position: fixed; bottom: 10px; width: 95%; display: flex; justify-content: space-between; align-items: center; padding: 10px 0; background: black; }
         .nav-btn { padding: 8px 20px; border: 1px solid #fff; background: none; color: #fff; cursor: pointer; text-transform: uppercase; font-size: 0.75rem; }
-        .dot { width: 6px; height: 6px; border: 1px solid #fff; border-radius: 50%; opacity: 0.3; }
-        .dot.active { background: #fff; opacity: 1; }
     </style>
 </head>
 <body>
@@ -114,49 +69,61 @@
         <div class="info-section">
             <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
             <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
-            <p style="max-width: 85%; color: #ccc; font-size: 1.1rem; margin: 10px 0 0 0; text-align: center;">
-                Die M&M-Community ist das Fundament für alle, die im Kollektiv wachsen wollen. Die Wahl der Vorsitzenden erfolgt erst nach Erreichen der stillen Million.
+            <p style="max-width: 85%; color: #ccc; font-size: 1.1rem; text-align: center;">
+                Die M&M-Community ist das Fundament für alle, die im Kollektiv wachsen wollen.
             </p>
         </div>
         <div class="grid" id="main-grid"></div>
         <div class="fundament-container">
-            <div class="fundament-box"><div class="num">21</div><div class="text">Kapital und Verwaltung</div><div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div></div>
-            <div class="fundament-box"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div><div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div></div>
+            <div class="fundament-box" id="chat-trigger-btn">
+                <div class="num">21</div>
+                <div class="text" onclick="tryOpenChat()">LIVE CHAT - DIALOG</div>
+            </div>
+            <div class="fundament-box">
+                <div class="num">22</div><div class="text">DAS KOLLEKTIV</div>
+                <div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div>
+            </div>
         </div>
     </div>
 
     <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
-        <div class="top-container">
-            <h1 id="info-titel" class="page-title-white"></h1>
-            <div class="info-section">
-                <div class="werbe-bild-bg" id="werbe-bg"></div>
-                <div class="tafel-intern-logo">
-                    <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
-                </div>
-                <span class="werbe-text-overlay">HIER IST PLATZ FÜR WERBUNG</span>
-                <div id="counter-box"><span class="counter-label">STILLE MILLION</span><span class="counter-value">842.336</span></div>
-            </div>
+        <h1 id="info-titel" style="text-transform: uppercase; font-size: 1.8rem; margin: 20px 0;"></h1>
+        <div class="info-section">
+            <div id="werbe-bg" style="position: absolute; width: 100%; height: 100%; background-size: cover;"></div>
+            <span style="z-index: 5; color: rgba(255,255,255,0.3); letter-spacing: 5px;">WERBUNG</span>
         </div>
-        <div id="chat-area">
-            <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit...</i></div>
-            <div class="chat-input-row"><input type="text" placeholder="Nachricht..."><button>SENDEN</button></div>
+        <p id="main-text" style="width: 80%; text-align: justify; color: #ccc; margin-top: 30px; font-size: 1.1rem; line-height: 1.6; max-width: 1200px;"></p>
+        
+        <div id="chat-area" style="display:none; width: 90%; height: 40vh; border: 2px solid #003d8f; margin-top: 20px;">
+             <div style="padding: 20px;"><i>System: Dialog bereit...</i></div>
         </div>
-        <p id="main-text" style="width: 80%; text-align: justify; color: #ccc; margin-top: 2vh; font-size: 1.1rem; line-height: 1.6; max-width: 1200px;"></p>
     </div>
 
     <div class="bottom-nav">
         <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Zurück</button>
-        <div style="display: flex; gap: 8px;" id="dot-holder"></div>
+        <div id="dot-holder" style="display: flex; gap: 8px;"></div>
         <button id="btn-next" class="nav-btn" style="visibility: hidden;">Weiter →</button>
     </div>
 
 <script>
-    // ... (themen und inhaltsTexte bleiben unangetastet) ...
+    const themen = [
+        "Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte",
+        "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst",
+        "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten",
+        "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten",
+        "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"
+    ];
 
-    let ebene = 1;
-    let aktuellerThemenIndex = 0;
-    // Das Gedächtnis des Systems: Es speichert nur, WELCHE Boxen besucht wurden
-    let besuchteBoxen = new Set(); 
+    const inhaltsTexte = {
+        "Recht auf Gefühls Forderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühls Forderung zu etablieren...",
+        "Wie werde ich Mensch": "Mensch werden bedeutet, die künstlichen Schichten der Erziehung abzuschälen...",
+        "Glaube an Friede": "Friede beginnt im konsequenten Waffenstillstand mit der eigenen Biografie...",
+        "Programm für Bürgerliche Rechte": "Rechte sind ohne die Lehren der Menschlichkeit lediglich leere Versprechen...",
+        "Moralische Pflicht und Verantwortung": "Verantwortung bedeutet eine echte Antwort auf die drängenden Fragen zu geben..."
+    }; // Das Stopp-Signal }; bleibt heilig.
+
+    let geleseneBoxen = new Set();
+    let aktuellerIndex = 0;
 
     const grid = document.getElementById('main-grid');
     themen.forEach((t, i) => {
@@ -164,55 +131,49 @@
     });
 
     function oeffneBox(index) {
-        aktuellerThemenIndex = index;
-        besuchteBoxen.add(index); // Der stille Beobachter merkt sich die Box
-        
-        ebene = 2;
+        aktuellerIndex = index;
+        geleseneBoxen.add(index);
         document.getElementById('dashboard').style.display = 'none';
         document.getElementById('page-skelett').style.display = 'flex';
-        
-        prüfeChatFreischaltung(); // Prüfen ohne den User zu belehren
         updateUI();
     }
 
-    function prüfeChatFreischaltung() {
-        // Der Button auf Seite 2 (Dashboard) wird nur aktiv, wenn das Set 20 Einträge hat
-        if (besuchteBoxen.size >= 20) {
-            // Hier wird später der Chat-Button auf Seite 2 zum Leuchten gebracht
-            console.log("Die Leiter ist komplett. Der Filter war erfolgreich.");
+    function updateUI() {
+        const thema = themen[aktuellerIndex];
+        document.getElementById('info-titel').innerText = thema;
+        document.getElementById('main-text').innerText = inhaltsTexte[thema] || "Inhalt wird im Kollektiv erarbeitet...";
+        
+        document.getElementById('btn-back').style.visibility = 'visible';
+        const nextBtn = document.getElementById('btn-next');
+        
+        if(aktuellerIndex < 19) {
+            nextBtn.style.visibility = 'visible';
+            nextBtn.innerText = "Weiter →";
+            nextBtn.onclick = () => oeffneBox(aktuellerIndex + 1);
+        } else {
+            nextBtn.style.visibility = 'hidden';
+        }
+
+        // Der stille Filter-Check
+        if(geleseneBoxen.size >= 20) {
+            document.getElementById('chat-trigger-btn').classList.add('active');
         }
     }
 
-    function updateUI() {
-        const textElement = document.getElementById('main-text');
-        const titelElement = document.getElementById('info-titel');
-        const nextBtn = document.getElementById('btn-next');
-        const backBtn = document.getElementById('btn-back');
-
-        const thema = themen[aktuellerThemenIndex];
-        titelElement.innerText = thema;
-        textElement.innerText = inhaltsTexte[thema] || "Inhalt für '" + thema + "' wird im Kollektiv erarbeitet...";
-
-        // Navigation innerhalb der Boxen (Immer frei beweglich)
-        backBtn.style.visibility = 'visible';
-        backBtn.innerText = "← ZURÜCK"; // Führt zum Dashboard oder zur Box davor
-        backBtn.onclick = (aktuellerThemenIndex > 0) ? () => { oeffneBox(aktuellerThemenIndex - 1); } : () => { showDashboard(); };
-
-        nextBtn.style.visibility = (aktuellerThemenIndex < 19) ? 'visible' : 'hidden';
-        nextBtn.innerText = "WEITER →";
-        nextBtn.onclick = () => { oeffneBox(aktuellerThemenIndex + 1); };
+    function tryOpenChat() {
+        if(geleseneBoxen.size >= 20) {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('page-skelett').style.display = 'flex';
+            document.getElementById('info-titel').innerText = "LIVE CHAT - DIALOG";
+            document.getElementById('main-text').style.display = 'none';
+            document.getElementById('chat-area').style.display = 'flex';
+        }
     }
 
     function showDashboard() {
-        ebene = 1;
         document.getElementById('page-skelett').style.display = 'none';
         document.getElementById('dashboard').style.display = 'flex';
-        // Falls der Chat frei ist, leuchtet jetzt der Knopf auf Seite 2
     }
 </script>
 </body>
 </html>
-      
-    
-          
-      
