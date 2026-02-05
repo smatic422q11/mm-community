@@ -2,177 +2,144 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>M&M-COMMUNITY - Das Fundament</title>
+    <title>M&M-COMMUNITY - Souveränes System</title>
     <style>
+        /* BOX-MODELL: Jedes Element bleibt in seiner Zone */
+        * { box-sizing: border-box; }
+        
         body { 
             background-color: #000; color: #fff; 
             font-family: 'Segoe UI', Arial, sans-serif; 
             margin: 0; padding: 0; 
-            display: flex; flex-direction: column; align-items: center; 
+            display: flex; flex-direction: column; 
             height: 100vh; overflow: hidden; 
         }
 
-        /* FIXIERTER HEADER-BEREICH */
+        /* ZONE 1: FIXER OBERER BEREICH (Freizone) */
+        .top-zone {
+            height: 45vh; /* Reservierter Platz für Header und Tafel */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-shrink: 0; /* Verhindert das Zusammenquetschen */
+        }
+
         .dashboard-header { 
-            width: 100%; height: 140px; 
-            display: flex; justify-content: flex-start; padding: 20px; 
-            box-sizing: border-box; z-index: 20; flex-shrink: 0;
+            width: 100%; height: 120px; padding: 20px; 
+            display: flex; justify-content: flex-start;
         }
-        .logo-ring { 
-            width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; 
-            border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; 
-        }
-        .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
-        .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
 
-        /* TAFEL (INFO-SECTION) - Bleibt stabil */
         .info-section { 
-            width: 80%; height: 26vh; border: 2px solid #003d8f; 
+            width: 85%; height: 200px; border: 2px solid #003d8f; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            background-color: #000; position: relative; overflow: hidden; flex-shrink: 0;
+            background-color: #000;
         }
 
-        /* GRID-POSITIONIERUNG */
+        /* ZONE 2: DAS GRID (Unabhängig) */
+        .grid-zone {
+            flex-grow: 1; /* Nimmt den restlichen Platz ein, ohne zu drängeln */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px 0;
+        }
+
         .grid { 
             display: grid; 
             grid-template-columns: repeat(4, 1fr); 
             grid-template-rows: repeat(5, 1fr); 
             grid-auto-flow: column;
-            gap: 10px; 
-            width: 95%; 
-            max-width: 1450px; 
-            margin-top: 25px; /* Abstand zur Tafel */
-            flex-grow: 0;
+            gap: 12px; 
+            width: 95%; max-width: 1400px;
         }
-        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 55px; position: relative; }
-        .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
-        .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
-        .fundament-container { display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 15px; flex-shrink: 0; }
-        .fundament-box { flex: 1; }
-        .locked-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: bold; text-align: center; z-index: 10; }
+        /* ZONE 3: FUNDAMENT (Eigenständig) */
+        .fundament-zone {
+            height: 100px; /* Eigener Bereich unten */
+            width: 95%; max-width: 1400px;
+            margin: 0 auto 60px auto; /* Abstand für die Nav-Bar */
+            display: flex; gap: 12px;
+            flex-shrink: 0;
+        }
 
-        /* CHAT BUTTON (Der stille Indikator) */
-        #chat-trigger-btn { opacity: 0.1; cursor: default; transition: all 0.5s ease; }
-        #chat-trigger-btn.active { opacity: 1; cursor: pointer; border-color: #00ff00; color: #00ff00; }
+        /* BOX-DESIGN (Jede Zeile unabhängig anpassbar) */
+        .box, .fundament-box { 
+            display: flex; border: 2px solid #003d8f; background-color: #000; 
+            min-height: 55px; position: relative;
+        }
+        .num { width: 40px; background-color: #003d8f; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .text { padding: 5px 10px; cursor: pointer; font-size: 0.65rem; text-transform: uppercase; display: flex; align-items: center; flex-grow: 1; }
 
-        .bottom-nav { position: fixed; bottom: 10px; width: 95%; display: flex; justify-content: space-between; align-items: center; padding: 10px 0; background: black; }
-        .nav-btn { padding: 8px 20px; border: 1px solid #fff; background: none; color: #fff; cursor: pointer; text-transform: uppercase; font-size: 0.75rem; }
+        /* NAVIGATION */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 50px; background: #000; border-top: 1px solid #222; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; z-index: 1000; }
+        
+        /* CHAT-FILTER STATUS */
+        #chat-link { opacity: 0.1; pointer-events: none; transition: opacity 0.8s; }
+        #chat-link.unlocked { opacity: 1; pointer-events: auto; border-color: #fff; }
     </style>
 </head>
 <body>
 
-    <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+    <div class="top-zone" id="dashboard-top">
         <div class="dashboard-header">
-            <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
+            <div style="width: 110px; height: 110px; border: 3px solid #fff; border-radius: 50%; background: #003d8f; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <span style="font-size: 2rem; font-weight: 900;">M&M</span>
+                <span style="font-size: 0.6rem;">COMMUNITY</span>
+            </div>
         </div>
         <div class="info-section">
-            <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
-            <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
-            <p style="max-width: 85%; color: #ccc; font-size: 1.1rem; text-align: center;">
-                Die M&M-Community ist das Fundament für alle, die im Kollektiv wachsen wollen.
-            </p>
-        </div>
-        <div class="grid" id="main-grid"></div>
-        <div class="fundament-container">
-            <div class="fundament-box" id="chat-trigger-btn">
-                <div class="num">21</div>
-                <div class="text" onclick="tryOpenChat()">LIVE CHAT - DIALOG</div>
-            </div>
-            <div class="fundament-box">
-                <div class="num">22</div><div class="text">DAS KOLLEKTIV</div>
-                <div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div>
-            </div>
+            <h1 style="font-size: 2.5rem; margin: 0;">DAS WAS & WARUM</h1>
+            <h2 style="color: #003d8f;">DIE STILLE MILLION</h2>
         </div>
     </div>
 
-    <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
-        <h1 id="info-titel" style="text-transform: uppercase; font-size: 1.8rem; margin: 20px 0;"></h1>
-        <div class="info-section">
-            <div id="werbe-bg" style="position: absolute; width: 100%; height: 100%; background-size: cover;"></div>
-            <span style="z-index: 5; color: rgba(255,255,255,0.3); letter-spacing: 5px;">WERBUNG</span>
+    <div class="grid-zone" id="dashboard-grid">
+        <div class="grid" id="main-grid">
+            </div>
+    </div>
+
+    <div class="fundament-zone" id="dashboard-bottom">
+        <div class="fundament-box" id="chat-link">
+            <div class="num">21</div>
+            <div class="text" onclick="showChat()">LIVE CHAT - DIALOG</div>
         </div>
-        <p id="main-text" style="width: 80%; text-align: justify; color: #ccc; margin-top: 30px; font-size: 1.1rem; line-height: 1.6; max-width: 1200px;"></p>
-        
-        <div id="chat-area" style="display:none; width: 90%; height: 40vh; border: 2px solid #003d8f; margin-top: 20px;">
-             <div style="padding: 20px;"><i>System: Dialog bereit...</i></div>
+        <div class="fundament-box">
+            <div class="num">22</div>
+            <div class="text">DAS KOLLEKTIV (TRANSPARENZ)</div>
         </div>
     </div>
 
     <div class="bottom-nav">
-        <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Zurück</button>
-        <div id="dot-holder" style="display: flex; gap: 8px;"></div>
-        <button id="btn-next" class="nav-btn" style="visibility: hidden;">Weiter →</button>
+        <button id="btn-back" style="visibility:hidden" onclick="goBack()">← ZURÜCK</button>
+        <button id="btn-next" style="visibility:hidden">WEITER →</button>
     </div>
 
 <script>
-    const themen = [
-        "Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte",
-        "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst",
-        "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten",
-        "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten",
-        "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"
-    ];
-
+    const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
+    
+    // InhaltsTexte separat - Jede Zeile unabhängig ausbaubar
     const inhaltsTexte = {
-        "Recht auf Gefühls Forderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühls Forderung zu etablieren...",
-        "Wie werde ich Mensch": "Mensch werden bedeutet, die künstlichen Schichten der Erziehung abzuschälen...",
-        "Glaube an Friede": "Friede beginnt im konsequenten Waffenstillstand mit der eigenen Biografie...",
-        "Programm für Bürgerliche Rechte": "Rechte sind ohne die Lehren der Menschlichkeit lediglich leere Versprechen...",
-        "Moralische Pflicht und Verantwortung": "Verantwortung bedeutet eine echte Antwort auf die drängenden Fragen zu geben..."
-    }; // Das Stopp-Signal }; bleibt heilig.
+        "Recht auf Gefühls Forderung": "Inhalt 1...",
+        "Wie werde ich Mensch": "Inhalt 2..."
+    };
 
-    let geleseneBoxen = new Set();
-    let aktuellerIndex = 0;
+    let besuchte = new Set();
 
+    // Initialisierung des Grids - Bleibt in seiner Zone
     const grid = document.getElementById('main-grid');
     themen.forEach((t, i) => {
         grid.innerHTML += `<div class="box"><div class="num">${i+1}</div><div class="text" onclick="oeffneBox(${i})">${t}</div></div>`;
     });
 
-    function oeffneBox(index) {
-        aktuellerIndex = index;
-        geleseneBoxen.add(index);
-        document.getElementById('dashboard').style.display = 'none';
-        document.getElementById('page-skelett').style.display = 'flex';
-        updateUI();
+    function oeffneBox(i) {
+        besuchte.add(i);
+        // Logik für Seite 2...
+        if(besuchte.size >= 20) document.getElementById('chat-link').classList.add('unlocked');
+        // Hier umschalten auf Lese-Modus (Code-unabhängig)
     }
 
-    function updateUI() {
-        const thema = themen[aktuellerIndex];
-        document.getElementById('info-titel').innerText = thema;
-        document.getElementById('main-text').innerText = inhaltsTexte[thema] || "Inhalt wird im Kollektiv erarbeitet...";
-        
-        document.getElementById('btn-back').style.visibility = 'visible';
-        const nextBtn = document.getElementById('btn-next');
-        
-        if(aktuellerIndex < 19) {
-            nextBtn.style.visibility = 'visible';
-            nextBtn.innerText = "Weiter →";
-            nextBtn.onclick = () => oeffneBox(aktuellerIndex + 1);
-        } else {
-            nextBtn.style.visibility = 'hidden';
-        }
-
-        // Der stille Filter-Check
-        if(geleseneBoxen.size >= 20) {
-            document.getElementById('chat-trigger-btn').classList.add('active');
-        }
-    }
-
-    function tryOpenChat() {
-        if(geleseneBoxen.size >= 20) {
-            document.getElementById('dashboard').style.display = 'none';
-            document.getElementById('page-skelett').style.display = 'flex';
-            document.getElementById('info-titel').innerText = "LIVE CHAT - DIALOG";
-            document.getElementById('main-text').style.display = 'none';
-            document.getElementById('chat-area').style.display = 'flex';
-        }
-    }
-
-    function showDashboard() {
-        document.getElementById('page-skelett').style.display = 'none';
-        document.getElementById('dashboard').style.display = 'flex';
+    function goBack() {
+        // Souveränes Zurückschalten
     }
 </script>
 </body>
