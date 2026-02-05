@@ -178,7 +178,7 @@
             "Moralische Pflicht und Verantwortung": "Um die lähmende Trägheit durch das geistlose Mitläufertum endgültig zu überwinden und die schwere, aber notwendige Last der Wahrheit entschlossen im Kollektiv zu tragen. Verantwortung bedeutet hierbei, eine echte Antwort auf die drängenden Fragen unserer Zeit zu geben, statt stumm zu folgen. Dieser Weg führt uns unweigerlich an einen Ort, an dem die Masken der Gesellschaft ihre Macht verlieren und das bloße Sein wieder zur höchsten Währung wird. Es ist die Reise in eine Zukunft, in der wir uns nicht mehr über das definieren, was wir besitzen oder darstellen, sondern über die Tiefe unserer Resonanz zum Gegenüber. Wohin wir steuern, ist ein Zustand des kollektiven Bewusstseins, in dem die Heilung des Einzelnen die Immunität der gesamten Gemeinschaft stärkt. In dieser neuen Ordnung wird Menschlichkeit nicht mehr als Schwäche ausgelegt, sondern als das stabilste Fundament erkannt, auf dem eine Gesellschaft ruhen kann, die keine Angst mehr vor ihrer eigenen Geschichte hat. Dieser Weg führt uns unweigerlich an einen Ort, an dem die künstlichen Masken der Gesellschaft ihre Macht verlieren und das bloße, nackte Sein wieder zur höchsten Währung des Lebens wird. Es ist die Reise in eine Zukunft, in der wir uns nicht mehr über das definieren, was wir besitzen, leisten oder darstellen, sondern über die Tiefe unserer Resonanz und die Wahrhaftigkeit unserer Begegnungen. Wohin wir steuern, ist ein Zustand des kollektiven Bewusstseins, in dem die individuelle Heilung die Immunität der gesamten Gemeinschaft stärkt und eine neue Form der sozialen Architektur erschafft. In dieser neuen Ordnung wird Menschlichkeit nicht länger als Zerbrechlichkeit oder Schwäche ausgelegt, sondern als das einzig stabile Fundament erkannt, auf dem eine Gesellschaft ruhen kann, die keine Angst mehr vor ihrer eigenen Geschichte oder ihren inneren Schatten hat."
         };
 
-       let ebene = 1;
+      let ebene = 1;
         let tId = 10;
         let aktuellesThema = "";
         let wechselInterval;
@@ -200,15 +200,12 @@
             ebene = 2; 
             tId = id;
             aktuellesThema = t;
-            
-            // Markieren und Gold färben
             geleseneThemen.add(id);
             const numBox = document.getElementById(`num-${id}`);
             if(numBox) {
                 numBox.style.backgroundColor = "#ffd700"; 
                 numBox.style.color = "#000";
             }
-
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('page-skelett').style.display = 'flex';
             updateUI();
@@ -224,22 +221,21 @@
             document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
             document.getElementById('btn-back').style.visibility = 'visible';
             
+            btnNext.classList.remove('btn-pfad');
+
             if (ebene === 2) {
                 titelElement.innerText = aktuellesThema;
                 textElement.style.display = 'block';
-                textElement.innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird im Kollektiv erarbeitet...";
+                textElement.innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet...";
 
-                // INTELLIGENTE BUTTON-LOGIK
                 if (tId < 19) { 
-                    // Der Pfad von 1 bis 20: Immer zum nächsten Thema
                     btnNext.style.visibility = 'visible';
                     btnNext.innerText = `Weiter zu Thema ${tId + 2} →`;
+                    btnNext.classList.add('btn-pfad'); 
                 } else if (tId === 19 || geleseneThemen.size >= 3) {
-                    // Wenn bei 20 angekommen ODER genug gesammelt wurde
                     btnNext.style.visibility = 'visible';
                     btnNext.innerText = "Weiter zum Dialog (Ebene 3) →";
                 } else {
-                    // Querleser ohne genug "Gold" sehen keinen Button
                     btnNext.style.visibility = 'hidden';
                 }
             } 
@@ -265,11 +261,8 @@
 
         function nextPage() {
             if (ebene === 2 && tId < 19) {
-                // Der "Intelligente Weg": Wir bleiben auf Ebene 2, wechseln aber das Thema
                 tId++; 
                 aktuellesThema = themen[tId];
-                
-                // Dashboard im Hintergrund aktualisieren (Gold setzen)
                 geleseneThemen.add(tId);
                 const nextNum = document.getElementById(`num-${tId}`);
                 if(nextNum) {
