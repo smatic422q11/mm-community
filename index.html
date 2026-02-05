@@ -103,13 +103,24 @@
         .nav-btn { padding: 8px 20px; border: 1px solid #fff; background: none; color: #fff; cursor: pointer; text-transform: uppercase; font-size: 0.75rem; }
         .dot { width: 6px; height: 6px; border: 1px solid #fff; border-radius: 50%; opacity: 0.3; }
         .dot.active { background: #fff; opacity: 1; }
+/* Dein goldener Button */
 .btn-pfad {
     background-color: #ffd700 !important; 
     color: #000 !important;
     font-weight: bold;
     box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
     border: 2px solid #fff !important;
-} </style>
+}
+
+/* NEU: Die Status-Farben für die Nummern-Boxen */
+.num-ungelesen { background-color: #ff4d4d !important; color: white !important; }
+.num-gelesen { background-color: #ffd700 !important; color: black !important; }
+
+/* NEU: Das Dashboard leuchtet Grün, wenn alles fertig ist */
+.dashboard-fertig { 
+    border: 3px solid #00ff00 !important; 
+    box-shadow: 0 0 20px #00ff00 !important; 
+}</style>
 </head>
 <body>
 
@@ -178,17 +189,18 @@
             "Moralische Pflicht und Verantwortung": "Um die lähmende Trägheit durch das geistlose Mitläufertum endgültig zu überwinden und die schwere, aber notwendige Last der Wahrheit entschlossen im Kollektiv zu tragen. Verantwortung bedeutet hierbei, eine echte Antwort auf die drängenden Fragen unserer Zeit zu geben, statt stumm zu folgen. Dieser Weg führt uns unweigerlich an einen Ort, an dem die Masken der Gesellschaft ihre Macht verlieren und das bloße Sein wieder zur höchsten Währung wird. Es ist die Reise in eine Zukunft, in der wir uns nicht mehr über das definieren, was wir besitzen oder darstellen, sondern über die Tiefe unserer Resonanz zum Gegenüber. Wohin wir steuern, ist ein Zustand des kollektiven Bewusstseins, in dem die Heilung des Einzelnen die Immunität der gesamten Gemeinschaft stärkt. In dieser neuen Ordnung wird Menschlichkeit nicht mehr als Schwäche ausgelegt, sondern als das stabilste Fundament erkannt, auf dem eine Gesellschaft ruhen kann, die keine Angst mehr vor ihrer eigenen Geschichte hat. Dieser Weg führt uns unweigerlich an einen Ort, an dem die künstlichen Masken der Gesellschaft ihre Macht verlieren und das bloße, nackte Sein wieder zur höchsten Währung des Lebens wird. Es ist die Reise in eine Zukunft, in der wir uns nicht mehr über das definieren, was wir besitzen, leisten oder darstellen, sondern über die Tiefe unserer Resonanz und die Wahrhaftigkeit unserer Begegnungen. Wohin wir steuern, ist ein Zustand des kollektiven Bewusstseins, in dem die individuelle Heilung die Immunität der gesamten Gemeinschaft stärkt und eine neue Form der sozialen Architektur erschafft. In dieser neuen Ordnung wird Menschlichkeit nicht länger als Zerbrechlichkeit oder Schwäche ausgelegt, sondern als das einzig stabile Fundament erkannt, auf dem eine Gesellschaft ruhen kann, die keine Angst mehr vor ihrer eigenen Geschichte oder ihren inneren Schatten hat."
         };
 
-    let ebene = 1;
+let ebene = 1;
         let tId = 0;
         let aktuellesThema = "";
         let wechselInterval;
         let geleseneThemen = new Set();
 
+        // ERSTELLUNG: Startet alles in ROT (num-ungelesen)
         const grid = document.getElementById('main-grid');
         themen.forEach((t, i) => {
             grid.innerHTML += `
                 <div class="box" id="box-${i}">
-                    <div class="num" id="num-${i}">${i+1}</div>
+                    <div class="num num-ungelesen" id="num-${i}">${i+1}</div>
                     <div class="text" onclick="showInfo('${t}', ${i})">${t}</div>
                 </div>`;
         });
@@ -200,12 +212,20 @@
             ebene = 2; 
             tId = id;
             aktuellesThema = t;
+            
+            // WECHSEL: Von Rot auf Gold
             geleseneThemen.add(id);
             const numBox = document.getElementById(`num-${id}`);
             if(numBox) {
-                numBox.style.backgroundColor = "#ffd700"; 
-                numBox.style.color = "#000";
+                numBox.classList.remove('num-ungelesen');
+                numBox.classList.add('num-gelesen');
             }
+
+            // CHECK: Wenn alle 20 gelesen, Dashboard auf GRÜN
+            if (geleseneThemen.size === 20) {
+                document.getElementById('main-grid').classList.add('dashboard-fertig');
+            }
+
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('page-skelett').style.display = 'flex';
             updateUI();
@@ -229,6 +249,7 @@
                 textElement.innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet...";
 
                 if (tId < 19) { 
+                    // INTELLIGENTER PFAD: Goldener Button erscheint
                     btnNext.style.visibility = 'visible';
                     btnNext.innerText = `Weiter zu Thema ${tId + 2} →`;
                     btnNext.classList.add('btn-pfad'); 
@@ -266,8 +287,11 @@
                 geleseneThemen.add(tId);
                 const nextNum = document.getElementById(`num-${tId}`);
                 if(nextNum) {
-                    nextNum.style.backgroundColor = "#ffd700";
-                    nextNum.style.color = "#000";
+                    nextNum.classList.remove('num-ungelesen');
+                    nextNum.classList.add('num-gelesen');
+                }
+                if (geleseneThemen.size === 20) {
+                    document.getElementById('main-grid').classList.add('dashboard-fertig');
                 }
                 updateUI();
             } else if (ebene < 7) {
@@ -302,7 +326,7 @@
                 const d = document.getElementById('dot'+i);
                 if(d) d.classList.toggle('active', i === 1);
             }
-        } 
+        }
     </script>
 </body>
 </html>
