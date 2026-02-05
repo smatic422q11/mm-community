@@ -2,187 +2,177 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>M&M-COMMUNITY - Das Fundament</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Das Fundament - Der Planet</title>
     <style>
-        /* BASIS-LAYOUT */
-        body { 
-            background-color: #000; color: #fff; 
-            font-family: 'Segoe UI', Arial, sans-serif; 
-            margin: 0; padding: 0; 
-            display: flex; flex-direction: column; align-items: center; 
-            min-height: 100vh; overflow-x: hidden; overflow-y: auto; 
+        /* DAS UNIVERSUM */
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto; /* Unendliche Luft nach unten */
         }
 
-        /* HEADER & LOGO */
-        .dashboard-header { 
-            width: 100%; padding: 20px 2%; 
-            display: flex; justify-content: flex-start; 
-            box-sizing: border-box; z-index: 20;
-        }
-        .logo-ring { 
-            width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; 
-            border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            flex-shrink: 0;
-        }
-        .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
-        .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
-
-        /* TAFEL (INFO-SECTION) */
-        .info-section { 
-            width: 80%; min-height: 26vh; border: 2px solid #003d8f; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            background-color: #000; position: relative; overflow: hidden; margin: 2vh 0;
-        }
-        .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; transition: opacity 1s; }
-        .bild-aktiv { opacity: 0.4 !important; }
-
-        /* DAS PRÄZISE GRID (KEIN VERRUTSCHEN) */
-        .grid { 
-            display: grid; 
-            /* 4 Spalten zu je exakt 24% - der Rest ist Puffer */
-            grid-template-columns: 24% 24% 24% 24%; 
-            /* 5 Zeilen mit fester Höhe */
-            grid-template-rows: repeat(5, 70px); 
-            /* Füllung strikt von oben nach unten (Säulen-Prinzip) */
-            grid-auto-flow: column;
-            gap: 12px; 
-            width: 95%; 
-            max-width: 1450px; 
+        /* DIE TAFEL (KOMMANDOZENTRALE) */
+        /* 90% Breite = 5% Freizone links und rechts für Satelliten/Chat */
+        #werbetafel {
+            width: 90%;
+            min-height: 150px;
+            border: 3px solid #003d8f;
             margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #050505;
+            position: sticky;
+            top: 10px;
+            z-index: 1000;
+            text-align: center;
+            padding: 10px;
         }
 
-        .box, .fundament-box { 
-            display: flex; border: 2px solid #003d8f; background-color: #000; 
-            height: 100%; width: 100%; position: relative; overflow: hidden; 
+        #programm-name { margin: 0; font-size: 24px; color: #fff; }
+        #tafel-info { margin: 10px 0 0 0; font-size: 18px; color: #aaa; }
+
+        /* DER PLANETEN-KERN (INHALT) */
+        #content-area {
+            width: 90%;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 50px;
         }
 
-        .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
-        .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.65rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; line-height: 1.2; }
-
-        /* EBENE 2 & 3 FREIZONEN */
-        #counter-box {
-            position: absolute; right: 0; top: 0; width: 100px; padding: 5px;
-            border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f;
-            background: #000; text-align: center; display: none; z-index: 100;
+        /* EBENE 1: DAS STARRE RASTER (4 Spalten x 5 Zeilen) */
+        .grid-fundament {
+            display: grid;
+            /* 4 feste Spalten - Spalte 2,3,4 sind deine schwarzen Freizonen */
+            grid-template-columns: repeat(4, 250px);
+            grid-template-rows: repeat(5, 80px);
+            gap: 20px;
+            /* Erzwingt die Spalten-Anordnung: Box 1-5 untereinander in Spalte 1 */
+            grid-auto-flow: column;
         }
-        .counter-label { font-size: 0.4rem; color: #fff; display: block; }
-        .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
 
-        #chat-area {
-            width: 90%; min-height: 50vh; border: 2px solid #003d8f; 
-            display: none; flex-direction: column; background: #050505; margin-top: 1vh;
+        .box {
+            border: 2px solid #003d8f;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            text-align: center;
+            padding: 5px;
         }
-        .chat-msgs { flex-grow: 1; padding: 10px; color: #ccc; }
-        .chat-input-row { display: flex; border-top: 2px solid #003d8f; }
-        .chat-input-row input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 10px; outline: none; }
-        .chat-input-row button { background: #003d8f; color: #fff; border: none; padding: 0 20px; cursor: pointer; }
 
-        /* NAV */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; padding: 15px 0; background: black; border-top: 1px solid #222; z-index: 1000; }
-        .nav-btn { padding: 8px 20px; border: 1px solid #fff; background: none; color: #fff; cursor: pointer; text-transform: uppercase; font-size: 0.75rem; }
-        .dot { width: 6px; height: 6px; border: 1px solid #fff; border-radius: 50%; opacity: 0.3; }
-        .dot.active { background: #fff; opacity: 1; }
+        /* EBENE 2: INFO PROZESS (UNENDLICHE TEXTZONE) */
+        #ebene2 {
+            width: 100%;
+            max-width: 1000px;
+            display: none; /* Startet auf Ebene 1 */
+        }
+
+        .text-inhalt {
+            font-size: 20px;
+            line-height: 1.6;
+            text-align: justify;
+            margin-bottom: 50px;
+        }
+
+        /* NAVIGATION: Schiebt sich immer nach unten */
+        .navigation {
+            margin: 40px 0 60px 0;
+            display: flex;
+            gap: 50px;
+        }
+
+        .nav-btn {
+            padding: 15px 40px;
+            border: 2px solid #fff;
+            background: transparent;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .nav-btn:hover { background: #fff; color: #000; }
+
     </style>
 </head>
 <body>
 
-    <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-        <div class="dashboard-header">
-            <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
-        </div>
-        <div class="info-section">
-            <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
-            <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
-            <p style="max-width: 85%; color: #ccc; font-size: 1.1rem; margin: 10px 0 0 0; text-align: center;">
-                Die Wahl der Vorsitzenden erfolgt erst nach Erreichen der stillen Million.
-            </p>
-        </div>
-        <div class="grid" id="main-grid"></div>
+    <div id="werbetafel">
+        <h1 id="programm-name">DASHBOARD</h1>
+        <p id="tafel-info">Wähle eine Box, um den Prozess zu starten</p>
     </div>
 
-    <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; padding-bottom: 150px;">
-        <div style="width:100%; display:flex; flex-direction:column; align-items:center; padding-top:2vh; position:relative;">
-            <h1 id="info-titel" style="text-transform:uppercase; font-size:1.8rem; font-weight:900;"></h1>
-            <div class="info-section">
-                <div class="werbe-bild-bg" id="werbe-bg"></div>
-                <div id="counter-box"><span class="counter-label">STILLE MILLION</span><span class="counter-value">842.336</span></div>
-                <span style="color:rgba(255,255,255,0.2); z-index:5;">WERBE-ZONE</span>
+    <div id="content-area">
+        
+        <div id="ebene1" class="grid-fundament">
+            <div class="box">1. Gefühls Forderung</div>
+            <div class="box">2. Info Prozess</div>
+            <div class="box">3. Stille Million</div>
+            <div class="box">4. Portal</div>
+            <div class="box">5. Wachstum</div>
             </div>
-        </div>
-        <div id="chat-area">
-            <div class="chat-msgs"><i>System: Dialog bereit...</i></div>
-            <div class="chat-input-row"><input type="text" placeholder="Nachricht..."><button>SENDEN</button></div>
-        </div>
-        <p id="main-text" style="width:85%; color:#ccc; margin-top:4vh; font-size:1.2rem; line-height:1.8; text-align:justify;"></p>
-    </div>
 
-    <div class="bottom-nav">
-        <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Zurück</button>
-        <div style="display: flex; gap: 8px;" id="dot-holder"></div>
-        <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
+        <div id="ebene2">
+            <div class="text-inhalt">
+                <h2>Der Info Prozess</h2>
+                <p>Hier liegt deine unendliche Textzone. Wenn du hier mehr Text einfügst, wächst der Planet nach unten und die Navigation unten macht automatisch Platz.</p>
+                <p>Begriffe wie die <strong>Gefühls Forderung</strong> sind hier fest verankert.</p>
+                </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" onclick="geheZu(1)">ZURÜCK</button>
+            <button class="nav-btn" onclick="geheZu(2)">WEITER</button>
+        </div>
     </div>
 
     <script>
-        const themen = ["Recht auf Gefühlsforderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung"];
-        const inhaltsTexte = { "Recht auf Gefühlsforderung": "Inhalt zur Gefühlsforderung (Ebene 2)..." };
+        // Logik für den Ebenen-Wechsel und Tafel-Änderung
+        function geheZu(ebene) {
+            const e1 = document.getElementById('ebene1');
+            const e2 = document.getElementById('ebene2');
+            const pName = document.getElementById('programm-name');
+            const tInfo = document.getElementById('tafel-info');
 
-        let ebene = 1; let tId = 0; let aktuellesThema = ""; let wechselInterval;
-
-        // Grid initialisieren
-        const grid = document.getElementById('main-grid');
-        themen.forEach((t, i) => {
-            grid.innerHTML += `<div class="box"><div class="num">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`;
-        });
-
-        // Navigation initialisieren
-        const dots = document.getElementById('dot-holder');
-        for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i==1?'active':''}"></div>`;
-
-        function showInfo(t, id) {
-            ebene = 2; tId = id; aktuellesThema = t;
-            document.getElementById('dashboard').style.display = 'none';
-            document.getElementById('page-skelett').style.display = 'flex';
-            updateUI();
-        }
-
-        function updateUI() {
-            const isChat = (ebene === 3);
-            document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
-            document.getElementById('counter-box').style.display = (ebene >= 3) ? 'block' : 'none';
-            document.getElementById('main-text').style.display = isChat ? 'none' : 'block';
-            document.getElementById('btn-back').style.visibility = 'visible';
-            document.getElementById('btn-next').style.visibility = 'visible';
-
-            if (ebene === 2) {
-                document.getElementById('info-titel').innerText = aktuellesThema;
-                document.getElementById('main-text').innerText = inhaltsTexte[aktuellesThema] || "Inhalt folgt...";
-            } else if (isChat) {
-                document.getElementById('info-titel').innerText = "DIALOG-ZONE";
+            if(ebene === 1) {
+                e1.style.display = 'grid';
+                e2.style.display = 'none';
+                pName.innerText = "DASHBOARD";
+                tInfo.innerText = "Wähle eine Box, um den Prozess zu starten";
+                window.scrollTo(0,0);
+            } else {
+                e1.style.display = 'none';
+                e2.style.display = 'block';
+                pName.innerText = "INFO PROZESS";
+                tInfo.innerText = "Lerne das System kennen (1-20)";
+                window.scrollTo(0,0);
             }
-
-            for(let i=1; i<=7; i++) document.getElementById('dot'+i).classList.toggle('active', i === ebene);
-            startRotation();
         }
 
-        function startRotation() {
-            clearInterval(wechselInterval);
-            const bg = document.getElementById('werbe-bg');
-            bg.classList.remove('bild-aktiv');
-            setTimeout(() => {
-                bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId+ebene+Math.random()}/1200/600')`;
-                bg.classList.add('bild-aktiv');
-            }, 100);
-            wechselInterval = setInterval(() => {
-                bg.classList.remove('bild-aktiv');
-                setTimeout(() => {
-                    bg.style.backgroundImage = `url('https://picsum.photos/seed/${Math.random()}/1200/600')`;
-                    bg.classList.add('bild-aktiv');
-                }, 100);
-            }, 8000);
+        // Zähler-Vorbereitung für die Qualifizierung (Milliarden-Option)
+        let besuchteSeiten = new Set();
+        function registriereBesuch(seite) {
+            besuchteSeiten.add(seite);
+            if(besuchteSeiten.size >= 20) {
+                console.log("Chat-Funktion freigeschaltet!");
+            }
         }
-
-        function nextPage() { if(ebene < 7) { ebene++; updateUI(); } }
-        function showDashboard() { location.reload(); }
     </script>
+
 </body>
 </html>
+    
+        
