@@ -202,7 +202,7 @@ let ebene = 1;
         let wechselInterval;
         let geleseneThemen = new Set();
 
-        // ERSTELLUNG: Startet alles in BLAU
+        // ERSTELLUNG: Alle Nummern starten in BLAU (num-neutral)
         const grid = document.getElementById('main-grid');
         themen.forEach((t, i) => {
             grid.innerHTML += `
@@ -221,16 +221,16 @@ let ebene = 1;
             aktuellesThema = t;
             geleseneThemen.add(id);
 
-            // FARB-LOGIK DER NUMMERN
+            // LOGIK FÜR DIE FARBEN DER NUMMERN
             themen.forEach((_, i) => {
                 const nBox = document.getElementById(`num-${i}`);
                 if (nBox) {
                     if (geleseneThemen.size === 20) {
-                        nBox.className = "num num-fertig"; // Alle GRÜN
+                        nBox.className = "num num-fertig"; // Ziel: Alles GRÜN
                     } else if (geleseneThemen.has(i)) {
-                        nBox.className = "num num-gelesen"; // Gelesen GOLD
-                    } else {
-                        nBox.className = "num num-offen"; // Ungelesen ROT
+                        nBox.className = "num num-gelesen"; // Erledigt: GOLD
+                    } else if (geleseneThemen.size > 0) {
+                        nBox.className = "num num-offen"; // Offen: ROT
                     }
                 }
             });
@@ -291,7 +291,7 @@ let ebene = 1;
         function nextPage() {
             if (ebene === 2 && tId < 19) {
                 tId++; 
-                showInfo(themen[tId], tId); // Nutzt die gleiche Farb-Logik
+                showInfo(themen[tId], tId); 
             } else if (ebene < 7) {
                 ebene++;
                 updateUI();
