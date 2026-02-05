@@ -103,6 +103,15 @@
         .nav-btn { padding: 8px 20px; border: 1px solid #fff; background: none; color: #fff; cursor: pointer; text-transform: uppercase; font-size: 0.75rem; }
         .dot { width: 6px; height: 6px; border: 1px solid #fff; border-radius: 50%; opacity: 0.3; }
         .dot.active { background: #fff; opacity: 1; }
+/* Der grüne Rahmen, der IMMER da ist */
+#main-grid {
+    border: 3px solid #00ff00 !important;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+    margin-top: 20px;
+}
+
 /* 1. Start: Blau */
 .num-neutral { background-color: #003d8f !important; color: white !important; }
 
@@ -112,24 +121,10 @@
 /* 3. Offen: Rot */
 .num-offen { background-color: #ff4d4d !important; color: white !important; }
 
-/* 4. Fertig: Alle Nummern Grün */
+/* 4. Alles fertig: Grün */
 .num-fertig { background-color: #00ff00 !important; color: black !important; }
 
-/* Dein gewünschter grüner Rahmen für das Dashboard */
-#main-grid {
-    border: 2px solid #00ff00; /* Permanenter grüner Rand */
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 255, 0, 0.2); /* Sanftes Leuchten am Anfang */
-    transition: all 0.5s ease;
-}
-
-/* Wenn alles fertig ist, leuchtet der Rand stärker */
-.dashboard-fertig { 
-    box-shadow: 0 0 25px #00ff00 !important;
-    border-width: 3px !important;
-}
-
+/* Dein goldener Pfad-Button */
 .btn-pfad {
     background-color: #ffd700 !important; 
     color: #000 !important;
