@@ -129,20 +129,7 @@
     position: fixed !important;
     bottom: 0 !important;
     left: 0 !important;
-/* EBENEN-OVALE - NUR FÜR EBENE 2+ */
-.oval-container { display: flex; gap: 10px; align-items: center; }
-.oval { 
-    width: 35px; height: 18px; border-radius: 10px; 
-    border: 1px solid #fff; opacity: 0.3; transition: all 0.5s ease; 
-}
-.oval-schwarz { background: #000; opacity: 1; border: 1.5px solid #003d8f; }
-.oval-grun { background: #00ff00; }
-.oval-blau { background: #0000ff; }
-.oval-rot { background: #ff0000; }
-.oval-pink { background: #ff00ff; }
-.oval-gelb { background: #ffff00; }
-.oval.active { opacity: 1; box-shadow: 0 0 10px #fff; }
-</style>
+} }</style>
 </head>
 <body>
 
@@ -164,40 +151,16 @@
         </div>
     </div>
 
-   <div class="top-container">
-    <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 10px 5%; box-sizing: border-box;">
-        
-        <div class="oval-container">
-            <div class="oval oval-schwarz active"></div>
-            <div class="oval oval-grun"></div>
-            <div class="oval oval-blau"></div>
-            <div class="oval oval-rot"></div>
-        </div>
-
-        <div class="logo-ring">
-            <div class="logo-mm">M&M</div>
-            <div class="logo-community" style="font-size: 0.5rem;">COMMUNITY</div>
-        </div>
-
-        <div class="oval-container">
-            <div class="oval oval-grun" id="nav-oval-3" style="border: 2px solid #00ff00;"></div>
-            <div class="oval oval-blau"></div>
-            <div class="oval oval-pink"></div>
-            <div class="oval oval-gelb"></div>
-        </div>
-    </div>
-
-    <h1 id="info-titel" class="page-title-white" style="margin-top: 10px;"></h1>
-    
-    <div class="info-section">
-        <div class="werbe-bild-bg" id="werbe-bg"></div>
-        <div class="tafel-intern-logo">
-            <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
-        </div>
-        <span class="werbe-text-overlay">HIER IST PLATZ FÜR WERBUNG</span>
-        <div id="counter-box"><span class="counter-label">STILLE MILLION</span><span class="counter-value">842.336</span></div>
-    </div>
-</div>
+    <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
+        <div class="top-container">
+            <h1 id="info-titel" class="page-title-white"></h1>
+            <div class="info-section">
+                <div class="werbe-bild-bg" id="werbe-bg"></div>
+                <div class="tafel-intern-logo">
+                    <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
+                </div>
+                <span class="werbe-text-overlay">HIER IST PLATZ FÜR WERBUNG</span>
+                <div id="counter-box"><span class="counter-label">STILLE MILLION</span><span class="counter-value">842.336</span></div>
             </div>
         </div>
         <div id="chat-area">
@@ -376,10 +339,3 @@ let ebene = 1;
       
 
       
-  
-
-      
-
-      
-  
-
