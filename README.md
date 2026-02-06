@@ -1,28 +1,338 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>M&M-COMMUNITY - Das Fundament</title>
+    <style>
+        /* BASIS-LAYOUT */
+        body { 
+            background-color: #000; color: #fff; 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            margin: 0; padding: 0; 
+            display: flex; flex-direction: column; align-items: center; 
+            height: 100vh; overflow: hidden; 
+        }
 
-Markdown
-# M&M-Community: Das Kollektiv
+        /* ANIMATIONEN */
+        @keyframes kenburns {
+            0% { transform: scale(1) translate(0, 0); }
+            50% { transform: scale(1.15) translate(-1%, -1%); }
+            100% { transform: scale(1) translate(0, 0); }
+        }
+        @keyframes fadeEffect {
+            0% { opacity: 0; }
+            15% { opacity: 0.4; } 
+            85% { opacity: 0.4; } 
+            100% { opacity: 0; }  
+        }
 
-![Status](https://img.shields.io/badge/System-Operativ-00ffcc?style=for-the-badge)
-![Security](https://img.shields.io/badge/Zugang-Selektiv-red?style=for-the-badge)
+        /* HEADER & LOGO */
+        .dashboard-header { 
+            width: 100%; position: absolute; top: 3%; 
+            display: flex; justify-content: flex-start; padding: 0 2%; 
+            box-sizing: border-box; z-index: 20;
+        }
+        .logo-ring { 
+            width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; 
+            border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; 
+        }
+        .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
+        .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
 
-> **"Bewegung entsteht durch Tatendrang. Stabilität durch Empathie. Erfolg durch Struktur."**
+        /* TAFEL (INFO-SECTION) */
+        .info-section { 
+            width: 80%; height: 26vh; border: 2px solid #003d8f; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            background-color: #000; position: relative; overflow: hidden; margin-top: 2vh;
+        }
+        .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
+        .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
+        .tafel-intern-logo { position: absolute; top: 10px; left: 10px; transform: scale(0.6); transform-origin: top left; z-index: 5; }
+        .werbe-text-overlay { color: rgba(255, 255, 255, 0.3); font-weight: bold; font-size: 1.2rem; letter-spacing: 5px; z-index: 5; text-align: center; text-shadow: 2px 2px 5px #000; }
 
-Willkommen im zentralen Nervensystem der M&M-Community. Dies ist kein Ort für Diskussionen, sondern ein Raum für die Umsetzung visionärer Projekte innerhalb eines festen Gefüges.
+        /* GRID */
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            grid-template-rows: repeat(5, 1fr); 
+            grid-auto-flow: column;
+            gap: 10px; 
+            width: 95%; 
+            max-width: 1450px; 
+            margin-top: 30px;
+        }
+        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; overflow: hidden; }
+        .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
+        .text { 
+            padding: 4px 8px; text-transform: uppercase; 
+            font-size: 0.6rem; 
+            display: flex; align-items: center; cursor: pointer; flex-grow: 1; 
+            line-height: 1.1; word-wrap: break-word; overflow: hidden;
+            font-weight: 600;
+        }
 
-## 🌐 Vision & Ziel
-Wir erschaffen eine Umgebung, in der das Kollektiv mehr ist als die Summe seiner Teile. Durch eine klare Hierarchie von Aufgaben und Verantwortlichkeiten (Floors) stellen wir sicher, dass Energie effizient genutzt wird.
+        /* FUNDAMENT */
+        .fundament-container { display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; }
+        .fundament-box { flex: 1; }
+        .locked-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: bold; text-align: center; }
 
-## 🏛️ Die Struktur
-Das System ist in operative Ebenen unterteilt. Jede Ebene ist autark und arbeitet an der Fertigstellung des Gesamtbildes:
+        /* EBENE 2 & 3 SPEZIFIKATIONEN */
+        .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh; position: relative; }
+        .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
 
-* **Ebene 0: Fundament** – Integration und Beobachtung.
-* **Ebene 1: Execution** – Realisierung technischer und sozialer Projekte.
-* **Ebene 2: Core** – Strategische Ausrichtung und System-Erhalt.
+        #counter-box {
+            position: absolute; right: 0; top: 0; width: 100px; padding: 5px;
+            border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f;
+            background: #000; text-align: center; display: none; z-index: 100;
+        }
+        .counter-label { font-size: 0.4rem; color: #fff; display: block; }
+        .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
 
-## 📁 Repository-Guide
-* `/Visionen`: Das Zielbild unserer Gemeinschaft.
-* `/Projekte`: Laufende und abgeschlossene Arbeiten des Kollektivs.
-* `/Dokumente`: Offizielle Richtlinien und Protokolle.
+        /* CHAT BEREICH */
+        #chat-area {
+            width: 90%; height: 50vh; border: 2px solid #003d8f; 
+            display: none; flex-direction: column; background: #050505; margin-top: 1vh;
+        }
+        .chat-msgs { flex-grow: 1; padding: 10px; overflow-y: auto; color: #ccc; font-size: 0.9rem; text-align: left; }
+        .chat-input-row { display: flex; border-top: 2px solid #003d8f; }
+        .chat-input-row input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 10px; outline: none; }
+        .chat-input-row button { background: #003d8f; color: #fff; border: none; padding: 0 20px; cursor: pointer; font-weight: bold; }
 
-## ✉️ Zugang
-Der Beitritt erfolgt ausschließlich über das **Selektions-Verfahren**. Wir suchen nicht nach Mitgliedern, wir finden sie. Wer etwas bewegt und Mitgefühl zeigt, wird vom System erkannt.
+        /* NAVIGATION */
+       /* Der grüne Rahmen, der IMMER im Dashboard da ist */
+#main-grid {
+    border: 3px solid #00ff00 !important;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+    margin-top: 20px;
+}
+
+/* 1. Start-Zustand: Blau */
+.num-neutral { background-color: #003d8f !important; color: white !important; }
+
+/* 2. Gelesen: Gold */
+.num-gelesen { background-color: #ffd700 !important; color: black !important; }
+
+/* 3. Offen/Fehlend: Rot */
+.num-offen { background-color: #ff4d4d !important; color: white !important; }
+
+/* 4. Alles erledigt: Alle Nummern werden Grün */
+.num-fertig { background-color: #00ff00 !important; color: black !important; }
+
+/* Der goldene "Weiter"-Button für den geführten Pfad */
+.bottom-nav {
+    display: flex !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    padding: 10px 20px !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+} }</style>
+</head>
+<body>
+
+    <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+        <div class="dashboard-header">
+            <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
+        </div>
+        <div class="info-section">
+            <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
+            <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
+            <p style="max-width: 85%; color: #ccc; font-size: 1.1rem; margin: 10px 0 0 0; text-align: center;">
+                Die M&M-Community ist das Fundament für alle, die im Kollektiv wachsen wollen. Die Wahl der Vorsitzenden erfolgt erst nach Erreichen der stillen Million.
+            </p>
+        </div>
+        <div class="grid" id="main-grid"></div>
+        <div class="fundament-container">
+            <div class="fundament-box"><div class="num">21</div><div class="text">Kapital und Verwaltung</div><div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div></div>
+            <div class="fundament-box"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div><div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div></div>
+        </div>
+    </div>
+
+    <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
+        <div class="top-container">
+            <h1 id="info-titel" class="page-title-white"></h1>
+            <div class="info-section">
+                <div class="werbe-bild-bg" id="werbe-bg"></div>
+                <div class="tafel-intern-logo">
+                    <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
+                </div>
+                <span class="werbe-text-overlay">HIER IST PLATZ FÜR WERBUNG</span>
+                <div id="counter-box"><span class="counter-label">STILLE MILLION</span><span class="counter-value">842.336</span></div>
+            </div>
+        </div>
+        <div id="chat-area">
+            <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit...</i></div>
+            <div class="chat-input-row"><input type="text" placeholder="Nachricht..."><button>SENDEN</button></div>
+        </div>
+        <p id="main-text" style="width: 80%; text-align: justify; color: #ccc; margin-top: 2vh; font-size: 1.1rem; line-height: 1.6; max-width: 1200px;"></p>
+    </div>
+
+    <div class="bottom-nav">
+        <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Zurück</button>
+        <div style="display: flex; gap: 8px;" id="dot-holder"></div>
+        <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
+    </div>
+
+    <script>
+        const themen = [
+            "Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte",
+            "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst",
+            "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten",
+            "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten",
+            "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"
+        ];
+
+        // HIER SIND DEINE TEXTE 1:1 GESICHERT
+        const inhaltsTexte = {
+            "Recht auf Gefühlsvorderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühlsvorderung zu etablieren. Wahre Gemeinschaft basiert nicht auf einer Rechnung, sondern auf Resonanz. Wer Schutz und Wachstum im Kollektiv sucht, muss bereit sein, sein Innerstes als Währung einzubringen. Dieser Weg führt uns unweigerlich an einen Ort, an dem die Masken der Gesellschaft ihre Macht verlieren und das bloße Sein wieder zur höchsten Währung wird. Es ist die Reise in eine Zukunft, in der wir uns nicht mehr über das definieren, was wir besitzen oder darstellen, sondern über die Tiefe unserer Resonanz zum Gegenüber. Wohin wir steuern, ist ein Zustand des kollektiven Bewusstseins, in dem die Heilung des Einzelnen die Immunität der gesamten Gemeinschaft stärkt. In dieser neuen Ordnung wird Menschlichkeit nicht mehr als Schwäche ausgelegt, sondern als das stabilste Fundament erkannt, auf dem eine Gesellschaft ruhen kann, die keine Angst mehr vor ihrer eigenen Geschichte hat. Dieser Weg führt uns unweigerlich an einen Ort, an dem die künstlichen Masken der Gesellschaft ihre Macht verlieren und das bloße, nackte Sein wieder zur höchsten Währung des Lebens wird. Es ist die Reise in eine Zukunft, in der wir uns nicht mehr über das definieren, was wir besitzen, leisten oder darstellen, sondern über die Tiefe unserer Resonanz und die Wahrhaftigkeit unserer Begegnungen. Wohin wir steuern, ist ein Zustand des kollektiven Bewusstseins, in dem die individuelle Heilung die Immunität der gesamten Gemeinschaft stärkt und eine neue Form der sozialen Architektur erschafft. In dieser neuen Ordnung wird Menschlichkeit nicht länger als Zerbrechlichkeit oder Schwäche ausgelegt, sondern als das einzig stabile Fundament erkannt, auf dem eine Gesellschaft ruhen kann, die keine Angst mehr vor ihrer eigenen Geschichte oder ihren inneren Schatten hat. Es ist das Ziel einer Welt, in der die Empathie das Gesetz ersetzt und die Verbundenheit zur natürlichen Pflicht wird, die aus dem Herzen und nicht aus dem Zwang entspringt.",
+            
+            "Wie werde ich Mensch": "Um die Masken der Fremdbestimmung endgültig abzulegen und zum wahren, ungetrübten Wesen zurückzukehren. Mensch werden bedeutet, die künstlichen Schichten der Erziehung und der gesellschaftlichen Erwartung konsequent abzuschälen und das Diplom von Gott anzunehmen, um die Welt eigenverantwortlich in Ordnung zu bringen. Dieser Weg führt uns unweigerlich an einen Ort, an dem die Masken der Gesellschaft ihre Macht verlieren und das bloße Sein wieder zur höchsten Währung wird. Es ist die Reise in eine Zukunft, in der wir uns nicht mehr über das definieren, was wir besitzen oder darstellen, sondern über die Tiefe unserer Resonanz zum Gegenüber. Wohin wir steuern, ist ein Zustand des kollektiven Bewusstseins, in dem die Heilung des Einzelnen die Immunität der gesamten Gemeinschaft stärkt. In dieser neuen Ordnung wird Menschlichkeit nicht mehr als Schwäche ausgelegt, sondern als das stabilste Fundament erkannt, auf dem eine Gesellschaft ruhen kann, die keine Angst mehr vor ihrer eigenen Geschichte hat. Dieser Weg führt uns unweigerlich an einen Ort, an dem die künstlichen Masken der Gesellschaft ihre Macht verlieren und das bloße, nackte Sein wieder zur höchsten Währung des Lebens wird. Es ist die Reise in eine Zukunft, in der wir uns nicht mehr über das definieren, was wir besitzen, leisten oder darstellen, sondern über die Tiefe unserer Resonanz und die Wahrhaftigkeit unserer Begegnungen. Wohin wir steuern, ist ein Zustand des kollektiven Bewusstseins, in dem die individuelle Heilung die Immunität der gesamten Gemeinschaft stärkt und eine neue Form der sozialen Architektur erschafft. In dieser neuen Ordnung wird Menschlichkeit nicht länger als Zerbrechlichkeit oder Schwäche ausgelegt, sondern als das einzig stabile Fundament erkannt, auf dem eine Gesellschaft ruhen kann, die keine Angst mehr vor ihrer eigenen Geschichte oder ihren inneren Schatten hat. Es ist das Ziel einer Welt, in der die Empathie das Gesetz ersetzt und die Verbundenheit zur natürlichen Pflicht wird, die aus dem Herzen und nicht aus dem Zwang entspringt.",
+            
+            "Glaube an Friede": "Um die Kette der vererbten Konflikte endgültig zu durchbrechen und die volle Verantwortung für die Heilung der eigenen, oft schmerzhaften Geschichte zu übernehmen. Friede beginnt nicht im Außen, sondern im konsequenten Waffenstillstand mit der eigenen Biografie und dem Mut zur inneren Versöhnung. Dieser Weg führt uns unweigerlich an einen Ort, an dem die Masken der Gesellschaft ihre Macht verlieren und das bloße Sein wieder zur höchsten Währung wird. Es ist die Reise in eine Zukunft, in der wir uns nicht mehr über das definieren, was wir besitzen oder darstellen, sondern über die Tiefe unserer Resonanz zum Gegenüber. Wohin wir steuern, ist ein Zustand des kollektiven Bewusstseins, in dem die Heilung des Einzelnen die Immunität der gesamten Gemeinschaft stärkt. In dieser neuen Ordnung wird Menschlichkeit nicht mehr als Schwäche ausgelegt, sondern als das stabilste Fundament erkannt, auf dem eine Gesellschaft ruhen kann, die keine Angst mehr vor ihrer eigenen Geschichte hat. Dieser Weg führt uns unweigerlich an einen Ort, an dem die künstlichen Masken der Gesellschaft ihre Macht verlieren und das bloße, nackte Sein wieder zur höchsten Währung des Lebens wird. Es ist die Reise in eine Zukunft, in der wir uns nicht mehr über das definieren, was wir besitzen, leisten oder darstellen, sondern über die Tiefe unserer Resonanz und die Wahrhaftigkeit unserer Begegnungen. Wohin wir steuern, ist ein Zustand des kollektiven Bewusstseins, in dem die individuelle Heilung die Immunität der gesamten Gemeinschaft stärkt und eine neue Form der sozialen Architektur erschafft. In dieser neuen Ordnung wird Menschlichkeit nicht länger als Zerbrechlichkeit oder Schwäche ausgelegt, sondern als das einzig stabile Fundament erkannt, auf dem eine Gesellschaft ruhen kann, die keine Angst mehr vor ihrer eigenen Geschichte oder ihren inneren Schatten hat. Es ist das Ziel einer Welt, in der die Empathie das Gesetz ersetzt und die Verbundenheit zur natürlichen Pflicht wird, die aus dem Herzen und nicht aus dem Zwang entspringt.",
+            
+            "Programm für Bürgerliche Rechte": "Um der persönlichen und kollektiven Freiheit ein unumstößliches moralisches Fundament zu geben. Rechte sind ohne die Lehren der Menschlichkeit, die man aktiv selbst übernehmen muss, lediglich leere Versprechen ohne Bestand in Krisenzeiten. Dieser Weg führt uns unweigerlich an einen Ort, an dem die Masken der Gesellschaft ihre Macht verlieren und das bloße Sein wieder zur höchsten Währung wird. Es ist die Reise in eine Zukunft, in der wir uns nicht mehr über das definieren, was wir besitzen oder darstellen, sondern über die Tiefe unserer Resonanz zum Gegenüber. Wohin wir steuern, ist ein Zustand des kollektiven Bewusstseins, in dem die Heilung des Einzelnen die Immunität der gesamten Gemeinschaft stärkt. In dieser neuen Ordnung wird Menschlichkeit nicht mehr als Schwäche ausgelegt, sondern als das stabilste Fundament erkannt, auf dem eine Gesellschaft ruhen kann, die keine Angst mehr vor ihrer eigenen Geschichte hat. Dieser Weg führt uns unweigerlich an einen Ort, an dem die künstlichen Masken der Gesellschaft ihre Macht verlieren und das bloße, nackte Sein wieder zur höchsten Währung des Lebens wird. Es ist die Reise in eine Zukunft, in der wir uns nicht mehr über das definieren, was wir besitzen, leisten oder darstellen, sondern über die Tiefe unserer Resonanz und die Wahrhaftigkeit unserer Begegnungen. Wohin wir steuern, ist ein Zustand des kollektiven Bewusstseins, in dem die individuelle Heilung die Immunität der gesamten Gemeinschaft stärkt und eine neue Form der sozialen Architektur erschafft. In dieser neuen Ordnung wird Menschlichkeit nicht länger als Zerbrechlichkeit oder Schwäche ausgelegt, sondern als das einzig stabile Fundament erkannt, auf dem eine Gesellschaft ruhen kann, die keine Angst mehr vor ihrer eigenen Geschichte oder ihren inneren Schatten hat. Es ist das Ziel einer Welt, in der die Empathie das Gesetz ersetzt und die Verbundenheit zur natürlichen Pflicht wird, die aus dem Herzen und nicht aus dem Zwang entspringt.",
+            
+            "Moralische Pflicht und Verantwortung": "Um die lähmende Trägheit durch das geistlose Mitläufertum endgültig zu überwinden und die schwere, aber notwendige Last der Wahrheit entschlossen im Kollektiv zu tragen. Verantwortung bedeutet hierbei, eine echte Antwort auf die drängenden Fragen unserer Zeit zu geben, statt stumm zu folgen. Dieser Weg führt uns unweigerlich an einen Ort, an dem die Masken der Gesellschaft ihre Macht verlieren und das bloße Sein wieder zur höchsten Währung wird. Es ist die Reise in eine Zukunft, in der wir uns nicht mehr über das definieren, was wir besitzen oder darstellen, sondern über die Tiefe unserer Resonanz zum Gegenüber. Wohin wir steuern, ist ein Zustand des kollektiven Bewusstseins, in dem die Heilung des Einzelnen die Immunität der gesamten Gemeinschaft stärkt. In dieser neuen Ordnung wird Menschlichkeit nicht mehr als Schwäche ausgelegt, sondern als das stabilste Fundament erkannt, auf dem eine Gesellschaft ruhen kann, die keine Angst mehr vor ihrer eigenen Geschichte hat. Dieser Weg führt uns unweigerlich an einen Ort, an dem die künstlichen Masken der Gesellschaft ihre Macht verlieren und das bloße, nackte Sein wieder zur höchsten Währung des Lebens wird. Es ist die Reise in eine Zukunft, in der wir uns nicht mehr über das definieren, was wir besitzen, leisten oder darstellen, sondern über die Tiefe unserer Resonanz und die Wahrhaftigkeit unserer Begegnungen. Wohin wir steuern, ist ein Zustand des kollektiven Bewusstseins, in dem die individuelle Heilung die Immunität der gesamten Gemeinschaft stärkt und eine neue Form der sozialen Architektur erschafft. In dieser neuen Ordnung wird Menschlichkeit nicht länger als Zerbrechlichkeit oder Schwäche ausgelegt, sondern als das einzig stabile Fundament erkannt, auf dem eine Gesellschaft ruhen kann, die keine Angst mehr vor ihrer eigenen Geschichte oder ihren inneren Schatten hat."
+        };
+
+let ebene = 1;
+        let tId = 0;
+        let aktuellesThema = "";
+        let wechselInterval;
+        let geleseneThemen = new Set();
+
+        // ERSTELLUNG: Alle Nummern starten in BLAU (num-neutral)
+        const grid = document.getElementById('main-grid');
+        themen.forEach((t, i) => {
+            grid.innerHTML += `
+                <div class="box" id="box-${i}">
+                    <div class="num num-neutral" id="num-${i}">${i+1}</div>
+                    <div class="text" onclick="showInfo('${t}', ${i})">${t}</div>
+                </div>`;
+        });
+
+        const dots = document.getElementById('dot-holder');
+        for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i==1?'active':''}"></div>`;
+
+        function showInfo(t, id) {
+            ebene = 2; 
+            tId = id;
+            aktuellesThema = t;
+            geleseneThemen.add(id);
+
+            // LOGIK FÜR DIE FARBEN DER NUMMERN
+            themen.forEach((_, i) => {
+                const nBox = document.getElementById(`num-${i}`);
+                if (nBox) {
+                    if (geleseneThemen.size === 20) {
+                        nBox.className = "num num-fertig"; // Ziel: Alles GRÜN
+                    } else if (geleseneThemen.has(i)) {
+                        nBox.className = "num num-gelesen"; // Erledigt: GOLD
+                    } else if (geleseneThemen.size > 0) {
+                        nBox.className = "num num-offen"; // Offen: ROT
+                    }
+                }
+            });
+
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('page-skelett').style.display = 'flex';
+            updateUI();
+        }
+
+        function updateUI() {
+            const isChat = ebene === 3;
+            const textElement = document.getElementById('main-text');
+            const titelElement = document.getElementById('info-titel');
+            const btnNext = document.getElementById('btn-next');
+
+            document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
+            document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
+            document.getElementById('btn-back').style.visibility = 'visible';
+            
+            btnNext.classList.remove('btn-pfad');
+
+            if (ebene === 2) {
+                titelElement.innerText = aktuellesThema;
+                textElement.style.display = 'block';
+                textElement.innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet...";
+
+                if (tId < 19) { 
+                    btnNext.style.visibility = 'visible';
+                    btnNext.innerText = `Weiter zu Thema ${tId + 2} →`;
+                    btnNext.classList.add('btn-pfad'); 
+                } else if (tId === 19 || geleseneThemen.size >= 3) {
+                    btnNext.style.visibility = 'visible';
+                    btnNext.innerText = "Weiter zum Dialog (Ebene 3) →";
+                } else {
+                    btnNext.style.visibility = 'hidden';
+                }
+            } 
+            else if (isChat) {
+                btnNext.style.visibility = 'visible';
+                btnNext.innerText = "Weiter zur Freizone 4 →";
+                titelElement.innerText = "LIVE CHAT - DIALOG";
+                textElement.style.display = 'none';
+            } else {
+                btnNext.style.visibility = (ebene < 7) ? 'visible' : 'hidden';
+                btnNext.innerText = "Nächste Ebene →";
+                titelElement.innerText = "FREIZONE - EBENE " + ebene;
+                textElement.style.display = 'block';
+                textElement.innerText = "Raum für zukünftige Erweiterungen."; 
+            }
+
+            for(let i=1; i<=7; i++) {
+                const dot = document.getElementById('dot'+i);
+                if(dot) dot.classList.toggle('active', i === ebene);
+            }
+            startRotation();
+        }
+
+        function nextPage() {
+            if (ebene === 2 && tId < 19) {
+                tId++; 
+                showInfo(themen[tId], tId); 
+            } else if (ebene < 7) {
+                ebene++;
+                updateUI();
+            }
+        }
+
+        function startRotation() {
+            clearInterval(wechselInterval);
+            const bg = document.getElementById('werbe-bg');
+            if(!bg) return;
+            bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`;
+            bg.classList.add('bild-aktiv');
+            wechselInterval = setInterval(() => {
+                bg.classList.remove('bild-aktiv');
+                setTimeout(() => {
+                    bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene + Math.random()}/1200/600')`;
+                    bg.classList.add('bild-aktiv');
+                }, 50);
+            }, 10000);
+        }
+        
+        function showDashboard() {
+            ebene = 1;
+            clearInterval(wechselInterval);
+            document.getElementById('page-skelett').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'flex';
+            document.getElementById('btn-back').style.visibility = 'hidden';
+            document.getElementById('btn-next').style.visibility = 'hidden';
+        }
+    </script>
+</body>
+</html>
+      
+
+      
+  
+
+      
+
+      
+  
+
