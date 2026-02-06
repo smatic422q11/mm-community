@@ -27,10 +27,39 @@
         }
 
         /* HEADER & LOGO */
-        .dashboard-header { 
-            width: 100%; position: absolute; top: 3%; 
-            display: flex; justify-content: flex-start; padding: 0 2%; 
-            box-sizing: border-box; z-index: 20;
+      <div class="dashboard-header" style="justify-content: space-between; align-items: center; padding: 0 5%;">
+    <div class="oval-container">
+        <div class="oval oval-schwarz active"></div>
+        <div class="oval oval-grun"></div>
+        <div class="oval oval-blau"></div>
+        <div class="oval oval-rot"></div>
+    </div>
+
+    <div class="logo-ring">
+        <div class="logo-mm">M&M</div>
+        <div class="logo-community">COMMUNITY</div>
+    </div>
+
+    <div class="oval-container">
+        <div class="oval oval-grun" id="nav-oval-3" style="border: 2px solid #00ff00;"></div>
+        <div class="oval oval-blau"></div>
+        <div class="oval oval-pink"></div>
+        <div class="oval oval-gelb"></div>
+    </div>
+</div>
+
+            <div class="logo-ring">
+                <div class="logo-mm">M&M</div>
+                <div class="logo-community">COMMUNITY</div>
+            </div>
+
+            <div class="oval-container">
+                <div class="oval oval-grun" id="nav-oval-3" style="border: 2px solid #00ff00;"></div>
+                <div class="oval oval-blau"></div>
+                <div class="oval oval-pink"></div>
+                <div class="oval oval-gelb"></div>
+            </div>
+        </div>
         }
         .logo-ring { 
             width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; 
@@ -38,7 +67,19 @@
         }
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
-
+/* EBENEN-OVALE AUS DER SKIZZE */
+        .oval-container { display: flex; gap: 10px; align-items: center; }
+        .oval { 
+            width: 35px; height: 18px; border-radius: 10px; 
+            border: 1px solid #fff; opacity: 0.3; transition: all 0.5s ease; 
+        }
+        .oval-schwarz { background: #000; opacity: 1; border: 1.5px solid #003d8f; }
+        .oval-grun { background: #00ff00; }
+        .oval-blau { background: #0000ff; }
+        .oval-rot { background: #ff0000; }
+        .oval-pink { background: #ff00ff; }
+        .oval-gelb { background: #ffff00; }
+        .oval.active { opacity: 1; box-shadow: 0 0 10px #fff; }
         /* TAFEL (INFO-SECTION) */
         .info-section { 
             width: 80%; height: 26vh; border: 2px solid #003d8f; 
