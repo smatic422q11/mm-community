@@ -121,6 +121,11 @@
         .num-gelesen { background-color: #ffd700 !important; color: #000 !important; }
         .num-offen { background-color: #ff4d4d !important; }
         .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
+
+        /* SCROLLBAR Styling für den Textbereich */
+        #main-text::-webkit-scrollbar { width: 8px; }
+        #main-text::-webkit-scrollbar-track { background: #000; }
+        #main-text::-webkit-scrollbar-thumb { background: #003d8f; border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -177,6 +182,8 @@
             </div>
         </div>
 
+        <p id="main-text" style="width: 85%; text-align: justify; color: #ccc; margin-top: 2vh; font-size: 1.3rem; line-height: 1.8; max-width: 1200px; overflow-y: auto; max-height: 50vh; padding-right: 15px;"></p>
+
         <div id="chat-area">
             <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit... Buchstaben fliegen...</i></div>
             <div class="chat-input-row">
@@ -200,8 +207,6 @@
                 <button style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; margin-top: 15px; font-weight: bold; cursor: pointer; border-radius: 5px;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
             </div>
         </div>
-
-        <p id="main-text" style="width: 85%; text-align: justify; color: #ccc; margin-top: 4vh; font-size: 1.2rem; line-height: 1.6; max-width: 1200px;"></p>
     </div>
 
     <div class="bottom-nav">
@@ -211,8 +216,14 @@
     </div>
 
     <script>
-        const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
-        const inhaltsTexte = { "Recht auf Gefühls Forderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühls Forderung zu etablieren..." };
+        const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
+        
+        const inhaltsTexte = { 
+            "Recht auf Gefühls Forderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühls Forderung zu etablieren. Hier kannst du nun beliebig lange Texte einfügen, die dank der neuen Einstellung automatisch gescrollt werden können, falls sie den Rahmen sprengen.",
+            "Wie werde ich Mensch": "Inhalt für das zweite Thema..."
+            // Hier kannst du alle weiteren Texte ergänzen
+        };
+
         let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set();
         
         const grid = document.getElementById('main-grid');
@@ -221,7 +232,16 @@
         const dots = document.getElementById('dot-holder');
         for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
-        function showInfo(t, id) { ebene = 2; tId = id; aktuellesThema = t; geleseneThemen.add(id); updateNumColors(); document.getElementById('dashboard').style.display = 'none'; document.getElementById('page-skelett').style.display = 'flex'; updateUI(); }
+        function showInfo(t, id) { 
+            ebene = 2; 
+            tId = id; 
+            aktuellesThema = t; 
+            geleseneThemen.add(id); 
+            updateNumColors(); 
+            document.getElementById('dashboard').style.display = 'none'; 
+            document.getElementById('page-skelett').style.display = 'flex'; 
+            updateUI(); 
+        }
         
         function updateNumColors() { 
             themen.forEach((_, i) => { 
@@ -278,7 +298,15 @@
             startRotation();
         }
 
-        function nextPage() { if (ebene === 2 && tId < 19) { tId++; showInfo(themen[tId], tId); } else if (ebene < 7) { ebene++; updateUI(); } }
+        function nextPage() { 
+            if (ebene === 2 && tId < 19) { 
+                tId++; 
+                showInfo(themen[tId], tId); 
+            } else if (ebene < 7) { 
+                ebene++; 
+                updateUI(); 
+            } 
+        }
         
         function startRotation() { 
             clearInterval(wechselInterval); 
