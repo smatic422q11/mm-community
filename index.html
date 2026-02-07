@@ -48,7 +48,7 @@
 
         .tafel-layout { 
             display: flex; align-items: center; justify-content: center; 
-            width: 100%; position: relative; margin-top: 2vh; height: 26vh; flex-shrink: 0;
+            width: 100%; position: relative; margin-top: 1vh; height: 26vh; flex-shrink: 0;
         }
 
         .info-section-ebene { 
@@ -110,6 +110,13 @@
         .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh; flex-shrink: 0; }
         .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
 
+        /* NEU: Roter Balken Style */
+        .ebene4-header-red { 
+            width: 90%; background: #ff0000; color: #fff; padding: 10px 0; 
+            text-align: center; font-weight: 900; font-size: 1.5rem; 
+            border-radius: 5px 5px 0 0; display: none;
+        }
+
         .num-neutral { background-color: #003d8f !important; }
         .num-gelesen { background-color: #ffd700 !important; color: #000 !important; }
         .num-offen { background-color: #ff4d4d !important; }
@@ -139,6 +146,8 @@
     <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
         <div class="top-container">
             <h1 id="info-titel" class="page-title-white"></h1>
+            <div id="ebene4-title-red" class="ebene4-header-red">DER VIDEO-BEWEIS</div>
+            
             <div class="tafel-layout">
                 <div class="buttons-links">
                     <div class="oval-side ov-schwarz"></div>
@@ -176,13 +185,9 @@
             </div>
         </div>
 
-        <div id="drawer-ebene4">
+        <div id="drawer-ebene4" style="margin-top: 0;">
             <div class="drawer-content">
-                <div style="border: 2px solid #ff0000; padding: 15px; background: rgba(255, 0, 0, 0.1); border-radius: 5px; text-align: center;">
-                    <h3 style="color: #ff0000; margin-top: 0;">DER VIDEO-BEWEIS</h3>
-                    <p style="font-size: 1.2rem;">Stehst du zu deinem Wort? (8er Zufallsgruppe)</p>
-                </div>
-                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px;">
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
                     <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 1 (DU)</div>
                     <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 2</div>
                     <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 3</div>
@@ -192,7 +197,7 @@
                     <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 7</div>
                     <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 8</div>
                 </div>
-                <button style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; margin-top: 20px; font-weight: bold; cursor: pointer; border-radius: 5px;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
+                <button style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; margin-top: 15px; font-weight: bold; cursor: pointer; border-radius: 5px;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
             </div>
         </div>
 
@@ -206,7 +211,7 @@
     </div>
 
     <script>
-        const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
+        const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
         const inhaltsTexte = { "Recht auf Gefühls Forderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühls Forderung zu etablieren..." };
         let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set();
         
@@ -234,17 +239,21 @@
             const isVideo = ebene === 4;
             const chatArea = document.getElementById('chat-area');
             const drawer4 = document.getElementById('drawer-ebene4');
+            const redTitle = document.getElementById('ebene4-title-red');
+            const whiteTitle = document.getElementById('info-titel');
             const mainText = document.getElementById('main-text');
             const btnNext = document.getElementById('btn-next');
             const counter = document.getElementById('counter-box');
 
             chatArea.style.display = isChat ? 'flex' : 'none';
             drawer4.style.display = isVideo ? 'flex' : 'none';
+            redTitle.style.display = isVideo ? 'block' : 'none';
+            whiteTitle.style.display = isVideo ? 'none' : 'block';
             counter.style.display = ebene >= 3 ? 'block' : 'none';
             document.getElementById('btn-back').style.visibility = 'visible';
 
             if (ebene === 2) { 
-                document.getElementById('info-titel').innerText = aktuellesThema; 
+                whiteTitle.innerText = aktuellesThema; 
                 mainText.style.display = 'block'; 
                 mainText.innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet..."; 
                 btnNext.style.visibility = 'visible'; 
@@ -252,17 +261,16 @@
             } else if (isChat) { 
                 btnNext.style.visibility = 'visible'; 
                 btnNext.innerText = "Video-Beweis →"; 
-                document.getElementById('info-titel').innerText = "LIVE CHAT - DIALOG"; 
+                whiteTitle.innerText = "LIVE CHAT - DIALOG"; 
                 mainText.style.display = 'none'; 
             } else if (isVideo) {
                 btnNext.style.visibility = 'visible'; 
                 btnNext.innerText = "Ebene 5 →"; 
-                document.getElementById('info-titel').innerText = "EBENE 4 - VIDEO BEWEIS";
                 mainText.style.display = 'none';
             } else { 
                 btnNext.style.visibility = (ebene < 7) ? 'visible' : 'hidden'; 
                 btnNext.innerText = `Ebene ${ebene + 1} →`; 
-                document.getElementById('info-titel').innerText = "FREIZONE - EBENE " + ebene; 
+                whiteTitle.innerText = "FREIZONE - EBENE " + ebene; 
                 mainText.style.display = 'block'; 
                 mainText.innerText = "Dieser Bereich ist für zukünftige Inhalte reserviert."; 
             }
@@ -298,4 +306,3 @@
     </script>
 </body>
 </html>
-
