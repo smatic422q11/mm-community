@@ -84,14 +84,38 @@
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
-        /* CHAT OPTIMIERUNG (RANDLOS & BIS UNTEN) */
+        /* CHAT-BEREICH: FLIEGENDE BUCHSTABEN OPTIK */
         #chat-area { 
-            width: 100%; flex-grow: 1; border: none; border-top: 2px solid #003d8f; 
-            display: none; flex-direction: column; background: #050505; margin-top: 2vh;
-            margin-bottom: 60px; /* Platz für Navi */
+            width: 90% !important; 
+            flex-grow: 1; 
+            border: none !important; 
+            background: transparent !important; 
+            display: none; 
+            flex-direction: column; 
+            margin-top: 5px; 
+            margin-bottom: 70px; 
         }
-        .chat-msgs { flex: 1; padding: 20px; overflow-y: auto; color: #ccc; }
-        .chat-input-row { display: flex; border-top: 2px solid #003d8f; background: #000; padding: 5px; }
+
+        .chat-msgs { 
+            flex: 1; 
+            padding: 10px 0; 
+            overflow-y: auto; 
+            color: #fff; 
+            font-size: 1.1rem;
+            text-shadow: 2px 2px 4px #000; 
+        }
+
+        .chat-input-row { 
+            display: flex; 
+            border: 1px solid #003d8f; 
+            background: rgba(0, 0, 0, 0.9); 
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        .chat-msgs::-webkit-scrollbar {
+            width: 0px;
+        }
 
         /* NAVIGATION & DOTS */
         .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; background: #000; z-index: 100; }
@@ -165,7 +189,7 @@
         </div>
 
         <div id="chat-area">
-            <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit...</i></div>
+            <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit... Buchstaben fliegen...</i></div>
             <div class="chat-input-row">
                 <input type="text" placeholder="Nachricht..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px;">
                 <button style="background:#003d8f; color:#fff; border:none; padding:0 30px; font-weight:bold; cursor:pointer;">SENDEN</button>
