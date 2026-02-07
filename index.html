@@ -39,26 +39,23 @@
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
 
-        /* EBENE 1 TAFEL */
+        /* TAFEL DESIGNS */
         .info-section { 
             width: 80%; height: 26vh; border: 2px solid #003d8f; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
             background-color: #000; position: relative; overflow: hidden; margin-top: 2vh;
         }
 
-        /* EBENE 2-7 LAYOUT (Optimiert auf 90% Breite) */
         .tafel-layout { 
             display: flex; align-items: center; justify-content: center; 
-            width: 100%; position: relative; margin-top: 2vh; height: 26vh; 
+            width: 100%; position: relative; margin-top: 2vh; height: 26vh; flex-shrink: 0;
         }
 
         .info-section-ebene { 
-            width: 90% !important; 
-            height: 100%; border: 2px solid #003d8f; 
+            width: 90% !important; height: 100%; border: 2px solid #003d8f; 
             background-color: #000; position: relative; overflow: hidden;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 10;
-            box-shadow: 0 0 15px rgba(0, 61, 143, 0.5);
+            z-index: 10; box-shadow: 0 0 15px rgba(0, 61, 143, 0.5);
         }
 
         .buttons-links { position: absolute; left: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
@@ -87,24 +84,32 @@
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
-        .num-neutral { background-color: #003d8f !important; }
-        .num-gelesen { background-color: #ffd700 !important; color: #000 !important; }
-        .num-offen { background-color: #ff4d4d !important; }
-        .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
+        /* CHAT OPTIMIERUNG (RANDLOS & BIS UNTEN) */
+        #chat-area { 
+            width: 100%; flex-grow: 1; border: none; border-top: 2px solid #003d8f; 
+            display: none; flex-direction: column; background: #050505; margin-top: 2vh;
+            margin-bottom: 60px; /* Platz für Navi */
+        }
+        .chat-msgs { flex: 1; padding: 20px; overflow-y: auto; color: #ccc; }
+        .chat-input-row { display: flex; border-top: 2px solid #003d8f; background: #000; padding: 5px; }
 
         /* NAVIGATION & DOTS */
-        .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; }
+        .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; background: #000; z-index: 100; }
         .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
         .dot { width: 10px; height: 10px; background: #444; border-radius: 50%; }
         .dot.active { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
 
-        /* CHAT & TEXT */
-        #chat-area { width: 90%; height: 40vh; border: 2px solid #003d8f; display: none; flex-direction: column; background: #050505; margin-top: 1vh; }
         #counter-box { position: absolute; right: 0; top: 0; width: 100px; padding: 5px; border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f; background: #000; text-align: center; display: none; z-index: 100; }
         .counter-label { font-size: 0.4rem; color: #fff; display: block; }
         .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
-        .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh; }
+        
+        .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh; flex-shrink: 0; }
         .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
+
+        .num-neutral { background-color: #003d8f !important; }
+        .num-gelesen { background-color: #ffd700 !important; color: #000 !important; }
+        .num-offen { background-color: #ff4d4d !important; }
+        .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
     </style>
 </head>
 <body>
@@ -121,7 +126,7 @@
             </p>
         </div>
         <div class="grid" id="main-grid"></div>
-        <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px;">
+        <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 80px;">
             <div class="fundament-box" style="flex: 1;"><div class="num">21</div><div class="text">Kapital und Verwaltung</div></div>
             <div class="fundament-box" style="flex: 1;"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div></div>
         </div>
@@ -158,14 +163,16 @@
                 </div>
             </div>
         </div>
+
         <div id="chat-area">
-            <div class="chat-msgs" id="chat-box" style="flex:1; padding:10px; overflow-y:auto;"><i>System: Dialog bereit...</i></div>
-            <div class="chat-input-row" style="display: flex; border-top: 2px solid #003d8f;">
-                <input type="text" placeholder="Nachricht..." style="flex:1; background:transparent; border:none; color:#fff; padding:10px;">
-                <button style="background:#003d8f; color:#fff; border:none; padding:0 20px;">SENDEN</button>
+            <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit...</i></div>
+            <div class="chat-input-row">
+                <input type="text" placeholder="Nachricht..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px;">
+                <button style="background:#003d8f; color:#fff; border:none; padding:0 30px; font-weight:bold; cursor:pointer;">SENDEN</button>
             </div>
         </div>
-        <p id="main-text" style="width: 80%; text-align: justify; color: #ccc; margin-top: 2vh; font-size: 1.1rem; line-height: 1.6; max-width: 1200px;"></p>
+
+        <p id="main-text" style="width: 85%; text-align: justify; color: #ccc; margin-top: 4vh; font-size: 1.2rem; line-height: 1.6; max-width: 1200px;"></p>
     </div>
 
     <div class="bottom-nav">
@@ -186,31 +193,46 @@
         for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
         function showInfo(t, id) { ebene = 2; tId = id; aktuellesThema = t; geleseneThemen.add(id); updateNumColors(); document.getElementById('dashboard').style.display = 'none'; document.getElementById('page-skelett').style.display = 'flex'; updateUI(); }
-        function updateNumColors() { themen.forEach((_, i) => { const nBox = document.getElementById(`num-${i}`); if (nBox) { if (geleseneThemen.size === 20) nBox.className = "num num-fertig"; else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen"; else if (geleseneThemen.size > 0) nBox.className = "num num-offen"; } }); }
+        
+        function updateNumColors() { 
+            themen.forEach((_, i) => { 
+                const nBox = document.getElementById(`num-${i}`); 
+                if (nBox) { 
+                    if (geleseneThemen.size === 20) nBox.className = "num num-fertig"; 
+                    else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen"; 
+                    else if (geleseneThemen.size > 0) nBox.className = "num num-offen"; 
+                } 
+            }); 
+        }
         
         function updateUI() {
             const isChat = ebene === 3;
-            document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
-            document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
-            document.getElementById('btn-back').style.visibility = 'visible';
+            const chatArea = document.getElementById('chat-area');
+            const mainText = document.getElementById('main-text');
             const btnNext = document.getElementById('btn-next');
+            const counter = document.getElementById('counter-box');
+
+            chatArea.style.display = isChat ? 'flex' : 'none';
+            counter.style.display = ebene >= 3 ? 'block' : 'none';
+            document.getElementById('btn-back').style.visibility = 'visible';
+
             if (ebene === 2) { 
                 document.getElementById('info-titel').innerText = aktuellesThema; 
-                document.getElementById('main-text').style.display = 'block'; 
-                document.getElementById('main-text').innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet..."; 
+                mainText.style.display = 'block'; 
+                mainText.innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet..."; 
                 btnNext.style.visibility = 'visible'; 
-                btnNext.innerText = (tId < 19) ? `Weiter zu Thema ${tId + 2} →` : "Weiter zum Dialog (Ebene 3) →"; 
+                btnNext.innerText = (tId < 19) ? `Thema ${tId + 2} →` : "Zum Dialog →"; 
             } else if (isChat) { 
                 btnNext.style.visibility = 'visible'; 
-                btnNext.innerText = "Weiter zur Freizone 4 →"; 
+                btnNext.innerText = "Freizone 4 →"; 
                 document.getElementById('info-titel').innerText = "LIVE CHAT - DIALOG"; 
-                document.getElementById('main-text').style.display = 'none'; 
+                mainText.style.display = 'none'; 
             } else { 
                 btnNext.style.visibility = (ebene < 7) ? 'visible' : 'hidden'; 
-                btnNext.innerText = `Weiter zur Ebene ${ebene + 1} →`; 
+                btnNext.innerText = `Ebene ${ebene + 1} →`; 
                 document.getElementById('info-titel').innerText = "FREIZONE - EBENE " + ebene; 
-                document.getElementById('main-text').style.display = 'block'; 
-                document.getElementById('main-text').innerText = "Dieser Bereich ist für zukünftige Inhalte reserviert."; 
+                mainText.style.display = 'block'; 
+                mainText.innerText = "Dieser Bereich ist für zukünftige Inhalte reserviert."; 
             }
             for(let i=1; i<=7; i++) { const dot = document.getElementById('dot'+i); if(dot) dot.classList.toggle('active', i === ebene); }
             startRotation();
@@ -244,8 +266,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-   
