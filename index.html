@@ -39,23 +39,12 @@
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
 
-        /* TAFEL DEFINITIONEN */
+        /* TAFEL (INFO-SECTION) */
         .info-section { 
             width: 80%; height: 26vh; border: 2px solid #003d8f; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            background-color: #000; position: relative; overflow: hidden;
+            background-color: #000; position: relative; overflow: hidden; margin-top: 2vh;
         }
-        
-        /* Dashboard-Spezifisch (Ebene 1) */
-        #dashboard .info-section { margin-top: 2vh; }
-
-        /* Ebene 2-7 Konstruktion */
-        .tafel-ebene-container {
-            display: flex; width: 100%; margin-top: 27.5vh; /* Exakte Forderung */
-            height: 26vh; align-items: center; justify-content: center;
-        }
-        .zone-10 { width: 10%; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-
         .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
         .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
         .tafel-intern-logo { position: absolute; top: 10px; left: 10px; transform: scale(0.6); transform-origin: top left; z-index: 5; }
@@ -63,39 +52,71 @@
 
         /* GRID */
         .grid { 
-            display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); 
-            grid-auto-flow: column; gap: 10px; width: 95%; max-width: 1450px; margin-top: 30px;
-            border: 3px solid #00ff00 !important; padding: 15px; border-radius: 10px;
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            grid-template-rows: repeat(5, 1fr); 
+            grid-auto-flow: column;
+            gap: 10px; 
+            width: 95%; 
+            max-width: 1450px; 
+            margin-top: 30px;
+            border: 3px solid #00ff00 !important;
+            padding: 15px;
+            border-radius: 10px;
         }
         .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; overflow: hidden; }
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
-        .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
+        .text { 
+            padding: 4px 8px; text-transform: uppercase; 
+            font-size: 0.6rem; 
+            display: flex; align-items: center; cursor: pointer; flex-grow: 1; 
+            line-height: 1.1; word-wrap: break-word; overflow: hidden;
+            font-weight: 600;
+        }
 
-        /* FARBEN */
+        /* FARBEN DER NUMMERN */
         .num-neutral { background-color: #003d8f !important; }
         .num-gelesen { background-color: #ffd700 !important; color: #000 !important; }
         .num-offen { background-color: #ff4d4d !important; }
         .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
 
-        /* CHAT BEREICH (Ebene 3) */
-        #chat-area {
-            width: 80%; flex-grow: 1; border: 2px solid #003d8f; 
-            display: none; flex-direction: column; background: #050505; 
-            margin-top: 1vh; margin-bottom: 70px; /* Raum für Navi */
+        /* FUNDAMENT */
+        .fundament-container { display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; }
+        .fundament-box { flex: 1; }
+        .locked-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: bold; text-align: center; }
+
+        /* EBENE 2 & 3 */
+        .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh; position: relative; }
+        .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
+
+        #counter-box {
+            position: absolute; right: 0; top: 0; width: 100px; padding: 5px;
+            border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f;
+            background: #000; text-align: center; display: none; z-index: 100;
         }
-        .chat-msgs { flex-grow: 1; padding: 10px; overflow-y: auto; color: #ccc; }
+        .counter-label { font-size: 0.4rem; color: #fff; display: block; }
+        .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
+
+        /* CHAT BEREICH */
+        #chat-area {
+            width: 90%; height: 40vh; border: 2px solid #003d8f; 
+            display: none; flex-direction: column; background: #050505; margin-top: 1vh;
+        }
+        .chat-msgs { flex-grow: 1; padding: 10px; overflow-y: auto; color: #ccc; font-size: 0.9rem; text-align: left; }
         .chat-input-row { display: flex; border-top: 2px solid #003d8f; }
         .chat-input-row input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 10px; outline: none; }
-        .chat-input-row button { background: #003d8f; color: #fff; border: none; padding: 0 20px; cursor: pointer; }
+        .chat-input-row button { background: #003d8f; color: #fff; border: none; padding: 0 20px; cursor: pointer; font-weight: bold; }
 
         /* NAVIGATION */
         .bottom-nav {
             display: flex; justify-content: space-between; width: 100%; 
-            padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; background: #000;
+            padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box;
         }
         .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
 
-        /* OVALE */
+        /* OVALE NEBEN DER TAFEL */
+        .tafel-layout { display: flex; align-items: center; justify-content: center; gap: 20px; width: 100%; margin-top: 2vh; }
+        .oval-spalte { display: flex; flex-direction: column; gap: 15px; }
         .oval-side { width: 45px; height: 22px; border-radius: 12px; border: 1px solid #fff; opacity: 0.8; }
         .ov-schwarz { background: #000; border: 1.5px solid #003d8f; }
         .ov-grun { background: #00ff00; }
@@ -104,7 +125,8 @@
         .ov-pink { background: #ff00ff; }
         .ov-gelb { background: #ffff00; }
 
-        #counter-box { position: absolute; right: 0; top: 0; padding: 5px; border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f; background: #000; display: none; z-index: 100; }
+        .dot { width: 10px; height: 10px; background: #444; border-radius: 50%; }
+        .dot.active { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
     </style>
 </head>
 <body>
@@ -121,46 +143,47 @@
             </p>
         </div>
         <div class="grid" id="main-grid"></div>
+        <div class="fundament-container">
+            <div class="fundament-box"><div class="num">21</div><div class="text">Kapital und Verwaltung</div><div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div></div>
+            <div class="fundament-box"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div><div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div></div>
+        </div>
     </div>
 
     <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
-        
-        <div class="tafel-ebene-container">
-            <div class="zone-10">
-                <div class="oval-side ov-schwarz"></div>
-                <div class="oval-side ov-grun"></div>
-                <div class="oval-side ov-blau"></div>
-                <div class="oval-side ov-rot"></div>
-            </div>
-
-            <div class="info-section">
-                <div class="werbe-bild-bg" id="werbe-bg"></div>
-                <div class="tafel-intern-logo">
-                    <div class="logo-ring" style="width: 70px; height: 70px; border-width: 2px;">
-                        <div class="logo-mm" style="font-size: 1.2rem;">M&M</div>
-                        <div class="logo-community" style="font-size: 0.3rem;">COMMUNITY</div>
-                    </div>
+        <div class="top-container">
+            <h1 id="info-titel" class="page-title-white"></h1>
+            <div class="tafel-layout">
+                <div class="oval-spalte">
+                    <div class="oval-side ov-schwarz"></div>
+                    <div class="oval-side ov-grun"></div>
+                    <div class="oval-side ov-blau"></div>
+                    <div class="oval-side ov-rot"></div>
                 </div>
-                <span class="werbe-text-overlay">PLATZ FÜR DEINE WERBUNG</span>
-                <div id="counter-box"><span style="font-size: 0.4rem; color: #fff;">STILLE MILLION</span><br><span style="color:#ff0000; font-weight:900;">842.336</span></div>
-            </div>
 
-            <div class="zone-10">
-                <div class="oval-side ov-grun" style="border: 2px solid #00ff00;"></div>
-                <div class="oval-side ov-blau"></div>
-                <div class="oval-side ov-pink"></div>
-                <div class="oval-side ov-gelb"></div>
+                <div class="info-section" style="margin-top: 0; width: 70%;">
+                    <div class="werbe-bild-bg" id="werbe-bg"></div>
+                    <div class="tafel-intern-logo">
+                        <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
+                    </div>
+                    <span class="werbe-text-overlay">HIER IST PLATZ FÜR WERBUNG</span>
+                    <div id="counter-box"><span class="counter-label">STILLE MILLION</span><span class="counter-value">842.336</span></div>
+                </div>
+
+                <div class="oval-spalte">
+                    <div class="oval-side ov-grun" style="border: 2px solid #00ff00;"></div>
+                    <div class="oval-side ov-blau"></div>
+                    <div class="oval-side ov-pink"></div>
+                    <div class="oval-side ov-gelb"></div>
+                </div>
             </div>
         </div>
-
-        <h1 id="info-titel" style="text-transform: uppercase; font-size: 1.8rem; margin: 15px 0; font-weight: 900;"></h1>
 
         <div id="chat-area">
             <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit...</i></div>
             <div class="chat-input-row"><input type="text" placeholder="Nachricht..."><button>SENDEN</button></div>
         </div>
 
-        <p id="main-text" style="width: 80%; text-align: justify; color: #ccc; margin-top: 2vh; font-size: 1.1rem; line-height: 1.6;"></p>
+        <p id="main-text" style="width: 80%; text-align: justify; color: #ccc; margin-top: 2vh; font-size: 1.1rem; line-height: 1.6; max-width: 1200px;"></p>
     </div>
 
     <div class="bottom-nav">
@@ -179,55 +202,112 @@
         ];
 
         const inhaltsTexte = {
-            "Recht auf Gefühls Forderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühls Forderung zu etablieren...",
-            "Wie werde ich Mensch": "Um die Masken der Fremdbestimmung endgültig abzulegen und zum wahren, ungetrübten Wesen zurückzukehren..."
+            "Recht auf Gefühls Forderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühls Forderung zu etablieren. Wahre Gemeinschaft basiert nicht auf einer Rechnung, sondern auf Resonanz. Wer Schutz und Wachstum im Kollektiv sucht, muss bereit sein, sein Innerstes als Währung einzubringen. Dieser Weg führt uns unweigerlich an einen Ort, an dem die Masken der Gesellschaft ihre Macht verlieren und das bloße Sein wieder zur höchsten Währung wird.",
+            "Wie werde ich Mensch": "Um die Masken der Fremdbestimmung endgültig abzulegen und zum wahren, ungetrübten Wesen zurückzukehren. Mensch werden bedeutet, die künstlichen Schichten der Erziehung und der gesellschaftlichen Erwartung konsequent abzuschälen und das Diplom von Gott anzunehmen...",
+            "Glaube an Friede": "Um die Kette der vererbten Konflikte endgültig zu durchbrechen und die volle Verantwortung für die Heilung der eigenen Geschichte zu übernehmen...",
+            "Programm für Bürgerliche Rechte": "Um der persönlichen und kollektiven Freiheit ein unumstößliches moralisches Fundament zu geben. Rechte sind ohne die Lehren der Menschlichkeit lediglich leere Versprechen...",
+            "Moralische Pflicht und Verantwortung": "Um die lähmende Trägheit durch das geistlose Mitläufertum endgültig zu überwinden und die schwere Last der Wahrheit entschlossen im Kollektiv zu tragen."
         };
 
         let ebene = 1;
         let tId = 0;
         let aktuellesThema = "";
+        let wechselInterval;
         let geleseneThemen = new Set();
 
         const grid = document.getElementById('main-grid');
         themen.forEach((t, i) => {
-            grid.innerHTML += `<div class="box"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`;
+            grid.innerHTML += `
+                <div class="box" id="box-${i}">
+                    <div class="num num-neutral" id="num-${i}">${i+1}</div>
+                    <div class="text" onclick="showInfo('${t}', ${i})">${t}</div>
+                </div>`;
         });
 
         const dots = document.getElementById('dot-holder');
-        for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i==1?'active':''}" style="width:10px;height:10px;background:#444;border-radius:50%;"></div>`;
+        for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i==1?'active':''}"></div>`;
 
         function showInfo(t, id) {
             ebene = 2; tId = id; aktuellesThema = t;
             geleseneThemen.add(id);
+            updateNumColors();
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('page-skelett').style.display = 'flex';
             updateUI();
         }
 
+        function updateNumColors() {
+            themen.forEach((_, i) => {
+                const nBox = document.getElementById(`num-${i}`);
+                if (nBox) {
+                    if (geleseneThemen.size === 20) nBox.className = "num num-fertig";
+                    else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen";
+                    else if (geleseneThemen.size > 0) nBox.className = "num num-offen";
+                }
+            });
+        }
+
         function updateUI() {
             const isChat = ebene === 3;
+            const textElement = document.getElementById('main-text');
+            const titelElement = document.getElementById('info-titel');
+            const btnNext = document.getElementById('btn-next');
+
             document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
-            document.getElementById('main-text').style.display = isChat ? 'none' : 'block';
             document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
             document.getElementById('btn-back').style.visibility = 'visible';
             
             if (ebene === 2) {
-                document.getElementById('info-titel').innerText = aktuellesThema;
-                document.getElementById('main-text').innerText = inhaltsTexte[aktuellesThema] || "Inhalt für Ebene 2...";
+                titelElement.innerText = aktuellesThema;
+                textElement.style.display = 'block';
+                textElement.innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet...";
+                btnNext.style.visibility = 'visible';
+                btnNext.innerText = (tId < 19) ? `Weiter zu Thema ${tId + 2} →` : "Weiter zum Dialog (Ebene 3) →";
             } else if (isChat) {
-                document.getElementById('info-titel').innerText = "LIVE CHAT - DIALOG";
+                btnNext.style.visibility = 'visible';
+                btnNext.innerText = "Weiter zur Freizone 4 →";
+                titelElement.innerText = "LIVE CHAT - DIALOG";
+                textElement.style.display = 'none';
             } else {
-                document.getElementById('info-titel').innerText = "FREIZONE - EBENE " + ebene;
-                document.getElementById('main-text').innerText = "Bereich für Ebene " + ebene;
+                btnNext.style.visibility = (ebene < 7) ? 'visible' : 'hidden';
+                btnNext.innerText = `Weiter zur Ebene ${ebene + 1} →`;
+                titelElement.innerText = "FREIZONE - EBENE " + ebene;
+                textElement.style.display = 'block';
+                textElement.innerText = "Dieser Bereich ist für zukünftige Inhalte reserviert."; 
             }
 
-            document.getElementById('btn-next').style.visibility = ebene < 7 ? 'visible' : 'hidden';
-            document.querySelectorAll('.dot').forEach((d, i) => d.style.background = (i+1 === ebene) ? '#ffd700' : '#444');
+            for(let i=1; i<=7; i++) {
+                const dot = document.getElementById('dot'+i);
+                if(dot) dot.classList.toggle('active', i === ebene);
+            }
+            startRotation();
         }
 
-        function nextPage() { if (ebene < 7) { ebene++; updateUI(); } }
+        function nextPage() {
+            if (ebene === 2 && tId < 19) {
+                tId++; showInfo(themen[tId], tId); 
+            } else if (ebene < 7) {
+                ebene++; updateUI();
+            }
+        }
+
+        function startRotation() {
+            clearInterval(wechselInterval);
+            const bg = document.getElementById('werbe-bg');
+            if(!bg) return;
+            bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`;
+            bg.classList.add('bild-aktiv');
+            wechselInterval = setInterval(() => {
+                bg.classList.remove('bild-aktiv');
+                setTimeout(() => {
+                    bg.style.backgroundImage = `url('https://picsum.photos/seed/${Math.random()}/1200/600')`;
+                    bg.classList.add('bild-aktiv');
+                }, 50);
+            }, 10000);
+        }
+        
         function showDashboard() {
-            ebene = 1;
+            ebene = 1; clearInterval(wechselInterval);
             document.getElementById('page-skelett').style.display = 'none';
             document.getElementById('dashboard').style.display = 'flex';
             document.getElementById('btn-back').style.visibility = 'hidden';
