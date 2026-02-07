@@ -84,38 +84,18 @@
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
-        /* CHAT-BEREICH: FLIEGENDE BUCHSTABEN OPTIK */
-        #chat-area { 
-            width: 90% !important; 
-            flex-grow: 1; 
-            border: none !important; 
-            background: transparent !important; 
-            display: none; 
-            flex-direction: column; 
-            margin-top: 5px; 
-            margin-bottom: 70px; 
+        /* CHAT-BEREICH & SCHUBLADEN */
+        #chat-area, #drawer-ebene4 { 
+            width: 90% !important; flex-grow: 1; border: none !important; background: transparent !important; 
+            display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; 
         }
 
-        .chat-msgs { 
-            flex: 1; 
-            padding: 10px 0; 
-            overflow-y: auto; 
-            color: #fff; 
-            font-size: 1.1rem;
-            text-shadow: 2px 2px 4px #000; 
+        .chat-msgs, .drawer-content { 
+            flex: 1; padding: 10px 0; overflow-y: auto; color: #fff; font-size: 1.1rem; text-shadow: 2px 2px 4px #000; 
         }
 
-        .chat-input-row { 
-            display: flex; 
-            border: 1px solid #003d8f; 
-            background: rgba(0, 0, 0, 0.9); 
-            padding: 5px;
-            border-radius: 4px;
-        }
-
-        .chat-msgs::-webkit-scrollbar {
-            width: 0px;
-        }
+        .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; }
+        .chat-msgs::-webkit-scrollbar { width: 0px; }
 
         /* NAVIGATION & DOTS */
         .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; background: #000; z-index: 100; }
@@ -196,6 +176,26 @@
             </div>
         </div>
 
+        <div id="drawer-ebene4">
+            <div class="drawer-content">
+                <div style="border: 2px solid #ff0000; padding: 15px; background: rgba(255, 0, 0, 0.1); border-radius: 5px; text-align: center;">
+                    <h3 style="color: #ff0000; margin-top: 0;">DER VIDEO-BEWEIS</h3>
+                    <p style="font-size: 1.2rem;">Stehst du zu deinem Wort? (8er Zufallsgruppe)</p>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px;">
+                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 1 (DU)</div>
+                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 2</div>
+                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 3</div>
+                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 4</div>
+                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 5</div>
+                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 6</div>
+                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 7</div>
+                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 8</div>
+                </div>
+                <button style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; margin-top: 20px; font-weight: bold; cursor: pointer; border-radius: 5px;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
+            </div>
+        </div>
+
         <p id="main-text" style="width: 85%; text-align: justify; color: #ccc; margin-top: 4vh; font-size: 1.2rem; line-height: 1.6; max-width: 1200px;"></p>
     </div>
 
@@ -231,12 +231,15 @@
         
         function updateUI() {
             const isChat = ebene === 3;
+            const isVideo = ebene === 4;
             const chatArea = document.getElementById('chat-area');
+            const drawer4 = document.getElementById('drawer-ebene4');
             const mainText = document.getElementById('main-text');
             const btnNext = document.getElementById('btn-next');
             const counter = document.getElementById('counter-box');
 
             chatArea.style.display = isChat ? 'flex' : 'none';
+            drawer4.style.display = isVideo ? 'flex' : 'none';
             counter.style.display = ebene >= 3 ? 'block' : 'none';
             document.getElementById('btn-back').style.visibility = 'visible';
 
@@ -248,9 +251,14 @@
                 btnNext.innerText = (tId < 19) ? `Thema ${tId + 2} →` : "Zum Dialog →"; 
             } else if (isChat) { 
                 btnNext.style.visibility = 'visible'; 
-                btnNext.innerText = "Freizone 4 →"; 
+                btnNext.innerText = "Video-Beweis →"; 
                 document.getElementById('info-titel').innerText = "LIVE CHAT - DIALOG"; 
                 mainText.style.display = 'none'; 
+            } else if (isVideo) {
+                btnNext.style.visibility = 'visible'; 
+                btnNext.innerText = "Ebene 5 →"; 
+                document.getElementById('info-titel').innerText = "EBENE 4 - VIDEO BEWEIS";
+                mainText.style.display = 'none';
             } else { 
                 btnNext.style.visibility = (ebene < 7) ? 'visible' : 'hidden'; 
                 btnNext.innerText = `Ebene ${ebene + 1} →`; 
