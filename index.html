@@ -84,19 +84,36 @@
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
-        /* CHAT & EBENEN */
-        #chat-area { width: 90%; flex-direction: column; flex-grow: 1; margin-bottom: 20px; }
-        .chat-msgs { flex-grow: 1; background: #111; border: 1px solid #003d8f; padding: 10px; overflow-y: auto; font-size: 0.9rem; }
-        .chat-input-row { display: flex; border: 1px solid #003d8f; height: 50px; }
+        /* CHAT-BEREICH & SCHUBLADEN */
+        #chat-area, #drawer-ebene4 { 
+            width: 90% !important; flex-grow: 1; border: none !important; background: transparent !important; 
+            display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; 
+        }
+
+        .chat-msgs, .drawer-content { 
+            flex: 1; padding: 10px 0; overflow-y: auto; color: #fff; font-size: 1.1rem; text-shadow: 2px 2px 4px #000; 
+        }
+
+        .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; }
+        .chat-msgs::-webkit-scrollbar { width: 0px; }
+
+        /* NAVIGATION & DOTS */
+        .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; background: #000; z-index: 100; }
+        .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
+        .dot { width: 10px; height: 10px; background: #444; border-radius: 50%; }
+        .dot.active { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
+
+        #counter-box { position: absolute; right: 0; top: 0; width: 100px; padding: 5px; border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f; background: #000; text-align: center; display: none; z-index: 100; }
+        .counter-label { font-size: 0.4rem; color: #fff; display: block; }
+        .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
         
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 70px; background: #000; display: flex; justify-content: space-between; align-items: center; padding: 0 5%; box-sizing: border-box; border-top: 1px solid #333; z-index: 100; }
-        .nav-btn { background: #003d8f; color: #fff; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; }
-        .dot { width: 10px; height: 10px; background: #333; border-radius: 50%; }
-        .dot.active { background: #00ff00; }
-        
-        #counter-box { position: absolute; bottom: 10px; right: 10px; text-align: right; z-index: 10; }
-        .counter-label { font-size: 0.5rem; display: block; color: #00ff00; }
-        .counter-value { font-size: 1.2rem; font-weight: bold; font-family: monospace; }
+        .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh; flex-shrink: 0; }
+        .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
+
+        .num-neutral { background-color: #003d8f !important; }
+        .num-gelesen { background-color: #ffd700 !important; color: #000 !important; }
+        .num-offen { background-color: #ff4d4d !important; }
+        .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
     </style>
 </head>
 <body>
@@ -120,94 +137,165 @@
     </div>
 
     <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
-        <h1 id="info-titel" style="margin-top: 5vh; text-transform: uppercase; letter-spacing: 2px;"></h1>
-        
-        <div class="tafel-layout">
-            <div class="buttons-links">
-                <div class="oval-side ov-schwarz"></div><div class="oval-side ov-grun"></div><div class="oval-side ov-blau"></div><div class="oval-side ov-rot"></div>
-            </div>
-            <div class="info-section-ebene">
-                <div class="werbe-bild-bg" id="werbe-bg"></div>
-                <span class="werbe-text-overlay">PLATZ FÜR WERBUNG</span>
-                <div id="counter-box">
-                    <span class="counter-label">STILLE MILLION</span>
-                    <span class="counter-value">842.336</span>
+        <div class="top-container">
+            <h1 id="info-titel" class="page-title-white"></h1>
+            <div class="tafel-layout">
+                <div class="buttons-links">
+                    <div class="oval-side ov-schwarz"></div>
+                    <div class="oval-side ov-grun"></div>
+                    <div class="oval-side ov-blau"></div>
+                    <div class="oval-side ov-rot"></div>
+                </div>
+                <div class="info-section-ebene">
+                    <div class="werbe-bild-bg" id="werbe-bg"></div>
+                    <div class="tafel-intern-logo">
+                        <div class="logo-ring" style="transform: scale(0.5); transform-origin: top left;">
+                            <div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div>
+                        </div>
+                    </div>
+                    <span class="werbe-text-overlay">HIER IST PLATZ FÜR WERBUNG</span>
+                    <div id="counter-box">
+                        <span class="counter-label">STILLE MILLION</span>
+                        <span class="counter-value">842.336</span>
+                    </div>
+                </div>
+                <div class="buttons-rechts">
+                    <div class="oval-side ov-grun" style="border: 2px solid #00ff00;"></div>
+                    <div class="oval-side ov-blau"></div>
+                    <div class="oval-side ov-pink"></div>
+                    <div class="oval-side ov-gelb"></div>
                 </div>
             </div>
-            <div class="buttons-rechts">
-                <div class="oval-side ov-grun"></div><div class="oval-side ov-blau"></div><div class="oval-side ov-pink"></div><div class="oval-side ov-gelb"></div>
-            </div>
         </div>
 
-        <p id="main-text" style="width: 80%; text-align: justify; margin-top: 30px; line-height: 1.6;"></p>
-
-        <div id="chat-area" style="display: none;">
-            <div class="chat-msgs"><i>System: Dialog bereit...</i></div>
+        <div id="chat-area">
+            <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit... Buchstaben fliegen...</i></div>
             <div class="chat-input-row">
-                <input type="text" style="flex:1; background:transparent; border:none; color:#fff; padding:10px;">
-                <button style="background:#003d8f; color:#fff; border:none; padding:0 20px;">SENDEN</button>
+                <input type="text" placeholder="Nachricht..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px;">
+                <button style="background:#003d8f; color:#fff; border:none; padding:0 30px; font-weight:bold; cursor:pointer;">SENDEN</button>
             </div>
         </div>
 
-        <div id="drawer-ebene4" style="display: none; width: 90%; margin-top: 20px;">
-            <div style="background: #ff0000; padding: 5px; text-align: center; font-weight: bold;">DER VIDEO-BEWEIS</div>
-            <div style="display: grid; grid-template-columns: repeat(4, 2fr); gap: 10px; margin-top: 10px;">
-                <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">VIDEO 1 (DU)</div>
-                <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">VIDEO 2</div>
-                <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">VIDEO 3</div>
-                <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">VIDEO 4</div>
-                <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">VIDEO 5</div>
-                <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">VIDEO 6</div>
-                <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">VIDEO 7</div>
-                <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">VIDEO 8</div>
+        <div id="drawer-ebene4">
+            <div class="drawer-content">
+                <div style="border: 2px solid #ff0000; padding: 15px; background: rgba(255, 0, 0, 0.1); border-radius: 5px; text-align: center;">
+                    <h3 style="color: #ff0000; margin-top: 0;">DER VIDEO-BEWEIS</h3>
+                    <p style="font-size: 1.2rem;">Stehst du zu deinem Wort? (8er Zufallsgruppe)</p>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px;">
+                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 1 (DU)</div>
+                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 2</div>
+                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 3</div>
+                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 4</div>
+                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 5</div>
+                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 6</div>
+                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 7</div>
+                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 8</div>
+                </div>
+                <button style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; margin-top: 20px; font-weight: bold; cursor: pointer; border-radius: 5px;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
             </div>
         </div>
+
+        <p id="main-text" style="width: 85%; text-align: justify; color: #ccc; margin-top: 4vh; font-size: 1.2rem; line-height: 1.6; max-width: 1200px;"></p>
     </div>
 
     <div class="bottom-nav">
         <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Zurück</button>
-        <div style="display: flex; gap: 8px;" id="dot-holder"></div>
+        <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
         <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
     </div>
 
     <script>
         const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
-        const inhaltsTexte = { "Recht auf Gefühls Forderung": "Das Gleichgewicht zwischen Geben und Verlangen..." };
-        let ebene = 1, tId = 0, aktuellesThema = "";
-
+        const inhaltsTexte = { "Recht auf Gefühls Forderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühls Forderung zu etablieren..." };
+        let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set();
+        
         const grid = document.getElementById('main-grid');
-        themen.forEach((t, i) => { grid.innerHTML += `<div class="box"><div class="num">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; });
-
+        themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; });
+        
         const dots = document.getElementById('dot-holder');
         for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
-        function showInfo(t, id) { 
-            ebene = 2; tId = id; aktuellesThema = t; 
-            document.getElementById('dashboard').style.display = 'none'; 
-            document.getElementById('page-skelett').style.display = 'flex'; 
-            updateUI(); 
+        function showInfo(t, id) { ebene = 2; tId = id; aktuellesThema = t; geleseneThemen.add(id); updateNumColors(); document.getElementById('dashboard').style.display = 'none'; document.getElementById('page-skelett').style.display = 'flex'; updateUI(); }
+        
+        function updateNumColors() { 
+            themen.forEach((_, i) => { 
+                const nBox = document.getElementById(`num-${i}`); 
+                if (nBox) { 
+                    if (geleseneThemen.size === 20) nBox.className = "num num-fertig"; 
+                    else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen"; 
+                    else if (geleseneThemen.size > 0) nBox.className = "num num-offen"; 
+                } 
+            }); 
         }
         
-        function showDashboard() {
-            ebene = 1;
-            document.getElementById('dashboard').style.display = 'flex';
-            document.getElementById('page-skelett').style.display = 'none';
-            document.getElementById('btn-back').style.visibility = 'hidden';
-            document.getElementById('btn-next').style.visibility = 'hidden';
-        }
-
         function updateUI() {
+            const isChat = ebene === 3;
+            const isVideo = ebene === 4;
+            const chatArea = document.getElementById('chat-area');
+            const drawer4 = document.getElementById('drawer-ebene4');
+            const mainText = document.getElementById('main-text');
+            const btnNext = document.getElementById('btn-next');
+            const counter = document.getElementById('counter-box');
+
+            chatArea.style.display = isChat ? 'flex' : 'none';
+            drawer4.style.display = isVideo ? 'flex' : 'none';
+            counter.style.display = ebene >= 3 ? 'block' : 'none';
             document.getElementById('btn-back').style.visibility = 'visible';
-            document.getElementById('btn-next').style.visibility = 'visible';
-            document.getElementById('info-titel').innerText = (ebene === 2) ? aktuellesThema : "Ebene " + ebene;
-            document.getElementById('main-text').style.display = (ebene === 2) ? 'block' : 'none';
-            document.getElementById('chat-area').style.display = (ebene === 3) ? 'flex' : 'none';
-            document.getElementById('drawer-ebene4').style.display = (ebene === 4) ? 'block' : 'none';
-            
-            for(let i=1; i<=7; i++) document.getElementById('dot'+i).classList.toggle('active', i === ebene);
+
+            if (ebene === 2) { 
+                document.getElementById('info-titel').innerText = aktuellesThema; 
+                mainText.style.display = 'block'; 
+                mainText.innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet..."; 
+                btnNext.style.visibility = 'visible'; 
+                btnNext.innerText = (tId < 19) ? `Thema ${tId + 2} →` : "Zum Dialog →"; 
+            } else if (isChat) { 
+                btnNext.style.visibility = 'visible'; 
+                btnNext.innerText = "Video-Beweis →"; 
+                document.getElementById('info-titel').innerText = "LIVE CHAT - DIALOG"; 
+                mainText.style.display = 'none'; 
+            } else if (isVideo) {
+                btnNext.style.visibility = 'visible'; 
+                btnNext.innerText = "Ebene 5 →"; 
+                document.getElementById('info-titel').innerText = "EBENE 4 - VIDEO BEWEIS";
+                mainText.style.display = 'none';
+            } else { 
+                btnNext.style.visibility = (ebene < 7) ? 'visible' : 'hidden'; 
+                btnNext.innerText = `Ebene ${ebene + 1} →`; 
+                document.getElementById('info-titel').innerText = "FREIZONE - EBENE " + ebene; 
+                mainText.style.display = 'block'; 
+                mainText.innerText = "Dieser Bereich ist für zukünftige Inhalte reserviert."; 
+            }
+            for(let i=1; i<=7; i++) { const dot = document.getElementById('dot'+i); if(dot) dot.classList.toggle('active', i === ebene); }
+            startRotation();
         }
 
-        function nextPage() { if(ebene < 7) { ebene++; updateUI(); } }
+        function nextPage() { if (ebene === 2 && tId < 19) { tId++; showInfo(themen[tId], tId); } else if (ebene < 7) { ebene++; updateUI(); } }
+        
+        function startRotation() { 
+            clearInterval(wechselInterval); 
+            const bg = document.getElementById('werbe-bg'); 
+            if(!bg) return; 
+            bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; 
+            bg.classList.add('bild-aktiv'); 
+            wechselInterval = setInterval(() => { 
+                bg.classList.remove('bild-aktiv'); 
+                setTimeout(() => { 
+                    bg.style.backgroundImage = `url('https://picsum.photos/seed/${Math.random()}/1200/600')`; 
+                    bg.classList.add('bild-aktiv'); 
+                }, 50); 
+            }, 10000); 
+        }
+
+        function showDashboard() { 
+            ebene = 1; 
+            clearInterval(wechselInterval); 
+            document.getElementById('page-skelett').style.display = 'none'; 
+            document.getElementById('dashboard').style.display = 'flex'; 
+            document.getElementById('btn-back').style.visibility = 'hidden'; 
+            document.getElementById('btn-next').style.visibility = 'hidden'; 
+        }
     </script>
 </body>
 </html>
+
