@@ -39,84 +39,62 @@
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
 
-        /* TAFEL (INFO-SECTION) */
-        .info-section { 
-            width: 80%; height: 26vh; border: 2px solid #003d8f; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            background-color: #000; position: relative; overflow: hidden; margin-top: 2vh;
+        /* TAFEL & LAYOUT (EBENE 2-7) */
+        .top-container { 
+            width: 100%; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            margin-top: 27.5vh; /* Fixer Abstand von oben */
+            position: relative; 
         }
+
+        /* Erzwungene 10% - 80% - 10% Aufteilung */
+        .tafel-layout { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            width: 100%; 
+        }
+
+        .oval-spalte { 
+            flex: 0 0 10%; /* Exakt 10% Breite */
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 10px; 
+        }
+
+        .info-section { 
+            flex: 0 0 80%; /* Exakt 80% Breite */
+            height: 26vh; 
+            border: 2px solid #003d8f; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            background-color: #000; 
+            position: relative; 
+            overflow: hidden; 
+        }
+
+        /* INHALTE DER TAFEL */
         .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
         .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
         .tafel-intern-logo { position: absolute; top: 10px; left: 10px; transform: scale(0.6); transform-origin: top left; z-index: 5; }
         .werbe-text-overlay { color: rgba(255, 255, 255, 0.3); font-weight: bold; font-size: 1.2rem; letter-spacing: 5px; z-index: 5; text-align: center; text-shadow: 2px 2px 5px #000; }
 
-        /* GRID */
+        /* GRID (EBENE 1) */
         .grid { 
-            display: grid; 
-            grid-template-columns: repeat(4, 1fr); 
-            grid-template-rows: repeat(5, 1fr); 
-            grid-auto-flow: column;
-            gap: 10px; 
-            width: 95%; 
-            max-width: 1450px; 
-            margin-top: 30px;
-            border: 3px solid #00ff00 !important;
-            padding: 15px;
-            border-radius: 10px;
+            display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); 
+            grid-auto-flow: column; gap: 10px; width: 95%; max-width: 1450px; margin-top: 30px;
+            border: 3px solid #00ff00 !important; padding: 15px; border-radius: 10px;
         }
         .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; overflow: hidden; }
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
-        .text { 
-            padding: 4px 8px; text-transform: uppercase; 
-            font-size: 0.6rem; 
-            display: flex; align-items: center; cursor: pointer; flex-grow: 1; 
-            line-height: 1.1; word-wrap: break-word; overflow: hidden;
-            font-weight: 600;
-        }
+        .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; line-height: 1.1; font-weight: 600; }
 
-        /* FARBEN DER NUMMERN */
-        .num-neutral { background-color: #003d8f !important; }
-        .num-gelesen { background-color: #ffd700 !important; color: #000 !important; }
-        .num-offen { background-color: #ff4d4d !important; }
-        .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
-
-        /* FUNDAMENT */
-        .fundament-container { display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; }
-        .fundament-box { flex: 1; }
-        .locked-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: bold; text-align: center; }
-
-        /* EBENE 2 & 3 */
-        .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh; position: relative; }
-        .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
-
-        #counter-box {
-            position: absolute; right: 0; top: 0; width: 100px; padding: 5px;
-            border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f;
-            background: #000; text-align: center; display: none; z-index: 100;
-        }
-        .counter-label { font-size: 0.4rem; color: #fff; display: block; }
-        .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
-
-        /* CHAT BEREICH */
-        #chat-area {
-            width: 90%; height: 40vh; border: 2px solid #003d8f; 
-            display: none; flex-direction: column; background: #050505; margin-top: 1vh;
-        }
-        .chat-msgs { flex-grow: 1; padding: 10px; overflow-y: auto; color: #ccc; font-size: 0.9rem; text-align: left; }
-        .chat-input-row { display: flex; border-top: 2px solid #003d8f; }
-        .chat-input-row input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 10px; outline: none; }
-        .chat-input-row button { background: #003d8f; color: #fff; border: none; padding: 0 20px; cursor: pointer; font-weight: bold; }
-
-        /* NAVIGATION */
-        .bottom-nav {
-            display: flex; justify-content: space-between; width: 100%; 
-            padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box;
-        }
-        .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
-
-        /* OVALE NEBEN DER TAFEL */
-        .tafel-layout { display: flex; align-items: center; justify-content: center; gap: 20px; width: 100%; margin-top: 2vh; }
-        .oval-spalte { display: flex; flex-direction: column; gap: 15px; }
+        /* OVALE */
         .oval-side { width: 45px; height: 22px; border-radius: 12px; border: 1px solid #fff; opacity: 0.8; }
         .ov-schwarz { background: #000; border: 1.5px solid #003d8f; }
         .ov-grun { background: #00ff00; }
@@ -125,8 +103,12 @@
         .ov-pink { background: #ff00ff; }
         .ov-gelb { background: #ffff00; }
 
+        /* NAVIGATION & COUNTER */
+        .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; }
+        .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
         .dot { width: 10px; height: 10px; background: #444; border-radius: 50%; }
         .dot.active { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
+        #counter-box { position: absolute; right: 0; top: 0; width: 100px; padding: 5px; border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f; background: #000; text-align: center; display: none; z-index: 100; }
     </style>
 </head>
 <body>
@@ -135,23 +117,15 @@
         <div class="dashboard-header">
             <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
         </div>
-        <div class="info-section">
-            <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
+        <div class="info-section" style="margin-top: 15vh;"> <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
             <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
-            <p style="max-width: 85%; color: #ccc; font-size: 1.1rem; margin: 10px 0 0 0; text-align: center;">
-                Die M&M-Community ist das Fundament für alle, die im Kollektiv wachsen wollen. Die Wahl der Vorsitzenden erfolgt erst nach Erreichen der stillen Million.
-            </p>
         </div>
         <div class="grid" id="main-grid"></div>
-        <div class="fundament-container">
-            <div class="fundament-box"><div class="num">21</div><div class="text">Kapital und Verwaltung</div><div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div></div>
-            <div class="fundament-box"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div><div class="locked-overlay">TRANSPARENZ ERST NACH DER STILLEN MILLION</div></div>
-        </div>
     </div>
 
     <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
         <div class="top-container">
-            <h1 id="info-titel" class="page-title-white"></h1>
+            <h1 id="info-titel" style="text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900;"></h1>
             <div class="tafel-layout">
                 <div class="oval-spalte">
                     <div class="oval-side ov-schwarz"></div>
@@ -160,13 +134,13 @@
                     <div class="oval-side ov-rot"></div>
                 </div>
 
-                <div class="info-section" style="margin-top: 0; width: 70%;">
+                <div class="info-section">
                     <div class="werbe-bild-bg" id="werbe-bg"></div>
                     <div class="tafel-intern-logo">
                         <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
                     </div>
                     <span class="werbe-text-overlay">HIER IST PLATZ FÜR WERBUNG</span>
-                    <div id="counter-box"><span class="counter-label">STILLE MILLION</span><span class="counter-value">842.336</span></div>
+                    <div id="counter-box"><span style="font-size:0.4rem;">STILLE MILLION</span><br><span style="color:red; font-weight:900;">842.336</span></div>
                 </div>
 
                 <div class="oval-spalte">
@@ -176,11 +150,6 @@
                     <div class="oval-side ov-gelb"></div>
                 </div>
             </div>
-        </div>
-
-        <div id="chat-area">
-            <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit...</i></div>
-            <div class="chat-input-row"><input type="text" placeholder="Nachricht..."><button>SENDEN</button></div>
         </div>
 
         <p id="main-text" style="width: 80%; text-align: justify; color: #ccc; margin-top: 2vh; font-size: 1.1rem; line-height: 1.6; max-width: 1200px;"></p>
@@ -193,126 +162,34 @@
     </div>
 
     <script>
-        const themen = [
-            "Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte",
-            "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst",
-            "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten",
-            "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten",
-            "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"
-        ];
+        const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
+        const inhaltsTexte = { "Recht auf Gefühls Forderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühls Forderung zu etablieren..." };
 
-        const inhaltsTexte = {
-            "Recht auf Gefühls Forderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühls Forderung zu etablieren. Wahre Gemeinschaft basiert nicht auf einer Rechnung, sondern auf Resonanz. Wer Schutz und Wachstum im Kollektiv sucht, muss bereit sein, sein Innerstes als Währung einzubringen. Dieser Weg führt uns unweigerlich an einen Ort, an dem die Masken der Gesellschaft ihre Macht verlieren und das bloße Sein wieder zur höchsten Währung wird.",
-            "Wie werde ich Mensch": "Um die Masken der Fremdbestimmung endgültig abzulegen und zum wahren, ungetrübten Wesen zurückzukehren. Mensch werden bedeutet, die künstlichen Schichten der Erziehung und der gesellschaftlichen Erwartung konsequent abzuschälen und das Diplom von Gott anzunehmen...",
-            "Glaube an Friede": "Um die Kette der vererbten Konflikte endgültig zu durchbrechen und die volle Verantwortung für die Heilung der eigenen Geschichte zu übernehmen...",
-            "Programm für Bürgerliche Rechte": "Um der persönlichen und kollektiven Freiheit ein unumstößliches moralisches Fundament zu geben. Rechte sind ohne die Lehren der Menschlichkeit lediglich leere Versprechen...",
-            "Moralische Pflicht und Verantwortung": "Um die lähmende Trägheit durch das geistlose Mitläufertum endgültig zu überwinden und die schwere Last der Wahrheit entschlossen im Kollektiv zu tragen."
-        };
-
-        let ebene = 1;
-        let tId = 0;
-        let aktuellesThema = "";
-        let wechselInterval;
-        let geleseneThemen = new Set();
-
+        let ebene = 1; let tId = 0;
         const grid = document.getElementById('main-grid');
-        themen.forEach((t, i) => {
-            grid.innerHTML += `
-                <div class="box" id="box-${i}">
-                    <div class="num num-neutral" id="num-${i}">${i+1}</div>
-                    <div class="text" onclick="showInfo('${t}', ${i})">${t}</div>
-                </div>`;
-        });
+        themen.forEach((t, i) => { grid.innerHTML += `<div class="box"><div class="num">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; });
 
         const dots = document.getElementById('dot-holder');
-        for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i==1?'active':''}"></div>`;
+        for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
         function showInfo(t, id) {
-            ebene = 2; tId = id; aktuellesThema = t;
-            geleseneThemen.add(id);
-            updateNumColors();
+            ebene = 2; tId = id;
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('page-skelett').style.display = 'flex';
             updateUI();
         }
 
-        function updateNumColors() {
-            themen.forEach((_, i) => {
-                const nBox = document.getElementById(`num-${i}`);
-                if (nBox) {
-                    if (geleseneThemen.size === 20) nBox.className = "num num-fertig";
-                    else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen";
-                    else if (geleseneThemen.size > 0) nBox.className = "num num-offen";
-                }
-            });
-        }
-
         function updateUI() {
-            const isChat = ebene === 3;
-            const textElement = document.getElementById('main-text');
-            const titelElement = document.getElementById('info-titel');
-            const btnNext = document.getElementById('btn-next');
-
-            document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
-            document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
+            document.getElementById('info-titel').innerText = (ebene === 2) ? themen[tId] : "FREIZONE - EBENE " + ebene;
+            document.getElementById('main-text').innerText = (ebene === 2) ? (inhaltsTexte[themen[tId]] || "Inhalt wird erarbeitet...") : "Reservierter Bereich.";
             document.getElementById('btn-back').style.visibility = 'visible';
-            
-            if (ebene === 2) {
-                titelElement.innerText = aktuellesThema;
-                textElement.style.display = 'block';
-                textElement.innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet...";
-                btnNext.style.visibility = 'visible';
-                btnNext.innerText = (tId < 19) ? `Weiter zu Thema ${tId + 2} →` : "Weiter zum Dialog (Ebene 3) →";
-            } else if (isChat) {
-                btnNext.style.visibility = 'visible';
-                btnNext.innerText = "Weiter zur Freizone 4 →";
-                titelElement.innerText = "LIVE CHAT - DIALOG";
-                textElement.style.display = 'none';
-            } else {
-                btnNext.style.visibility = (ebene < 7) ? 'visible' : 'hidden';
-                btnNext.innerText = `Weiter zur Ebene ${ebene + 1} →`;
-                titelElement.innerText = "FREIZONE - EBENE " + ebene;
-                textElement.style.display = 'block';
-                textElement.innerText = "Dieser Bereich ist für zukünftige Inhalte reserviert."; 
-            }
-
-            for(let i=1; i<=7; i++) {
-                const dot = document.getElementById('dot'+i);
-                if(dot) dot.classList.toggle('active', i === ebene);
-            }
-            startRotation();
+            document.getElementById('btn-next').style.visibility = ebene < 7 ? 'visible' : 'hidden';
+            document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
+            for(let i=1; i<=7; i++) document.getElementById('dot'+i).classList.toggle('active', i === ebene);
         }
 
-        function nextPage() {
-            if (ebene === 2 && tId < 19) {
-                tId++; showInfo(themen[tId], tId); 
-            } else if (ebene < 7) {
-                ebene++; updateUI();
-            }
-        }
-
-        function startRotation() {
-            clearInterval(wechselInterval);
-            const bg = document.getElementById('werbe-bg');
-            if(!bg) return;
-            bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`;
-            bg.classList.add('bild-aktiv');
-            wechselInterval = setInterval(() => {
-                bg.classList.remove('bild-aktiv');
-                setTimeout(() => {
-                    bg.style.backgroundImage = `url('https://picsum.photos/seed/${Math.random()}/1200/600')`;
-                    bg.classList.add('bild-aktiv');
-                }, 50);
-            }, 10000);
-        }
-        
-        function showDashboard() {
-            ebene = 1; clearInterval(wechselInterval);
-            document.getElementById('page-skelett').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'flex';
-            document.getElementById('btn-back').style.visibility = 'hidden';
-            document.getElementById('btn-next').style.visibility = 'hidden';
-        }
+        function nextPage() { if (ebene < 7) { ebene++; updateUI(); } }
+        function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; }
     </script>
 </body>
 </html>
