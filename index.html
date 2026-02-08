@@ -341,44 +341,38 @@
             updateNumColors(); 
         }
 
-        function startRotation() { 
-            clearInterval(wechselInterval); 
-            const bg = document.getElementById('werbe-bg'); 
-            if(!bg) return; 
-            bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; 
-            bg.classList.add('bild-aktiv'); 
-            wechselInterval = setInterval(() => { 
-                bg.classList.remove('bild-aktiv'); 
-                setTimeout(() => { 
-                    bg.style.backgroundImage = `url('https://picsum.photos/seed/${Math.random()}/1200/600')`; 
-                    bg.classList.add('bild-aktiv'); 
-                }, 50); 
-            }, 10000); 
+      // ... (vorheriger Code: startRotation etc.)
+
+    function registriereSenden() {
+        const input = document.getElementById('chat-input');
+        const chatBox = document.getElementById('chat-box');
+        const text = input.value.trim();
+
+        if (text === "") return; 
+
+        // 1. Nachricht im Chat anzeigen
+        chatBox.innerHTML += `<div style="margin-bottom: 8px;"><strong>Du:</strong> ${text}</div>`;
+        
+        // 2. Interaktion für das aktuelle Thema zählen
+        if (interaktionsZaehler[tId] < 20) {
+            interaktionsZaehler[tId]++;
+            chatBox.innerHTML += `<div><small style="color: #ffd700;">Interaktion ${interaktionsZaehler[tId]}/20 registriert...</small></div>`;
         }
 
-        function registriereSenden() {
-            const input = document.getElementById('chat-input');
-            const chatBox = document.getElementById('chat-box');
-            if (input.value.trim() === "") return;
+        // 3. Input Feld leeren
+        input.value = "";
 
-            // Nachricht anzeigen
-            chatBox.innerHTML += `<div><strong>Du:</strong> ${input.value}</div>`;
-            
-            if (interaktionsZaehler[tId] < 20) {
-                interaktionsZaehler[tId]++;
-                chatBox.innerHTML += `<div><small style="color: #ffd700;">Interaktion ${interaktionsZaehler[tId]}/20 registriert...</small></div>`;
-            }
-            
-            input.value = "";
-            pruefeSchoepferStatus();
-        }
+        // 4. Automatisch nach unten scrollen
+        chatBox.scrollTop = chatBox.scrollHeight;
 
-        function pruefeSchoepferStatus() {
-            const istVollstaendig = Object.values(interaktionsZaehler).every(count => count >= 20);
-            if (istVollstaendig) {
-                alert("Muster erkannt: Du hast den Status SCHÖPFER erreicht!");
-            }
-        }
-    </script>
-</body>
-</html>
+        // 5. Status prüfen
+        pruefeSchoepferStatus();
+    }
+
+    // Platzhalter für die Status-Prüfung (damit kein Fehler entsteht)
+    function pruefeSchoepferStatus() {
+        console.log("Status-Check: Interaktionen bei Thema " + tId + " = " + interaktionsZaehler[tId]);
+    }
+
+// Hier war die zusätzliche Klammer, die entfernt wurde.
+</script> 
