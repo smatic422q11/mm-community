@@ -35,6 +35,7 @@
         .signal-aktiv { 
             animation: signalBlink 1.0s infinite ease-in-out !important; 
             border: 2px solid #fff !important;
+            cursor: pointer; /* Macht deutlich, dass man klicken kann */
         }
 
         /* HEADER & LOGO */
@@ -166,7 +167,7 @@
                     <div class="oval-side ov-grun" id="sig-r1"></div>
                     <div class="oval-side ov-blau" id="sig-r2"></div>
                     <div class="oval-side ov-pink" id="sig-r3"></div>
-                    <div class="oval-side ov-gelb" id="sig-r4"></div>
+                    <div class="oval-side ov-gelb" id="sig-r4" onclick="portalZuEbene3()"></div>
                 </div>
             </div>
         </div>
@@ -199,7 +200,7 @@
     </div>
 
     <div class="bottom-nav">
-        <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Zurück</button>
+        <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Dashboard</button>
         <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
         <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
     </div>
@@ -209,62 +210,130 @@
     
     const inhaltsTexte = { 
         "Recht auf Gefühls Forderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühls Forderung zu etablieren...",
-        "Die Brücke": "Inhalt für das letzte Thema..."
+        "Die Brücke": "Die Brücke ist das finale Glied. Hier schließt sich der Kreis der Gemeinschaft und bereitet den Aufstieg zum Schöpfer vor."
     };
 
     let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set();
     let interaktionsZaehler = {}; 
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
-    // Grid aufbauen
     const grid = document.getElementById('main-grid');
     themen.forEach((t, i) => { 
         grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; 
     });
     
-    // Dots aufbauen
     const dots = document.getElementById('dot-holder');
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
     function showInfo(t, id) { 
         tId = id; 
         aktuellesThema = t; 
-        
-        // CHAT LEEREN, DAMIT THEMEN UNABHÄNGIG SIND
         document.getElementById('chat-box').innerHTML = `<i>System: Dialog für ${t} bereit...</i>`;
-        
-        // Gelbes Signal zurücksetzen beim Themenwechsel (falls es vom vorherigen Thema noch aktiv war)
         document.getElementById('sig-r4').classList.remove('signal-aktiv');
 
-        if (geleseneThemen.size === 20) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
+        // Ebene 2 Logik: Merken, was gelesen wurde
+        if (ebene < 3) {
+            ebene = 2;
+            geleseneThemen.add(id);
+        }
+
         updateNumColors(); 
         document.getElementById('dashboard').style.display = 'none'; 
         document.getElementById('page-skelett').style.display = 'flex'; 
         updateUI(); 
     }
 
+    function portalZuEbene3() {
+        if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) {
+            ebene = 3;
+            updateUI();
+        }
+    }
+
+    function updateUI() {
+        const isChat = (ebene === 3);
+        const isVideo = (ebene === 4);
+        document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
+        document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
+        document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
+        
+        if(isVideo) document.getElementById('ebene4-title-red').innerText = `VIDEO-BEWEIS: ${aktuellesThema.toUpperCase()}`;
+        document.getElementById('info-titel').style.display = isVideo ? 'none' : 'block';
+        document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
+        document.getElementById('btn-back').style.visibility = 'visible';
+
+        const mainText = document.getElementById('main-text');
+        const btnNext = document.getElementById('btn-next');
+        const sigGelb = document.getElementById('sig-r4');
+
+        if (ebene === 2) { 
+            document.getElementById('info-titel').innerText = aktuellesThema; 
+            mainText.style.display = 'block'; 
+            mainText.innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet..."; 
+            
+            // MANGELBEHEBUNG: Bei "Die Brücke" Button weg, Licht an
+            if (tId === 19) {
+                btnNext.style.visibility = 'hidden'; 
+                sigGelb.classList.add('signal-aktiv');
+            } else {
+                btnNext.style.visibility = 'visible'; 
+                btnNext.innerText = `Thema ${tId + 2} →`; 
+                sigGelb.classList.remove('signal-aktiv');
+            }
+        } else if (isChat) { 
+            btnNext.style.visibility = 'visible'; 
+            btnNext.innerText = "Video-Beweis →"; 
+            document.getElementById('info-titel').innerText = "LIVE CHAT - " + aktuellesThema; 
+            mainText.style.display = 'none'; 
+            if (interaktionsZaehler[tId] >= 20) sigGelb.classList.add('signal-aktiv');
+        } else if (isVideo) {
+            btnNext.style.visibility = 'visible'; 
+            btnNext.innerText = "Ebene 5 →"; 
+            mainText.style.display = 'none';
+            sigGelb.classList.remove('signal-aktiv'); // MANGELBEHEBUNG: Licht aus in Ebene 4
+        }
+
+        for(let i=1; i<=7; i++) { 
+            const dot = document.getElementById('dot'+i); 
+            if(dot) dot.classList.toggle('active', i === ebene); 
+        }
+        startRotation();
+    }
+
+    function nextPage() { 
+        if (ebene === 2) { 
+            if (tId < 19) { tId++; showInfo(themen[tId], tId); }
+        } else if (ebene < 7) { 
+            ebene++; 
+            updateUI(); 
+        } 
+    }
+
+    function showDashboard() { 
+        ebene = 1; 
+        clearInterval(wechselInterval); 
+        document.getElementById('page-skelett').style.display = 'none'; 
+        document.getElementById('dashboard').style.display = 'flex'; 
+        document.getElementById('btn-back').style.visibility = 'hidden'; 
+        document.getElementById('btn-next').style.visibility = 'hidden'; 
+        updateNumColors(); 
+    }
+
+    // Rest der Funktionen (registriereSenden, updateNumColors, startRotation) bleibt gleich wie im Original...
     function registriereSenden() {
         const input = document.getElementById('chat-input');
         const chatBox = document.getElementById('chat-box');
         const text = input.value.trim();
-        
         if (text === "") {
-            // Signal Rot (sig-l4) kurz an bei Fehler
             document.getElementById('sig-l4').classList.add('signal-aktiv');
             setTimeout(() => document.getElementById('sig-l4').classList.remove('signal-aktiv'), 500);
             return; 
         }
-
-        // Signal Grün (sig-l2) kurz an bei Aktivität
         document.getElementById('sig-l2').classList.add('signal-aktiv');
         setTimeout(() => document.getElementById('sig-l2').classList.remove('signal-aktiv'), 500);
-
         chatBox.innerHTML += `<div style="margin-bottom: 8px;"><strong>Du:</strong> ${text}</div>`;
-        
         if (interaktionsZaehler[tId] < 20) {
             interaktionsZaehler[tId]++;
-            
-            // Wenn 20 erreicht, Gelb (sig-r4) dauerhaft an
             if (interaktionsZaehler[tId] === 20) {
                 document.getElementById('sig-r4').classList.add('signal-aktiv');
                 chatBox.innerHTML += `<div><strong style="color: #ffd700;">ZIEL ERREICHT: 20 Interaktionen!</strong></div>`;
@@ -272,9 +341,7 @@
                 chatBox.innerHTML += `<div><small style="color: #ffd700;">Interaktion ${interaktionsZaehler[tId]}/20 registriert...</small></div>`;
             }
         }
-        
-        input.value = "";
-        chatBox.scrollTop = chatBox.scrollHeight;
+        input.value = ""; chatBox.scrollTop = chatBox.scrollHeight;
     }
 
     function updateNumColors() { 
@@ -301,68 +368,6 @@
                 bg.classList.add('bild-aktiv');
             }, 50);
         }, 10000);
-    }
-
-    function updateUI() {
-        const isChat = (ebene === 3);
-        const isVideo = (ebene === 4);
-        document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
-        document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
-        document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
-        if(isVideo) document.getElementById('ebene4-title-red').innerText = `VIDEO-BEWEIS: ${aktuellesThema.toUpperCase()}`;
-        document.getElementById('info-titel').style.display = isVideo ? 'none' : 'block';
-        document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
-        document.getElementById('btn-back').style.visibility = 'visible';
-
-        const mainText = document.getElementById('main-text');
-        const btnNext = document.getElementById('btn-next');
-
-        if (ebene === 2) { 
-            document.getElementById('info-titel').innerText = aktuellesThema; 
-            mainText.style.display = 'block'; 
-            mainText.innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet..."; 
-            btnNext.style.visibility = 'visible'; 
-            btnNext.innerText = (tId < 19) ? `Thema ${tId + 2} →` : "Fertig → Dashboard"; 
-        } else if (isChat) { 
-            btnNext.style.visibility = 'visible'; 
-            btnNext.innerText = "Video-Beweis →"; 
-            document.getElementById('info-titel').innerText = "LIVE CHAT - " + aktuellesThema; 
-            mainText.style.display = 'none'; 
-            // Falls 20 bereits erreicht waren, Gelb wieder an
-            if (interaktionsZaehler[tId] >= 20) document.getElementById('sig-r4').classList.add('signal-aktiv');
-        } else if (isVideo) {
-            btnNext.style.visibility = 'visible'; 
-            btnNext.innerText = "Ebene 5 →"; 
-            mainText.style.display = 'none';
-        } else { 
-            btnNext.style.visibility = (ebene < 7) ? 'visible' : 'hidden'; 
-            btnNext.innerText = `Ebene ${ebene + 1} →`; 
-            document.getElementById('info-titel').innerText = "FREIZONE - EBENE " + ebene; 
-            mainText.style.display = 'block'; 
-            mainText.innerText = "Dieser Bereich ist für zukünftige Inhalte reserviert."; 
-        }
-
-        for(let i=1; i<=7; i++) { 
-            const dot = document.getElementById('dot'+i); 
-            if(dot) dot.classList.toggle('active', i === ebene); 
-        }
-        startRotation();
-    }
-
-    function nextPage() { 
-        if (ebene === 2) { 
-            if (tId < 19) { tId++; showInfo(themen[tId], tId); } else { showDashboard(); }
-        } else if (ebene < 7) { ebene++; updateUI(); } 
-    }
-
-    function showDashboard() { 
-        ebene = 1; 
-        clearInterval(wechselInterval); 
-        document.getElementById('page-skelett').style.display = 'none'; 
-        document.getElementById('dashboard').style.display = 'flex'; 
-        document.getElementById('btn-back').style.visibility = 'hidden'; 
-        document.getElementById('btn-next').style.visibility = 'hidden'; 
-        updateNumColors(); 
     }
 </script>
 </body>
