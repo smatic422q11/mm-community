@@ -155,7 +155,7 @@
                     <div class="oval-side ov-schwarz" id="sig-l1"></div>
                     <div class="oval-side ov-grun" id="sig-l2"></div>
                     <div class="oval-side ov-blau" id="sig-l3"></div>
-                    <div class="oval-side ov-rot" id="sig-l4"></div>
+                    <div class="oval-side ov-rot" id="sig-l4" onclick="portalZuEbene4()"></div>
                 </div>
                 <div class="info-section-ebene">
                     <div class="werbe-bild-bg" id="werbe-bg"></div>
@@ -248,6 +248,13 @@
         }
     }
 
+    function portalZuEbene4() {
+        if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) {
+            ebene = 4;
+            updateUI();
+        }
+    }
+
     function updateUI() {
         const isChat = (ebene === 3);
         const isVideo = (ebene === 4);
@@ -264,31 +271,33 @@
         const mainText = document.getElementById('main-text');
         const btnNext = document.getElementById('btn-next');
         const sigGelb = document.getElementById('sig-r4');
+        const sigRot = document.getElementById('sig-l4');
 
-        // SIGNAL-STEUERUNG (RESET BEI JEDEM UPDATE)
         sigGelb.classList.remove('signal-aktiv');
+        sigRot.classList.remove('signal-aktiv');
 
         if (ebene === 2) { 
             document.getElementById('info-titel').innerText = aktuellesThema; 
             mainText.style.display = 'block'; 
             mainText.innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet..."; 
             
-            if (tId === 19) { // Die Brücke
+            // GELBES SIGNAL erst wenn ALLE 20 Themen gelesen wurden
+            if (geleseneThemen.size === 20) {
+                sigGelb.classList.add('signal-aktiv');
                 btnNext.style.visibility = 'hidden'; 
-                sigGelb.classList.add('signal-aktiv'); // Leuchtet nur hier dauerhaft in Ebene 2
             } else {
-                btnNext.style.visibility = 'visible'; 
+                btnNext.style.visibility = (tId < 19) ? 'visible' : 'hidden'; 
                 btnNext.innerText = `Thema ${tId + 2} →`; 
             }
         } else if (isChat) { 
-            btnNext.style.visibility = 'visible'; 
-            btnNext.innerText = "Video-Beweis →"; 
+            btnNext.style.visibility = 'hidden'; // Man muss über das Signal gehen
             document.getElementById('info-titel').innerText = "LIVE CHAT - " + aktuellesThema; 
             mainText.style.display = 'none'; 
             
-            // NUR WENN FERTIG (20 Interaktionen)
-            if (interaktionsZaehler[tId] >= 20) {
-                sigGelb.classList.add('signal-aktiv');
+            // PRÜFUNG DER 20x20 LOGIK
+            let alleRaeumeFertig = Object.values(interaktionsZaehler).every(val => val >= 20);
+            if (alleRaeumeFertig) {
+                sigRot.classList.add('signal-aktiv'); // Zugang zum Video-Beweis
             }
         } else if (isVideo) {
             btnNext.style.visibility = 'visible'; 
@@ -331,31 +340,31 @@
         const chatBox = document.getElementById('chat-box');
         const text = input.value.trim();
         if (text === "") {
-            document.getElementById('sig-l4').classList.add('signal-aktiv');
-            setTimeout(() => document.getElementById('sig-l4').classList.remove('signal-aktiv'), 500);
+            document.getElementById('sig-l2').classList.add('signal-aktiv'); // Kurzes Warnsignal
+            setTimeout(() => document.getElementById('sig-l2').classList.remove('signal-aktiv'), 500);
             return; 
         }
-        document.getElementById('sig-l2').classList.add('signal-aktiv');
-        setTimeout(() => document.getElementById('sig-l2').classList.remove('signal-aktiv'), 500);
+
         chatBox.innerHTML += `<div style="margin-bottom: 8px;"><strong>Du:</strong> ${text}</div>`;
         
         if (interaktionsZaehler[tId] < 20) {
             interaktionsZaehler[tId]++;
             if (interaktionsZaehler[tId] === 20) {
-                document.getElementById('sig-r4').classList.add('signal-aktiv');
-                chatBox.innerHTML += `<div><strong style="color: #ffd700;">ZIEL ERREICHT: 20 Interaktionen!</strong></div>`;
+                chatBox.innerHTML += `<div><strong style="color: #00ff00;">RAUM ${tId+1} ABSCHLUSS ERREICHT!</strong></div>`;
             } else {
                 chatBox.innerHTML += `<div><small style="color: #ffd700;">Interaktion ${interaktionsZaehler[tId]}/20 registriert...</small></div>`;
             }
         }
+        
         input.value = ""; chatBox.scrollTop = chatBox.scrollHeight;
+        updateUI(); // Prüft sofort, ob das rote Signal (20x20) angehen muss
     }
 
     function updateNumColors() { 
         themen.forEach((_, i) => { 
             const nBox = document.getElementById(`num-${i}`); 
             if (nBox) { 
-                if (geleseneThemen.size === 20) nBox.className = "num num-fertig"; 
+                if (interaktionsZaehler[i] >= 20) nBox.className = "num num-fertig"; 
                 else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen"; 
                 else if (geleseneThemen.size > 0) nBox.className = "num num-offen"; 
             } 
@@ -378,3 +387,4 @@
     }
 </script>
 </body>
+</html>
