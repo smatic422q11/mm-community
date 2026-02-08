@@ -35,7 +35,7 @@
         .signal-aktiv { 
             animation: signalBlink 1.0s infinite ease-in-out !important; 
             border: 2px solid #fff !important;
-            cursor: pointer; /* Macht deutlich, dass man klicken kann */
+            cursor: pointer;
         }
 
         /* HEADER & LOGO */
@@ -229,9 +229,7 @@
         tId = id; 
         aktuellesThema = t; 
         document.getElementById('chat-box').innerHTML = `<i>System: Dialog für ${t} bereit...</i>`;
-        document.getElementById('sig-r4').classList.remove('signal-aktiv');
-
-        // Ebene 2 Logik: Merken, was gelesen wurde
+        
         if (ebene < 3) {
             ebene = 2;
             geleseneThemen.add(id);
@@ -253,6 +251,7 @@
     function updateUI() {
         const isChat = (ebene === 3);
         const isVideo = (ebene === 4);
+        
         document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
         document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
         document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
@@ -266,38 +265,46 @@
         const btnNext = document.getElementById('btn-next');
         const sigGelb = document.getElementById('sig-r4');
 
+        // SIGNAL-STEUERUNG (RESET BEI JEDEM UPDATE)
+        sigGelb.classList.remove('signal-aktiv');
+
         if (ebene === 2) { 
             document.getElementById('info-titel').innerText = aktuellesThema; 
             mainText.style.display = 'block'; 
             mainText.innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet..."; 
             
-            // MANGELBEHEBUNG: Bei "Die Brücke" Button weg, Licht an
-            if (tId === 19) {
+            if (tId === 19) { // Die Brücke
                 btnNext.style.visibility = 'hidden'; 
-                sigGelb.classList.add('signal-aktiv');
+                sigGelb.classList.add('signal-aktiv'); // Leuchtet nur hier dauerhaft in Ebene 2
             } else {
                 btnNext.style.visibility = 'visible'; 
                 btnNext.innerText = `Thema ${tId + 2} →`; 
-                sigGelb.classList.remove('signal-aktiv');
             }
         } else if (isChat) { 
             btnNext.style.visibility = 'visible'; 
             btnNext.innerText = "Video-Beweis →"; 
             document.getElementById('info-titel').innerText = "LIVE CHAT - " + aktuellesThema; 
             mainText.style.display = 'none'; 
-            if (interaktionsZaehler[tId] >= 20) sigGelb.classList.add('signal-aktiv');
+            
+            // NUR WENN FERTIG (20 Interaktionen)
+            if (interaktionsZaehler[tId] >= 20) {
+                sigGelb.classList.add('signal-aktiv');
+            }
         } else if (isVideo) {
             btnNext.style.visibility = 'visible'; 
             btnNext.innerText = "Ebene 5 →"; 
             mainText.style.display = 'none';
-            sigGelb.classList.remove('signal-aktiv'); // MANGELBEHEBUNG: Licht aus in Ebene 4
         }
 
+        updateDots();
+        startRotation();
+    }
+
+    function updateDots() {
         for(let i=1; i<=7; i++) { 
             const dot = document.getElementById('dot'+i); 
             if(dot) dot.classList.toggle('active', i === ebene); 
         }
-        startRotation();
     }
 
     function nextPage() { 
@@ -319,7 +326,6 @@
         updateNumColors(); 
     }
 
-    // Rest der Funktionen (registriereSenden, updateNumColors, startRotation) bleibt gleich wie im Original...
     function registriereSenden() {
         const input = document.getElementById('chat-input');
         const chatBox = document.getElementById('chat-box');
@@ -332,6 +338,7 @@
         document.getElementById('sig-l2').classList.add('signal-aktiv');
         setTimeout(() => document.getElementById('sig-l2').classList.remove('signal-aktiv'), 500);
         chatBox.innerHTML += `<div style="margin-bottom: 8px;"><strong>Du:</strong> ${text}</div>`;
+        
         if (interaktionsZaehler[tId] < 20) {
             interaktionsZaehler[tId]++;
             if (interaktionsZaehler[tId] === 20) {
@@ -371,4 +378,3 @@
     }
 </script>
 </body>
-</html>
