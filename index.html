@@ -30,7 +30,7 @@
         .dashboard-header { 
             width: 100%; position: absolute; top: 3%; 
             display: flex; justify-content: flex-start; padding: 0 2%; 
-            box-sizing: border-box; z-index: 50;
+            box-sizing: border-box; z-index: 20;
         }
         .logo-ring { 
             width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; 
@@ -39,7 +39,7 @@
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
 
-        /* TAFEL DESIGNS - HIER WURDE DER Z-INDEX ERHÖHT */
+        /* TAFEL DESIGNS */
         .info-section { 
             width: 80%; height: 26vh; border: 2px solid #003d8f; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
@@ -49,18 +49,17 @@
         .tafel-layout { 
             display: flex; align-items: center; justify-content: center; 
             width: 100%; position: relative; margin-top: 1vh; height: 26vh; flex-shrink: 0;
-            z-index: 30; /* Liegt über dem Chat */
         }
 
         .info-section-ebene { 
             width: 90% !important; height: 100%; border: 2px solid #003d8f; 
             background-color: #000; position: relative; overflow: hidden;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 35; box-shadow: 0 0 15px rgba(0, 61, 143, 0.5);
+            z-index: 10; box-shadow: 0 0 15px rgba(0, 61, 143, 0.5);
         }
 
-        .buttons-links { position: absolute; left: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 40; }
-        .buttons-rechts { position: absolute; right: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 40; }
+        .buttons-links { position: absolute; left: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
+        .buttons-rechts { position: absolute; right: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
         
         .oval-side { width: 45px; height: 22px; border-radius: 12px; border: 1px solid #fff; opacity: 0.8; }
         .ov-schwarz { background: #000; border: 1.5px solid #003d8f; }
@@ -85,22 +84,17 @@
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
-        /* CHAT-BEREICH - POSITIONIERT UNTER DER TAFEL */
-        #chat-area { 
-            width: 90% !important; flex-grow: 1; 
-            display: none; flex-direction: column; 
-            margin-top: -10px; /* Schiebt den Chat leicht unter die Tafel-Kante */
-            margin-bottom: 70px; 
-            z-index: 10; /* Niedriger als Tafel */
-            position: relative;
+        /* CHAT-BEREICH & SCHUBLADEN */
+        #chat-area, #drawer-ebene4 { 
+            width: 90% !important; flex-grow: 1; border: none !important; background: transparent !important; 
+            display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; 
         }
 
-        .chat-msgs { 
-            flex: 1; padding: 20px 0; overflow-y: auto; color: #fff; font-size: 1.1rem; 
-            text-shadow: 2px 2px 4px #000; 
+        .chat-msgs, .drawer-content { 
+            flex: 1; padding: 10px 0; overflow-y: auto; color: #fff; font-size: 1.1rem; text-shadow: 2px 2px 4px #000; 
         }
 
-        .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; z-index: 45; }
+        .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; }
         .chat-msgs::-webkit-scrollbar { width: 0px; }
 
         /* NAVIGATION & DOTS */
@@ -116,10 +110,20 @@
         .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh; flex-shrink: 0; }
         .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
 
+        .ebene4-header-red { 
+            width: 90%; background: #ff0000; color: #fff; padding: 10px 0; 
+            text-align: center; font-weight: 900; font-size: 1.5rem; 
+            border-radius: 5px 5px 0 0; display: none;
+        }
+
         .num-neutral { background-color: #003d8f !important; }
         .num-gelesen { background-color: #ffd700 !important; color: #000 !important; }
         .num-offen { background-color: #ff4d4d !important; }
         .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
+
+        #main-text::-webkit-scrollbar { width: 8px; }
+        #main-text::-webkit-scrollbar-track { background: #000; }
+        #main-text::-webkit-scrollbar-thumb { background: #003d8f; border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -145,6 +149,7 @@
     <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
         <div class="top-container">
             <h1 id="info-titel" class="page-title-white"></h1>
+            <div id="ebene4-title-red" class="ebene4-header-red">DER VIDEO-BEWEIS</div>
             
             <div class="tafel-layout">
                 <div class="buttons-links">
@@ -180,10 +185,26 @@
         <div id="chat-area">
             <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit... Buchstaben fliegen...</i></div>
             <div class="chat-input-row">
-                <input type="text" id="user-input" placeholder="Nachricht..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px;">
+                <input type="text" placeholder="Nachricht..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px;">
                 <button onclick="registriereSenden()" style="background:#003d8f; color:#fff; border:none; padding:0 30px; font-weight:bold; cursor:pointer;">SENDEN</button>
             </div>
         </div>
+
+      <div id="drawer-ebene4" style="margin-top: 0;">
+            <div class="drawer-content">
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 1 (DU)</div>
+                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 2</div>
+                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 3</div>
+                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 4</div>
+                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 5</div>
+                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 6</div>
+                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 7</div>
+                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 8</div>
+                </div>
+                <button style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; margin-top: 15px; font-weight: bold; cursor: pointer; border-radius: 5px;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
+            </div>
+        </div> 
     </div>
 
     <div class="bottom-nav">
@@ -194,8 +215,17 @@
 
     <script>
         const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
-        let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
-        themen.forEach((_, i) => { interaktionsZaehler[i] = 0; });
+        
+        const inhaltsTexte = { 
+            "Recht auf Gefühls Forderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühls Forderung zu etablieren...",
+            "Die Brücke": "Inhalt für das letzte Thema..."
+        };
+
+        let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set();
+        
+        // --- NEU: Zähler für die 20x20 Interaktionen ---
+        let interaktionsZaehler = {}; 
+        themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
         const grid = document.getElementById('main-grid');
         themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; });
@@ -204,12 +234,20 @@
         for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
         function showInfo(t, id) { 
-            tId = id; aktuellesThema = t;
-            if (geleseneThemen.size === 20) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
-            updateNumColors();
-            document.getElementById('dashboard').style.display = 'none';
-            document.getElementById('page-skelett').style.display = 'flex';
-            updateUI();
+            tId = id; 
+            aktuellesThema = t; 
+            
+            if (geleseneThemen.size === 20) {
+                ebene = 3; 
+            } else {
+                ebene = 2; 
+                geleseneThemen.add(id); 
+            }
+
+            updateNumColors(); 
+            document.getElementById('dashboard').style.display = 'none'; 
+            document.getElementById('page-skelett').style.display = 'flex'; 
+            updateUI(); 
         }
 
         function updateNumColors() { 
@@ -225,50 +263,116 @@
 
         function updateUI() {
             const isChat = ebene === 3;
-            document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
-            document.getElementById('info-titel').innerText = isChat ? "DIALOG" : aktuellesThema;
-            document.getElementById('main-text').style.display = isChat ? 'none' : 'block';
-            document.getElementById('main-text').innerText = isChat ? "" : "Inhalt für " + aktuellesThema;
-            document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
-            document.getElementById('btn-back').style.visibility = 'visible';
-            document.getElementById('btn-next').style.visibility = 'visible';
-            document.getElementById('btn-next').innerText = isChat ? "Video-Beweis →" : "Zum Dialog →";
+            const isVideo = ebene === 4;
+            const chatArea = document.getElementById('chat-area');
+            const drawer4 = document.getElementById('drawer-ebene4');
+            const redTitle = document.getElementById('ebene4-title-red');
+            const whiteTitle = document.getElementById('info-titel');
+            const mainText = document.getElementById('main-text');
+            const btnNext = document.getElementById('btn-next');
+            const counter = document.getElementById('counter-box');
 
-            for(let i=1; i<=7; i++) document.getElementById('dot'+i).classList.toggle('active', i === ebene);
+            chatArea.style.display = isChat ? 'flex' : 'none';
+            drawer4.style.display = isVideo ? 'flex' : 'none';
+            
+            redTitle.style.display = isVideo ? 'block' : 'none';
+            if(isVideo) {
+                redTitle.innerText = `VIDEO-BEWEIS: ${aktuellesThema.toUpperCase()}`;
+            }
+
+            whiteTitle.style.display = isVideo ? 'none' : 'block';
+            counter.style.display = ebene >= 3 ? 'block' : 'none';
+            document.getElementById('btn-back').style.visibility = 'visible';
+
+            if (ebene === 2) { 
+                whiteTitle.innerText = aktuellesThema; 
+                mainText.style.display = 'block'; 
+                mainText.innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet..."; 
+                btnNext.style.visibility = 'visible'; 
+                btnNext.innerText = (tId < 19) ? `Thema ${tId + 2} →` : "Fertig → Dashboard"; 
+            } else if (isChat) { 
+                btnNext.style.visibility = 'visible'; 
+                btnNext.innerText = "Video-Beweis →"; 
+                whiteTitle.innerText = "LIVE CHAT - " + aktuellesThema; 
+                mainText.style.display = 'none'; 
+            } else if (isVideo) {
+                btnNext.style.visibility = 'visible'; 
+                btnNext.innerText = "Ebene 5 →"; 
+                mainText.style.display = 'none';
+                console.log("Lade Video-Room für Thema ID: " + tId);
+            } else { 
+                btnNext.style.visibility = (ebene < 7) ? 'visible' : 'hidden'; 
+                btnNext.innerText = `Ebene ${ebene + 1} →`; 
+                whiteTitle.innerText = "FREIZONE - EBENE " + ebene; 
+                mainText.style.display = 'block'; 
+                mainText.innerText = "Dieser Bereich ist für zukünftige Inhalte reserviert."; 
+            }
+            for(let i=1; i<=7; i++) { 
+                const dot = document.getElementById('dot'+i); 
+                if(dot) dot.classList.toggle('active', i === ebene); 
+            }
             startRotation();
         }
 
-        function registriereSenden() {
-            const input = document.getElementById('user-input');
-            const box = document.getElementById('chat-box');
-            if(!input.value.trim()) return;
-
-            // Nachricht anzeigen
-            box.innerHTML += `<div><b>Du:</b> ${input.value}</div>`;
-            
-            // Zähler läuft nur im Hintergrund! Kein Text für den User.
-            if(interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++;
-
-            input.value = '';
-            box.scrollTop = box.scrollHeight;
+        function nextPage() { 
+            if (ebene === 2) { 
+                if (tId < 19) { 
+                    tId++; 
+                    showInfo(themen[tId], tId); 
+                } else {
+                    showDashboard(); 
+                }
+            } else if (ebene < 7) { 
+                ebene++; 
+                updateUI(); 
+            } 
         }
 
-        function nextPage() { if (ebene < 7) { ebene++; updateUI(); } }
-        function showDashboard() { ebene = 1; clearInterval(wechselInterval); document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
+        function showDashboard() { 
+            ebene = 1; 
+            clearInterval(wechselInterval); 
+            document.getElementById('page-skelett').style.display = 'none'; 
+            document.getElementById('dashboard').style.display = 'flex'; 
+            document.getElementById('btn-back').style.visibility = 'hidden'; 
+            document.getElementById('btn-next').style.visibility = 'hidden'; 
+            updateNumColors(); 
+        }
 
-        function startRotation() {
-            clearInterval(wechselInterval);
-            const bg = document.getElementById('werbe-bg');
-            if(!bg) return;
-            bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`;
-            bg.classList.add('bild-aktiv');
-            wechselInterval = setInterval(() => {
-                bg.classList.remove('bild-aktiv');
-                setTimeout(() => {
-                    bg.style.backgroundImage = `url('https://picsum.photos/seed/${Math.random()}/1200/600')`;
-                    bg.classList.add('bild-aktiv');
-                }, 50);
-            }, 10000);
+        function startRotation() { 
+            clearInterval(wechselInterval); 
+            const bg = document.getElementById('werbe-bg'); 
+            if(!bg) return; 
+            bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; 
+            bg.classList.add('bild-aktiv'); 
+            wechselInterval = setInterval(() => { 
+                bg.classList.remove('bild-aktiv'); 
+                setTimeout(() => { 
+                    bg.style.backgroundImage = `url('https://picsum.photos/seed/${Math.random()}/1200/600')`; 
+                    bg.classList.add('bild-aktiv'); 
+                }, 50); 
+            }, 10000); 
+        }
+
+        // --- LOGIK FÜR DIE 400 INTERAKTIONEN ---
+        function registriereSenden() {
+            if (interaktionsZaehler[tId] < 20) {
+                interaktionsZaehler[tId]++;
+                console.log(`Thema ${tId}: Interaktion ${interaktionsZaehler[tId]}/20`);
+                
+                // Optisches Feedback im Chat-Fenster
+                const chatBox = document.getElementById('chat-box');
+                chatBox.innerHTML += `<div><small style="color: #ffd700;">Interaktion ${interaktionsZaehler[tId]}/20 registriert...</small></div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+            pruefeSchoepferStatus();
+        }
+
+        function pruefeSchoepferStatus() {
+            const istVollstaendig = Object.values(interaktionsZaehler).every(count => count >= 20);
+            if (istVollstaendig) {
+                console.log("Status-Upgrade: DU BIST JETZT SCHÖPFER!");
+                alert("Muster erkannt: Du hast den Status SCHÖPFER erreicht!");
+            }
         }
     </script>
 </body>
