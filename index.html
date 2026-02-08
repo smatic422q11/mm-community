@@ -223,17 +223,11 @@
             "Wie werde ich Mensch": "Inhalt für das zweite Thema..."
         };
 
-        // DIE SCHALTZENTRALE: Jede der 20 Boxen bekommt ein eigenes Gedächtnis
-        const boxStatus = {};
-        themen.forEach((t, i) => {
-            boxStatus[i] = {
-                aktuelleEbene: 2, // Startet bei Ebene 2 nach Klick auf Dashboard
-                dialogVerlauf: "<i>System: Dialog zu " + t + " bereit...</i>"
-            };
-        });
+        let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set();
+        // Hier wird der Fortschritt jeder Box gespeichert (startet bei Ebene 2 für den Text)
+        const boxFortschritt = {}; 
+        themen.forEach((_, i) => boxFortschritt[i] = 2);
 
-        let tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set();
-        
         const grid = document.getElementById('main-grid');
         themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; });
         
@@ -244,6 +238,8 @@
             tId = id; 
             aktuellesThema = t; 
             geleseneThemen.add(id); 
+            // Beim Klick aus dem Dashboard landen wir IMMER erst im Text (Ebene 2)
+            ebene = 2; 
             updateNumColors(); 
             document.getElementById('dashboard').style.display = 'none'; 
             document.getElementById('page-skelett').style.display = 'flex'; 
@@ -262,7 +258,6 @@
         }
         
         function updateUI() {
-            const ebene = boxStatus[tId].aktuelleEbene; // Ebene der spezifischen Box laden
             const isChat = ebene === 3;
             const isVideo = ebene === 4;
             const chatArea = document.getElementById('chat-area');
@@ -285,13 +280,12 @@
                 mainText.style.display = 'block'; 
                 mainText.innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet..."; 
                 btnNext.style.visibility = 'visible'; 
-                btnNext.innerText = "Zum Dialog (Ebene 3) →"; 
+                btnNext.innerText = "Zum Dialog →"; 
             } else if (isChat) { 
                 btnNext.style.visibility = 'visible'; 
-                btnNext.innerText = "Video-Beweis (Ebene 4) →"; 
-                whiteTitle.innerText = "DIALOG: " + themen[tId]; 
+                btnNext.innerText = "Video-Beweis →"; 
+                whiteTitle.innerText = "LIVE CHAT - DIALOG"; 
                 mainText.style.display = 'none'; 
-                document.getElementById('chat-box').innerHTML = boxStatus[tId].dialogVerlauf;
             } else if (isVideo) {
                 btnNext.style.visibility = 'visible'; 
                 btnNext.innerText = "Ebene 5 →"; 
@@ -301,15 +295,19 @@
                 btnNext.innerText = `Ebene ${ebene + 1} →`; 
                 whiteTitle.innerText = "FREIZONE - EBENE " + ebene; 
                 mainText.style.display = 'block'; 
-                mainText.innerText = "Dieser Bereich von '" + themen[tId] + "' ist für zukünftige Inhalte reserviert."; 
+                mainText.innerText = "Dieser Bereich ist für zukünftige Inhalte reserviert."; 
             }
             for(let i=1; i<=7; i++) { const dot = document.getElementById('dot'+i); if(dot) dot.classList.toggle('active', i === ebene); }
             startRotation();
         }
 
         function nextPage() { 
-            if (boxStatus[tId].aktuelleEbene < 7) { 
-                boxStatus[tId].aktuelleEbene++; 
+            // Ab Ebene 3 wird der Fortschritt pro Box gespeichert
+            if (ebene < 7) { 
+                ebene++; 
+                if (ebene >= 3) {
+                    boxFortschritt[tId] = ebene;
+                }
                 updateUI(); 
             } 
         }
@@ -318,7 +316,7 @@
             clearInterval(wechselInterval); 
             const bg = document.getElementById('werbe-bg'); 
             if(!bg) return; 
-            bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + boxStatus[tId].aktuelleEbene}/1200/600')`; 
+            bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; 
             bg.classList.add('bild-aktiv'); 
             wechselInterval = setInterval(() => { 
                 bg.classList.remove('bild-aktiv'); 
@@ -330,6 +328,7 @@
         }
 
         function showDashboard() { 
+            ebene = 1; 
             clearInterval(wechselInterval); 
             document.getElementById('page-skelett').style.display = 'none'; 
             document.getElementById('dashboard').style.display = 'flex'; 
