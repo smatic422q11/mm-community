@@ -17,7 +17,13 @@
             100% { box-shadow: 0 0 5px #fff; opacity: 0.8; }
         }
 
-        /* SPEZIAL: SCHWARZ-GRAUES ELITE BLINKEN */
+        /* LILA LEISTE ANIMATION */
+        @keyframes lilaLeuchten {
+            0% { box-shadow: 0 0 5px #8b00ff; opacity: 0.8; }
+            50% { box-shadow: 0 0 20px #8b00ff, 0 0 40px #8b00ff; opacity: 1; }
+            100% { box-shadow: 0 0 5px #8b00ff; opacity: 0.8; }
+        }
+
         @keyframes eliteBlink {
             0% { background-color: #000; box-shadow: 0 0 5px #333; }
             50% { background-color: #444; box-shadow: 0 0 20px #666, inset 0 0 10px #000; transform: scale(1.1); }
@@ -26,13 +32,6 @@
 
         .signal-aktiv { animation: signalBlink 1.0s infinite ease-in-out !important; border: 2px solid #fff !important; cursor: pointer; }
         .elite-aktiv { animation: eliteBlink 2s infinite ease-in-out !important; border: 2px solid #ffd700 !important; cursor: pointer; }
-
-        /* LILA BUTTON EFFEKT */
-        .btn-lila { 
-            background: #8b00ff; color: #fff; border: 2px solid #fff; padding: 20px; 
-            font-weight: 900; cursor: pointer; animation: signalBlink 1.5s infinite;
-            text-transform: uppercase; letter-spacing: 2px; margin-top: 20px; width: 100%; max-width: 400px;
-        }
 
         /* HEADER & LOGO */
         .dashboard-header { width: 100%; position: absolute; top: 3%; display: flex; justify-content: flex-start; padding: 0 2%; box-sizing: border-box; z-index: 20; }
@@ -44,6 +43,18 @@
         .info-section { width: 80%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; position: relative; overflow: hidden; margin-top: 2vh; }
         .tafel-layout { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; margin-top: 1vh; height: 26vh; flex-shrink: 0; }
         .info-section-ebene { width: 90% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; box-shadow: 0 0 15px rgba(0, 61, 143, 0.5); }
+
+        /* DIE LILA LEISTE (Ganze Breite) */
+        .lila-leiste-container { width: 100%; display: flex; justify-content: center; margin-top: 2px; z-index: 30; }
+        .lila-leiste { 
+            width: 100%; 
+            height: 8px; 
+            background: #8b00ff; 
+            box-shadow: 0 0 15px #8b00ff; 
+            cursor: pointer; 
+            animation: lilaLeuchten 2s infinite ease-in-out;
+            display: none; /* Wird per JS in Ebene 5 eingeblendet */
+        }
 
         .buttons-links { position: absolute; left: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
         .buttons-rechts { position: absolute; right: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
@@ -61,7 +72,7 @@
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
-        /* CHAT- & EBENEN-BEREICHE */
+        /* BEREICHE */
         #chat-area, #drawer-ebene4, #ebene5-bereich { width: 90% !important; flex-grow: 1; display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; overflow: hidden; position: relative; }
         .chat-msgs { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px 0; color: #fff; font-size: 1.1rem; text-shadow: 2px 2px 4px #000; overflow-y: auto; }
         .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; z-index: 10; }
@@ -85,7 +96,6 @@
         /* STATUSFARBEN GRID */
         .num-neutral { background-color: #003d8f !important; }
         .num-gelesen { background-color: #ffd700 !important; color: #000 !important; }
-        .num-offen { background-color: #ff4d4d !important; }
         .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
 
         /* VIDEO-GRID EBENE 4 */
@@ -144,6 +154,9 @@
                     <div class="oval-side ov-gelb" id="sig-r4" onclick="portalZuEbene3()"></div>
                 </div>
             </div>
+            <div class="lila-leiste-container">
+                <div id="admin-leiste" class="lila-leiste" onclick="starteAdminProzess()"></div>
+            </div>
         </div>
 
         <p id="main-text" style="width: 85%; text-align: justify; color: #ccc; margin-top: 2vh; font-size: 1.3rem; line-height: 1.8; max-width: 1200px; overflow-y: auto; max-height: 50vh; padding-right: 15px;"></p>
@@ -178,9 +191,8 @@
                 <p>Sie haben die Qualifikationsphase durchlaufen. Dieser Raum dient der Vorbereitung des Konstrukts. 
                    Wer ernsthaftes Interesse hat, für den Vorstand zu kandidieren, muss nun die administrativen 
                    Hürden nehmen. Hier werden Identitäts-Checks, Server-Zuweisungen und rechtliche Verträge vorbereitet.</p>
-                <p style="color: #666; font-style: italic;">Freier Bereich für visionäre Konstruktionsarbeit...</p>
+                <p style="color: #666; font-style: italic;">Nutzen Sie die lila Leiste oben für administrative Prozesse...</p>
             </div>
-            <button class="btn-lila" onclick="starteAdminProzess()">ADMINISTRATIVE WEGE ÖFFNEN</button>
         </div>
 
     </div>
@@ -192,15 +204,7 @@
     </div>
 
 <script>
-    // --- DATABASE BACKSTAGE (SIMULATION) ---
-    let userBackstage = {
-        sektorZeiten: Array(20).fill(0), 
-        isQualifiziert: false,
-        stammSektor: null,
-        rankingPlatz: 5, 
-        zaehlerInterval: null
-    };
-
+    let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, rankingPlatz: 5 };
     const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
     let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
@@ -214,7 +218,7 @@
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
     function adminUnlock() {
-        themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; userBackstage.sektorZeiten[i] = 1801; });
+        themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
         userBackstage.isQualifiziert = true;
         updateNumColors();
         if (ebene > 1) updateUI();
@@ -230,31 +234,25 @@
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
     function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
-    
-    // NEU: Ebene 5 Aufruf
-    function portalZuEbene5() {
-        if (document.getElementById('sig-l1').classList.contains('elite-aktiv')) {
-            ebene = 5;
-            updateUI();
-        }
-    }
+    function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv')) { ebene = 5; updateUI(); } }
 
     function updateUI() {
         const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
-        
         document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
         document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
         document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
         
+        // Lila Leiste nur in Ebene 5 zeigen
+        document.getElementById('admin-leiste').style.display = isAdmin ? 'block' : 'none';
+
         document.getElementById('main-text').style.display = (ebene < 3) ? 'block' : 'none';
         document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
         document.getElementById('info-titel').style.display = isVideo ? 'none' : 'block';
         document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
         document.getElementById('btn-back').style.visibility = 'visible';
 
-        if(isAdmin) {
-            document.getElementById('info-titel').innerText = "VORSTANDS-ADMINISTRATION";
-        } else if (ebene === 2) { 
+        if(isAdmin) document.getElementById('info-titel').innerText = "VORSTANDS-ADMINISTRATION";
+        else if (ebene === 2) { 
             document.getElementById('info-titel').innerText = aktuellesThema; 
             document.getElementById('main-text').innerText = "Inhalt für " + aktuellesThema + "..."; 
         }
@@ -271,7 +269,6 @@
 
     function aktiviereKandidatenLicht() {
         const sigL1 = document.getElementById('sig-l1');
-        // Bedingung: Entweder Admin-Unlock oder echte Qualifikation (Top 22 Ranking)
         if (userBackstage.isQualifiziert || userBackstage.rankingPlatz <= 22) {
             sigL1.className = "oval-side elite-aktiv";
             sigL1.onclick = () => portalZuEbene5();
@@ -280,7 +277,7 @@
 
     function starteAdminProzess() {
         if(confirm("Identitäts-Check und Server-Zertifizierung starten?")) {
-            alert("HINTERGRUND-SYSTEM: Server-Verträge werden generiert. Identitätsprüfung aktiv. Bitte halten Sie Ihre Dokumente bereit.");
+            alert("HINTERGRUND-SYSTEM: Server-Verträge werden generiert. Identitätsprüfung aktiv.");
         }
     }
 
