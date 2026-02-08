@@ -185,7 +185,7 @@
         <div id="chat-area">
             <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit... Buchstaben fliegen...</i></div>
             <div class="chat-input-row">
-                <input type="text" placeholder="Nachricht..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px;">
+                <input type="text" id="user-input" placeholder="Nachricht..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px;">
                 <button onclick="registriereSenden()" style="background:#003d8f; color:#fff; border:none; padding:0 30px; font-weight:bold; cursor:pointer;">SENDEN</button>
             </div>
         </div>
@@ -223,9 +223,12 @@
 
         let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set();
         
-        // --- NEU: Zähler für die 20x20 Interaktionen ---
-        let interaktionsZaehler = {}; 
-        themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
+        // --- PERSISTENTE LOGIK FÜR DIE 400 INTERAKTIONEN ---
+        let interaktionsZaehler = JSON.parse(localStorage.getItem('mm_interaktionen')) || {};
+        // Initialisierung falls leer
+        if (Object.keys(interaktionsZaehler).length === 0) {
+            themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
+        }
 
         const grid = document.getElementById('main-grid');
         themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; });
@@ -295,11 +298,13 @@
                 btnNext.innerText = "Video-Beweis →"; 
                 whiteTitle.innerText = "LIVE CHAT - " + aktuellesThema; 
                 mainText.style.display = 'none'; 
+                // Anzeige der bereits getätigten Interaktionen im Chat
+                const chatBox = document.getElementById('chat-box');
+                chatBox.innerHTML = `<i>System: Dialog bereit... (${interaktionsZaehler[tId]}/20 Interaktionen hier registriert)</i>`;
             } else if (isVideo) {
                 btnNext.style.visibility = 'visible'; 
                 btnNext.innerText = "Ebene 5 →"; 
                 mainText.style.display = 'none';
-                console.log("Lade Video-Room für Thema ID: " + tId);
             } else { 
                 btnNext.style.visibility = (ebene < 7) ? 'visible' : 'hidden'; 
                 btnNext.innerText = `Ebene ${ebene + 1} →`; 
@@ -353,17 +358,18 @@
             }, 10000); 
         }
 
-        // --- LOGIK FÜR DIE 400 INTERAKTIONEN ---
         function registriereSenden() {
+            const input = document.getElementById('user-input');
             if (interaktionsZaehler[tId] < 20) {
                 interaktionsZaehler[tId]++;
-                console.log(`Thema ${tId}: Interaktion ${interaktionsZaehler[tId]}/20`);
+                // Speichern im LocalStorage
+                localStorage.setItem('mm_interaktionen', JSON.stringify(interaktionsZaehler));
                 
-                // Optisches Feedback im Chat-Fenster
                 const chatBox = document.getElementById('chat-box');
                 chatBox.innerHTML += `<div><small style="color: #ffd700;">Interaktion ${interaktionsZaehler[tId]}/20 registriert...</small></div>`;
                 chatBox.scrollTop = chatBox.scrollHeight;
             }
+            input.value = "";
             pruefeSchoepferStatus();
         }
 
@@ -374,6 +380,9 @@
                 alert("Muster erkannt: Du hast den Status SCHÖPFER erreicht!");
             }
         }
+
+        // Initiale Prüfung beim Laden
+        window.onload = pruefeSchoepferStatus;
     </script>
 </body>
 </html>
