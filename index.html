@@ -14,91 +14,48 @@
         }
 
         /* ANIMATIONEN */
-        @keyframes kenburns {
-            0% { transform: scale(1) translate(0, 0); }
-            50% { transform: scale(1.15) translate(-1%, -1%); }
-            100% { transform: scale(1) translate(0, 0); }
-        }
-        @keyframes fadeEffect {
-            0% { opacity: 0; }
-            15% { opacity: 0.4; } 
-            85% { opacity: 0.4; } 
-            100% { opacity: 0; }  
-        }
-
-        /* SIGNAL-BLINKEN */
         @keyframes signalBlink {
             0% { box-shadow: 0 0 5px #fff; opacity: 0.8; }
             50% { box-shadow: 0 0 25px #fff, 0 0 35px #003d8f; opacity: 1; transform: scale(1.05); }
             100% { box-shadow: 0 0 5px #fff; opacity: 0.8; }
         }
-        .signal-aktiv { 
-            animation: signalBlink 1.0s infinite ease-in-out !important; 
-            border: 2px solid #fff !important;
-            cursor: pointer;
-        }
+        .signal-aktiv { animation: signalBlink 1.0s infinite ease-in-out !important; border: 2px solid #fff !important; cursor: pointer; }
 
         /* HEADER & LOGO */
-        .dashboard-header { 
-            width: 100%; position: absolute; top: 3%; 
-            display: flex; justify-content: flex-start; padding: 0 2%; 
-            box-sizing: border-box; z-index: 20;
-        }
-        .logo-ring { 
-            width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; 
-            border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            cursor: pointer;
-        }
+        .dashboard-header { width: 100%; position: absolute; top: 3%; display: flex; justify-content: flex-start; padding: 0 2%; box-sizing: border-box; z-index: 20; }
+        .logo-ring { width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; }
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
 
-        /* TAFEL DESIGNS */
-        .info-section { 
-            width: 80%; height: 26vh; border: 2px solid #003d8f; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            background-color: #000; position: relative; overflow: hidden; margin-top: 2vh;
-        }
-        .info-section-ebene { 
-            width: 90% !important; height: 100%; border: 2px solid #003d8f; 
-            background-color: #000; position: relative; overflow: hidden;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 10; box-shadow: 0 0 15px rgba(0, 61, 143, 0.5);
-        }
-
-        .buttons-links { position: absolute; left: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
-        .buttons-rechts { position: absolute; right: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
-        .oval-side { width: 45px; height: 22px; border-radius: 12px; border: 1px solid #fff; opacity: 0.8; }
-        .ov-grun { background: #00ff00; } .ov-blau { background: #0000ff; } .ov-rot { background: #ff0000; } .ov-gelb { background: #ffff00; }
-
         /* GRID DASHBOARD */
-        .grid { 
-            display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); 
-            grid-auto-flow: column; gap: 10px; width: 95%; max-width: 1450px; 
-            margin-top: 30px; border: 3px solid #00ff00; padding: 15px; border-radius: 10px;
-        }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); gap: 10px; width: 95%; max-width: 1450px; margin-top: 30px; border: 3px solid #00ff00; padding: 15px; border-radius: 10px; }
         .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; overflow: hidden; }
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
-        /* STATUSFARBEN */
+        /* EBENEN STATUS FARBEN */
         .num-neutral { background-color: #003d8f !important; }
         .num-gelesen { background-color: #ffd700 !important; color: #000 !important; }
         .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
 
-        /* CHAT & EBENEN-AREALE */
-        #chat-area, #drawer-ebene4, #admin-ebene5 { width: 90% !important; flex-grow: 1; display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; overflow: hidden; }
-        .chat-msgs { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px 0; color: #fff; overflow-y: auto; }
+        /* TAFEL / INFO SECTION */
+        .info-section { width: 80%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; position: relative; margin-top: 2vh; }
+        .info-section-ebene { width: 90% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        
+        .buttons-links, .buttons-rechts { position: absolute; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
+        .buttons-links { left: 1.5%; } .buttons-rechts { right: 1.5%; }
+        .oval-side { width: 45px; height: 22px; border-radius: 12px; border: 1px solid #fff; opacity: 0.8; }
+        .ov-grun { background: #00ff00; } .ov-blau { background: #0000ff; } .ov-rot { background: #ff0000; } .ov-gelb { background: #ffff00; } .ov-pink { background: #ff00ff; }
+
+        /* CHAT & EBENE 4/5 */
+        #chat-area, #drawer-ebene4, #admin-ebene5 { width: 90% !important; flex-grow: 1; display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; overflow-y: auto; }
         .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0,0,0,0.9); padding: 5px; }
 
-        /* NAVIGATION */
-        .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; background: #000; z-index: 100; }
+        /* NAV */
+        .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; background: #000; }
         .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
         .dot { width: 10px; height: 10px; background: #444; border-radius: 50%; }
-        .dot.active { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
-
-        /* WERBUNG / BACKGROUND */
-        .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
-        .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
+        .dot.active { background: #ffd700; }
     </style>
 </head>
 <body>
@@ -110,61 +67,59 @@
         <div class="info-section">
             <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
             <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
-            <p style="max-width: 85%; color: #ccc; text-align: center;">Die Wahl der Vorsitzenden erfolgt erst nach Erreichen der stillen Million.</p>
         </div>
         <div class="grid" id="main-grid"></div>
-        <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 80px;">
+        <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px;">
             <div class="fundament-box" style="flex: 1;"><div class="num">21</div><div class="text">Kapital und Verwaltung</div></div>
             <div class="fundament-box" style="flex: 1;"><div class="num">22</div><div class="text">DAS KOLLEKTIV (20+1+DU)</div></div>
         </div>
     </div>
 
     <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
-        <h1 id="info-titel" style="text-transform: uppercase; font-size: 1.8rem; margin-top: 2vh; font-weight: 900;"></h1>
+        <h1 id="info-titel" style="text-transform: uppercase; font-size: 1.8rem; margin-top: 2vh;"></h1>
         
-        <div class="info-section" style="width: 90%; height: 22vh; margin-top: 1vh;">
-            <div class="werbe-bild-bg" id="werbe-bg"></div>
+        <div class="info-section" style="width: 90%; height: 20vh;">
             <div class="buttons-links">
                 <div class="oval-side ov-rot" id="sig-l4" onclick="portalZuEbene4()"></div>
             </div>
             <div class="info-section-ebene">
-                <div style="font-weight: bold; letter-spacing: 5px; z-index: 5;">M&M COMMUNITY</div>
-                <div id="admin-status" style="color: #ffd700; font-size: 0.7rem; z-index: 5; display: none;">SCHÖPFER-MODUS AKTIV</div>
+                <div id="admin-info" style="color: #ffd700; font-size: 0.8rem; display: none;">ADMIN-MODUS AKTIV</div>
+                <div style="font-weight: bold; letter-spacing: 5px;">M&M COMMUNITY</div>
             </div>
             <div class="buttons-rechts">
                 <div class="oval-side ov-gelb" id="sig-r4" onclick="portalZuEbene3()"></div>
             </div>
         </div>
 
-        <p id="main-text" style="width: 85%; color: #ccc; text-align: justify; font-size: 1.2rem; line-height: 1.6; max-height: 40vh; overflow-y: auto;"></p>
+        <p id="main-text" style="width: 85%; color: #ccc; text-align: justify;"></p>
 
         <div id="chat-area">
-            <div class="chat-msgs" id="chat-box"></div>
+            <div id="chat-box" style="flex: 1; overflow-y: auto; padding: 10px;"></div>
             <div class="chat-input-row">
-                <input type="text" id="chat-input" placeholder="Nachricht..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px;" onkeypress="if(event.key==='Enter') registriereSenden()">
-                <button onclick="registriereSenden()" style="background:#003d8f; color:#fff; border:none; padding:0 30px; cursor:pointer;">SENDEN</button>
+                <input type="text" id="chat-input" style="flex:1; background:transparent; color:#fff; border:none; padding:10px;">
+                <button onclick="registriereSenden()" style="background:#003d8f; color:#fff; border:none; padding:10px 20px;">SENDEN</button>
             </div>
         </div>
 
-        <div id="drawer-ebene4">
-            <h2 style="text-align: center; color: #ff0000;">VIDEO-BEWEIS</h2>
-            <div style="display: grid; grid-template-columns: repeat(4, 2fr); gap: 10px; padding: 10px;">
-                <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #00ff00; display: flex; align-items: center; justify-content: center;">DEIN VIDEO</div>
-                <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #333; display: flex; align-items: center; justify-content: center;">SLOT 2</div>
+        <div id="drawer-ebene4" style="text-align: center;">
+            <h3>VIDEO-BEWEIS DER IDENTITÄT</h3>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 20px;">
+                <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #00ff00;">DEIN SLOT</div>
+                <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #333;">SLOT 2</div>
             </div>
         </div>
 
-        <div id="admin-ebene5" style="padding: 20px; background: #050505; border: 2px solid #ffd700;">
-            <h2 style="color: #ffd700;">KANDIDATUR: EBENE 5</h2>
-            <p>Formuliere hier deine Mission für das Kollektiv. Dies ist der Übergang zum Vorstand.</p>
-            <textarea style="width: 100%; height: 150px; background: #000; color: #fff; border: 1px solid #003d8f; padding: 10px;"></textarea>
-            <button style="width: 100%; padding: 15px; background: #ffd700; color: #000; font-weight: bold; margin-top: 10px; border: none;">KANDIDATUR EINREICHEN</button>
+        <div id="admin-ebene5" style="background: #050505; border: 1px solid #ffd700; padding: 20px;">
+            <h2 style="color: #ffd700;">EBENE 5: KANDIDATUR ZUM VORSTAND</h2>
+            <p>Hier bereiten Schöpfer ihre Mission für das Kollektiv vor.</p>
+            <textarea placeholder="Dein Plan für dieses Thema im Kollektiv..." style="width: 100%; height: 100px; background: #111; color: #fff; border: 1px solid #003d8f;"></textarea>
+            <button style="margin-top: 10px; background: #ffd700; color: #000; padding: 10px; font-weight: bold; width: 100%;">ALS KANDIDAT REGISTRIEREN</button>
         </div>
     </div>
 
     <div class="bottom-nav">
         <button id="btn-back" class="nav-btn" onclick="showDashboard()">← Dashboard</button>
-        <div id="dot-holder" style="display: flex; gap: 8px; align-items: center;"></div>
+        <div id="dot-holder" style="display: flex; gap: 8px;"></div>
         <button id="btn-next" class="nav-btn" onclick="nextPage()">Weiter →</button>
     </div>
 
@@ -178,10 +133,11 @@
         "Mutter und Kind", "Die Brücke"
     ];
 
-    let ebene = 1, tId = 0, isAdmin = false, wechselInterval;
-    let geleseneThemen = new Set();
+    let ebene = 1, tId = 0, isAdmin = false;
     let interaktionsZaehler = Array(20).fill(0);
+    let geleseneThemen = new Set();
 
+    // GRID INITIALISIEREN
     const grid = document.getElementById('main-grid');
     themen.forEach((t, i) => { 
         grid.innerHTML += `<div class="box"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo(${i})">${t}</div></div>`; 
@@ -193,13 +149,15 @@
     function adminUnlock() {
         isAdmin = true;
         themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
-        document.getElementById('admin-status').style.display = 'block';
+        document.getElementById('admin-info').style.display = 'block';
         updateNumColors();
-        alert("ADMIN: Alle Ebenen freigeschaltet.");
+        alert("ADMIN-MODUS: Barrierefreies Arbeiten aktiviert.");
     }
 
     function showInfo(id) {
-        tId = id; ebene = 2; geleseneThemen.add(id);
+        tId = id;
+        ebene = 2;
+        geleseneThemen.add(id);
         document.getElementById('dashboard').style.display = 'none';
         document.getElementById('page-skelett').style.display = 'flex';
         updateUI();
@@ -207,34 +165,31 @@
 
     function updateUI() {
         document.getElementById('info-titel').innerText = themen[tId];
-        document.getElementById('main-text').style.display = (ebene === 2) ? 'block' : 'none';
-        document.getElementById('main-text').innerText = "Hier steht der Text zu: " + themen[tId];
+        document.getElementById('main-text').innerText = ebene === 2 ? "Inhalt zu " + themen[tId] + "..." : "";
+        document.getElementById('main-text').style.display = ebene === 2 ? 'block' : 'none';
         
-        document.getElementById('chat-area').style.display = (ebene === 3) ? 'flex' : 'none';
-        document.getElementById('drawer-ebene4').style.display = (ebene === 4) ? 'flex' : 'none';
-        document.getElementById('admin-ebene5').style.display = (ebene === 5 && isAdmin) ? 'flex' : 'none';
+        document.getElementById('chat-area').style.display = ebene === 3 ? 'flex' : 'none';
+        document.getElementById('drawer-ebene4').style.display = ebene === 4 ? 'block' : 'none';
+        document.getElementById('admin-ebene5').style.display = (ebene === 5 && isAdmin) ? 'block' : 'none';
 
-        document.getElementById('sig-r4').classList.toggle('signal-aktiv', (ebene === 2 && geleseneThemen.size === 20));
-        document.getElementById('sig-l4').classList.toggle('signal-aktiv', (ebene === 3 && interaktionsZaehler.every(v => v >= 20)));
+        // Signale
+        const sigGelb = document.getElementById('sig-r4');
+        const sigRot = document.getElementById('sig-l4');
+        sigGelb.classList.toggle('signal-aktiv', (ebene === 2 && geleseneThemen.size === 20));
+        sigRot.classList.toggle('signal-aktiv', (ebene === 3 && interaktionsZaehler.every(v => v >= 20)));
 
         updateDots();
-        startRotation();
     }
 
-    function nextPage() { if (ebene < 7) { ebene++; updateUI(); } }
-    function showDashboard() { 
-        ebene = 1; clearInterval(wechselInterval);
+    function nextPage() {
+        if (ebene < 7) { ebene++; updateUI(); }
+    }
+
+    function showDashboard() {
+        ebene = 1;
         document.getElementById('page-skelett').style.display = 'none';
         document.getElementById('dashboard').style.display = 'flex';
         updateNumColors();
-    }
-
-    function registriereSenden() {
-        const input = document.getElementById('chat-input');
-        if (!input.value.trim()) return;
-        document.getElementById('chat-box').innerHTML += `<div><strong>Du:</strong> ${input.value}</div>`;
-        if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++;
-        input.value = ""; updateUI();
     }
 
     function updateNumColors() {
@@ -248,17 +203,8 @@
     function portalZuEbene3() { if (geleseneThemen.size === 20) { ebene = 3; updateUI(); } }
     function portalZuEbene4() { if (interaktionsZaehler.every(v => v >= 20)) { ebene = 4; updateUI(); } }
 
-    function updateDots() { for(let i=1; i<=7; i++) document.getElementById('dot'+i).classList.toggle('active', i === ebene); }
-
-    function startRotation() {
-        clearInterval(wechselInterval);
-        const bg = document.getElementById('werbe-bg');
-        bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId+ebene}/1200/600')`;
-        bg.classList.add('bild-aktiv');
-        wechselInterval = setInterval(() => {
-            bg.classList.remove('bild-aktiv');
-            setTimeout(() => { bg.classList.add('bild-aktiv'); }, 50);
-        }, 10000);
+    function updateDots() {
+        for(let i=1; i<=7; i++) document.getElementById('dot'+i).classList.toggle('active', i === ebene);
     }
 </script>
 </body>
