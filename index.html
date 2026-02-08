@@ -90,9 +90,18 @@
             display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; 
         }
 
-        .chat-msgs, .drawer-content { 
-            flex: 1; padding: 10px 0; overflow-y: auto; color: #fff; font-size: 1.1rem; text-shadow: 2px 2px 4px #000; 
-        }
+       .chat-msgs { 
+    flex: 1; 
+    padding: 10px 0; 
+    overflow-y: auto; 
+    color: #fff; 
+    font-size: 1.1rem; 
+    text-shadow: 2px 2px 4px #000;
+    /* NEU: Das drückt den Text nach unten */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; 
+}
 
         .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; }
         .chat-msgs::-webkit-scrollbar { width: 0px; }
