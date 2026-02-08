@@ -130,7 +130,7 @@
 
         #drawer-ebene4 { width: 90% !important; flex-grow: 1; display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; }
 
-        /* NEU: SCHUBLADEN (DRAWER) STYLES */
+        /* SCHUBLADEN (DRAWER) STYLES */
         .drawer-right {
             position: fixed; top: 0; right: -400px; 
             width: 350px; height: 100%; 
@@ -217,14 +217,7 @@
             <div class="drawer-content">
                 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
                     <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 1 (DU)</div>
-                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 2</div>
-                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 3</div>
-                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 4</div>
-                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 5</div>
-                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 6</div>
-                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 7</div>
-                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 8</div>
-                </div>
+                    </div>
                 <button style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; margin-top: 15px; font-weight: bold; cursor: pointer; border-radius: 5px;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
             </div>
         </div> 
@@ -233,13 +226,8 @@
     <div id="info-drawer" class="drawer-right">
         <div class="drawer-handle" onclick="toggleDrawer()">ZUSATZ-INFOS</div>
         <button class="drawer-close" onclick="toggleDrawer()">SCHLIESSEN ×</button>
-        <h3 style="color: #ffd700; border-bottom: 1px solid #003d8f; padding-bottom: 10px;">DETAILS</h3>
         <div id="drawer-content" style="font-size: 0.9rem; line-height: 1.6; color: #ccc;">
-            <p><strong>Die Forderung:</strong><br>Hier werden die Bedingungen für die Mitgliedschaft präzisiert.</p>
-            <p><strong>Das Angebot:</strong><br>Was die Community im Gegenzug leistet.</p>
-            <hr style="border: 0; border-top: 1px solid #333;">
-            <p style="font-style: italic;">"Wer fordert, muss auch bieten. Wer bietet, darf auch fordern."</p>
-        </div>
+            </div>
     </div>
 
     <div class="bottom-nav">
@@ -249,11 +237,28 @@
     </div>
 
    <script>
-    const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
+    const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
     
     const inhaltsTexte = { 
-        "Recht auf Gefühlsvorderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühls Forderung zu etablieren...",
+        "Recht auf Gefühls Forderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühls Forderung zu etablieren...",
+        "Wie werde ich Mensch": "Inhalt zum Menschsein...",
         "Die Brücke": "Inhalt für das letzte Thema..."
+    };
+
+    // --- NEU: ZENTRALE SCHUBLADEN-TEXTE ---
+    const drawerTexte = {
+        "Recht auf Gefühls Forderung": {
+            titel: "DETAIL: GEFÜHLS FORDERUNG",
+            inhalt: "Hier definieren wir den Unterschied zwischen materiellen Ansprüchen und der moralischen Pflicht. Gefühls Forderung mit Vogel-v wird immer so geschrieben."
+        },
+        "Wie werde ich Mensch": {
+            titel: "DER WEG ZUM MENSCH-SEIN",
+            inhalt: "Zusätzliche Erläuterungen zu den ethischen Grundpfeilern dieser Ebene..."
+        },
+        "Standard": {
+            titel: "ZUSATZ-INFORMATION",
+            inhalt: "Hier folgen spezifische Details zu diesem Thema, sobald sie definiert sind."
+        }
     };
 
     let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set();
@@ -324,7 +329,6 @@
         counter.style.display = ebene >= 3 ? 'block' : 'none';
         document.getElementById('btn-back').style.visibility = isDashboard ? 'hidden' : 'visible';
         
-        // Drawer nur anzeigen, wenn NICHT auf dem Dashboard
         infoDrawer.style.display = isDashboard ? 'none' : 'flex';
 
         if (ebene === 2) { 
@@ -357,8 +361,21 @@
         startRotation();
     }
 
+    // --- NEU: DYNAMISCHE TOGGLE FUNKTION ---
     function toggleDrawer() {
-        document.getElementById('info-drawer').classList.toggle('open');
+        const drawer = document.getElementById('info-drawer');
+        const contentBox = document.getElementById('drawer-content');
+        
+        const info = drawerTexte[aktuellesThema] || drawerTexte["Standard"];
+        
+        contentBox.innerHTML = `
+            <h3 style="color: #ffd700; border-bottom: 1px solid #003d8f; padding-bottom: 10px;">${info.titel}</h3>
+            <p>${info.inhalt}</p>
+            <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
+            <p style="font-size: 0.8rem; color: #888;">Hinweis: Vorsitzende werden erst nach Erreichen der Stillen Million gewählt.</p>
+        `;
+
+        drawer.classList.toggle('open');
     }
 
     function nextPage() { 
