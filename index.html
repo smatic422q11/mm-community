@@ -26,15 +26,14 @@
             100% { opacity: 0; }  
         }
 
-        /* BLINK-LOGIK FÜR DIE OVALE (SIGNAL-ZENTRALE) */
+        /* SIGNAL-BLINKEN */
         @keyframes signalBlink {
             0% { box-shadow: 0 0 5px #fff; opacity: 0.8; }
             50% { box-shadow: 0 0 25px #fff, 0 0 35px #003d8f; opacity: 1; transform: scale(1.05); }
             100% { box-shadow: 0 0 5px #fff; opacity: 0.8; }
         }
         .signal-aktiv { 
-            animation: signalBlink 1.5s infinite ease-in-out !important; 
-            cursor: pointer; 
+            animation: signalBlink 1.0s infinite ease-in-out !important; 
             border: 2px solid #fff !important;
         }
 
@@ -57,12 +56,10 @@
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
             background-color: #000; position: relative; overflow: hidden; margin-top: 2vh;
         }
-
         .tafel-layout { 
             display: flex; align-items: center; justify-content: center; 
             width: 100%; position: relative; margin-top: 1vh; height: 26vh; flex-shrink: 0;
         }
-
         .info-section-ebene { 
             width: 90% !important; height: 100%; border: 2px solid #003d8f; 
             background-color: #000; position: relative; overflow: hidden;
@@ -72,7 +69,6 @@
 
         .buttons-links { position: absolute; left: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
         .buttons-rechts { position: absolute; right: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
-        
         .oval-side { width: 45px; height: 22px; border-radius: 12px; border: 1px solid #fff; opacity: 0.8; transition: all 0.3s; }
         .ov-schwarz { background: #000; border: 1.5px solid #003d8f; }
         .ov-grun { background: #00ff00; }
@@ -92,39 +88,37 @@
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
         /* CHAT-BEREICH */
-        #chat-area { 
-            width: 90% !important; flex-grow: 1; display: none; 
-            flex-direction: column; margin-top: 5px; margin-bottom: 70px; 
-            overflow: hidden; position: relative; 
-        }
-        .chat-msgs { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px 0; color: #fff; font-size: 1.1rem; text-shadow: 2px 2px 4px #000; overflow: hidden; }
+        #chat-area { width: 90% !important; flex-grow: 1; display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; overflow: hidden; position: relative; }
+        .chat-msgs { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px 0; color: #fff; font-size: 1.1rem; text-shadow: 2px 2px 4px #000; overflow-y: auto; }
         .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; z-index: 10; }
 
-        /* NAVIGATION & DOTS */
+        /* NAVIGATION */
         .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; background: #000; z-index: 100; }
         .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
         .dot { width: 10px; height: 10px; background: #444; border-radius: 50%; }
         .dot.active { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
 
+        /* SPEZIALELEMENTE */
         #counter-box { position: absolute; right: 0; top: 0; width: 100px; padding: 5px; border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f; background: #000; text-align: center; display: none; z-index: 100; }
         .counter-label { font-size: 0.4rem; color: #fff; display: block; }
         .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
-        
         .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh; flex-shrink: 0; }
         .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
-
         .ebene4-header-red { width: 90%; background: #ff0000; color: #fff; padding: 10px 0; text-align: center; font-weight: 900; font-size: 1.5rem; border-radius: 5px 5px 0 0; display: none; }
 
+        /* STATUSFARBEN GRID */
         .num-neutral { background-color: #003d8f !important; }
         .num-gelesen { background-color: #ffd700 !important; color: #000 !important; }
         .num-offen { background-color: #ff4d4d !important; }
         .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
 
+        /* DRAWER EBENE 4 */
         #drawer-ebene4 { width: 90% !important; flex-grow: 1; display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; }
         .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
         .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; position: relative; }
         .slot-1-user { border-color: #00ff00; color: #00ff00; }
-        
+
+        /* WERBUNG */
         .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
         .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
         .tafel-intern-logo { position: absolute; top: 10px; left: 10px; z-index: 5; }
@@ -222,25 +216,65 @@
     let interaktionsZaehler = {}; 
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
+    // Grid aufbauen
     const grid = document.getElementById('main-grid');
-    themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; });
+    themen.forEach((t, i) => { 
+        grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; 
+    });
     
+    // Dots aufbauen
     const dots = document.getElementById('dot-holder');
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
-
-    function activateSignal(id) {
-        const el = document.getElementById(id);
-        if(el) el.classList.add('signal-aktiv');
-    }
 
     function showInfo(t, id) { 
         tId = id; 
         aktuellesThema = t; 
+        
+        // CHAT LEEREN, DAMIT THEMEN UNABHÄNGIG SIND
+        document.getElementById('chat-box').innerHTML = `<i>System: Dialog für ${t} bereit...</i>`;
+        
+        // Gelbes Signal zurücksetzen beim Themenwechsel (falls es vom vorherigen Thema noch aktiv war)
+        document.getElementById('sig-r4').classList.remove('signal-aktiv');
+
         if (geleseneThemen.size === 20) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
         updateNumColors(); 
         document.getElementById('dashboard').style.display = 'none'; 
         document.getElementById('page-skelett').style.display = 'flex'; 
         updateUI(); 
+    }
+
+    function registriereSenden() {
+        const input = document.getElementById('chat-input');
+        const chatBox = document.getElementById('chat-box');
+        const text = input.value.trim();
+        
+        if (text === "") {
+            // Signal Rot (sig-l4) kurz an bei Fehler
+            document.getElementById('sig-l4').classList.add('signal-aktiv');
+            setTimeout(() => document.getElementById('sig-l4').classList.remove('signal-aktiv'), 500);
+            return; 
+        }
+
+        // Signal Grün (sig-l2) kurz an bei Aktivität
+        document.getElementById('sig-l2').classList.add('signal-aktiv');
+        setTimeout(() => document.getElementById('sig-l2').classList.remove('signal-aktiv'), 500);
+
+        chatBox.innerHTML += `<div style="margin-bottom: 8px;"><strong>Du:</strong> ${text}</div>`;
+        
+        if (interaktionsZaehler[tId] < 20) {
+            interaktionsZaehler[tId]++;
+            
+            // Wenn 20 erreicht, Gelb (sig-r4) dauerhaft an
+            if (interaktionsZaehler[tId] === 20) {
+                document.getElementById('sig-r4').classList.add('signal-aktiv');
+                chatBox.innerHTML += `<div><strong style="color: #ffd700;">ZIEL ERREICHT: 20 Interaktionen!</strong></div>`;
+            } else {
+                chatBox.innerHTML += `<div><small style="color: #ffd700;">Interaktion ${interaktionsZaehler[tId]}/20 registriert...</small></div>`;
+            }
+        }
+        
+        input.value = "";
+        chatBox.scrollTop = chatBox.scrollHeight;
     }
 
     function updateNumColors() { 
@@ -294,6 +328,8 @@
             btnNext.innerText = "Video-Beweis →"; 
             document.getElementById('info-titel').innerText = "LIVE CHAT - " + aktuellesThema; 
             mainText.style.display = 'none'; 
+            // Falls 20 bereits erreicht waren, Gelb wieder an
+            if (interaktionsZaehler[tId] >= 20) document.getElementById('sig-r4').classList.add('signal-aktiv');
         } else if (isVideo) {
             btnNext.style.visibility = 'visible'; 
             btnNext.innerText = "Ebene 5 →"; 
@@ -327,20 +363,6 @@
         document.getElementById('btn-back').style.visibility = 'hidden'; 
         document.getElementById('btn-next').style.visibility = 'hidden'; 
         updateNumColors(); 
-    }
-
-    function registriereSenden() {
-        const input = document.getElementById('chat-input');
-        const chatBox = document.getElementById('chat-box');
-        const text = input.value.trim();
-        if (text === "") return; 
-        chatBox.innerHTML += `<div style="margin-bottom: 8px;"><strong>Du:</strong> ${text}</div>`;
-        if (interaktionsZaehler[tId] < 20) {
-            interaktionsZaehler[tId]++;
-            chatBox.innerHTML += `<div><small style="color: #ffd700;">Interaktion ${interaktionsZaehler[tId]}/20 registriert...</small></div>`;
-        }
-        input.value = "";
-        chatBox.scrollTop = chatBox.scrollHeight;
     }
 </script>
 </body>
