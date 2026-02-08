@@ -188,7 +188,7 @@
             <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit... Buchstaben fliegen...</i></div>
             <div class="chat-input-row">
                 <input type="text" placeholder="Nachricht..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px;">
-                <button style="background:#003d8f; color:#fff; border:none; padding:0 30px; font-weight:bold; cursor:pointer;">SENDEN</button>
+                <button onclick="sendeNachricht()" style="background:#003d8f; color:#fff; border:none; padding:0 30px; font-weight:bold; cursor:pointer;">SENDEN</button>
             </div>
         </div>
 
@@ -199,10 +199,6 @@
                     <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 2</div>
                     <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 3</div>
                     <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 4</div>
-                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 5</div>
-                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 6</div>
-                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 7</div>
-                    <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 8</div>
                 </div>
                 <button style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; margin-top: 15px; font-weight: bold; cursor: pointer; border-radius: 5px;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
             </div>
@@ -216,121 +212,152 @@
     </div>
 
     <script>
-        const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
-        
-        const inhaltsTexte = { 
-            "Recht auf Gefühlsvorderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühls Forderung zu etablieren. Hier kannst du nun beliebig lange Texte einfügen, die dank der neuen Einstellung automatisch gescrollt werden können, falls sie den Rahmen sprengen.",
-            "Wie werde ich Mensch": "Inhalt für das zweite Thema..."
-            // Hier kannst du alle weiteren Texte ergänzen
+    // BASIS-DATEN
+    const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
+    
+    const inhaltsTexte = { 
+        "Recht auf Gefühls Forderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühls Forderung zu etablieren..."
+    };
+
+    // WELTEN-LOGIK
+    const weltenDaten = {};
+    themen.forEach((t, i) => {
+        weltenDaten[i] = {
+            chatVerlauf: [`<div style='color:#ffd700'>System: Willkommen im Dialog zu '${t}'...</div>`],
+            videos: Array(8).fill(null).map((_, vIndex) => `VIDEO ${vIndex + 1} (${t})`)
         };
+    });
 
-        let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set();
-        
-        const grid = document.getElementById('main-grid');
-        themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; });
-        
-        const dots = document.getElementById('dot-holder');
-        for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
+    let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set();
+    
+    // GRID INITIALISIEREN
+    const grid = document.getElementById('main-grid');
+    themen.forEach((t, i) => { 
+        grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; 
+    });
+    
+    const dots = document.getElementById('dot-holder');
+    for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
-        function showInfo(t, id) { 
-            ebene = 2; 
-            tId = id; 
-            aktuellesThema = t; 
-            geleseneThemen.add(id); 
-            updateNumColors(); 
-            document.getElementById('dashboard').style.display = 'none'; 
-            document.getElementById('page-skelett').style.display = 'flex'; 
-            updateUI(); 
-        }
-        
-        function updateNumColors() { 
-            themen.forEach((_, i) => { 
-                const nBox = document.getElementById(`num-${i}`); 
-                if (nBox) { 
-                    if (geleseneThemen.size === 20) nBox.className = "num num-fertig"; 
-                    else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen"; 
-                    else if (geleseneThemen.size > 0) nBox.className = "num num-offen"; 
-                } 
-            }); 
-        }
-        
-        function updateUI() {
-            const isChat = ebene === 3;
-            const isVideo = ebene === 4;
-            const chatArea = document.getElementById('chat-area');
-            const drawer4 = document.getElementById('drawer-ebene4');
-            const redTitle = document.getElementById('ebene4-title-red');
-            const whiteTitle = document.getElementById('info-titel');
-            const mainText = document.getElementById('main-text');
-            const btnNext = document.getElementById('btn-next');
-            const counter = document.getElementById('counter-box');
-
-            chatArea.style.display = isChat ? 'flex' : 'none';
-            drawer4.style.display = isVideo ? 'flex' : 'none';
-            redTitle.style.display = isVideo ? 'block' : 'none';
-            whiteTitle.style.display = isVideo ? 'none' : 'block';
-            counter.style.display = ebene >= 3 ? 'block' : 'none';
-            document.getElementById('btn-back').style.visibility = 'visible';
-
-            if (ebene === 2) { 
-                whiteTitle.innerText = aktuellesThema; 
-                mainText.style.display = 'block'; 
-                mainText.innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet..."; 
-                btnNext.style.visibility = 'visible'; 
-                btnNext.innerText = (tId < 19) ? `Thema ${tId + 2} →` : "Zum Dialog →"; 
-            } else if (isChat) { 
-                btnNext.style.visibility = 'visible'; 
-                btnNext.innerText = "Video-Beweis →"; 
-                whiteTitle.innerText = "LIVE CHAT - DIALOG"; 
-                mainText.style.display = 'none'; 
-            } else if (isVideo) {
-                btnNext.style.visibility = 'visible'; 
-                btnNext.innerText = "Ebene 5 →"; 
-                mainText.style.display = 'none';
-            } else { 
-                btnNext.style.visibility = (ebene < 7) ? 'visible' : 'hidden'; 
-                btnNext.innerText = `Ebene ${ebene + 1} →`; 
-                whiteTitle.innerText = "FREIZONE - EBENE " + ebene; 
-                mainText.style.display = 'block'; 
-                mainText.innerText = "Dieser Bereich ist für zukünftige Inhalte reserviert."; 
-            }
-            for(let i=1; i<=7; i++) { const dot = document.getElementById('dot'+i); if(dot) dot.classList.toggle('active', i === ebene); }
-            startRotation();
-        }
-
-        function nextPage() { 
-            if (ebene === 2 && tId < 19) { 
-                tId++; 
-                showInfo(themen[tId], tId); 
-            } else if (ebene < 7) { 
-                ebene++; 
-                updateUI(); 
+    // FUNKTIONEN
+    function showInfo(t, id) { 
+        ebene = 2; 
+        tId = id; 
+        aktuellesThema = t; 
+        geleseneThemen.add(id); 
+        updateNumColors(); 
+        document.getElementById('dashboard').style.display = 'none'; 
+        document.getElementById('page-skelett').style.display = 'flex'; 
+        updateUI(); 
+    }
+    
+    function updateNumColors() { 
+        themen.forEach((_, i) => { 
+            const nBox = document.getElementById(`num-${i}`); 
+            if (nBox) { 
+                if (geleseneThemen.size === 20) nBox.className = "num num-fertig"; 
+                else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen"; 
+                else if (geleseneThemen.size > 0) nBox.className = "num num-offen"; 
             } 
+        }); 
+    }
+    
+    function updateUI() {
+        const isChat = ebene === 3;
+        const isVideo = ebene === 4;
+        const currentWelt = weltenDaten[tId];
+
+        const chatArea = document.getElementById('chat-area');
+        const chatBox = document.getElementById('chat-box');
+        const drawer4 = document.getElementById('drawer-ebene4');
+        const redTitle = document.getElementById('ebene4-title-red');
+        const whiteTitle = document.getElementById('info-titel');
+        const mainText = document.getElementById('main-text');
+        const btnNext = document.getElementById('btn-next');
+        const counter = document.getElementById('counter-box');
+
+        chatArea.style.display = isChat ? 'flex' : 'none';
+        drawer4.style.display = isVideo ? 'flex' : 'none';
+        redTitle.style.display = isVideo ? 'block' : 'none';
+        whiteTitle.style.display = isVideo ? 'none' : 'block';
+        counter.style.display = ebene >= 3 ? 'block' : 'none';
+        document.getElementById('btn-back').style.visibility = 'visible';
+
+        if (ebene === 2) { 
+            whiteTitle.innerText = aktuellesThema; 
+            mainText.style.display = 'block'; 
+            mainText.innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet..."; 
+            btnNext.style.visibility = 'visible'; 
+            btnNext.innerText = (tId < 19) ? `Thema ${tId + 2} →` : "Zum Dialog →"; 
+        } else if (isChat) { 
+            whiteTitle.innerText = "DIALOG: " + aktuellesThema; 
+            chatBox.innerHTML = currentWelt.chatVerlauf.join("");
+            mainText.style.display = 'none'; 
+            btnNext.innerText = "Video-Beweis →"; 
+            btnNext.style.visibility = 'visible';
+        } else if (isVideo) {
+            redTitle.innerText = "VIDEO-BEWEIS: " + aktuellesThema;
+            btnNext.innerText = "Ebene 5 →"; 
+            mainText.style.display = 'none';
+        } else { 
+            whiteTitle.innerText = "FREIZONE - EBENE " + ebene; 
+            mainText.style.display = 'block'; 
+            mainText.innerText = "Dieser Bereich ist reserviert."; 
+            btnNext.innerText = `Ebene ${ebene + 1} →`; 
+            btnNext.style.visibility = (ebene < 7) ? 'visible' : 'hidden'; 
         }
         
-        function startRotation() { 
-            clearInterval(wechselInterval); 
-            const bg = document.getElementById('werbe-bg'); 
-            if(!bg) return; 
-            bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; 
-            bg.classList.add('bild-aktiv'); 
-            wechselInterval = setInterval(() => { 
-                bg.classList.remove('bild-aktiv'); 
-                setTimeout(() => { 
-                    bg.style.backgroundImage = `url('https://picsum.photos/seed/${Math.random()}/1200/600')`; 
-                    bg.classList.add('bild-aktiv'); 
-                }, 50); 
-            }, 10000); 
+        for(let i=1; i<=7; i++) { 
+            const d = document.getElementById('dot'+i); 
+            if(d) d.classList.toggle('active', i === ebene); 
         }
+        startRotation();
+    }
 
-        function showDashboard() { 
-            ebene = 1; 
-            clearInterval(wechselInterval); 
-            document.getElementById('page-skelett').style.display = 'none'; 
-            document.getElementById('dashboard').style.display = 'flex'; 
-            document.getElementById('btn-back').style.visibility = 'hidden'; 
-            document.getElementById('btn-next').style.visibility = 'hidden'; 
-        }
-    </script>
+    function sendeNachricht() {
+        const input = document.querySelector('#chat-area input');
+        if (input.value.trim() === "") return;
+        const msg = `<div style="margin: 5px 0;"><strong>DU:</strong> ${input.value}</div>`;
+        weltenDaten[tId].chatVerlauf.push(msg);
+        input.value = "";
+        updateUI();
+        const chatBox = document.getElementById('chat-box');
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    document.querySelector('#chat-area input')?.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendeNachricht();
+    });
+
+    function nextPage() { 
+        if (ebene === 2 && tId < 19) { tId++; showInfo(themen[tId], tId); } 
+        else if (ebene < 7) { ebene++; updateUI(); } 
+    }
+    
+    function startRotation() { 
+        clearInterval(wechselInterval); 
+        const bg = document.getElementById('werbe-bg'); 
+        if(!bg) return; 
+        bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; 
+        bg.classList.add('bild-aktiv'); 
+        wechselInterval = setInterval(() => { 
+            bg.classList.remove('bild-aktiv'); 
+            setTimeout(() => { 
+                bg.style.backgroundImage = `url('https://picsum.photos/seed/${Math.random()}/1200/600')`; 
+                bg.classList.add('bild-aktiv'); 
+            }, 50); 
+        }, 10000); 
+    }
+
+    function showDashboard() { 
+        ebene = 1; 
+        clearInterval(wechselInterval); 
+        document.getElementById('page-skelett').style.display = 'none'; 
+        document.getElementById('dashboard').style.display = 'flex'; 
+        document.getElementById('btn-back').style.visibility = 'hidden'; 
+        document.getElementById('btn-next').style.visibility = 'hidden'; 
+    }
+</script>
 </body>
 </html>
+
