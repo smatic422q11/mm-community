@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
+<!DOCTYPE html><html lang="de"><head>
     <meta charset="UTF-8">
     <title>M&M-COMMUNITY - Das Fundament</title>
     <style>
@@ -102,7 +100,7 @@
         /* NAVIGATION & DOTS */
         .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; background: #000; z-index: 100; }
         .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
-        .dot { width: 10px; height: 10px; background: #444; border-radius: 50%; }
+        .dot { width: 10px; height: 10px; background: #444; border-radius: 50%; cursor: pointer; }
         .dot.active { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
 
         #counter-box { position: absolute; right: 0; top: 0; width: 100px; padding: 5px; border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f; background: #000; text-align: center; display: none; z-index: 100; }
@@ -122,9 +120,7 @@
         .drawer-right.open { right: 0; }
         .drawer-handle { position: absolute; left: -50px; top: 50%; transform: translateY(-50%); background: #003d8f; color: white; padding: 15px 5px; cursor: pointer; border-radius: 5px 0 0 5px; writing-mode: vertical-rl; text-orientation: mixed; font-weight: bold; font-size: 0.7rem; letter-spacing: 2px; }
         .drawer-close { align-self: flex-end; background: none; border: 1px solid #fff; color: #fff; cursor: pointer; padding: 5px 10px; margin-bottom: 20px; }
-    </style>
-</head>
-<body>
+    </style></head><body>
 
     <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="dashboard-header">
@@ -213,13 +209,11 @@
         </div>
 
         <div class="bottom-nav">
-            <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Zurück</button>
+            <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="prevPage()">← Zurück</button>
             <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
             <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
         </div>
-    </div>
-
-<script>
+    </div><script>
     const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
     
     const inhaltsTexte = { 
@@ -244,7 +238,7 @@
     function showInfo(t, id) { 
         tId = id; 
         aktuellesThema = t; 
-        ebene = (geleseneThemen.size === 20) ? 3 : 2;
+        ebene = 2; // Immer zuerst zur Info-Ebene des Themas
         geleseneThemen.add(id);
         updateNumColors(); 
         document.getElementById('dashboard').style.display = 'none'; 
@@ -256,8 +250,7 @@
         themen.forEach((_, i) => { 
             const nBox = document.getElementById(`num-${i}`); 
             if (nBox) { 
-                if (geleseneThemen.size === 20) nBox.style.backgroundColor = "#00ff00"; 
-                else if (geleseneThemen.has(i)) nBox.style.backgroundColor = "#ffd700"; 
+                if (geleseneThemen.has(i)) nBox.style.backgroundColor = "#ffd700"; 
             } 
         }); 
     }
@@ -287,6 +280,7 @@
         document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
         document.getElementById('info-titel').style.display = isVideo ? 'none' : 'block';
         document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
+        
         document.getElementById('btn-back').style.visibility = isDashboard ? 'hidden' : 'visible';
         document.getElementById('info-drawer').style.display = isDashboard ? 'none' : 'flex';
 
@@ -298,7 +292,7 @@
             mainText.style.display = 'block'; 
             mainText.innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet..."; 
             btnNext.style.visibility = 'visible'; 
-            btnNext.innerText = (tId < 19) ? `Thema ${tId + 2} →` : "Fertig → Dashboard"; 
+            btnNext.innerText = "Live Chat →"; 
         } else if (isChat) { 
             btnNext.style.visibility = 'visible'; 
             btnNext.innerText = "Video-Beweis →"; 
@@ -333,10 +327,19 @@
     }
 
     function nextPage() { 
-        if (ebene === 2) { 
-            if (tId < 19) { tId++; showInfo(themen[tId], tId); } 
-            else { showDashboard(); }
-        } else if (ebene < 7) { ebene++; updateUI(); } 
+        if (ebene < 7) { 
+            ebene++; 
+            updateUI(); 
+        } 
+    }
+
+    function prevPage() {
+        if (ebene > 2) {
+            ebene--;
+            updateUI();
+        } else {
+            showDashboard();
+        }
     }
 
     function showDashboard() { 
@@ -377,7 +380,4 @@
                 slot.innerHTML = `<span style="color:#ffd700; font-weight:bold; font-size:0.9rem;">SCHÖPFER ${index + 1}</span><br><span style="font-size:0.6rem; letter-spacing:1px;">LIVE AKTIV</span>`;
             }, verzögerung);
         });
-    }
-</script>
-</body>
-</html>
+    }</script></body></html>
