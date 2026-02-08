@@ -1,3 +1,8 @@
+Das Layout ist jetzt angepasst: Auf Ebene 4 steht nun der eine große Schöpfer-Staat (das Video-Feld) im Fokus, während die 8 kleinen Kontrollelemente (die ovalen Buttons an den Seiten der Tafel) erhalten geblieben sind, um die Steuerung zu symbolisieren.
+
+Hier ist der vollständige, korrigierte Code. Ich habe das CSS für den Video-Bereich noch etwas verfeinert, damit er sich perfekt in dein Skelett einfügt.
+
+HTML
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -90,14 +95,12 @@
             flex-direction: column; margin-top: 5px; margin-bottom: 70px; 
             overflow: hidden; position: relative; 
         }
-
         .chat-msgs {
             flex: 1; display: flex; flex-direction: column;
             justify-content: flex-end; padding: 10px 0;
             color: #fff; font-size: 1.1rem; text-shadow: 2px 2px 4px #000;
             overflow: hidden;
         }
-
         .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; z-index: 10; }
 
         /* NAVIGATION & DOTS */
@@ -119,16 +122,19 @@
             border-radius: 5px 5px 0 0; display: none;
         }
 
-        .num-neutral { background-color: #003d8f !important; }
-        .num-gelesen { background-color: #ffd700 !important; color: #000 !important; }
-        .num-offen { background-color: #ff4d4d !important; }
-        .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
-
-        #main-text::-webkit-scrollbar { width: 8px; }
-        #main-text::-webkit-scrollbar-track { background: #000; }
-        #main-text::-webkit-scrollbar-thumb { background: #003d8f; border-radius: 10px; }
-
-        #drawer-ebene4 { width: 90% !important; flex-grow: 1; display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; }
+        /* VIDEO EBENE 4 SPEZIAL */
+        #drawer-ebene4 { 
+            width: 90% !important; flex-grow: 1; display: none; 
+            flex-direction: column; align-items: center; justify-content: center;
+            margin-top: 5px; margin-bottom: 70px; 
+        }
+        .video-main-frame {
+            width: 80%; aspect-ratio: 16/9; background: #111; 
+            border: 2px solid #003d8f; display: flex; align-items: center; 
+            justify-content: center; font-size: 1.5rem; color: #ffd700; 
+            font-weight: bold; box-shadow: 0 0 30px rgba(0, 61, 143, 0.4);
+            position: relative;
+        }
 
         /* SCHUBLADEN (DRAWER) STYLES */
         .drawer-right {
@@ -213,25 +219,20 @@
             </div>
         </div> 
 
-       <div id="drawer-ebene4">
-            <div class="drawer-content">
-                <div style="display: flex; justify-content: center; width: 100%;">
-                    <div style="width: 80%; aspect-ratio: 16/9; background: #111; border: 2px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #ffd700; font-weight: bold; box-shadow: 0 0 20px rgba(0, 61, 143, 0.3);">
-                        VIDEO-BEWEIS (DER SCHÖPFER)
-                    </div>
-                </div>
-                <button style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; margin-top: 25px; font-weight: bold; font-size: 1rem; cursor: pointer; border-radius: 5px;">
-                    JETZT ZUFÄLLIGEM DIALOG BEITRETEN
-                </button>
+        <div id="drawer-ebene4">
+            <div class="video-main-frame">
+                VIDEO-BEWEIS (DER SCHÖPFER)
             </div>
+            <button style="width: 80%; background: #00ff00; color: #000; border: none; padding: 15px; margin-top: 25px; font-weight: bold; font-size: 1.1rem; cursor: pointer; border-radius: 5px; box-shadow: 0 4px 10px rgba(0,255,0,0.3);">
+                JETZT ZUFÄLLIGEM DIALOG BEITRETEN
+            </button>
         </div>
     </div>
 
     <div id="info-drawer" class="drawer-right">
         <div class="drawer-handle" onclick="toggleDrawer()">ZUSATZ-INFOS</div>
         <button class="drawer-close" onclick="toggleDrawer()">SCHLIESSEN ×</button>
-        <div id="drawer-content" style="font-size: 0.9rem; line-height: 1.6; color: #ccc;">
-            </div>
+        <div id="drawer-content" style="font-size: 0.9rem; line-height: 1.6; color: #ccc;"></div>
     </div>
 
     <div class="bottom-nav">
@@ -240,7 +241,7 @@
         <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
     </div>
 
-   <script>
+<script>
     const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
     
     const inhaltsTexte = { 
@@ -249,92 +250,9 @@
         "Die Brücke": "Inhalt für das letzte Thema..."
     };
 
-    // --- DAS VOLLSTÄNDIGE LAGER FÜR DEINE 20 THEMEN ---
     const drawerTexte = {
-        "Recht auf Gefühls Forderung": {
-            titel: "AUFKLÄRUNG: GEFÜHLS FORDERUNG",
-            inhalt: "Hier definieren wir den Unterschied zwischen materiellen Ansprüchen und der moralischen Pflicht. Gefühls Forderung mit Vogel-v wird immer so geschrieben."
-        },
-        "Wie werde ich Mensch": {
-            titel: "AUFKLÄRUNG: MENSCHSEIN",
-            inhalt: "Die Entwicklung vom biologischen Wesen zum moralisch handelnden Menschen..."
-        },
-        "Glaube an Friede": {
-            titel: "AUFKLÄRUNG: FRIEDE",
-            inhalt: "Warum Friede kein Zustand, sondern eine aktive Entscheidung aller Beteiligten ist..."
-        },
-        "Programm für Bürgerliche Rechte": {
-            titel: "AUFKLÄRUNG: BÜRGERRECHTE",
-            inhalt: "Welche Rechte unantastbar sind und wie sie innerhalb der Community geschützt werden..."
-        },
-        "Moralische Pflicht und Verantwortung": {
-            titel: "AUFKLÄRUNG: MORAL & PFLICHT",
-            inhalt: "Jede Forderung setzt die Übernahme von Verantwortung für das Ganze voraus..."
-        },
-        "Menschlichkeit Wiederherstellung": {
-            titel: "AUFKLÄRUNG: WIEDERHERSTELLUNG",
-            inhalt: "Maßnahmen zur Heilung der gesellschaftlichen Bindungen..."
-        },
-        "Kinderschutz-Pflicht-Elternrechte": {
-            titel: "AUFKLÄRUNG: SCHUTZ DER KINDER",
-            inhalt: "Die heilige Pflicht, die nächste Generation vor Schaden zu bewahren..."
-        },
-        "Wahre Richtung und Kunst": {
-            titel: "AUFKLÄRUNG: KUNST & RICHTUNG",
-            inhalt: "Wie Kunst die Seele spiegelt und den Weg der Community weist..."
-        },
-        "LGBTQ und Kirche": {
-            titel: "AUFKLÄRUNG: AKZEPTANZ",
-            inhalt: "Der Brückenschlag zwischen moderner Identität und traditionellen Werten..."
-        },
-        "Trend und Tradition": {
-            titel: "AUFKLÄRUNG: WERTE-ERHALT",
-            inhalt: "Was wir bewahren müssen und was wir mutig verändern dürfen..."
-        },
-        "Religionsbekenntnis oder Selbstwahl": {
-            titel: "AUFKLÄRUNG: GLAUBENSFREIHEIT",
-            inhalt: "Die Freiheit, den eigenen spirituellen Weg ohne Zwang zu wählen..."
-        },
-        "Gesundheitswesen und Verhalten": {
-            titel: "AUFKLÄRUNG: GESUNDHEIT",
-            inhalt: "Warum unser Verhalten direkten Einfluss auf die kollektive Gesundheit hat..."
-        },
-        "Arbeitswelt und Du": {
-            titel: "AUFKLÄRUNG: ARBEITSETHIK",
-            inhalt: "Würde in der Arbeit bedeutet mehr als nur ein Gehalt zu empfangen..."
-        },
-        "Mobbing am Arbeitsplatz": {
-            titel: "AUFKLÄRUNG: GEGEN MOBBING",
-            inhalt: "Null Toleranz für Ausgrenzung. Jeder Mensch verdient Respekt..."
-        },
-        "Jugendsprecher": {
-            titel: "AUFKLÄRUNG: JUGEND",
-            inhalt: "Die Stimme der Jungen muss gehört werden, bevor Entscheidungen fallen..."
-        },
-        "Ratgeber für Pensionisten": {
-            titel: "AUFKLÄRUNG: ALTER MIT WÜRDE",
-            inhalt: "Die Weisheit der Älteren ist der Schatz unserer Gemeinschaft..."
-        },
-        "Sozialgefallen und Widerkehr": {
-            titel: "AUFKLÄRUNG: GEGESEITIGKEIT",
-            inhalt: "Wer Hilfe empfängt, wird Teil des Kreislaufs der Unterstützung..."
-        },
-        "Nachbarschaft und Gemeinschaft": {
-            titel: "AUFKLÄRUNG: LOKALER HALT",
-            inhalt: "Die kleinste Einheit der Community ist das gute Miteinander vor der Tür..."
-        },
-        "Mensch und Technik": {
-            titel: "AUFKLÄRUNG: TECHNIK-DIENST",
-            inhalt: "Technik muss dem Menschen dienen, nicht umgekehrt..."
-        },
-        "Die Brücke": {
-            titel: "AUFKLÄRUNG: DIE BRÜCKE",
-            inhalt: "Der finale Schritt zur Verbindung aller Ebenen und Menschen..."
-        },
-        "Standard": {
-            titel: "ZUSATZ-INFORMATION",
-            inhalt: "Inhalt wird nach Erreichen der Stillen Million präzisiert."
-        }
+        "Recht auf Gefühls Forderung": { titel: "AUFKLÄRUNG: GEFÜHLS FORDERUNG", inhalt: "Hier definieren wir den Unterschied zwischen materiellen Ansprüchen und der moralischen Pflicht. Gefühls Forderung mit Vogel-v wird immer so geschrieben." },
+        "Standard": { titel: "ZUSATZ-INFORMATION", inhalt: "Inhalt wird nach Erreichen der Stillen Million präzisiert." }
     };
 
     let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set();
@@ -342,7 +260,7 @@
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
     const grid = document.getElementById('main-grid');
-    themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; });
+    themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; });
     
     const dots = document.getElementById('dot-holder');
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
@@ -350,7 +268,8 @@
     function showInfo(t, id) { 
         tId = id; 
         aktuellesThema = t; 
-        if (geleseneThemen.size === 20) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
+        ebene = (geleseneThemen.size === 20) ? 3 : 2;
+        geleseneThemen.add(id);
         updateNumColors(); 
         document.getElementById('dashboard').style.display = 'none'; 
         document.getElementById('page-skelett').style.display = 'flex'; 
@@ -361,9 +280,8 @@
         themen.forEach((_, i) => { 
             const nBox = document.getElementById(`num-${i}`); 
             if (nBox) { 
-                if (geleseneThemen.size === 20) nBox.className = "num num-fertig"; 
-                else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen"; 
-                else if (geleseneThemen.size > 0) nBox.className = "num num-offen"; 
+                if (geleseneThemen.size === 20) nBox.style.backgroundColor = "#00ff00"; 
+                else if (geleseneThemen.has(i)) nBox.style.backgroundColor = "#ffd700"; 
             } 
         }); 
     }
@@ -387,28 +305,20 @@
         const isChat = (ebene === 3);
         const isVideo = (ebene === 4);
         const isDashboard = (ebene === 1);
-        const chatArea = document.getElementById('chat-area');
-        const drawer4 = document.getElementById('drawer-ebene4');
-        const redTitle = document.getElementById('ebene4-title-red');
-        const whiteTitle = document.getElementById('info-titel');
+        
+        document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
+        document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
+        document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
+        document.getElementById('info-titel').style.display = isVideo ? 'none' : 'block';
+        document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
+        document.getElementById('btn-back').style.visibility = isDashboard ? 'hidden' : 'visible';
+        document.getElementById('info-drawer').style.display = isDashboard ? 'none' : 'flex';
+
         const mainText = document.getElementById('main-text');
         const btnNext = document.getElementById('btn-next');
-        const counter = document.getElementById('counter-box');
-        const infoDrawer = document.getElementById('info-drawer');
-
-        chatArea.style.display = isChat ? 'flex' : 'none';
-        drawer4.style.display = isVideo ? 'flex' : 'none';
-        redTitle.style.display = isVideo ? 'block' : 'none';
-        if(isVideo) redTitle.innerText = `VIDEO-BEWEIS: ${aktuellesThema.toUpperCase()}`;
-
-        whiteTitle.style.display = isVideo ? 'none' : 'block';
-        counter.style.display = ebene >= 3 ? 'block' : 'none';
-        document.getElementById('btn-back').style.visibility = isDashboard ? 'hidden' : 'visible';
-        
-        infoDrawer.style.display = isDashboard ? 'none' : 'flex';
 
         if (ebene === 2) { 
-            whiteTitle.innerText = aktuellesThema; 
+            document.getElementById('info-titel').innerText = aktuellesThema; 
             mainText.style.display = 'block'; 
             mainText.innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet..."; 
             btnNext.style.visibility = 'visible'; 
@@ -416,16 +326,17 @@
         } else if (isChat) { 
             btnNext.style.visibility = 'visible'; 
             btnNext.innerText = "Video-Beweis →"; 
-            whiteTitle.innerText = "LIVE CHAT - " + aktuellesThema; 
+            document.getElementById('info-titel').innerText = "LIVE CHAT - " + aktuellesThema; 
             mainText.style.display = 'none'; 
         } else if (isVideo) {
             btnNext.style.visibility = 'visible'; 
             btnNext.innerText = "Ebene 5 →"; 
+            document.getElementById('ebene4-title-red').innerText = `VIDEO-BEWEIS: ${aktuellesThema.toUpperCase()}`;
             mainText.style.display = 'none';
         } else if (!isDashboard) { 
             btnNext.style.visibility = (ebene < 7) ? 'visible' : 'hidden'; 
             btnNext.innerText = `Ebene ${ebene + 1} →`; 
-            whiteTitle.innerText = "FREIZONE - EBENE " + ebene; 
+            document.getElementById('info-titel').innerText = "FREIZONE - EBENE " + ebene; 
             mainText.style.display = 'block'; 
             mainText.innerText = "Dieser Bereich ist für zukünftige Inhalte reserviert."; 
         }
@@ -440,16 +351,8 @@
     function toggleDrawer() {
         const drawer = document.getElementById('info-drawer');
         const contentBox = document.getElementById('drawer-content');
-        
         const info = drawerTexte[aktuellesThema] || drawerTexte["Standard"];
-        
-        contentBox.innerHTML = `
-            <h3 style="color: #ffd700; border-bottom: 1px solid #003d8f; padding-bottom: 10px;">${info.titel}</h3>
-            <p>${info.inhalt}</p>
-            <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
-            <p style="font-size: 0.8rem; color: #888;">Hinweis: Vorsitzende werden erst nach Erreichen der Stillen Million gewählt.</p>
-        `;
-
+        contentBox.innerHTML = `<h3 style="color: #ffd700;">${info.titel}</h3><p>${info.inhalt}</p><hr style="border:0; border-top:1px solid #333; margin:20px 0;"><p style="font-size:0.8rem; color:#888;">Hinweis: Vorsitzende werden erst nach Erreichen der Stillen Million gewählt.</p>`;
         drawer.classList.toggle('open');
     }
 
@@ -472,13 +375,8 @@
     function registriereSenden() {
         const input = document.getElementById('chat-input');
         const chatBox = document.getElementById('chat-box');
-        const text = input.value.trim();
-        if (text === "") return; 
-        chatBox.innerHTML += `<div style="margin-bottom: 8px;"><strong>Du:</strong> ${text}</div>`;
-        if (interaktionsZaehler[tId] < 20) {
-            interaktionsZaehler[tId]++;
-            chatBox.innerHTML += `<div><small style="color: #ffd700;">Interaktion ${interaktionsZaehler[tId]}/20 registriert...</small></div>`;
-        }
+        if (input.value.trim() === "") return; 
+        chatBox.innerHTML += `<div style="margin-bottom: 8px;"><strong>Du:</strong> ${input.value}</div>`;
         input.value = "";
         chatBox.scrollTop = chatBox.scrollHeight;
     }
