@@ -245,19 +245,91 @@
         "Die Brücke": "Inhalt für das letzte Thema..."
     };
 
-    // --- NEU: ZENTRALE SCHUBLADEN-TEXTE ---
+    // --- DAS VOLLSTÄNDIGE LAGER FÜR DEINE 20 THEMEN ---
     const drawerTexte = {
         "Recht auf Gefühls Forderung": {
-            titel: "DETAIL: GEFÜHLS FORDERUNG",
+            titel: "AUFKLÄRUNG: GEFÜHLS FORDERUNG",
             inhalt: "Hier definieren wir den Unterschied zwischen materiellen Ansprüchen und der moralischen Pflicht. Gefühls Forderung mit Vogel-v wird immer so geschrieben."
         },
         "Wie werde ich Mensch": {
-            titel: "DER WEG ZUM MENSCH-SEIN",
-            inhalt: "Zusätzliche Erläuterungen zu den ethischen Grundpfeilern dieser Ebene..."
+            titel: "AUFKLÄRUNG: MENSCHSEIN",
+            inhalt: "Die Entwicklung vom biologischen Wesen zum moralisch handelnden Menschen..."
+        },
+        "Glaube an Friede": {
+            titel: "AUFKLÄRUNG: FRIEDE",
+            inhalt: "Warum Friede kein Zustand, sondern eine aktive Entscheidung aller Beteiligten ist..."
+        },
+        "Programm für Bürgerliche Rechte": {
+            titel: "AUFKLÄRUNG: BÜRGERRECHTE",
+            inhalt: "Welche Rechte unantastbar sind und wie sie innerhalb der Community geschützt werden..."
+        },
+        "Moralische Pflicht und Verantwortung": {
+            titel: "AUFKLÄRUNG: MORAL & PFLICHT",
+            inhalt: "Jede Forderung setzt die Übernahme von Verantwortung für das Ganze voraus..."
+        },
+        "Menschlichkeit Wiederherstellung": {
+            titel: "AUFKLÄRUNG: WIEDERHERSTELLUNG",
+            inhalt: "Maßnahmen zur Heilung der gesellschaftlichen Bindungen..."
+        },
+        "Kinderschutz-Pflicht-Elternrechte": {
+            titel: "AUFKLÄRUNG: SCHUTZ DER KINDER",
+            inhalt: "Die heilige Pflicht, die nächste Generation vor Schaden zu bewahren..."
+        },
+        "Wahre Richtung und Kunst": {
+            titel: "AUFKLÄRUNG: KUNST & RICHTUNG",
+            inhalt: "Wie Kunst die Seele spiegelt und den Weg der Community weist..."
+        },
+        "LGBTQ und Kirche": {
+            titel: "AUFKLÄRUNG: AKZEPTANZ",
+            inhalt: "Der Brückenschlag zwischen moderner Identität und traditionellen Werten..."
+        },
+        "Trend und Tradition": {
+            titel: "AUFKLÄRUNG: WERTE-ERHALT",
+            inhalt: "Was wir bewahren müssen und was wir mutig verändern dürfen..."
+        },
+        "Religionsbekenntnis oder Selbstwahl": {
+            titel: "AUFKLÄRUNG: GLAUBENSFREIHEIT",
+            inhalt: "Die Freiheit, den eigenen spirituellen Weg ohne Zwang zu wählen..."
+        },
+        "Gesundheitswesen und Verhalten": {
+            titel: "AUFKLÄRUNG: GESUNDHEIT",
+            inhalt: "Warum unser Verhalten direkten Einfluss auf die kollektive Gesundheit hat..."
+        },
+        "Arbeitswelt und Du": {
+            titel: "AUFKLÄRUNG: ARBEITSETHIK",
+            inhalt: "Würde in der Arbeit bedeutet mehr als nur ein Gehalt zu empfangen..."
+        },
+        "Mobbing am Arbeitsplatz": {
+            titel: "AUFKLÄRUNG: GEGEN MOBBING",
+            inhalt: "Null Toleranz für Ausgrenzung. Jeder Mensch verdient Respekt..."
+        },
+        "Jugendsprecher": {
+            titel: "AUFKLÄRUNG: JUGEND",
+            inhalt: "Die Stimme der Jungen muss gehört werden, bevor Entscheidungen fallen..."
+        },
+        "Ratgeber für Pensionisten": {
+            titel: "AUFKLÄRUNG: ALTER MIT WÜRDE",
+            inhalt: "Die Weisheit der Älteren ist der Schatz unserer Gemeinschaft..."
+        },
+        "Sozialgefallen und Widerkehr": {
+            titel: "AUFKLÄRUNG: GEGESEITIGKEIT",
+            inhalt: "Wer Hilfe empfängt, wird Teil des Kreislaufs der Unterstützung..."
+        },
+        "Nachbarschaft und Gemeinschaft": {
+            titel: "AUFKLÄRUNG: LOKALER HALT",
+            inhalt: "Die kleinste Einheit der Community ist das gute Miteinander vor der Tür..."
+        },
+        "Mensch und Technik": {
+            titel: "AUFKLÄRUNG: TECHNIK-DIENST",
+            inhalt: "Technik muss dem Menschen dienen, nicht umgekehrt..."
+        },
+        "Die Brücke": {
+            titel: "AUFKLÄRUNG: DIE BRÜCKE",
+            inhalt: "Der finale Schritt zur Verbindung aller Ebenen und Menschen..."
         },
         "Standard": {
             titel: "ZUSATZ-INFORMATION",
-            inhalt: "Hier folgen spezifische Details zu diesem Thema, sobald sie definiert sind."
+            inhalt: "Inhalt wird nach Erreichen der Stillen Million präzisiert."
         }
     };
 
@@ -361,7 +433,6 @@
         startRotation();
     }
 
-    // --- NEU: DYNAMISCHE TOGGLE FUNKTION ---
     function toggleDrawer() {
         const drawer = document.getElementById('info-drawer');
         const contentBox = document.getElementById('drawer-content');
