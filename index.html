@@ -187,13 +187,15 @@
 
         <p id="main-text" style="width: 85%; text-align: justify; color: #ccc; margin-top: 2vh; font-size: 1.3rem; line-height: 1.8; max-width: 1200px; overflow-y: auto; max-height: 50vh; padding-right: 15px;"></p>
 
-        <div id="chat-area">
-            <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit...</i></div>
-            <div class="chat-input-row">
-                <input type="text" id="chat-input" placeholder="Nachricht..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px; outline:none;" onkeypress="if(event.key==='Enter')registriereSenden()">
-                <button onclick="registriereSenden()" style="background:#003d8f; color:#fff; border:none; padding:0 30px; font-weight:bold; cursor:pointer;">SENDEN</button>
-            </div>
-        </div>
+      <div id="chat-area">
+    <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit...</i></div>
+    <div class="chat-input-row">
+        <input type="text" id="chat-input" placeholder="Nachricht schreiben und Enter drücken..." 
+               style="flex:1; background:transparent; border:none; color:#fff; padding:15px; outline:none;" 
+               onkeypress="if(event.key==='Enter') registriereSenden()">
+        <button onclick="registriereSenden()" style="background:#003d8f; color:#fff; border:none; padding:0 30px; font-weight:bold; cursor:pointer;">SENDEN</button>
+    </div>
+</div> 
 
         <div id="drawer-ebene4">
             <div class="drawer-content">
