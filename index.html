@@ -98,12 +98,7 @@
         .dot { width: 10px; height: 10px; background: #444; border-radius: 50%; }
         .dot.active { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
 
-        /* SPEZIALELEMENTE */
-        #counter-box { position: absolute; right: 0; top: 0; width: 100px; padding: 5px; border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f; background: #000; text-align: center; display: none; z-index: 100; }
-        .counter-label { font-size: 0.4rem; color: #fff; display: block; }
-        .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
-        .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh; flex-shrink: 0; }
-        .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
+        /* EBENE 4 HEADER */
         .ebene4-header-red { width: 90%; background: #ff0000; color: #fff; padding: 10px 0; text-align: center; font-weight: 900; font-size: 1.5rem; border-radius: 5px 5px 0 0; display: none; }
 
         /* STATUSFARBEN GRID */
@@ -112,11 +107,16 @@
         .num-offen { background-color: #ff4d4d !important; }
         .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
 
-        /* DRAWER EBENE 4 */
         #drawer-ebene4 { width: 90% !important; flex-grow: 1; display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; }
         .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
         .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; position: relative; }
         .slot-1-user { border-color: #00ff00; color: #00ff00; }
+
+        #counter-box { position: absolute; right: 0; top: 0; width: 100px; padding: 5px; border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f; background: #000; text-align: center; display: none; z-index: 100; }
+        .counter-label { font-size: 0.4rem; color: #fff; display: block; }
+        .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
+        .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh; flex-shrink: 0; }
+        .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
 
         /* WERBUNG */
         .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
@@ -174,7 +174,7 @@
         <p id="main-text" style="width: 85%; text-align: justify; color: #ccc; margin-top: 2vh; font-size: 1.3rem; line-height: 1.8; max-width: 1200px; overflow-y: auto; max-height: 50vh; padding-right: 15px;"></p>
 
         <div id="chat-area">
-            <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit...</i></div>
+            <div class="chat-msgs" id="chat-box"></div>
             <div class="chat-input-row">
                 <input type="text" id="chat-input" placeholder="Nachricht schreiben..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px; outline:none;" onkeypress="if(event.key==='Enter') registriereSenden()">
                 <button onclick="registriereSenden()" style="background:#003d8f; color:#fff; border:none; padding:0 30px; font-weight:bold; cursor:pointer;">SENDEN</button>
@@ -199,42 +199,29 @@
     </div>
 
     <div class="bottom-nav">
-        <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Zurück</button>
+        <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Dashboard</button>
         <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
         <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
     </div>
 
 <script>
     const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
-    
-    const inhaltsTexte = { 
-        "Recht auf Gefühls Forderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühls Forderung zu etablieren...",
-        "Die Brücke": "Inhalt für das letzte Thema..."
-    };
-
     let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set();
     let interaktionsZaehler = {}; 
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
-    // Grid aufbauen
     const grid = document.getElementById('main-grid');
-    themen.forEach((t, i) => { 
-        grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; 
-    });
-    
-    // Dots aufbauen
+    themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; });
     const dots = document.getElementById('dot-holder');
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
     function showInfo(t, id) { 
-        tId = id; 
-        aktuellesThema = t; 
-        
-        // CHAT LEEREN, DAMIT THEMEN UNABHÄNGIG SIND
+        tId = id; aktuellesThema = t; 
         document.getElementById('chat-box').innerHTML = `<i>System: Dialog für ${t} bereit...</i>`;
-        
-        // Gelbes Signal zurücksetzen beim Themenwechsel (falls es vom vorherigen Thema noch aktiv war)
         document.getElementById('sig-r4').classList.remove('signal-aktiv');
+        
+        // Wenn Thema schon fertig interagiert, direkt gelbes Licht an
+        if (interaktionsZaehler[tId] >= 20) document.getElementById('sig-r4').classList.add('signal-aktiv');
 
         if (geleseneThemen.size === 20) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
         updateNumColors(); 
@@ -247,43 +234,100 @@
         const input = document.getElementById('chat-input');
         const chatBox = document.getElementById('chat-box');
         const text = input.value.trim();
-        
         if (text === "") {
-            // Signal Rot (sig-l4) kurz an bei Fehler
             document.getElementById('sig-l4').classList.add('signal-aktiv');
             setTimeout(() => document.getElementById('sig-l4').classList.remove('signal-aktiv'), 500);
             return; 
         }
-
-        // Signal Grün (sig-l2) kurz an bei Aktivität
         document.getElementById('sig-l2').classList.add('signal-aktiv');
         setTimeout(() => document.getElementById('sig-l2').classList.remove('signal-aktiv'), 500);
-
         chatBox.innerHTML += `<div style="margin-bottom: 8px;"><strong>Du:</strong> ${text}</div>`;
         
         if (interaktionsZaehler[tId] < 20) {
             interaktionsZaehler[tId]++;
-            
-            // Wenn 20 erreicht, Gelb (sig-r4) dauerhaft an
             if (interaktionsZaehler[tId] === 20) {
                 document.getElementById('sig-r4').classList.add('signal-aktiv');
                 chatBox.innerHTML += `<div><strong style="color: #ffd700;">ZIEL ERREICHT: 20 Interaktionen!</strong></div>`;
             } else {
-                chatBox.innerHTML += `<div><small style="color: #ffd700;">Interaktion ${interaktionsZaehler[tId]}/20 registriert...</small></div>`;
+                chatBox.innerHTML += `<div><small style="color: #ffd700;">Interaktion ${interaktionsZaehler[tId]}/20...</small></div>`;
             }
         }
+        input.value = ""; chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function updateUI() {
+        const isChat = (ebene === 3);
+        const isVideo = (ebene === 4);
         
-        input.value = "";
-        chatBox.scrollTop = chatBox.scrollHeight;
+        document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
+        document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
+        document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
+        document.getElementById('info-titel').style.display = isVideo ? 'none' : 'block';
+        document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
+        document.getElementById('btn-back').style.visibility = 'visible';
+
+        const btnNext = document.getElementById('btn-next');
+        const mainText = document.getElementById('main-text');
+
+        if (ebene === 2) {
+            document.getElementById('info-titel').innerText = aktuellesThema;
+            mainText.style.display = 'block';
+            mainText.innerText = "Inhalt wird erarbeitet...";
+            btnNext.style.visibility = 'visible';
+            btnNext.innerText = "Zum Chat (Aufstieg) →";
+        } else if (isChat) {
+            document.getElementById('info-titel').innerText = "LIVE CHAT - " + aktuellesThema;
+            mainText.style.display = 'none';
+            btnNext.style.visibility = (interaktionsZaehler[tId] >= 20) ? 'visible' : 'hidden';
+            btnNext.innerText = "Video-Beweis →";
+            if (interaktionsZaehler[tId] >= 20) document.getElementById('sig-r4').classList.add('signal-aktiv');
+        } else if (isVideo) {
+            // GELBES LICHT AUS IN EBENE 4
+            document.getElementById('sig-r4').classList.remove('signal-aktiv');
+            document.getElementById('ebene4-title-red').innerText = `VIDEO-BEWEIS: ${aktuellesThema.toUpperCase()}`;
+            btnNext.style.visibility = 'visible';
+            btnNext.innerText = (tId < 19) ? "Nächstes Thema →" : "Zum Schöpfer →";
+        }
+
+        for(let i=1; i<=7; i++) {
+            const dot = document.getElementById('dot'+i);
+            if(dot) dot.classList.toggle('active', i === ebene);
+        }
+        startRotation();
+    }
+
+    function nextPage() {
+        if (ebene === 2) {
+            ebene = 3; updateUI();
+        } else if (ebene === 3) {
+            ebene = 4; updateUI();
+        } else if (ebene === 4) {
+            if (tId < 19) {
+                tId++; 
+                ebene = 3; // Direkt zurück in den Chat des nächsten Themas
+                showInfo(themen[tId], tId);
+            } else {
+                showDashboard(); // Oder Ebene 5, falls definiert
+            }
+        }
+    }
+
+    function showDashboard() {
+        ebene = 1; clearInterval(wechselInterval);
+        document.getElementById('page-skelett').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'flex';
+        document.getElementById('btn-back').style.visibility = 'hidden';
+        document.getElementById('btn-next').style.visibility = 'hidden';
+        updateNumColors();
     }
 
     function updateNumColors() { 
         themen.forEach((_, i) => { 
             const nBox = document.getElementById(`num-${i}`); 
             if (nBox) { 
-                if (geleseneThemen.size === 20) nBox.className = "num num-fertig"; 
+                if (interaktionsZaehler[i] >= 20) nBox.className = "num num-fertig"; 
                 else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen"; 
-                else if (geleseneThemen.size > 0) nBox.className = "num num-offen"; 
+                else nBox.className = "num num-neutral"; 
             } 
         }); 
     }
@@ -301,68 +345,6 @@
                 bg.classList.add('bild-aktiv');
             }, 50);
         }, 10000);
-    }
-
-    function updateUI() {
-        const isChat = (ebene === 3);
-        const isVideo = (ebene === 4);
-        document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
-        document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
-        document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
-        if(isVideo) document.getElementById('ebene4-title-red').innerText = `VIDEO-BEWEIS: ${aktuellesThema.toUpperCase()}`;
-        document.getElementById('info-titel').style.display = isVideo ? 'none' : 'block';
-        document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
-        document.getElementById('btn-back').style.visibility = 'visible';
-
-        const mainText = document.getElementById('main-text');
-        const btnNext = document.getElementById('btn-next');
-
-        if (ebene === 2) { 
-            document.getElementById('info-titel').innerText = aktuellesThema; 
-            mainText.style.display = 'block'; 
-            mainText.innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet..."; 
-            btnNext.style.visibility = 'visible'; 
-            btnNext.innerText = (tId < 19) ? `Thema ${tId + 2} →` : "Fertig → Dashboard"; 
-        } else if (isChat) { 
-            btnNext.style.visibility = 'visible'; 
-            btnNext.innerText = "Video-Beweis →"; 
-            document.getElementById('info-titel').innerText = "LIVE CHAT - " + aktuellesThema; 
-            mainText.style.display = 'none'; 
-            // Falls 20 bereits erreicht waren, Gelb wieder an
-            if (interaktionsZaehler[tId] >= 20) document.getElementById('sig-r4').classList.add('signal-aktiv');
-        } else if (isVideo) {
-            btnNext.style.visibility = 'visible'; 
-            btnNext.innerText = "Ebene 5 →"; 
-            mainText.style.display = 'none';
-        } else { 
-            btnNext.style.visibility = (ebene < 7) ? 'visible' : 'hidden'; 
-            btnNext.innerText = `Ebene ${ebene + 1} →`; 
-            document.getElementById('info-titel').innerText = "FREIZONE - EBENE " + ebene; 
-            mainText.style.display = 'block'; 
-            mainText.innerText = "Dieser Bereich ist für zukünftige Inhalte reserviert."; 
-        }
-
-        for(let i=1; i<=7; i++) { 
-            const dot = document.getElementById('dot'+i); 
-            if(dot) dot.classList.toggle('active', i === ebene); 
-        }
-        startRotation();
-    }
-
-    function nextPage() { 
-        if (ebene === 2) { 
-            if (tId < 19) { tId++; showInfo(themen[tId], tId); } else { showDashboard(); }
-        } else if (ebene < 7) { ebene++; updateUI(); } 
-    }
-
-    function showDashboard() { 
-        ebene = 1; 
-        clearInterval(wechselInterval); 
-        document.getElementById('page-skelett').style.display = 'none'; 
-        document.getElementById('dashboard').style.display = 'flex'; 
-        document.getElementById('btn-back').style.visibility = 'hidden'; 
-        document.getElementById('btn-next').style.visibility = 'hidden'; 
-        updateNumColors(); 
     }
 </script>
 </body>
