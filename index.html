@@ -216,15 +216,23 @@
     </div>
 
     <script>
-        const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
+        const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
         
         const inhaltsTexte = { 
-            "Recht auf Gefühlsvorderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühls Forderung zu etablieren. Hier kannst du nun beliebig lange Texte einfügen, die dank der neuen Einstellung automatisch gescrollt werden können, falls sie den Rahmen sprengen.",
+            "Recht auf Gefühls Forderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühls Forderung zu etablieren. Hier kannst du nun beliebig lange Texte einfügen, die dank der neuen Einstellung automatisch gescrollt werden können, falls sie den Rahmen sprengen.",
             "Wie werde ich Mensch": "Inhalt für das zweite Thema..."
-            // Hier kannst du alle weiteren Texte ergänzen
         };
 
-        let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set();
+        // DIE SCHALTZENTRALE: Jede der 20 Boxen bekommt ein eigenes Gedächtnis
+        const boxStatus = {};
+        themen.forEach((t, i) => {
+            boxStatus[i] = {
+                aktuelleEbene: 2, // Startet bei Ebene 2 nach Klick auf Dashboard
+                dialogVerlauf: "<i>System: Dialog zu " + t + " bereit...</i>"
+            };
+        });
+
+        let tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set();
         
         const grid = document.getElementById('main-grid');
         themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; });
@@ -233,7 +241,6 @@
         for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
         function showInfo(t, id) { 
-            ebene = 2; 
             tId = id; 
             aktuellesThema = t; 
             geleseneThemen.add(id); 
@@ -255,6 +262,7 @@
         }
         
         function updateUI() {
+            const ebene = boxStatus[tId].aktuelleEbene; // Ebene der spezifischen Box laden
             const isChat = ebene === 3;
             const isVideo = ebene === 4;
             const chatArea = document.getElementById('chat-area');
@@ -277,12 +285,13 @@
                 mainText.style.display = 'block'; 
                 mainText.innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet..."; 
                 btnNext.style.visibility = 'visible'; 
-                btnNext.innerText = (tId < 19) ? `Thema ${tId + 2} →` : "Zum Dialog →"; 
+                btnNext.innerText = "Zum Dialog (Ebene 3) →"; 
             } else if (isChat) { 
                 btnNext.style.visibility = 'visible'; 
-                btnNext.innerText = "Video-Beweis →"; 
-                whiteTitle.innerText = "LIVE CHAT - DIALOG"; 
+                btnNext.innerText = "Video-Beweis (Ebene 4) →"; 
+                whiteTitle.innerText = "DIALOG: " + themen[tId]; 
                 mainText.style.display = 'none'; 
+                document.getElementById('chat-box').innerHTML = boxStatus[tId].dialogVerlauf;
             } else if (isVideo) {
                 btnNext.style.visibility = 'visible'; 
                 btnNext.innerText = "Ebene 5 →"; 
@@ -292,18 +301,15 @@
                 btnNext.innerText = `Ebene ${ebene + 1} →`; 
                 whiteTitle.innerText = "FREIZONE - EBENE " + ebene; 
                 mainText.style.display = 'block'; 
-                mainText.innerText = "Dieser Bereich ist für zukünftige Inhalte reserviert."; 
+                mainText.innerText = "Dieser Bereich von '" + themen[tId] + "' ist für zukünftige Inhalte reserviert."; 
             }
             for(let i=1; i<=7; i++) { const dot = document.getElementById('dot'+i); if(dot) dot.classList.toggle('active', i === ebene); }
             startRotation();
         }
 
         function nextPage() { 
-            if (ebene === 2 && tId < 19) { 
-                tId++; 
-                showInfo(themen[tId], tId); 
-            } else if (ebene < 7) { 
-                ebene++; 
+            if (boxStatus[tId].aktuelleEbene < 7) { 
+                boxStatus[tId].aktuelleEbene++; 
                 updateUI(); 
             } 
         }
@@ -312,7 +318,7 @@
             clearInterval(wechselInterval); 
             const bg = document.getElementById('werbe-bg'); 
             if(!bg) return; 
-            bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; 
+            bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + boxStatus[tId].aktuelleEbene}/1200/600')`; 
             bg.classList.add('bild-aktiv'); 
             wechselInterval = setInterval(() => { 
                 bg.classList.remove('bild-aktiv'); 
@@ -324,7 +330,6 @@
         }
 
         function showDashboard() { 
-            ebene = 1; 
             clearInterval(wechselInterval); 
             document.getElementById('page-skelett').style.display = 'none'; 
             document.getElementById('dashboard').style.display = 'flex'; 
