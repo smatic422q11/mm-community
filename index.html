@@ -17,13 +17,7 @@
             100% { box-shadow: 0 0 5px #fff; opacity: 0.8; }
         }
 
-        /* LILA LEISTE ANIMATION */
-        @keyframes lilaLeuchten {
-            0% { box-shadow: 0 0 5px #8b00ff; opacity: 0.8; }
-            50% { box-shadow: 0 0 20px #8b00ff, 0 0 40px #8b00ff; opacity: 1; }
-            100% { box-shadow: 0 0 5px #8b00ff; opacity: 0.8; }
-        }
-
+        /* SPEZIAL: SCHWARZ-GRAUES ELITE BLINKEN */
         @keyframes eliteBlink {
             0% { background-color: #000; box-shadow: 0 0 5px #333; }
             50% { background-color: #444; box-shadow: 0 0 20px #666, inset 0 0 10px #000; transform: scale(1.1); }
@@ -32,6 +26,34 @@
 
         .signal-aktiv { animation: signalBlink 1.0s infinite ease-in-out !important; border: 2px solid #fff !important; cursor: pointer; }
         .elite-aktiv { animation: eliteBlink 2s infinite ease-in-out !important; border: 2px solid #ffd700 !important; cursor: pointer; }
+
+        /* NEU: MASSIVER LILA BALKEN FÜR REGISTRIERUNG */
+        .lila-registrierung-leiste {
+            width: 100%;
+            height: 80px; 
+            background: #8b00ff;
+            border-top: 2px solid #fff;
+            border-bottom: 2px solid #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            box-shadow: 0 0 20px #8b00ff;
+        }
+        .registrierung-text {
+            color: #fff;
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: 15px;
+            text-transform: uppercase;
+        }
+
+        /* LILA BUTTON EFFEKT */
+        .btn-lila { 
+            background: #8b00ff; color: #fff; border: 2px solid #fff; padding: 20px; 
+            font-weight: 900; cursor: pointer; animation: signalBlink 1.5s infinite;
+            text-transform: uppercase; letter-spacing: 2px; margin-top: 20px; width: 100%; max-width: 400px;
+        }
 
         /* HEADER & LOGO */
         .dashboard-header { width: 100%; position: absolute; top: 3%; display: flex; justify-content: flex-start; padding: 0 2%; box-sizing: border-box; z-index: 20; }
@@ -43,18 +65,6 @@
         .info-section { width: 80%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; position: relative; overflow: hidden; margin-top: 2vh; }
         .tafel-layout { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; margin-top: 1vh; height: 26vh; flex-shrink: 0; }
         .info-section-ebene { width: 90% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; box-shadow: 0 0 15px rgba(0, 61, 143, 0.5); }
-
-        /* DIE LILA LEISTE (Ganze Breite) */
-        .lila-leiste-container { width: 100%; display: flex; justify-content: center; margin-top: 2px; z-index: 30; }
-        .lila-leiste { 
-            width: 100%; 
-            height: 8px; 
-            background: #8b00ff; 
-            box-shadow: 0 0 15px #8b00ff; 
-            cursor: pointer; 
-            animation: lilaLeuchten 2s infinite ease-in-out;
-            display: none; /* Wird per JS in Ebene 5 eingeblendet */
-        }
 
         .buttons-links { position: absolute; left: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
         .buttons-rechts { position: absolute; right: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
@@ -72,12 +82,13 @@
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
-        /* BEREICHE */
+        /* CHAT- & EBENEN-BEREICHE */
         #chat-area, #drawer-ebene4, #ebene5-bereich { width: 90% !important; flex-grow: 1; display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; overflow: hidden; position: relative; }
         .chat-msgs { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px 0; color: #fff; font-size: 1.1rem; text-shadow: 2px 2px 4px #000; overflow-y: auto; }
         .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; z-index: 10; }
         
-        .anweisung-box { background: #000; border: 1px solid #333; padding: 25px; color: #fff; text-align: justify; font-size: 1.1rem; line-height: 1.6; margin-bottom: 20px; }
+        /* FREIE ZONE FÜR INFO TEXT */
+        .freie-zone-text { color: #fff; text-align: justify; font-size: 1.3rem; line-height: 1.8; padding: 20px; overflow-y: auto; flex: 1; }
 
         /* NAVIGATION */
         .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; background: #000; z-index: 100; }
@@ -96,6 +107,7 @@
         /* STATUSFARBEN GRID */
         .num-neutral { background-color: #003d8f !important; }
         .num-gelesen { background-color: #ffd700 !important; color: #000 !important; }
+        .num-offen { background-color: #ff4d4d !important; }
         .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
 
         /* VIDEO-GRID EBENE 4 */
@@ -154,8 +166,11 @@
                     <div class="oval-side ov-gelb" id="sig-r4" onclick="portalZuEbene3()"></div>
                 </div>
             </div>
-            <div class="lila-leiste-container">
-                <div id="admin-leiste" class="lila-leiste" onclick="starteAdminProzess()"></div>
+            
+            <div id="lila-balken-container" style="display: none; width: 100%;">
+                <div class="lila-registrierung-leiste">
+                    <div class="registrierung-text">REGISTRIERUNG</div>
+                </div>
             </div>
         </div>
 
@@ -186,13 +201,10 @@
         </div> 
 
         <div id="ebene5-bereich">
-            <div class="anweisung-box">
-                <h2 style="color: #ffd700; text-align: center;">KANDIDATUR VORSTAND</h2>
-                <p>Sie haben die Qualifikationsphase durchlaufen. Dieser Raum dient der Vorbereitung des Konstrukts. 
-                   Wer ernsthaftes Interesse hat, für den Vorstand zu kandidieren, muss nun die administrativen 
-                   Hürden nehmen. Hier werden Identitäts-Checks, Server-Zuweisungen und rechtliche Verträge vorbereitet.</p>
-                <p style="color: #666; font-style: italic;">Nutzen Sie die lila Leiste oben für administrative Prozesse...</p>
+            <div class="freie-zone-text">
+                <p>Hier ist Platz für deine Informationen zum Kandidatur-Prozess und die administrativen Schritte.</p>
             </div>
+            <button class="btn-lila" onclick="starteAdminProzess()">ADMINISTRATIVE WEGE ÖFFNEN</button>
         </div>
 
     </div>
@@ -204,21 +216,19 @@
     </div>
 
 <script>
-    let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, rankingPlatz: 5 };
+    let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5, zaehlerInterval: null };
     const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
     let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
     const grid = document.getElementById('main-grid');
-    themen.forEach((t, i) => { 
-        grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; 
-    });
+    themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; });
     
     const dots = document.getElementById('dot-holder');
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
     function adminUnlock() {
-        themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
+        themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; userBackstage.sektorZeiten[i] = 1801; });
         userBackstage.isQualifiziert = true;
         updateNumColors();
         if (ebene > 1) updateUI();
@@ -226,12 +236,7 @@
         alert("ADMIN: Alle Barrieren entfernt.");
     }
 
-    function showInfo(t, id) { 
-        tId = id; aktuellesThema = t;
-        if (ebene < 3) { ebene = 2; geleseneThemen.add(id); }
-        updateNumColors(); document.getElementById('dashboard').style.display = 'none'; document.getElementById('page-skelett').style.display = 'flex'; updateUI(); 
-    }
-
+    function showInfo(t, id) { tId = id; aktuellesThema = t; if (ebene < 3) { ebene = 2; geleseneThemen.add(id); } updateNumColors(); document.getElementById('dashboard').style.display = 'none'; document.getElementById('page-skelett').style.display = 'flex'; updateUI(); }
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
     function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
     function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv')) { ebene = 5; updateUI(); } }
@@ -241,79 +246,33 @@
         document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
         document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
         document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
-        
-        // Lila Leiste nur in Ebene 5 zeigen
-        document.getElementById('admin-leiste').style.display = isAdmin ? 'block' : 'none';
-
+        document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
         document.getElementById('main-text').style.display = (ebene < 3) ? 'block' : 'none';
         document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
-        document.getElementById('info-titel').style.display = isVideo ? 'none' : 'block';
+        document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
         document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
         document.getElementById('btn-back').style.visibility = 'visible';
-
-        if(isAdmin) document.getElementById('info-titel').innerText = "VORSTANDS-ADMINISTRATION";
-        else if (ebene === 2) { 
-            document.getElementById('info-titel').innerText = aktuellesThema; 
-            document.getElementById('main-text').innerText = "Inhalt für " + aktuellesThema + "..."; 
-        }
-
+        if (ebene === 2) { document.getElementById('info-titel').innerText = aktuellesThema; document.getElementById('main-text').innerText = "Inhalt für " + aktuellesThema + "..."; }
         const sigGelb = document.getElementById('sig-r4'), sigRot = document.getElementById('sig-l4');
         sigGelb.classList.toggle('signal-aktiv', (ebene === 2 && geleseneThemen.size === 20));
         let alleRaeumeFertig = Object.values(interaktionsZaehler).every(val => val >= 20);
         sigRot.classList.toggle('signal-aktiv', (ebene === 3 && alleRaeumeFertig));
-
         aktiviereKandidatenLicht();
-        updateDots(); 
-        startRotation();
+        updateDots(); startRotation();
     }
 
     function aktiviereKandidatenLicht() {
         const sigL1 = document.getElementById('sig-l1');
-        if (userBackstage.isQualifiziert || userBackstage.rankingPlatz <= 22) {
-            sigL1.className = "oval-side elite-aktiv";
-            sigL1.onclick = () => portalZuEbene5();
-        }
+        if (userBackstage.isQualifiziert || userBackstage.rankingPlatz <= 22) { sigL1.className = "oval-side elite-aktiv"; sigL1.onclick = () => portalZuEbene5(); }
     }
 
-    function starteAdminProzess() {
-        if(confirm("Identitäts-Check und Server-Zertifizierung starten?")) {
-            alert("HINTERGRUND-SYSTEM: Server-Verträge werden generiert. Identitätsprüfung aktiv.");
-        }
-    }
-
+    function starteAdminProzess() { if(confirm("Identitäts-Check starten?")) { alert("HINTERGRUND-SYSTEM: Prüfung aktiv."); } }
     function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
     function nextPage() { if (ebene === 2 && tId < 19) { tId++; showInfo(themen[tId], tId); } else if (ebene < 7) { ebene++; updateUI(); } }
     function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
-
-    function registriereSenden() {
-        const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim();
-        if (text === "") return;
-        chatBox.innerHTML += `<div><strong>Du:</strong> ${text}</div>`;
-        if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++;
-        input.value = ""; chatBox.scrollTop = chatBox.scrollHeight; updateUI(); 
-    }
-
-    function updateNumColors() { 
-        themen.forEach((_, i) => { 
-            const nBox = document.getElementById(`num-${i}`); 
-            if (nBox) { 
-                if (interaktionsZaehler[i] >= 20) nBox.className = "num num-fertig"; 
-                else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen"; 
-            } 
-        }); 
-    }
-
-    function startRotation() {
-        clearInterval(wechselInterval);
-        const bg = document.getElementById('werbe-bg');
-        if(!bg) return;
-        bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`;
-        bg.classList.add('bild-aktiv');
-        wechselInterval = setInterval(() => {
-            bg.classList.remove('bild-aktiv');
-            setTimeout(() => { bg.classList.add('bild-aktiv'); }, 50);
-        }, 10000);
-    }
+    function registriereSenden() { const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); if (text === "") return; chatBox.innerHTML += `<div><strong>Du:</strong> ${text}</div>`; if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++; input.value = ""; chatBox.scrollTop = chatBox.scrollHeight; updateUI(); }
+    function updateNumColors() { themen.forEach((_, i) => { const nBox = document.getElementById(`num-${i}`); if (nBox) { if (interaktionsZaehler[i] >= 20) nBox.className = "num num-fertig"; else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen"; } }); }
+    function startRotation() { clearInterval(wechselInterval); const bg = document.getElementById('werbe-bg'); if(!bg) return; bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; bg.classList.add('bild-aktiv'); wechselInterval = setInterval(() => { bg.classList.remove('bild-aktiv'); setTimeout(() => { bg.classList.add('bild-aktiv'); }, 50); }, 10000); }
 </script>
 </body>
 </html>
