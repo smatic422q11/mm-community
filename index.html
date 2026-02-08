@@ -84,18 +84,21 @@
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
-        /* CHAT-BEREICH & SCHUBLADEN */
-        #chat-area, #drawer-ebene4 { 
-            width: 90% !important; flex-grow: 1; border: none !important; background: transparent !important; 
-            display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; 
+        /* CHAT-BEREICH (GRENZENLOSES RUTSCHEN) */
+        #chat-area { 
+            width: 90% !important; flex-grow: 1; display: none; 
+            flex-direction: column; margin-top: 5px; margin-bottom: 70px; 
+            overflow: hidden; position: relative; 
         }
 
-        .chat-msgs, .drawer-content { 
-            flex: 1; padding: 10px 0; overflow-y: auto; color: #fff; font-size: 1.1rem; text-shadow: 2px 2px 4px #000; 
+        .chat-msgs {
+            flex: 1; display: flex; flex-direction: column;
+            justify-content: flex-end; padding: 10px 0;
+            color: #fff; font-size: 1.1rem; text-shadow: 2px 2px 4px #000;
+            overflow: hidden; /* Verhindert Scrollbalken komplett */
         }
 
-        .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; }
-        .chat-msgs::-webkit-scrollbar { width: 0px; }
+        .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; z-index: 10; }
 
         /* NAVIGATION & DOTS */
         .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; background: #000; z-index: 100; }
@@ -124,6 +127,8 @@
         #main-text::-webkit-scrollbar { width: 8px; }
         #main-text::-webkit-scrollbar-track { background: #000; }
         #main-text::-webkit-scrollbar-thumb { background: #003d8f; border-radius: 10px; }
+
+        #drawer-ebene4 { width: 90% !important; flex-grow: 1; display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; }
     </style>
 </head>
 <body>
@@ -183,14 +188,14 @@
         <p id="main-text" style="width: 85%; text-align: justify; color: #ccc; margin-top: 2vh; font-size: 1.3rem; line-height: 1.8; max-width: 1200px; overflow-y: auto; max-height: 50vh; padding-right: 15px;"></p>
 
         <div id="chat-area">
-            <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit... Buchstaben fliegen...</i></div>
+            <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit...</i></div>
             <div class="chat-input-row">
-                <input type="text" placeholder="Nachricht..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px;">
+                <input type="text" id="chat-input" placeholder="Nachricht..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px; outline:none;" onkeypress="if(event.key==='Enter')registriereSenden()">
                 <button onclick="registriereSenden()" style="background:#003d8f; color:#fff; border:none; padding:0 30px; font-weight:bold; cursor:pointer;">SENDEN</button>
             </div>
         </div>
 
-      <div id="drawer-ebene4" style="margin-top: 0;">
+        <div id="drawer-ebene4">
             <div class="drawer-content">
                 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
                     <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 1 (DU)</div>
@@ -222,8 +227,6 @@
         };
 
         let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set();
-        
-        // --- NEU: Zähler für die 20x20 Interaktionen ---
         let interaktionsZaehler = {}; 
         themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
@@ -262,8 +265,8 @@
         }
 
         function updateUI() {
-            const isChat = ebene === 3;
-            const isVideo = ebene === 4;
+            const isChat = (ebene === 3);
+            const isVideo = (ebene === 4);
             const chatArea = document.getElementById('chat-area');
             const drawer4 = document.getElementById('drawer-ebene4');
             const redTitle = document.getElementById('ebene4-title-red');
@@ -276,9 +279,7 @@
             drawer4.style.display = isVideo ? 'flex' : 'none';
             
             redTitle.style.display = isVideo ? 'block' : 'none';
-            if(isVideo) {
-                redTitle.innerText = `VIDEO-BEWEIS: ${aktuellesThema.toUpperCase()}`;
-            }
+            if(isVideo) redTitle.innerText = `VIDEO-BEWEIS: ${aktuellesThema.toUpperCase()}`;
 
             whiteTitle.style.display = isVideo ? 'none' : 'block';
             counter.style.display = ebene >= 3 ? 'block' : 'none';
@@ -299,7 +300,6 @@
                 btnNext.style.visibility = 'visible'; 
                 btnNext.innerText = "Ebene 5 →"; 
                 mainText.style.display = 'none';
-                console.log("Lade Video-Room für Thema ID: " + tId);
             } else { 
                 btnNext.style.visibility = (ebene < 7) ? 'visible' : 'hidden'; 
                 btnNext.innerText = `Ebene ${ebene + 1} →`; 
@@ -307,6 +307,7 @@
                 mainText.style.display = 'block'; 
                 mainText.innerText = "Dieser Bereich ist für zukünftige Inhalte reserviert."; 
             }
+
             for(let i=1; i<=7; i++) { 
                 const dot = document.getElementById('dot'+i); 
                 if(dot) dot.classList.toggle('active', i === ebene); 
@@ -353,29 +354,29 @@
             }, 10000); 
         }
 
-        // --- LOGIK FÜR DIE 400 INTERAKTIONEN ---
         function registriereSenden() {
+            const input = document.getElementById('chat-input');
+            const chatBox = document.getElementById('chat-box');
+            if (input.value.trim() === "") return;
+
+            // Nachricht anzeigen
+            chatBox.innerHTML += `<div><strong>Du:</strong> ${input.value}</div>`;
+            
             if (interaktionsZaehler[tId] < 20) {
                 interaktionsZaehler[tId]++;
-                console.log(`Thema ${tId}: Interaktion ${interaktionsZaehler[tId]}/20`);
-                
-                // Optisches Feedback im Chat-Fenster
-                const chatBox = document.getElementById('chat-box');
                 chatBox.innerHTML += `<div><small style="color: #ffd700;">Interaktion ${interaktionsZaehler[tId]}/20 registriert...</small></div>`;
-                chatBox.scrollTop = chatBox.scrollHeight;
             }
+            
+            input.value = "";
             pruefeSchoepferStatus();
         }
 
         function pruefeSchoepferStatus() {
             const istVollstaendig = Object.values(interaktionsZaehler).every(count => count >= 20);
             if (istVollstaendig) {
-                console.log("Status-Upgrade: DU BIST JETZT SCHÖPFER!");
                 alert("Muster erkannt: Du hast den Status SCHÖPFER erreicht!");
             }
         }
     </script>
 </body>
 </html>
-
-
