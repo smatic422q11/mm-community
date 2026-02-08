@@ -229,11 +229,31 @@
             <div class="schöpfer-slot" style="aspect-ratio: 16/9; background: #0a0a0a; border: 2px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #555; text-align: center; transition: all 0.3s;">SUCHE...</div>
         </div>
 
-        <button onclick="starteZufallsTreffer()" style="width: 95%; max-width: 1000px; background: #00ff00; color: #000; border: none; padding: 15px; font-weight: bold; font-size: 1.1rem; cursor: pointer; border-radius: 5px; text-transform: uppercase; box-shadow: 0 4px 15px rgba(0, 255, 0, 0.2);">
-            Kollektiv aktivieren (Zufallstreffer)
-        </button>
-    </div>
-</div> 
+        function starteZufallsTreffer() {
+    const slots = document.querySelectorAll('.schöpfer-slot');
+    
+    // Zuerst alle zurücksetzen (Gleichheit herstellen)
+    slots.forEach(slot => {
+        slot.style.border = "2px solid #003d8f";
+        slot.style.color = "#555";
+        slot.style.background = "#0a0a0a";
+        slot.style.boxShadow = "none";
+        slot.innerHTML = "SUCHE...";
+    });
+
+    // Alle Schöpfer werden als Kollektiv (mit leicht unterschiedlichen Zeiten) aktiv
+    slots.forEach((slot, index) => {
+        const verzögerung = Math.random() * 2500; // Zufälliger Zeitpunkt innerhalb von 2.5 Sek
+        
+        setTimeout(() => {
+            slot.style.border = "2px solid #ffd700"; // Goldener Rahmen für die Wertschätzung
+            slot.style.color = "#fff";
+            slot.style.background = "radial-gradient(circle, #001a3d 0%, #000 100%)"; 
+            slot.style.boxShadow = "0 0 15px rgba(255, 215, 0, 0.2)";
+            slot.innerHTML = `<span style="color:#ffd700; font-weight:bold; font-size:0.9rem;">SCHÖPFER ${index + 1}</span><br><span style="font-size:0.6rem; letter-spacing:1px;">LIVE AKTIV</span>`;
+        }, verzögerung);
+    });
+}
     </div>
 
     <div id="info-drawer" class="drawer-right">
