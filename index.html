@@ -61,7 +61,7 @@
         .buttons-links { position: absolute; left: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
         .buttons-rechts { position: absolute; right: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
         
-        .oval-side { width: 45px; height: 22px; border-radius: 12px; border: 1px solid #fff; opacity: 0.8; }
+        .oval-side { width: 45px; height: 22px; border-radius: 12px; border: 1px solid #fff; opacity: 0.8; cursor: pointer; }
         .ov-schwarz { background: #000; border: 1.5px solid #003d8f; }
         .ov-grun { background: #00ff00; }
         .ov-blau { background: #0000ff; }
@@ -85,7 +85,7 @@
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
         /* CHAT-BEREICH & SCHUBLADEN */
-        #chat-area, #drawer-ebene4 { 
+        #chat-area, #drawer-ebene4, .drawer-placeholder { 
             width: 90% !important; flex-grow: 1; border: none !important; background: transparent !important; 
             display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; 
         }
@@ -153,10 +153,10 @@
             
             <div class="tafel-layout">
                 <div class="buttons-links">
-                    <div class="oval-side ov-schwarz"></div>
-                    <div class="oval-side ov-grun"></div>
-                    <div class="oval-side ov-blau"></div>
-                    <div class="oval-side ov-rot"></div>
+                    <div class="oval-side ov-schwarz" onclick="openDrawer('schwarz')"></div>
+                    <div class="oval-side ov-grun" onclick="openDrawer('grun-l')"></div>
+                    <div class="oval-side ov-blau" onclick="openDrawer('blau-l')"></div>
+                    <div class="oval-side ov-rot" onclick="openDrawer('rot')"></div>
                 </div>
                 <div class="info-section-ebene">
                     <div class="werbe-bild-bg" id="werbe-bg"></div>
@@ -172,16 +172,18 @@
                     </div>
                 </div>
                 <div class="buttons-rechts">
-                    <div class="oval-side ov-grun" style="border: 2px solid #00ff00;"></div>
-                    <div class="oval-side ov-blau"></div>
-                    <div class="oval-side ov-pink"></div>
-                    <div class="oval-side ov-gelb"></div>
+                    <div class="oval-side ov-grun" style="border: 2px solid #00ff00;" onclick="openDrawer('grun-r')"></div>
+                    <div class="oval-side ov-blau" onclick="openDrawer('blau-r')"></div>
+                    <div class="oval-side ov-pink" onclick="openDrawer('pink')"></div>
+                    <div class="oval-side ov-gelb" onclick="openDrawer('gelb')"></div>
                 </div>
             </div>
         </div>
 
         <p id="main-text" style="width: 85%; text-align: justify; color: #ccc; margin-top: 2vh; font-size: 1.3rem; line-height: 1.8; max-width: 1200px; overflow-y: auto; max-height: 50vh; padding-right: 15px;"></p>
 
+        <div id="drawer-schwarz" class="drawer-placeholder"><div class="drawer-content">SCHUBLADE SCHWARZ</div></div>
+        <div id="drawer-grun-l" class="drawer-placeholder"><div class="drawer-content">SCHUBLADE GRÜN LINKS</div></div>
         <div id="chat-area">
             <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit... Buchstaben fliegen...</i></div>
             <div class="chat-input-row">
@@ -190,7 +192,7 @@
             </div>
         </div>
 
-      <div id="drawer-ebene4" style="margin-top: 0;">
+        <div id="drawer-ebene4" style="margin-top: 0;">
             <div class="drawer-content">
                 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
                     <div style="aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #444;">VIDEO 1 (DU)</div>
@@ -222,10 +224,7 @@
         };
 
         let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set();
-        
-        // --- PERSISTENTE LOGIK FÜR DIE 400 INTERAKTIONEN ---
         let interaktionsZaehler = JSON.parse(localStorage.getItem('mm_interaktionen')) || {};
-        // Initialisierung falls leer
         if (Object.keys(interaktionsZaehler).length === 0) {
             themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
         }
@@ -239,14 +238,7 @@
         function showInfo(t, id) { 
             tId = id; 
             aktuellesThema = t; 
-            
-            if (geleseneThemen.size === 20) {
-                ebene = 3; 
-            } else {
-                ebene = 2; 
-                geleseneThemen.add(id); 
-            }
-
+            if (geleseneThemen.size === 20) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
             updateNumColors(); 
             document.getElementById('dashboard').style.display = 'none'; 
             document.getElementById('page-skelett').style.display = 'flex'; 
@@ -267,50 +259,30 @@
         function updateUI() {
             const isChat = ebene === 3;
             const isVideo = ebene === 4;
-            const chatArea = document.getElementById('chat-area');
-            const drawer4 = document.getElementById('drawer-ebene4');
-            const redTitle = document.getElementById('ebene4-title-red');
-            const whiteTitle = document.getElementById('info-titel');
-            const mainText = document.getElementById('main-text');
-            const btnNext = document.getElementById('btn-next');
-            const counter = document.getElementById('counter-box');
-
-            chatArea.style.display = isChat ? 'flex' : 'none';
-            drawer4.style.display = isVideo ? 'flex' : 'none';
-            
-            redTitle.style.display = isVideo ? 'block' : 'none';
-            if(isVideo) {
-                redTitle.innerText = `VIDEO-BEWEIS: ${aktuellesThema.toUpperCase()}`;
-            }
-
-            whiteTitle.style.display = isVideo ? 'none' : 'block';
-            counter.style.display = ebene >= 3 ? 'block' : 'none';
+            document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
+            document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
+            document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
+            if(isVideo) document.getElementById('ebene4-title-red').innerText = `VIDEO-BEWEIS: ${aktuellesThema.toUpperCase()}`;
+            document.getElementById('info-titel').style.display = isVideo ? 'none' : 'block';
+            document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
             document.getElementById('btn-back').style.visibility = 'visible';
 
             if (ebene === 2) { 
-                whiteTitle.innerText = aktuellesThema; 
-                mainText.style.display = 'block'; 
-                mainText.innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet..."; 
-                btnNext.style.visibility = 'visible'; 
-                btnNext.innerText = (tId < 19) ? `Thema ${tId + 2} →` : "Fertig → Dashboard"; 
+                document.getElementById('info-titel').innerText = aktuellesThema; 
+                document.getElementById('main-text').style.display = 'block'; 
+                document.getElementById('main-text').innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet..."; 
+                document.getElementById('btn-next').style.visibility = 'visible'; 
+                document.getElementById('btn-next').innerText = (tId < 19) ? `Thema ${tId + 2} →` : "Fertig → Dashboard"; 
             } else if (isChat) { 
-                btnNext.style.visibility = 'visible'; 
-                btnNext.innerText = "Video-Beweis →"; 
-                whiteTitle.innerText = "LIVE CHAT - " + aktuellesThema; 
-                mainText.style.display = 'none'; 
-                // Anzeige der bereits getätigten Interaktionen im Chat
-                const chatBox = document.getElementById('chat-box');
-                chatBox.innerHTML = `<i>System: Dialog bereit... (${interaktionsZaehler[tId]}/20 Interaktionen hier registriert)</i>`;
+                document.getElementById('btn-next').style.visibility = 'visible'; 
+                document.getElementById('btn-next').innerText = "Video-Beweis →"; 
+                document.getElementById('info-titel').innerText = "LIVE CHAT - " + aktuellesThema; 
+                document.getElementById('main-text').style.display = 'none'; 
+                document.getElementById('chat-box').innerHTML = `<i>System: Dialog bereit... (${interaktionsZaehler[tId]}/20)</i>`;
             } else if (isVideo) {
-                btnNext.style.visibility = 'visible'; 
-                btnNext.innerText = "Ebene 5 →"; 
-                mainText.style.display = 'none';
-            } else { 
-                btnNext.style.visibility = (ebene < 7) ? 'visible' : 'hidden'; 
-                btnNext.innerText = `Ebene ${ebene + 1} →`; 
-                whiteTitle.innerText = "FREIZONE - EBENE " + ebene; 
-                mainText.style.display = 'block'; 
-                mainText.innerText = "Dieser Bereich ist für zukünftige Inhalte reserviert."; 
+                document.getElementById('btn-next').style.visibility = 'visible'; 
+                document.getElementById('btn-next').innerText = "Ebene 5 →"; 
+                document.getElementById('main-text').style.display = 'none';
             }
             for(let i=1; i<=7; i++) { 
                 const dot = document.getElementById('dot'+i); 
@@ -319,30 +291,9 @@
             startRotation();
         }
 
-        function nextPage() { 
-            if (ebene === 2) { 
-                if (tId < 19) { 
-                    tId++; 
-                    showInfo(themen[tId], tId); 
-                } else {
-                    showDashboard(); 
-                }
-            } else if (ebene < 7) { 
-                ebene++; 
-                updateUI(); 
-            } 
-        }
-
-        function showDashboard() { 
-            ebene = 1; 
-            clearInterval(wechselInterval); 
-            document.getElementById('page-skelett').style.display = 'none'; 
-            document.getElementById('dashboard').style.display = 'flex'; 
-            document.getElementById('btn-back').style.visibility = 'hidden'; 
-            document.getElementById('btn-next').style.visibility = 'hidden'; 
-            updateNumColors(); 
-        }
-
+        function nextPage() { if (ebene === 2) { if (tId < 19) { tId++; showInfo(themen[tId], tId); } else { showDashboard(); } } else if (ebene < 7) { ebene++; updateUI(); } }
+        function showDashboard() { ebene = 1; clearInterval(wechselInterval); document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; document.getElementById('btn-back').style.visibility = 'hidden'; document.getElementById('btn-next').style.visibility = 'hidden'; updateNumColors(); }
+        
         function startRotation() { 
             clearInterval(wechselInterval); 
             const bg = document.getElementById('werbe-bg'); 
@@ -359,30 +310,15 @@
         }
 
         function registriereSenden() {
-            const input = document.getElementById('user-input');
             if (interaktionsZaehler[tId] < 20) {
                 interaktionsZaehler[tId]++;
-                // Speichern im LocalStorage
                 localStorage.setItem('mm_interaktionen', JSON.stringify(interaktionsZaehler));
-                
-                const chatBox = document.getElementById('chat-box');
-                chatBox.innerHTML += `<div><small style="color: #ffd700;">Interaktion ${interaktionsZaehler[tId]}/20 registriert...</small></div>`;
-                chatBox.scrollTop = chatBox.scrollHeight;
+                document.getElementById('chat-box').innerHTML += `<div><small style="color: #ffd700;">Interaktion ${interaktionsZaehler[tId]}/20</small></div>`;
             }
-            input.value = "";
-            pruefeSchoepferStatus();
+            document.getElementById('user-input').value = "";
         }
 
-        function pruefeSchoepferStatus() {
-            const istVollstaendig = Object.values(interaktionsZaehler).every(count => count >= 20);
-            if (istVollstaendig) {
-                console.log("Status-Upgrade: DU BIST JETZT SCHÖPFER!");
-                alert("Muster erkannt: Du hast den Status SCHÖPFER erreicht!");
-            }
-        }
-
-        // Initiale Prüfung beim Laden
-        window.onload = pruefeSchoepferStatus;
+        function openDrawer(color) { console.log("Öffne Schublade: " + color); }
     </script>
 </body>
 </html>
