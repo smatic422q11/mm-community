@@ -103,7 +103,7 @@
     justify-content: flex-end; 
 }
 
-        .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; }
+       <input type="text" id="chat-input" placeholder="Nachricht..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px; outline:none;" onkeypress="if(event.key==='Enter')registriereSenden()">
         .chat-msgs::-webkit-scrollbar { width: 0px; }
 
         /* NAVIGATION & DOTS */
@@ -191,13 +191,13 @@
 
         <p id="main-text" style="width: 85%; text-align: justify; color: #ccc; margin-top: 2vh; font-size: 1.3rem; line-height: 1.8; max-width: 1200px; overflow-y: auto; max-height: 50vh; padding-right: 15px;"></p>
 
-        <div id="chat-area">
-            <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit... Buchstaben fliegen...</i></div>
-            <div class="chat-input-row">
-                <input type="text" placeholder="Nachricht..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px;">
-                <button onclick="registriereSenden()" style="background:#003d8f; color:#fff; border:none; padding:0 30px; font-weight:bold; cursor:pointer;">SENDEN</button>
-            </div>
-        </div>
+<div id="chat-area">
+    <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit... Buchstaben fliegen...</i></div>
+    <div class="chat-input-row">
+        <input type="text" id="chat-input" placeholder="Nachricht..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px; outline:none;" onkeypress="if(event.key==='Enter')registriereSenden()">
+        <button onclick="registriereSenden()" style="background:#003d8f; color:#fff; border:none; padding:0 30px; font-weight:bold; cursor:pointer;">SENDEN</button>
+    </div>
+</div>
 
       <div id="drawer-ebene4" style="margin-top: 0;">
             <div class="drawer-content">
@@ -362,17 +362,28 @@
             }, 10000); 
         }
 
-        // --- LOGIK FÜR DIE 400 INTERAKTIONEN ---
+    // --- LOGIK FÜR DIE 400 INTERAKTIONEN ---
         function registriereSenden() {
+            const input = document.getElementById('chat-input');
+            const chatBox = document.getElementById('chat-box');
+            const val = input.value.trim();
+
+            // 1. Text im Chat anzeigen
+            if (val !== "") {
+                chatBox.innerHTML += `<div style="margin-top: 5px;"><span style="color: #ffd700;">></span> ${val}</div>`;
+                input.value = ""; // Feld leeren
+            }
+
+            // 2. Deine Zähl-Logik (Interaktionen)
             if (interaktionsZaehler[tId] < 20) {
                 interaktionsZaehler[tId]++;
-                console.log(`Thema ${tId}: Interaktion ${interaktionsZaehler[tId]}/20`);
-                
-                // Optisches Feedback im Chat-Fenster
-                const chatBox = document.getElementById('chat-box');
-                chatBox.innerHTML += `<div><small style="color: #ffd700;">Interaktion ${interaktionsZaehler[tId]}/20 registriert...</small></div>`;
-                chatBox.scrollTop = chatBox.scrollHeight;
+                chatBox.innerHTML += `<div><small style="color: #00ff00;">Interaktion ${interaktionsZaehler[tId]}/20 registriert...</small></div>`;
             }
+            
+            // 3. Nach unten scrollen
+            chatBox.scrollTop = chatBox.scrollHeight;
+            
+            // 4. Status prüfen
             pruefeSchoepferStatus();
         }
 
@@ -386,5 +397,3 @@
     </script>
 </body>
 </html>
-
-
