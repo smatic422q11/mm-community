@@ -84,23 +84,21 @@
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
-        /* CHAT-BEREICH & SCHUBLADEN */
+        /* CHAT-BEREICH */
         #chat-area, #drawer-ebene4 { 
             width: 90% !important; flex-grow: 1; border: none !important; background: transparent !important; 
             display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; 
         }
 
-       .chat-msgs, .drawer-content { 
-    flex: 1; 
-    padding: 10px 0; 
-    overflow-y: auto; 
-    color: #fff; 
-    font-size: 1.1rem; 
-    text-shadow: 2px 2px 4px #000;
-    /* NEU: Bewirkt, dass Nachrichten oben verschwinden */
-    display: flex;
-    flex-direction: column-reverse;
-}
+        .chat-msgs, .drawer-content { 
+            flex: 1; 
+            padding: 10px 0; 
+            overflow-y: auto; 
+            color: #fff; 
+            font-size: 1.1rem; 
+            text-shadow: 2px 2px 4px #000;
+            display: flex;
+            flex-direction: column-reverse; /* Nachrichten wandern nach oben */
         }
 
         .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; }
@@ -119,7 +117,6 @@
         .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh; flex-shrink: 0; }
         .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
 
-        /* NEU: Roter Balken Style */
         .ebene4-header-red { 
             width: 90%; background: #ff0000; color: #fff; padding: 10px 0; 
             text-align: center; font-weight: 900; font-size: 1.5rem; 
@@ -131,7 +128,6 @@
         .num-offen { background-color: #ff4d4d !important; }
         .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
 
-        /* SCROLLBAR Styling für den Textbereich */
         #main-text::-webkit-scrollbar { width: 8px; }
         #main-text::-webkit-scrollbar-track { background: #000; }
         #main-text::-webkit-scrollbar-thumb { background: #003d8f; border-radius: 10px; }
@@ -194,7 +190,7 @@
         <p id="main-text" style="width: 85%; text-align: justify; color: #ccc; margin-top: 2vh; font-size: 1.3rem; line-height: 1.8; max-width: 1200px; overflow-y: auto; max-height: 50vh; padding-right: 15px;"></p>
 
         <div id="chat-area">
-            <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit... Buchstaben fliegen...</i></div>
+            <div class="chat-msgs" id="chat-box"></div>
             <div class="chat-input-row">
                 <input type="text" placeholder="Nachricht..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px;">
                 <button onclick="sendeNachricht()" style="background:#003d8f; color:#fff; border:none; padding:0 30px; font-weight:bold; cursor:pointer;">SENDEN</button>
@@ -221,25 +217,22 @@
     </div>
 
     <script>
-    // BASIS-DATEN
-    const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
+    const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
     
     const inhaltsTexte = { 
-        "Recht auf Gefühlsvorderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühlsvorderung zu etablieren..."
+        "Recht auf Gefühls Forderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühls Forderung zu etablieren..."
     };
 
-    // WELTEN-LOGIK
     const weltenDaten = {};
     themen.forEach((t, i) => {
         weltenDaten[i] = {
-            chatVerlauf: [`<div style='color:#ffd700'>System: Willkommen im Dialog zu '${t}'...</div>`],
-            videos: Array(8).fill(null).map((_, vIndex) => `VIDEO ${vIndex + 1} (${t})`)
+            chatVerlauf: [`<div style='color:#ffd700; margin-bottom:10px;'>System: Willkommen im Dialog zu '${t}'...</div>`],
+            videos: Array(4).fill(null).map((_, vIndex) => `VIDEO ${vIndex + 1} (${t})`)
         };
     });
 
     let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set();
     
-    // GRID INITIALISIEREN
     const grid = document.getElementById('main-grid');
     themen.forEach((t, i) => { 
         grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; 
@@ -248,12 +241,8 @@
     const dots = document.getElementById('dot-holder');
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
-    // FUNKTIONEN
     function showInfo(t, id) { 
-        ebene = 2; 
-        tId = id; 
-        aktuellesThema = t; 
-        geleseneThemen.add(id); 
+        ebene = 2; tId = id; aktuellesThema = t; geleseneThemen.add(id); 
         updateNumColors(); 
         document.getElementById('dashboard').style.display = 'none'; 
         document.getElementById('page-skelett').style.display = 'flex'; 
@@ -327,11 +316,9 @@
         const input = document.querySelector('#chat-area input');
         if (input.value.trim() === "") return;
         const msg = `<div style="margin: 5px 0;"><strong>DU:</strong> ${input.value}</div>`;
-        weltenDaten[tId].chatVerlauf.push(msg);
+        weltenDaten[tId].chatVerlauf.unshift(msg); 
         input.value = "";
         updateUI();
-        const chatBox = document.getElementById('chat-box');
-        chatBox.scrollTop = chatBox.scrollHeight;
     }
 
     document.querySelector('#chat-area input')?.addEventListener('keypress', (e) => {
@@ -359,8 +346,7 @@
     }
 
     function showDashboard() { 
-        ebene = 1; 
-        clearInterval(wechselInterval); 
+        ebene = 1; clearInterval(wechselInterval); 
         document.getElementById('page-skelett').style.display = 'none'; 
         document.getElementById('dashboard').style.display = 'flex'; 
         document.getElementById('btn-back').style.visibility = 'hidden'; 
@@ -369,4 +355,3 @@
 </script>
 </body>
 </html>
-
