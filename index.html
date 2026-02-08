@@ -26,16 +26,16 @@
             100% { opacity: 0; }  
         }
 
-        /* BLINK-LOGIK FÜR DIE OVALE (SIGNAL-ZENTRALE) */
+        /* SIGNAL-BLINKEN (FÜR INFO-BOTTONS) */
         @keyframes signalBlink {
             0% { box-shadow: 0 0 5px #fff; opacity: 0.8; }
-            50% { box-shadow: 0 0 25px #fff, 0 0 35px #003d8f; opacity: 1; transform: scale(1.05); }
+            50% { box-shadow: 0 0 20px #fff, 0 0 30px #ffd700; opacity: 1; transform: scale(1.05); }
             100% { box-shadow: 0 0 5px #fff; opacity: 0.8; }
         }
         .signal-aktiv { 
             animation: signalBlink 1.5s infinite ease-in-out !important; 
-            cursor: pointer; 
             border: 2px solid #fff !important;
+            cursor: pointer;
         }
 
         /* HEADER & LOGO */
@@ -81,6 +81,11 @@
         .ov-pink { background: #ff00ff; }
         .ov-gelb { background: #ffff00; }
 
+        .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
+        .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
+        .tafel-intern-logo { position: absolute; top: 10px; left: 10px; z-index: 5; }
+        .werbe-text-overlay { color: rgba(255, 255, 255, 0.3); font-weight: bold; font-size: 1.2rem; letter-spacing: 5px; z-index: 5; text-align: center; text-shadow: 2px 2px 5px #000; }
+
         /* GRID DASHBOARD */
         .grid { 
             display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); 
@@ -115,20 +120,10 @@
 
         .ebene4-header-red { width: 90%; background: #ff0000; color: #fff; padding: 10px 0; text-align: center; font-weight: 900; font-size: 1.5rem; border-radius: 5px 5px 0 0; display: none; }
 
-        .num-neutral { background-color: #003d8f !important; }
-        .num-gelesen { background-color: #ffd700 !important; color: #000 !important; }
-        .num-offen { background-color: #ff4d4d !important; }
-        .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
-
         #drawer-ebene4 { width: 90% !important; flex-grow: 1; display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; }
         .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
         .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; position: relative; }
         .slot-1-user { border-color: #00ff00; color: #00ff00; }
-        
-        .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
-        .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
-        .tafel-intern-logo { position: absolute; top: 10px; left: 10px; z-index: 5; }
-        .werbe-text-overlay { color: rgba(255, 255, 255, 0.3); font-weight: bold; font-size: 1.2rem; letter-spacing: 5px; z-index: 5; text-align: center; text-shadow: 2px 2px 5px #000; }
     </style>
 </head>
 <body>
@@ -188,19 +183,17 @@
         </div> 
 
         <div id="drawer-ebene4">
-            <div class="drawer-content">
-                <div class="video-grid">
-                    <div class="video-slot slot-1-user" id="v-slot-1">SLOT 1 (DU)</div>
-                    <div class="video-slot" id="v-slot-2">SLOT 2 (ZUFALL)</div>
-                    <div class="video-slot" id="v-slot-3">SLOT 3 (ZUFALL)</div>
-                    <div class="video-slot" id="v-slot-4">SLOT 4 (ZUFALL)</div>
-                    <div class="video-slot" id="v-slot-5">SLOT 5 (ZUFALL)</div>
-                    <div class="video-slot" id="v-slot-6">SLOT 6 (ZUFALL)</div>
-                    <div class="video-slot" id="v-slot-7">SLOT 7 (ZUFALL)</div>
-                    <div class="video-slot" id="v-slot-8">SLOT 8 (ZUFALL)</div>
-                </div>
-                <button style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; margin-top: 15px; font-weight: bold; cursor: pointer; border-radius: 5px;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
+            <div class="video-grid">
+                <div class="video-slot slot-1-user" id="v-slot-1">SLOT 1 (DU)</div>
+                <div class="video-slot" id="v-slot-2">SLOT 2 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-3">SLOT 3 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-4">SLOT 4 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-5">SLOT 5 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-6">SLOT 6 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-7">SLOT 7 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-8">SLOT 8 (ZUFALL)</div>
             </div>
+            <button style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; margin-top: 15px; font-weight: bold; cursor: pointer; border-radius: 5px;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
         </div> 
     </div>
 
@@ -212,11 +205,7 @@
 
 <script>
     const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
-    
-    const inhaltsTexte = { 
-        "Recht auf Gefühls Forderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühls Forderung zu etablieren...",
-        "Die Brücke": "Inhalt für das letzte Thema..."
-    };
+    const inhaltsTexte = { "Recht auf Gefühls Forderung": "Um das Gleichgewicht zwischen Geben und Verlangen zu sichern und die klare Trennung von materiellen Werten und der echten Gefühls Forderung zu etablieren..." };
 
     let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set();
     let interaktionsZaehler = {}; 
@@ -228,15 +217,16 @@
     const dots = document.getElementById('dot-holder');
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
-    function activateSignal(id) {
+    // FUNKTION ZUM AKTIVIEREN DER SIGNALE
+    function aktiviereSignal(id) {
         const el = document.getElementById(id);
-        if(el) el.classList.add('signal-aktiv');
+        if(el) el.classList.toggle('signal-aktiv');
     }
 
     function showInfo(t, id) { 
-        tId = id; 
-        aktuellesThema = t; 
-        if (geleseneThemen.size === 20) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
+        tId = id; aktuellesThema = t; 
+        ebene = (geleseneThemen.size === 20) ? 3 : 2; 
+        geleseneThemen.add(id);
         updateNumColors(); 
         document.getElementById('dashboard').style.display = 'none'; 
         document.getElementById('page-skelett').style.display = 'flex'; 
@@ -249,37 +239,20 @@
             if (nBox) { 
                 if (geleseneThemen.size === 20) nBox.className = "num num-fertig"; 
                 else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen"; 
-                else if (geleseneThemen.size > 0) nBox.className = "num num-offen"; 
+                else nBox.className = "num num-neutral"; 
             } 
         }); 
     }
 
-    function startRotation() {
-        clearInterval(wechselInterval);
-        const bg = document.getElementById('werbe-bg');
-        if(!bg) return;
-        bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`;
-        bg.classList.add('bild-aktiv');
-        wechselInterval = setInterval(() => {
-            bg.classList.remove('bild-aktiv');
-            setTimeout(() => {
-                bg.style.backgroundImage = `url('https://picsum.photos/seed/${Math.random()}/1200/600')`;
-                bg.classList.add('bild-aktiv');
-            }, 50);
-        }, 10000);
-    }
-
     function updateUI() {
-        const isChat = (ebene === 3);
-        const isVideo = (ebene === 4);
+        const isChat = (ebene === 3), isVideo = (ebene === 4);
         document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
         document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
         document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
-        if(isVideo) document.getElementById('ebene4-title-red').innerText = `VIDEO-BEWEIS: ${aktuellesThema.toUpperCase()}`;
         document.getElementById('info-titel').style.display = isVideo ? 'none' : 'block';
         document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
         document.getElementById('btn-back').style.visibility = 'visible';
-
+        
         const mainText = document.getElementById('main-text');
         const btnNext = document.getElementById('btn-next');
 
@@ -290,14 +263,13 @@
             btnNext.style.visibility = 'visible'; 
             btnNext.innerText = (tId < 19) ? `Thema ${tId + 2} →` : "Fertig → Dashboard"; 
         } else if (isChat) { 
-            btnNext.style.visibility = 'visible'; 
-            btnNext.innerText = "Video-Beweis →"; 
+            btnNext.style.visibility = 'visible'; btnNext.innerText = "Video-Beweis →"; 
             document.getElementById('info-titel').innerText = "LIVE CHAT - " + aktuellesThema; 
             mainText.style.display = 'none'; 
         } else if (isVideo) {
-            btnNext.style.visibility = 'visible'; 
-            btnNext.innerText = "Ebene 5 →"; 
+            btnNext.style.visibility = 'visible'; btnNext.innerText = "Ebene 5 →"; 
             mainText.style.display = 'none';
+            document.getElementById('ebene4-title-red').innerText = `VIDEO-BEWEIS: ${aktuellesThema.toUpperCase()}`;
         } else { 
             btnNext.style.visibility = (ebene < 7) ? 'visible' : 'hidden'; 
             btnNext.innerText = `Ebene ${ebene + 1} →`; 
@@ -306,41 +278,30 @@
             mainText.innerText = "Dieser Bereich ist für zukünftige Inhalte reserviert."; 
         }
 
-        for(let i=1; i<=7; i++) { 
-            const dot = document.getElementById('dot'+i); 
-            if(dot) dot.classList.toggle('active', i === ebene); 
-        }
-        startRotation();
+        for(let i=1; i<=7; i++) document.getElementById('dot'+i).classList.toggle('active', i === ebene);
     }
 
     function nextPage() { 
-        if (ebene === 2) { 
-            if (tId < 19) { tId++; showInfo(themen[tId], tId); } else { showDashboard(); }
-        } else if (ebene < 7) { ebene++; updateUI(); } 
+        if (ebene === 2) { if (tId < 19) { tId++; showInfo(themen[tId], tId); } else { showDashboard(); } } 
+        else if (ebene < 7) { ebene++; updateUI(); } 
     }
 
     function showDashboard() { 
-        ebene = 1; 
-        clearInterval(wechselInterval); 
-        document.getElementById('page-skelett').style.display = 'none'; 
+        ebene = 1; document.getElementById('page-skelett').style.display = 'none'; 
         document.getElementById('dashboard').style.display = 'flex'; 
         document.getElementById('btn-back').style.visibility = 'hidden'; 
         document.getElementById('btn-next').style.visibility = 'hidden'; 
-        updateNumColors(); 
     }
 
     function registriereSenden() {
-        const input = document.getElementById('chat-input');
-        const chatBox = document.getElementById('chat-box');
-        const text = input.value.trim();
+        const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim();
         if (text === "") return; 
         chatBox.innerHTML += `<div style="margin-bottom: 8px;"><strong>Du:</strong> ${text}</div>`;
-        if (interaktionsZaehler[tId] < 20) {
-            interaktionsZaehler[tId]++;
-            chatBox.innerHTML += `<div><small style="color: #ffd700;">Interaktion ${interaktionsZaehler[tId]}/20 registriert...</small></div>`;
-        }
-        input.value = "";
-        chatBox.scrollTop = chatBox.scrollHeight;
+        if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++;
+        input.value = ""; chatBox.scrollTop = chatBox.scrollHeight;
+        
+        // TEST-EFFEKT: Wenn du tippst, blinkt das erste grüne Signal links (ID: sig-l2)
+        aktiviereSignal('sig-l2');
     }
 </script>
 </body>
