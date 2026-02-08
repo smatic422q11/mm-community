@@ -273,20 +273,18 @@
         const sigGelb = document.getElementById('sig-r4');
         const sigRot = document.getElementById('sig-l4');
 
+        // Reset Signale
         sigGelb.classList.remove('signal-aktiv');
         sigRot.classList.remove('signal-aktiv');
-
-        // DAUERHAFTE PRÜFUNG: GELBES SIGNAL
-        if (geleseneThemen.size === 20) {
-            sigGelb.classList.add('signal-aktiv');
-        }
 
         if (ebene === 2) { 
             document.getElementById('info-titel').innerText = aktuellesThema; 
             mainText.style.display = 'block'; 
             mainText.innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet..."; 
             
+            // GELBES SIGNAL NUR AUF EBENE 2
             if (geleseneThemen.size === 20) {
+                sigGelb.classList.add('signal-aktiv');
                 btnNext.style.visibility = 'hidden'; 
             } else {
                 btnNext.style.visibility = (tId < 19) ? 'visible' : 'hidden'; 
@@ -305,6 +303,7 @@
             btnNext.style.visibility = 'visible'; 
             btnNext.innerText = "Ebene 5 →"; 
             mainText.style.display = 'none';
+            // Auf Ebene 4 leuchtet das gelbe Signal jetzt NICHT mehr.
         }
 
         updateDots();
