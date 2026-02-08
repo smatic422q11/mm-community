@@ -187,83 +187,114 @@
     </div>
 
     <script>
-    const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
-    
-    // HIER WIRD JEDE BOX EIGENSTÄNDIG
-    const weltenDaten = {};
-    themen.forEach((t, i) => {
-        weltenDaten[i] = {
-            chat: [`<div style='color:#ffd700'>System: Dialog '${t}' aktiv.</div>`],
-            ebene: 2
-        };
-    });
+  const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
 
-    let tId = 0, geleseneThemen = new Set();
-    
-    // GRID BAUEN
-    const grid = document.getElementById('main-grid');
-    themen.forEach((t, i) => { 
-        grid.innerHTML += `<div class="box"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo(${i})">${t}</div></div>`; 
-    });
+// Jede Box hat ihren eigenen Speicher
+const weltenDaten = {};
+themen.forEach((t, i) => {
+    weltenDaten[i] = {
+        chat: [`<div style='color:#ffd700'>System: Dialog zu '${t}' gestartet.</div>`],
+        ebene: 2,
+        gelesen: false // Sperre für Ebene 3-7
+    };
+});
 
-    const dots = document.getElementById('dot-holder');
-    for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot"></div>`;
+let tId = 0;
 
-    function showInfo(id) { 
-        tId = id; 
-        geleseneThemen.add(id);
-        document.getElementById('num-'+id).className = "num num-gelesen";
-        document.getElementById('dashboard').style.display = 'none'; 
-        document.getElementById('page-skelett').style.display = 'flex'; 
-        updateUI(); 
+function showInfo(id) { 
+    tId = id; 
+    document.getElementById('dashboard').style.display = 'none'; 
+    document.getElementById('page-skelett').style.display = 'flex'; 
+    updateUI(); 
+}
+
+function updateUI() {
+    const welt = weltenDaten[tId];
+    const eb = welt.ebene;
+    const isGelesen = welt.gelesen;
+
+    // Titel-Logik
+    const titel = document.getElementById('info-titel');
+    if (eb === 2) titel.innerText = themen[tId];
+    else if (eb === 3) titel.innerText = "DIALOG: " + themen[tId];
+    else titel.innerText = "";
+
+    // Sichtbarkeiten
+    document.getElementById('main-text').style.display = (eb === 2 || eb > 4) ? 'block' : 'none';
+    document.getElementById('chat-area').style.display = (eb === 3) ? 'flex' : 'none';
+    document.getElementById('drawer-ebene4').style.display = (eb === 4) ? 'flex' : 'none';
+    document.getElementById('ebene4-title-red').style.display = (eb === 4) ? 'block' : 'none';
+    document.getElementById('counter-box').style.display = (eb >= 3) ? 'block' : 'none';
+
+    // Inhalt Ebene 2 & Fortschritt
+    if (eb === 2) {
+        document.getElementById('main-text').innerHTML = `
+            <div id="content-scroll" style="height:35vh; overflow-y:auto; padding-bottom:20px;">
+                <p>Hier steht der tiefgründige Text zu <strong>${themen[tId]}</strong>...</p>
+                <p>Man muss diesen Text bis unten lesen, um die Gefühls Forderung zu verstehen und für den Chat (Ebene 3) freigeschaltet zu werden.</p>
+                <div style="height:400px;"></div> <button id="read-confirm" onclick="markAsRead(${tId})" style="width:100%; padding:15px; background:#00ff00; color:#000; font-weight:bold; border:none; cursor:pointer;">ICH HABE ALLES GELESEN & VERSTANDEN</button>
+            </div>
+        `;
+    } else {
+        document.getElementById('main-text').innerText = "Ebene " + eb + " von Thema " + (tId+1) + " aktiv.";
     }
 
-    function updateUI() {
-        const welt = weltenDaten[tId];
-        const eb = welt.ebene;
-
-        document.getElementById('info-titel').innerText = (eb === 4) ? "" : (eb === 3 ? "DIALOG: " + themen[tId] : themen[tId]);
-        document.getElementById('main-text').style.display = (eb === 2 || eb > 4) ? 'block' : 'none';
-        document.getElementById('chat-area').style.display = (eb === 3) ? 'flex' : 'none';
-        document.getElementById('drawer-ebene4').style.display = (eb === 4) ? 'flex' : 'none';
-        document.getElementById('ebene4-title-red').style.display = (eb === 4) ? 'block' : 'none';
-        document.getElementById('counter-box').style.display = (eb >= 3) ? 'block' : 'none';
-
-        if(eb === 3) document.getElementById('chat-box').innerHTML = welt.chat.join("");
-        if(eb === 4) {
-            const vc = document.getElementById('video-container');
-            vc.innerHTML = "";
-            for(let i=1; i<=8; i++) vc.innerHTML += `<div class="video-slot">CALL ${i}<br>${themen[tId]}</div>`;
-        }
-        
-        document.getElementById('main-text').innerText = (eb === 2) ? "Inhalt zu " + themen[tId] : "Ebene " + eb + " reserviert.";
-        
-        document.getElementById('btn-back').style.visibility = 'visible';
-        document.getElementById('btn-next').style.visibility = (eb < 7) ? 'visible' : 'hidden';
-        document.getElementById('btn-next').innerText = "Ebene " + (eb + 1) + " →";
-
-        for(let i=1; i<=7; i++) document.getElementById('dot'+i).className = "dot" + (i===eb?" active":"");
+    // Chat & Video Update
+    if(eb === 3) document.getElementById('chat-box').innerHTML = welt.chat.join("");
+    if(eb === 4) {
+        const vc = document.getElementById('video-container');
+        vc.innerHTML = "";
+        for(let i=1; i<=8; i++) vc.innerHTML += `<div class="video-slot">CALL ${i}<br>KANDIDATEN-CHECK</div>`;
     }
 
-    function sendeNachricht() {
-        const inp = document.getElementById('chat-in');
-        if(!inp.value.trim()) return;
-        weltenDaten[tId].chat.unshift(`<div><strong>DU:</strong> ${inp.value}</div>`);
-        inp.value = "";
+    // Button-Logik (Weiter-Sperre)
+    const btnNext = document.getElementById('btn-next');
+    btnNext.style.visibility = (eb < 7) ? 'visible' : 'hidden';
+    
+    // Wenn Ebene 2 nicht gelesen, ist der Button deaktiviert für Ebene 3
+    if (eb === 2 && !isGelesen) {
+        btnNext.style.opacity = "0.3";
+        btnNext.style.cursor = "not-allowed";
+        btnNext.onclick = null;
+    } else {
+        btnNext.style.opacity = "1";
+        btnNext.style.cursor = "pointer";
+        btnNext.onclick = nextPage;
+    }
+    
+    btnNext.innerText = "Ebene " + (eb + 1) + " →";
+
+    // Dots aktualisieren
+    for(let i=1; i<=7; i++) {
+        document.getElementById('dot'+i).className = "dot" + (i===eb?" active":"");
+    }
+}
+
+function markAsRead(id) {
+    weltenDaten[id].gelesen = true;
+    document.getElementById('num-'+id).className = "num num-gelesen";
+    updateUI();
+}
+
+function sendeNachricht() {
+    const inp = document.getElementById('chat-in');
+    if(!inp.value.trim()) return;
+    weltenDaten[tId].chat.unshift(`<div><strong>DU:</strong> ${inp.value}</div>`);
+    inp.value = "";
+    updateUI();
+}
+
+function nextPage() {
+    if(weltenDaten[tId].ebene < 7) {
+        weltenDaten[tId].ebene++;
         updateUI();
     }
+}
 
-    function nextPage() {
-        if(weltenDaten[tId].ebene < 7) {
-            weltenDaten[tId].ebene++;
-            updateUI();
-        }
-    }
-
-    function showDashboard() {
-        document.getElementById('page-skelett').style.display = 'none';
-        document.getElementById('dashboard').style.display = 'flex';
-    }
+function showDashboard() {
+    document.getElementById('page-skelett').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'flex';
+}
     </script>
 </body>
 </html>
