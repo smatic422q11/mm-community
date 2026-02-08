@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>M&M-COMMUNITY - Das Fundament</title>
+    <title>M&M-COMMUNITY - Admin Modus</title>
     <style>
         /* BASIS-LAYOUT */
         body { 
@@ -47,6 +47,7 @@
         .logo-ring { 
             width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; 
             border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            cursor: pointer; /* Für den Admin-Klick */
         }
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
@@ -130,7 +131,7 @@
 
     <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="dashboard-header">
-            <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
+            <div class="logo-ring" ondblclick="adminUnlock()"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
         </div>
         <div class="info-section">
             <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
@@ -159,7 +160,7 @@
                 </div>
                 <div class="info-section-ebene">
                     <div class="werbe-bild-bg" id="werbe-bg"></div>
-                    <div class="tafel-intern-logo"><div class="logo-ring" style="transform: scale(0.5); transform-origin: top left;"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div></div>
+                    <div class="tafel-intern-logo" ondblclick="adminUnlock()"><div class="logo-ring" style="transform: scale(0.5); transform-origin: top left;"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div></div>
                     <span class="werbe-text-overlay">HIER IST PLATZ FÜR WERBUNG</span>
                     <div id="counter-box"><span class="counter-label">STILLE MILLION</span><span class="counter-value">842.336</span></div>
                 </div>
@@ -225,6 +226,17 @@
     const dots = document.getElementById('dot-holder');
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
+    // ADMIN-UNLOCK FUNKTION
+    function adminUnlock() {
+        themen.forEach((_, i) => {
+            geleseneThemen.add(i);
+            interaktionsZaehler[i] = 20;
+        });
+        updateNumColors();
+        if (ebene > 1) updateUI();
+        alert("ADMIN: Alle Barrieren entfernt. Das Fundament ist frei begehbar.");
+    }
+
     function showInfo(t, id) { 
         tId = id; 
         aktuellesThema = t; 
@@ -273,7 +285,6 @@
         const sigGelb = document.getElementById('sig-r4');
         const sigRot = document.getElementById('sig-l4');
 
-        // Reset Signale
         sigGelb.classList.remove('signal-aktiv');
         sigRot.classList.remove('signal-aktiv');
 
@@ -282,7 +293,6 @@
             mainText.style.display = 'block'; 
             mainText.innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet..."; 
             
-            // GELBES SIGNAL NUR AUF EBENE 2
             if (geleseneThemen.size === 20) {
                 sigGelb.classList.add('signal-aktiv');
                 btnNext.style.visibility = 'hidden'; 
@@ -303,7 +313,6 @@
             btnNext.style.visibility = 'visible'; 
             btnNext.innerText = "Ebene 5 →"; 
             mainText.style.display = 'none';
-            // Auf Ebene 4 leuchtet das gelbe Signal jetzt NICHT mehr.
         }
 
         updateDots();
