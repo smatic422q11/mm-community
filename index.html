@@ -202,9 +202,7 @@
 
         <div id="ebene5-bereich">
             <div class="freie-zone-text">
-                <p>Hier ist Platz für deine Informationen zum Kandidatur-Prozess und die administrativen Schritte.</p>
             </div>
-            <button class="btn-lila" onclick="starteAdminProzess()">ADMINISTRATIVE WEGE ÖFFNEN</button>
         </div>
 
     </div>
@@ -266,7 +264,6 @@
         if (userBackstage.isQualifiziert || userBackstage.rankingPlatz <= 22) { sigL1.className = "oval-side elite-aktiv"; sigL1.onclick = () => portalZuEbene5(); }
     }
 
-    function starteAdminProzess() { if(confirm("Identitäts-Check starten?")) { alert("HINTERGRUND-SYSTEM: Prüfung aktiv."); } }
     function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
     function nextPage() { if (ebene === 2 && tId < 19) { tId++; showInfo(themen[tId], tId); } else if (ebene < 7) { ebene++; updateUI(); } }
     function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
