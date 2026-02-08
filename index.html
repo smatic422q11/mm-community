@@ -90,19 +90,23 @@
             display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; 
         }
 
-        .chat-msgs, .drawer-content { 
-            flex: 1; 
-            padding: 10px 0; 
-            overflow-y: auto; 
-            color: #fff; 
-            font-size: 1.1rem; 
-            text-shadow: 2px 2px 4px #000;
-            display: flex;
-            flex-direction: column-reverse; /* Nachrichten wandern nach oben */
-        }
+      .chat-msgs, .drawer-content { 
+    flex: 1; 
+    padding: 10px 15px; 
+    overflow-y: auto; 
+    color: #fff; 
+    font-size: 1.1rem; 
+    text-shadow: 2px 2px 4px #000;
+    display: flex;
+    flex-direction: column-reverse; /* Neue Nachrichten unten, schieben nach oben */
+    justify-content: flex-start;   /* Verankert den Inhalt am unteren Rand */
+}
 
-        .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; }
-        .chat-msgs::-webkit-scrollbar { width: 0px; }
+/* Damit die Videos in Ebene 4 nicht auch umgedreht werden */
+#drawer-ebene4 .drawer-content {
+    flex-direction: column; 
+    justify-content: flex-start;
+}
 
         /* NAVIGATION & DOTS */
         .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; background: #000; z-index: 100; }
