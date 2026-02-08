@@ -258,49 +258,59 @@
         }
 
         function updateUI() {
-            const isChat = ebene === 3;
-            const isVideo = ebene === 4;
-            const chatArea = document.getElementById('chat-area');
-            const drawer4 = document.getElementById('drawer-ebene4');
-            const redTitle = document.getElementById('ebene4-title-red');
-            const whiteTitle = document.getElementById('info-titel');
-            const mainText = document.getElementById('main-text');
-            const btnNext = document.getElementById('btn-next');
-            const counter = document.getElementById('counter-box');
+    const isChat = ebene === 3;
+    const isVideo = ebene === 4;
+    const chatArea = document.getElementById('chat-area');
+    const drawer4 = document.getElementById('drawer-ebene4');
+    const redTitle = document.getElementById('ebene4-title-red');
+    const whiteTitle = document.getElementById('info-titel');
+    const mainText = document.getElementById('main-text');
+    const btnNext = document.getElementById('btn-next');
+    const counter = document.getElementById('counter-box');
 
-            chatArea.style.display = isChat ? 'flex' : 'none';
-            drawer4.style.display = isVideo ? 'flex' : 'none';
-            redTitle.style.display = isVideo ? 'block' : 'none';
-            whiteTitle.style.display = isVideo ? 'none' : 'block';
-            counter.style.display = ebene >= 3 ? 'block' : 'none';
-            document.getElementById('btn-back').style.visibility = 'visible';
+    chatArea.style.display = isChat ? 'flex' : 'none';
+    drawer4.style.display = isVideo ? 'flex' : 'none';
+    
+    // Roter Balken für Ebene 4
+    redTitle.style.display = isVideo ? 'block' : 'none';
+    if(isVideo) {
+        redTitle.innerText = `VIDEO-BEWEIS: ${aktuellesThema.toUpperCase()}`;
+    }
 
-            if (ebene === 2) { 
-                whiteTitle.innerText = aktuellesThema; 
-                mainText.style.display = 'block'; 
-                mainText.innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet..."; 
-                btnNext.style.visibility = 'visible'; 
-                // Button Text Logik: Wenn bei der Brücke (Index 19), dann zurück zum Dashboard
-                btnNext.innerText = (tId < 19) ? `Thema ${tId + 2} →` : "Fertig → Dashboard"; 
-            } else if (isChat) { 
-                btnNext.style.visibility = 'visible'; 
-                btnNext.innerText = "Video-Beweis →"; 
-                whiteTitle.innerText = "LIVE CHAT - " + aktuellesThema; 
-                mainText.style.display = 'none'; 
-            } else if (isVideo) {
-                btnNext.style.visibility = 'visible'; 
-                btnNext.innerText = "Ebene 5 →"; 
-                mainText.style.display = 'none';
-            } else { 
-                btnNext.style.visibility = (ebene < 7) ? 'visible' : 'hidden'; 
-                btnNext.innerText = `Ebene ${ebene + 1} →`; 
-                whiteTitle.innerText = "FREIZONE - EBENE " + ebene; 
-                mainText.style.display = 'block'; 
-                mainText.innerText = "Dieser Bereich ist für zukünftige Inhalte reserviert."; 
-            }
-            for(let i=1; i<=7; i++) { const dot = document.getElementById('dot'+i); if(dot) dot.classList.toggle('active', i === ebene); }
-            startRotation();
-        }
+    whiteTitle.style.display = isVideo ? 'none' : 'block';
+    counter.style.display = ebene >= 3 ? 'block' : 'none';
+    document.getElementById('btn-back').style.visibility = 'visible';
+
+    if (ebene === 2) { 
+        whiteTitle.innerText = aktuellesThema; 
+        mainText.style.display = 'block'; 
+        mainText.innerText = inhaltsTexte[aktuellesThema] || "Inhalt wird erarbeitet..."; 
+        btnNext.style.visibility = 'visible'; 
+        btnNext.innerText = (tId < 19) ? `Thema ${tId + 2} →` : "Fertig → Dashboard"; 
+    } else if (isChat) { 
+        btnNext.style.visibility = 'visible'; 
+        btnNext.innerText = "Video-Beweis →"; 
+        whiteTitle.innerText = "LIVE CHAT - " + aktuellesThema; 
+        mainText.style.display = 'none'; 
+    } else if (isVideo) {
+        btnNext.style.visibility = 'visible'; 
+        btnNext.innerText = "Ebene 5 →"; 
+        mainText.style.display = 'none';
+        // Hier können wir später die 20 verschiedenen Video-Streams laden
+        console.log("Lade Video-Room für Thema ID: " + tId);
+    } else { 
+        btnNext.style.visibility = (ebene < 7) ? 'visible' : 'hidden'; 
+        btnNext.innerText = `Ebene ${ebene + 1} →`; 
+        whiteTitle.innerText = "FREIZONE - EBENE " + ebene; 
+        mainText.style.display = 'block'; 
+        mainText.innerText = "Dieser Bereich ist für zukünftige Inhalte reserviert."; 
+    }
+    for(let i=1; i<=7; i++) { 
+        const dot = document.getElementById('dot'+i); 
+        if(dot) dot.classList.toggle('active', i === ebene); 
+    }
+    startRotation();
+}
 
         function nextPage() { 
             if (ebene === 2) { 
