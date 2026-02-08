@@ -1,3 +1,8 @@
+Verstanden, ich übernehme das. Ich habe die Funktion starteZufallsTreffer jetzt direkt in den <script>-Teil deines Codes eingebaut und alles so strukturiert, dass du es einfach nur kopieren und ersetzen musst.
+
+Hier ist der komplette, fertige Code. Ich habe darauf geachtet, dass die Gefühls Forderung korrekt geschrieben ist und der Hinweis zur stillen Million und den Vorsitzenden überall enthalten bleibt:
+
+HTML
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -120,14 +125,14 @@
         /* VIDEO EBENE 4 SPEZIAL */
         #drawer-ebene4 { 
             width: 90% !important; flex-grow: 1; display: none; 
-            flex-direction: column; align-items: center; justify-content: center;
+            flex-direction: column; align-items: center; justify-content: flex-start;
             margin-top: 5px; margin-bottom: 70px; 
         }
         .video-main-frame {
-            width: 80%; aspect-ratio: 16/9; background: #111; 
-            border: 2px solid #003d8f; display: flex; align-items: center; 
-            justify-content: center; font-size: 1.5rem; color: #ffd700; 
-            font-weight: bold; box-shadow: 0 0 30px rgba(0, 61, 143, 0.4);
+            width: 65%; aspect-ratio: 16/9; background: #111; 
+            border: 3px solid #ffd700; display: flex; align-items: center; 
+            justify-content: center; font-size: 1.2rem; color: #ffd700; 
+            font-weight: bold; box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
             position: relative;
         }
 
@@ -214,30 +219,30 @@
             </div>
         </div> 
 
-    <div id="drawer-ebene4" style="width: 90% !important; flex-grow: 1; display: none; flex-direction: column; align-items: center; justify-content: flex-start; margin-top: 5px; margin-bottom: 70px;">
+        <div id="drawer-ebene4" style="width: 90% !important; flex-grow: 1; display: none; flex-direction: column; align-items: center; justify-content: flex-start; margin-top: 5px; margin-bottom: 70px;">
             <div class="video-container-ebene4" style="width: 100%; display: flex; flex-direction: column; align-items: center; gap: 15px;">
                 
-                <div class="video-main-frame" style="width: 65%; aspect-ratio: 16/9; background: #111; border: 3px solid #ffd700; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #ffd700; font-weight: bold; box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); position: relative;">
+                <div class="video-main-frame">
                     <span style="position: absolute; top: 5px; left: 10px; font-size: 0.7rem; color: #ffd700; border: 1px solid #ffd700; padding: 2px 5px;">HAUPT-SCHÖPFER</span>
                     LIVE-STREAM
                 </div>
 
-                <div class="video-grid-small" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 90%;">
-                    <div style="aspect-ratio: 16/9; background: #0a0a0a; border: 1px solid #003d8f; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.6rem; color: #ccc;"><span style="color:#003d8f; font-weight:bold;">2</span> SCHÖPFER</div>
-                    <div style="aspect-ratio: 16/9; background: #0a0a0a; border: 1px solid #003d8f; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.6rem; color: #ccc;"><span style="color:#003d8f; font-weight:bold;">3</span> SCHÖPFER</div>
-                    <div style="aspect-ratio: 16/9; background: #0a0a0a; border: 1px solid #003d8f; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.6rem; color: #ccc;"><span style="color:#003d8f; font-weight:bold;">4</span> SCHÖPFER</div>
-                    <div style="aspect-ratio: 16/9; background: #0a0a0a; border: 1px solid #003d8f; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.6rem; color: #ccc;"><span style="color:#003d8f; font-weight:bold;">5</span> SCHÖPFER</div>
-                    <div style="aspect-ratio: 16/9; background: #0a0a0a; border: 1px solid #003d8f; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.6rem; color: #ccc;"><span style="color:#003d8f; font-weight:bold;">6</span> SCHÖPFER</div>
-                    <div style="aspect-ratio: 16/9; background: #0a0a0a; border: 1px solid #003d8f; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.6rem; color: #ccc;"><span style="color:#003d8f; font-weight:bold;">7</span> SCHÖPFER</div>
-                    <div style="aspect-ratio: 16/9; background: #0a0a0a; border: 1px solid #003d8f; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.6rem; color: #ccc;"><span style="color:#003d8f; font-weight:bold;">8</span> SCHÖPFER</div>
-                    <div style="aspect-ratio: 16/9; background: #0a0a0a; border: 1px solid #003d8f; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.6rem; color: #ccc;"><span style="color:#003d8f; font-weight:bold;">9</span> SCHÖPFER</div>
+                <div id="schöpfer-kollektiv" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 90%;">
+                    <div class="schöpfer-slot" style="aspect-ratio: 16/9; background: #0a0a0a; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: #555; text-align: center;">SUCHE...</div>
+                    <div class="schöpfer-slot" style="aspect-ratio: 16/9; background: #0a0a0a; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: #555; text-align: center;">SUCHE...</div>
+                    <div class="schöpfer-slot" style="aspect-ratio: 16/9; background: #0a0a0a; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: #555; text-align: center;">SUCHE...</div>
+                    <div class="schöpfer-slot" style="aspect-ratio: 16/9; background: #0a0a0a; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: #555; text-align: center;">SUCHE...</div>
+                    <div class="schöpfer-slot" style="aspect-ratio: 16/9; background: #0a0a0a; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: #555; text-align: center;">SUCHE...</div>
+                    <div class="schöpfer-slot" style="aspect-ratio: 16/9; background: #0a0a0a; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: #555; text-align: center;">SUCHE...</div>
+                    <div class="schöpfer-slot" style="aspect-ratio: 16/9; background: #0a0a0a; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: #555; text-align: center;">SUCHE...</div>
+                    <div class="schöpfer-slot" style="aspect-ratio: 16/9; background: #0a0a0a; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: #555; text-align: center;">SUCHE...</div>
                 </div>
 
-                <button style="width: 90%; background: #00ff00; color: #000; border: none; padding: 12px; font-weight: bold; font-size: 1rem; cursor: pointer; border-radius: 5px; text-transform: uppercase;">
-                    Dem Kollektiv beitreten
+                <button onclick="starteZufallsTreffer()" style="width: 90%; background: #00ff00; color: #000; border: none; padding: 12px; font-weight: bold; font-size: 1rem; cursor: pointer; border-radius: 5px; text-transform: uppercase;">
+                    Zufallstreffer aktivieren
                 </button>
             </div>
-        </div> 
+        </div>
     </div>
 
     <div id="info-drawer" class="drawer-right">
@@ -267,9 +272,7 @@
     };
 
     let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set();
-    let interaktionsZaehler = {}; 
-    themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
-
+    
     const grid = document.getElementById('main-grid');
     themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; });
     
@@ -390,6 +393,31 @@
         chatBox.innerHTML += `<div style="margin-bottom: 8px;"><strong>Du:</strong> ${input.value}</div>`;
         input.value = "";
         chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // DIE FUNKTION FÜR DIE 8 SCHÖPFER
+    function starteZufallsTreffer() {
+        const slots = document.querySelectorAll('.schöpfer-slot');
+        
+        // Zuerst alle zurücksetzen auf "SUCHE..."
+        slots.forEach(slot => {
+            slot.style.border = "1px solid #003d8f";
+            slot.style.color = "#555";
+            slot.style.background = "#0a0a0a";
+            slot.innerHTML = "SUCHE...";
+        });
+
+        // Nacheinander die 8 Schöpfer "finden"
+        slots.forEach((slot, index) => {
+            const verzögerung = Math.random() * 2000; 
+            
+            setTimeout(() => {
+                slot.style.border = "2px solid #00ff00"; 
+                slot.style.color = "#fff";
+                slot.style.background = "#051a05"; 
+                slot.innerHTML = `<span style="color:#00ff00; font-weight:bold; font-size:0.8rem;">${index + 2}</span><br>SCHÖPFER AKTIV`;
+            }, verzögerung);
+        });
     }
 </script>
 </body>
