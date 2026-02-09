@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>M&M-COMMUNITY</title>
+    <title>M&M-COMMUNITY - Admin Modus</title>
     <style>
         /* BASIS-LAYOUT */
         body { background-color: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
@@ -17,6 +17,7 @@
             100% { box-shadow: 0 0 5px #fff; opacity: 0.8; }
         }
 
+        /* SPEZIAL: SCHWARZ-GRAUES ELITE BLINKEN */
         @keyframes eliteBlink {
             0% { background-color: #000; box-shadow: 0 0 5px #333; }
             50% { background-color: #444; box-shadow: 0 0 20px #666, inset 0 0 10px #000; transform: scale(1.1); }
@@ -25,6 +26,34 @@
 
         .signal-aktiv { animation: signalBlink 1.0s infinite ease-in-out !important; border: 2px solid #fff !important; cursor: pointer; }
         .elite-aktiv { animation: eliteBlink 2s infinite ease-in-out !important; border: 2px solid #ffd700 !important; cursor: pointer; }
+
+        /* NEU: MASSIVER LILA BALKEN FÜR REGISTRIERUNG */
+        .lila-registrierung-leiste {
+            width: 100%;
+            height: 80px; 
+            background: #8b00ff;
+            border-top: 2px solid #fff;
+            border-bottom: 2px solid #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            box-shadow: 0 0 20px #8b00ff;
+        }
+        .registrierung-text {
+            color: #fff;
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: 15px;
+            text-transform: uppercase;
+        }
+
+        /* LILA BUTTON EFFEKT */
+        .btn-lila { 
+            background: #8b00ff; color: #fff; border: 2px solid #fff; padding: 20px; 
+            font-weight: 900; cursor: pointer; animation: signalBlink 1.5s infinite;
+            text-transform: uppercase; letter-spacing: 2px; margin-top: 20px; width: 100%; max-width: 400px;
+        }
 
         /* HEADER & LOGO */
         .dashboard-header { width: 100%; position: absolute; top: 3%; display: flex; justify-content: flex-start; padding: 0 2%; box-sizing: border-box; z-index: 20; }
@@ -47,32 +76,50 @@
         .ov-pink { background: #ff00ff; }
         .ov-gelb { background: #ffff00; }
 
-        /* GRID */
+        /* GRID DASHBOARD */
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 10px; width: 95%; max-width: 1450px; margin-top: 30px; border: 3px solid #00ff00; padding: 15px; border-radius: 10px; }
         .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; overflow: hidden; }
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
-        /* CONTENT */
+        /* CHAT- & EBENEN-BEREICHE */
         #chat-area, #drawer-ebene4, #ebene5-bereich { width: 90% !important; flex-grow: 1; display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; overflow: hidden; position: relative; }
-        .chat-msgs { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px 0; color: #fff; font-size: 1.1rem; overflow-y: auto; }
-        .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0,0,0,0.9); padding: 5px; border-radius: 4px; }
+        .chat-msgs { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px 0; color: #fff; font-size: 1.1rem; text-shadow: 2px 2px 4px #000; overflow-y: auto; }
+        .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; z-index: 10; }
         
+        /* FREIE ZONE FÜR INFO TEXT */
+        .freie-zone-text { color: #fff; text-align: justify; font-size: 1.3rem; line-height: 1.8; padding: 20px; overflow-y: auto; flex: 1; }
+
         /* NAVIGATION */
-        .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; background: #000; z-index: 100; }
+        .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; background: #000; z-index: 100; }
         .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
         .dot { width: 10px; height: 10px; background: #444; border-radius: 50%; }
-        .dot.active { background: #ffd700; }
+        .dot.active { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
 
-        /* STATUS */
+        /* SPEZIALELEMENTE */
+        #counter-box { position: absolute; right: 0; top: 0; width: 100px; padding: 5px; border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f; background: #000; text-align: center; display: none; z-index: 100; }
+        .counter-label { font-size: 0.4rem; color: #fff; display: block; }
+        .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
+        .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh; flex-shrink: 0; }
+        .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
+        .ebene4-header-red { width: 90%; background: #ff0000; color: #fff; padding: 10px 0; text-align: center; font-weight: 900; font-size: 1.5rem; border-radius: 5px 5px 0 0; display: none; }
+
+        /* STATUSFARBEN GRID */
         .num-neutral { background-color: #003d8f !important; }
         .num-gelesen { background-color: #ffd700 !important; color: #000 !important; }
+        .num-offen { background-color: #ff4d4d !important; }
         .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
 
-        #counter-box { position: absolute; right: 0; top: 0; width: 100px; padding: 5px; border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f; background: #000; text-align: center; display: none; }
-        .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
+        /* VIDEO-GRID EBENE 4 */
+        .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; position: relative; }
+        .slot-1-user { border-color: #00ff00; color: #00ff00; }
+
+        /* WERBUNG */
         .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
         .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
+        .tafel-intern-logo { position: absolute; top: 10px; left: 10px; z-index: 5; }
+        .werbe-text-overlay { color: rgba(255, 255, 255, 0.3); font-weight: bold; font-size: 1.2rem; letter-spacing: 5px; z-index: 5; text-align: center; text-shadow: 2px 2px 5px #000; }
     </style>
 </head>
 <body>
@@ -96,30 +143,38 @@
     </div>
 
     <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
-        <div class="top-container" style="width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh;">
-            <h1 id="info-titel" style="text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff;"></h1>
+        <div class="top-container">
+            <h1 id="info-titel" class="page-title-white"></h1>
+            <div id="ebene4-title-red" class="ebene4-header-red">DER VIDEO-BEWEIS</div>
             <div class="tafel-layout">
                 <div class="buttons-links">
                     <div class="oval-side ov-schwarz" id="sig-l1"></div>
-                    <div class="oval-side ov-grun"></div>
-                    <div class="oval-side ov-blau"></div>
+                    <div class="oval-side ov-grun" id="sig-l2"></div>
+                    <div class="oval-side ov-blau" id="sig-l3"></div>
                     <div class="oval-side ov-rot" id="sig-l4" onclick="portalZuEbene4()"></div>
                 </div>
                 <div class="info-section-ebene">
                     <div class="werbe-bild-bg" id="werbe-bg"></div>
-                    <span style="color: rgba(255,255,255,0.3); z-index: 5;">PLATZ FÜR WERBUNG</span>
-                    <div id="counter-box"><span style="font-size: 0.4rem; display: block;">STILLE MILLION</span><span class="counter-value">842.336</span></div>
+                    <div class="tafel-intern-logo" ondblclick="adminUnlock()"><div class="logo-ring" style="transform: scale(0.5); transform-origin: top left;"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div></div>
+                    <span class="werbe-text-overlay">HIER IST PLATZ FÜR WERBUNG</span>
+                    <div id="counter-box"><span class="counter-label">STILLE MILLION</span><span class="counter-value">842.336</span></div>
                 </div>
                 <div class="buttons-rechts">
-                    <div class="oval-side ov-grun"></div>
-                    <div class="oval-side ov-blau"></div>
-                    <div class="oval-side ov-pink"></div>
+                    <div class="oval-side ov-grun" id="sig-r1"></div>
+                    <div class="oval-side ov-blau" id="sig-r2"></div>
+                    <div class="oval-side ov-pink" id="sig-r3"></div>
                     <div class="oval-side ov-gelb" id="sig-r4" onclick="portalZuEbene3()"></div>
+                </div>
+            </div>
+            
+            <div id="lila-balken-container" style="display: none; width: 100%;">
+                <div class="lila-registrierung-leiste">
+                    <div class="registrierung-text">REGISTRIERUNG</div>
                 </div>
             </div>
         </div>
 
-        <p id="main-text" style="width: 85%; text-align: justify; color: #ccc; margin-top: 2vh; font-size: 1.3rem; line-height: 1.8; max-width: 1200px; overflow-y: auto; max-height: 50vh; padding: 20px;"></p>
+        <p id="main-text" style="width: 85%; text-align: justify; color: #ccc; margin-top: 2vh; font-size: 1.3rem; line-height: 1.8; max-width: 1200px; overflow-y: auto; max-height: 50vh; padding-right: 15px;"></p>
 
         <div id="chat-area">
             <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit...</i></div>
@@ -130,13 +185,26 @@
         </div> 
 
         <div id="drawer-ebene4">
-             <div style="padding: 20px; text-align: center;"><h3>VIDEO-BEWEIS AKTIV</h3><p>Warten auf Teilnehmer...</p></div>
+            <div class="drawer-content">
+                <div class="video-grid">
+                    <div class="video-slot slot-1-user" id="v-slot-1">SLOT 1 (DU)</div>
+                    <div class="video-slot" id="v-slot-2">SLOT 2 (ZUFALL)</div>
+                    <div class="video-slot" id="v-slot-3">SLOT 3 (ZUFALL)</div>
+                    <div class="video-slot" id="v-slot-4">SLOT 4 (ZUFALL)</div>
+                    <div class="video-slot" id="v-slot-5">SLOT 5 (ZUFALL)</div>
+                    <div class="video-slot" id="v-slot-6">SLOT 6 (ZUFALL)</div>
+                    <div class="video-slot" id="v-slot-7">SLOT 7 (ZUFALL)</div>
+                    <div class="video-slot" id="v-slot-8">SLOT 8 (ZUFALL)</div>
+                </div>
+                <button style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; margin-top: 15px; font-weight: bold; cursor: pointer; border-radius: 5px;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
+            </div>
         </div> 
 
-        <div id="ebene5-bereich" style="display:none; text-align:center; padding: 50px;">
-            <h1>ELITE ZONE</h1>
-            <p>Nur für qualifizierte Mitglieder.</p>
+        <div id="ebene5-bereich">
+            <div class="freie-zone-text">
+            </div>
         </div>
+
     </div>
 
     <div class="bottom-nav">
@@ -146,10 +214,10 @@
     </div>
 
 <script>
-    let isUserAdmin = false;
+    let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5, zaehlerInterval: null };
     const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
-    let ebene = 1, tId = 0, geleseneThemen = new Set(), interaktionsZaehler = {};
-    themen.forEach((_, i) => { interaktionsZaehler[i] = 0; });
+    let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
+    themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
     const grid = document.getElementById('main-grid');
     themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; });
@@ -158,65 +226,50 @@
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
     function adminUnlock() {
-        isUserAdmin = true;
-        themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
-        updateNumColors(); updateUI();
-        alert("ADMIN MODUS: Alle Ebenen offen.");
+        themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; userBackstage.sektorZeiten[i] = 1801; });
+        userBackstage.isQualifiziert = true;
+        updateNumColors();
+        if (ebene > 1) updateUI();
+        aktiviereKandidatenLicht();
+        alert("ADMIN: Alle Barrieren entfernt.");
     }
 
-    function showInfo(t, id) { 
-        tId = id; 
-        if (ebene < 3) { ebene = 2; geleseneThemen.add(id); } 
-        updateNumColors(); 
-        document.getElementById('dashboard').style.display = 'none'; 
-        document.getElementById('page-skelett').style.display = 'flex'; 
-        updateUI(); 
-    }
-
+    function showInfo(t, id) { tId = id; aktuellesThema = t; if (ebene < 3) { ebene = 2; geleseneThemen.add(id); } updateNumColors(); document.getElementById('dashboard').style.display = 'none'; document.getElementById('page-skelett').style.display = 'flex'; updateUI(); }
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
     function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
+    function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv')) { ebene = 5; updateUI(); } }
 
     function updateUI() {
-        const isChat = (ebene === 3), isVideo = (ebene === 4);
+        const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
         document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
         document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
+        document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
+        document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
         document.getElementById('main-text').style.display = (ebene < 3) ? 'block' : 'none';
-        document.getElementById('info-titel').innerText = isVideo ? "VIDEO-BEWEIS" : themen[tId];
+        document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
+        document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
         document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
-        
         document.getElementById('btn-back').style.visibility = 'visible';
-        document.getElementById('btn-next').style.visibility = (ebene === 2) ? 'visible' : 'hidden';
+        if (ebene === 2) { document.getElementById('info-titel').innerText = aktuellesThema; document.getElementById('main-text').innerText = "Inhalt für " + aktuellesThema + "..."; }
+        const sigGelb = document.getElementById('sig-r4'), sigRot = document.getElementById('sig-l4');
+        sigGelb.classList.toggle('signal-aktiv', (ebene === 2 && geleseneThemen.size === 20));
+        let alleRaeumeFertig = Object.values(interaktionsZaehler).every(val => val >= 20);
+        sigRot.classList.toggle('signal-aktiv', (ebene === 3 && alleRaeumeFertig));
+        aktiviereKandidatenLicht();
+        updateDots(); startRotation();
+    }
 
-        if (ebene === 2) document.getElementById('main-text').innerText = "Hier steht dein Text für: " + themen[tId];
-
-        // LOGIK BARRIEREN
-        document.getElementById('sig-r4').classList.toggle('signal-aktiv', (geleseneThemen.size === 20));
-        let alleFertig = Object.values(interaktionsZaehler).every(v => v >= 20);
-        document.getElementById('sig-l4').classList.toggle('signal-aktiv', (ebene === 3 && alleFertig));
-
-        // EBENE 5 LOCK
+    function aktiviereKandidatenLicht() {
         const sigL1 = document.getElementById('sig-l1');
-        if (isUserAdmin) {
-            sigL1.className = "oval-side elite-aktiv";
-            sigL1.onclick = () => { ebene=5; document.getElementById('ebene5-bereich').style.display='block'; updateUI(); };
-        }
-
-        updateDots();
+        if (userBackstage.isQualifiziert || userBackstage.rankingPlatz <= 22) { sigL1.className = "oval-side elite-aktiv"; sigL1.onclick = () => portalZuEbene5(); }
     }
 
-    function registriereSenden() {
-        const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box');
-        if (input.value.trim() === "") return;
-        chatBox.innerHTML += `<div><strong>Du:</strong> ${input.value}</div>`;
-        interaktionsZaehler[tId]++;
-        input.value = ""; chatBox.scrollTop = chatBox.scrollHeight;
-        updateUI();
-    }
-
-    function nextPage() { if (tId < 19) { tId++; showInfo(themen[tId], tId); } }
-    function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
-    function updateNumColors() { themen.forEach((_, i) => { const nBox = document.getElementById(`num-${i}`); if (nBox) { if (interaktionsZaehler[i] >= 20) nBox.className = "num num-fertig"; else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen"; } }); }
     function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
+    function nextPage() { if (ebene === 2 && tId < 19) { tId++; showInfo(themen[tId], tId); } else if (ebene < 7) { ebene++; updateUI(); } }
+    function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
+    function registriereSenden() { const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); if (text === "") return; chatBox.innerHTML += `<div><strong>Du:</strong> ${text}</div>`; if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++; input.value = ""; chatBox.scrollTop = chatBox.scrollHeight; updateUI(); }
+    function updateNumColors() { themen.forEach((_, i) => { const nBox = document.getElementById(`num-${i}`); if (nBox) { if (interaktionsZaehler[i] >= 20) nBox.className = "num num-fertig"; else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen"; } }); }
+    function startRotation() { clearInterval(wechselInterval); const bg = document.getElementById('werbe-bg'); if(!bg) return; bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; bg.classList.add('bild-aktiv'); wechselInterval = setInterval(() => { bg.classList.remove('bild-aktiv'); setTimeout(() => { bg.classList.add('bild-aktiv'); }, 50); }, 10000); }
 </script>
 </body>
 </html>
