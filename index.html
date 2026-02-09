@@ -27,31 +27,10 @@
 
         /* NEU: MASSIVER LILA BALKEN FÜR REGISTRIERUNG */
         .lila-registrierung-leiste {
-            width: 100%;
-            height: 80px; 
-            background: #8b00ff;
-            border-top: 2px solid #fff;
-            border-bottom: 2px solid #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 20px;
-            box-shadow: 0 0 20px #8b00ff;
+            width: 100%; height: 80px; background: #8b00ff; border-top: 2px solid #fff; border-bottom: 2px solid #fff;
+            display: flex; align-items: center; justify-content: center; margin-top: 20px; box-shadow: 0 0 20px #8b00ff;
         }
-        .registrierung-text {
-            color: #fff;
-            font-size: 2.2rem;
-            font-weight: 900;
-            letter-spacing: 15px;
-            text-transform: uppercase;
-        }
-
-        /* LILA BUTTON EFFEKT */
-        .btn-lila { 
-            background: #8b00ff; color: #fff; border: 2px solid #fff; padding: 20px; 
-            font-weight: 900; cursor: pointer; animation: signalBlink 1.5s infinite;
-            text-transform: uppercase; letter-spacing: 2px; margin-top: 20px; width: 100%; max-width: 400px;
-        }
+        .registrierung-text { color: #fff; font-size: 2.2rem; font-weight: 900; letter-spacing: 15px; text-transform: uppercase; }
 
         /* HEADER & LOGO */
         .dashboard-header { width: 100%; position: absolute; top: 3%; display: flex; justify-content: flex-start; padding: 0 2%; box-sizing: border-box; z-index: 20; }
@@ -207,7 +186,9 @@
         <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Dashboard</button>
         <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
         <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
-    </div><script>
+    </div>
+
+<script>
     let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5, zaehlerInterval: null };
     const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
     let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
@@ -228,7 +209,22 @@
         alert("ADMIN: Alle Barrieren entfernt.");
     }
 
-    function showInfo(t, id) { tId = id; aktuellesThema = t; if (ebene < 3) { ebene = 2; geleseneThemen.add(id); } updateNumColors(); document.getElementById('dashboard').style.display = 'none'; document.getElementById('page-skelett').style.display = 'flex'; updateUI(); }
+    // INTELLIGENTE WEICHE
+    function showInfo(t, id) { 
+        tId = id; 
+        aktuellesThema = t; 
+        if (geleseneThemen.has(id)) {
+            ebene = 3; 
+        } else {
+            ebene = 2; 
+            geleseneThemen.add(id); 
+        }
+        updateNumColors(); 
+        document.getElementById('dashboard').style.display = 'none'; 
+        document.getElementById('page-skelett').style.display = 'flex'; 
+        updateUI(); 
+    }
+
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
     function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
     function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv')) { ebene = 5; updateUI(); } }
@@ -245,9 +241,9 @@
         document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
         document.getElementById('btn-back').style.visibility = 'visible';
         
-        if (ebene === 2) { 
-            document.getElementById('info-titel').innerText = aktuellesThema; 
-            document.getElementById('main-text').innerText = "Inhalt für " + aktuellesThema + "..."; 
+        document.getElementById('info-titel').innerText = aktuellesThema;
+        if (ebene === 2) {
+            document.getElementById('main-text').innerText = "Inhalt für " + aktuellesThema + "...";
         }
 
         const btnNext = document.getElementById('btn-next');
@@ -255,12 +251,16 @@
         const sigRot = document.getElementById('sig-l4');
 
         if (ebene === 2) {
-            // Weiter-Button nur zeigen, wenn wir noch NICHT beim letzten Thema sind
             btnNext.style.visibility = (tId < 19) ? 'visible' : 'hidden';
-            // Gelbe Leuchte an, wenn alle 20 Themen in geleseneThemen sind
+            btnNext.innerText = "Weiter →";
             sigGelb.classList.toggle('signal-aktiv', geleseneThemen.size === 20);
+        } else if (ebene === 3) {
+            btnNext.style.visibility = (tId < 19) ? 'visible' : 'hidden';
+            btnNext.innerText = "Nächster Chat →";
+            sigGelb.classList.remove('signal-aktiv');
         } else {
             btnNext.style.visibility = (ebene < 7) ? 'visible' : 'hidden';
+            btnNext.innerText = "Weiter →";
             sigGelb.classList.remove('signal-aktiv');
         }
 
@@ -277,9 +277,34 @@
     }
 
     function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
-    function nextPage() { if (ebene === 2 && tId < 19) { tId++; showInfo(themen[tId], tId); } else if (ebene < 7) { ebene++; updateUI(); } }
+    
+    function nextPage() { 
+        if ((ebene === 2 || ebene === 3) && tId < 19) { 
+            tId++; 
+            aktuellesThema = themen[tId];
+            if (ebene === 2) geleseneThemen.add(tId);
+            updateUI();
+            updateNumColors();
+            if (ebene === 3) {
+                document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${tId+1} bereit...</i>`;
+            }
+        } else if (ebene < 7 && ebene !== 2 && ebene !== 3) { 
+            ebene++; 
+            updateUI(); 
+        } 
+    }
+
     function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
-    function registriereSenden() { const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); if (text === "") return; chatBox.innerHTML += `<div><strong>Du:</strong> ${text}</div>`; if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++; input.value = ""; chatBox.scrollTop = chatBox.scrollHeight; updateUI(); }
+    
+    function registriereSenden() { 
+        const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); 
+        if (text === "") return; 
+        chatBox.innerHTML += `<div><strong>Du:</strong> ${text}</div>`; 
+        if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++; 
+        input.value = ""; 
+        chatBox.scrollTop = chatBox.scrollHeight; 
+        updateUI(); 
+    }
     
     function updateNumColors() {
         themen.forEach((_, i) => {
@@ -298,4 +323,5 @@
         });
     }
 
-    function startRotation() { clearInterval(wechselInterval); const bg = document.getElementById('werbe-bg'); if(!bg) return; bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; bg.classList.add('bild-aktiv'); wechselInterval = setInterval(() => { bg.classList.remove('bild-aktiv'); setTimeout(() => { bg.classList.add('bild-aktiv'); }, 50); }, 10000); }</script></body></html>
+    function startRotation() { clearInterval(wechselInterval); const bg = document.getElementById('werbe-bg'); if(!bg) return; bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; bg.classList.add('bild-aktiv'); wechselInterval = setInterval(() => { bg.classList.remove('bild-aktiv'); setTimeout(() => { bg.classList.add('bild-aktiv'); }, 50); }, 10000); }
+</script></body></html>
