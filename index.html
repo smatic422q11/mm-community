@@ -17,28 +17,15 @@
             100% { box-shadow: 0 0 5px #fff; opacity: 0.8; }
         }
 
-        /* KEIN BLINKEN MEHR FÜR ELITE */
-        .elite-aktiv { 
-            background-color: #ffd700 !important; 
-            box-shadow: 0 0 10px #ffd700; 
-            border: 2px solid #fff !important; 
-            cursor: pointer; 
-        }
+        .elite-aktiv { background-color: #ffd700 !important; box-shadow: 0 0 10px #ffd700; border: 2px solid #fff !important; cursor: pointer; }
 
-        @keyframes pulsieren {
-            0% { opacity: 0.5; }
-            50% { opacity: 1; text-shadow: 0 0 10px #ffd700; }
-            100% { opacity: 0.5; }
-        }
+        @keyframes pulsieren { 0% { opacity: 0.5; } 50% { opacity: 1; text-shadow: 0 0 10px #ffd700; } 100% { opacity: 0.5; } }
         .pulsieren { animation: pulsieren 2s infinite ease-in-out; font-weight: bold; }
 
         .signal-aktiv { animation: signalBlink 1.0s infinite ease-in-out !important; border: 2px solid #fff !important; cursor: pointer; }
 
         /* LILA BALKEN */
-        .lila-registrierung-leiste {
-            width: 100%; height: 80px; background: #8b00ff; border-top: 2px solid #fff; border-bottom: 2px solid #fff;
-            display: flex; align-items: center; justify-content: center; margin-top: 20px; box-shadow: 0 0 20px #8b00ff;
-        }
+        .lila-registrierung-leiste { width: 100%; height: 80px; background: #8b00ff; border-top: 2px solid #fff; border-bottom: 2px solid #fff; display: flex; align-items: center; justify-content: center; margin-top: 20px; box-shadow: 0 0 20px #8b00ff; }
         .registrierung-text { color: #fff; font-size: 2.2rem; font-weight: 900; letter-spacing: 15px; text-transform: uppercase; }
 
         /* HEADER & LOGO */
@@ -79,10 +66,16 @@
         .dot { width: 10px; height: 10px; background: #444; border-radius: 50%; }
         .dot.active { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
 
-        /* VIDEO EBENE 4 */
+        /* VIDEO EBENE 4 & SCHUBLADEN */
         .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; }
         .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; position: relative; overflow: hidden; }
         .slot-1-user { border-color: #00ff00; color: #00ff00; }
+
+        #sektoren-schubladen { margin-top: 15px; overflow-y: auto; max-height: 40vh; padding-right: 5px; }
+        .schublade { border: 1px solid #003d8f; margin-bottom: 5px; background: #050505; }
+        .schublade-header { padding: 8px; font-size: 0.75rem; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; background: #001a3d; }
+        .schublade-content { padding: 0 10px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; font-size: 0.85rem; color: #ccc; line-height: 1.4; }
+        .schublade.open .schublade-content { max-height: 200px; padding: 10px; border-top: 1px solid #003d8f; }
 
         #counter-box { position: absolute; right: 0; top: 0; width: 100px; padding: 5px; border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f; background: #000; text-align: center; display: none; z-index: 100; }
         .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
@@ -163,15 +156,10 @@
                 <div class="video-slot" id="v-slot-2">SLOT 2 (ZUFALL)</div>
                 <div class="video-slot" id="v-slot-3">SLOT 3 (ZUFALL)</div>
                 <div class="video-slot" id="v-slot-4">SLOT 4 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-5">SLOT 5 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-6">SLOT 6 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-7">SLOT 7 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-8">SLOT 8 (ZUFALL)</div>
             </div>
-            <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; margin-top: 15px; font-weight: bold; cursor: pointer; border-radius: 5px;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
+            <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 12px; margin-top: 10px; font-weight: bold; cursor: pointer; border-radius: 5px;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
             
-            <div id="sektoren-schubladen" style="margin-top: 20px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
-            </div>
+            <div id="sektoren-schubladen"></div>
         </div> 
 
         <div id="ebene5-bereich"><div class="freie-zone-text">ADMIN ZONE</div></div>
@@ -189,11 +177,44 @@
     let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
+    // Dashboard Grid
     const grid = document.getElementById('main-grid');
     themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; });
     
+    // Schubladen füllen
+    const drawerArea = document.getElementById('sektoren-schubladen');
+    themen.forEach((t, i) => {
+        drawerArea.innerHTML += `
+            <div class="schublade" id="drawer-${i}">
+                <div class="schublade-header" onclick="toggleDrawer(${i})">
+                    <span>SEKTOR ${i+1}: ${t}</span>
+                    <span id="arrow-${i}">▼</span>
+                </div>
+                <div class="schublade-content">
+                    Hier liegen die Dokumente und Beweise für den Sektor "${t}". 
+                    Die Wahl der Vorsitzenden erfolgt erst nach der stillen Million.
+                    <br><br>Status: Aktiviert im Video-Beweis-Modus.
+                </div>
+            </div>`;
+    });
+
     const dots = document.getElementById('dot-holder');
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
+
+    function toggleDrawer(id) {
+        const d = document.getElementById(`drawer-${id}`);
+        const arrow = document.getElementById(`arrow-${id}`);
+        const isOpen = d.classList.contains('open');
+        
+        // Alle anderen schließen (optional für mehr Ordnung)
+        document.querySelectorAll('.schublade').forEach(s => s.classList.remove('open'));
+        document.querySelectorAll('.schublade-header span[id^="arrow"]').forEach(a => a.innerText = '▼');
+
+        if (!isOpen) {
+            d.classList.add('open');
+            arrow.innerText = '▲';
+        }
+    }
 
     function adminUnlock() {
         themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
@@ -219,7 +240,6 @@
 
     function updateUI() {
         const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
-        
         document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
         document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
         document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
@@ -240,17 +260,13 @@
         if (ebene === 2) {
             btnNext.style.visibility = (tId < 19) ? 'visible' : 'hidden';
             sigGelb.classList.toggle('signal-aktiv', geleseneThemen.size === 20);
-        } else {
-            sigGelb.classList.remove('signal-aktiv');
-        }
+        } else sigGelb.classList.remove('signal-aktiv');
 
         if (ebene === 3) {
             btnNext.style.visibility = (tId < 19) ? 'visible' : 'hidden';
             let alleFertig = Object.values(interaktionsZaehler).every(val => val >= 20);
             sigRot.classList.toggle('signal-aktiv', alleFertig);
-        } else {
-            sigRot.classList.remove('signal-aktiv');
-        }
+        } else sigRot.classList.remove('signal-aktiv');
 
         aktiviereKandidatenLicht();
         updateDots(); 
@@ -259,35 +275,19 @@
 
     function aktiviereKandidatenLicht() {
         const sigL1 = document.getElementById('sig-l1');
-        
-        // AUF EBENE 4: IMMER STILLGELEGT (SCHWARZ & KEIN KLICK)
-        if (ebene === 4) {
-            sigL1.className = "oval-side ov-schwarz";
-            sigL1.onclick = null;
-        } 
-        // SONST: WENN QUALIFIZIERT -> GOLD (ELITE-AKTIV), ABER OHNE BLINKEN
-        else if (userBackstage.isQualifiziert && ebene < 5) { 
-            sigL1.className = "oval-side elite-aktiv"; 
-            sigL1.onclick = () => portalZuEbene5(); 
-        } 
-        // BASIS-ZUSTAND
-        else {
-            sigL1.className = "oval-side ov-schwarz";
-            sigL1.onclick = null;
-        }
+        if (ebene === 4) { sigL1.className = "oval-side ov-schwarz"; sigL1.onclick = null; } 
+        else if (userBackstage.isQualifiziert && ebene < 5) { sigL1.className = "oval-side elite-aktiv"; sigL1.onclick = () => portalZuEbene5(); } 
+        else { sigL1.className = "oval-side ov-schwarz"; sigL1.onclick = null; }
     }
 
     function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
-    
     function nextPage() { 
         if ((ebene === 2 || ebene === 3) && tId < 19) { 
             tId++; aktuellesThema = themen[tId];
             if (ebene === 2) geleseneThemen.add(tId);
-            if (ebene === 3) document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${tId+1} bereit...</i>`;
             updateUI(); updateNumColors();
         } else if (ebene < 7 && ebene !== 2 && ebene !== 3) { ebene++; updateUI(); } 
     }
-
     function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
     
     function registriereSenden() { 
@@ -325,20 +325,11 @@
             const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
             meinSlot.innerHTML = `<video id="user-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>`;
             document.getElementById('user-video').srcObject = stream;
-            simuliereAndereTeilnehmer();
-        } catch (err) {
-            meinSlot.innerHTML = `<div style="color:#ff4d4d; padding:10px;">KEINE KAMERA GEFUNDEN<br><small>Audio-Modus aktiv</small></div>`;
-            meinSlot.style.borderColor = "#ff4d4d";
-            simuliereAndereTeilnehmer();
-        }
-    }
-
-    function simuliereAndereTeilnehmer() {
-        for(let i=2; i<=8; i++) {
-            const slot = document.getElementById(`v-slot-${i}`);
-            slot.innerHTML = `<div class="pulsieren" style="color:#ffd700;">VERBUNDEN</div>`;
-            slot.style.borderColor = "#003d8f";
-        }
+            for(let i=2; i<=4; i++) {
+                const s = document.getElementById(`v-slot-${i}`);
+                s.innerHTML = `<div class="pulsieren" style="color:#ffd700;">VERBUNDEN</div>`;
+            }
+        } catch (err) { alert("Kamera-Fehler"); }
     }
 </script>
 </body>
