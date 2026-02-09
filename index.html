@@ -17,13 +17,12 @@
             100% { box-shadow: 0 0 5px #fff; opacity: 0.8; }
         }
 
-        /* Statische Elite-Optik ohne Blinken */
+        /* KEIN BLINKEN MEHR FÜR ELITE */
         .elite-aktiv { 
             background-color: #ffd700 !important; 
-            box-shadow: 0 0 15px #ffd700; 
+            box-shadow: 0 0 10px #ffd700; 
             border: 2px solid #fff !important; 
             cursor: pointer; 
-            opacity: 1 !important;
         }
 
         @keyframes pulsieren {
@@ -216,7 +215,7 @@
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
     function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
-    function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv')) { ebene = 5; updateUI(); } }
+    function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
 
     function updateUI() {
         const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
@@ -260,11 +259,19 @@
 
     function aktiviereKandidatenLicht() {
         const sigL1 = document.getElementById('sig-l1');
-        // Wenn qualifiziert, wird die Lampe statisch gold, ohne Blinken
-        if (userBackstage.isQualifiziert && ebene < 5) { 
+        
+        // AUF EBENE 4: IMMER STILLGELEGT (SCHWARZ & KEIN KLICK)
+        if (ebene === 4) {
+            sigL1.className = "oval-side ov-schwarz";
+            sigL1.onclick = null;
+        } 
+        // SONST: WENN QUALIFIZIERT -> GOLD (ELITE-AKTIV), ABER OHNE BLINKEN
+        else if (userBackstage.isQualifiziert && ebene < 5) { 
             sigL1.className = "oval-side elite-aktiv"; 
             sigL1.onclick = () => portalZuEbene5(); 
-        } else {
+        } 
+        // BASIS-ZUSTAND
+        else {
             sigL1.className = "oval-side ov-schwarz";
             sigL1.onclick = null;
         }
