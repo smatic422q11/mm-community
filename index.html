@@ -86,6 +86,17 @@
         .num-gelesen { background-color: #ffd700 !important; color: #000 !important; }
         .num-offen { background-color: #ff4d4d !important; }
         .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
+
+        /* VIDEO-GRID EBENE 4 */
+        .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; position: relative; }
+        .slot-1-user { border-color: #00ff00; color: #00ff00; }
+
+        /* WERBUNG */
+        .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
+        .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
+        .tafel-intern-logo { position: absolute; top: 10px; left: 10px; z-index: 5; }
+        .werbe-text-overlay { color: rgba(255, 255, 255, 0.3); font-weight: bold; font-size: 1.2rem; letter-spacing: 5px; z-index: 5; text-align: center; text-shadow: 2px 2px 5px #000; }
     </style></head><body>
 
     <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
@@ -148,7 +159,26 @@
             </div>
         </div> 
 
-        <div id="drawer-ebene4" style="display: none;"> </div> 
+        <div id="drawer-ebene4">
+            <div class="drawer-content">
+                <div class="video-grid">
+                    <div class="video-slot slot-1-user" id="v-slot-1">SLOT 1 (DU)</div>
+                    <div class="video-slot" id="v-slot-2">SLOT 2 (ZUFALL)</div>
+                    <div class="video-slot" id="v-slot-3">SLOT 3 (ZUFALL)</div>
+                    <div class="video-slot" id="v-slot-4">SLOT 4 (ZUFALL)</div>
+                    <div class="video-slot" id="v-slot-5">SLOT 5 (ZUFALL)</div>
+                    <div class="video-slot" id="v-slot-6">SLOT 6 (ZUFALL)</div>
+                    <div class="video-slot" id="v-slot-7">SLOT 7 (ZUFALL)</div>
+                    <div class="video-slot" id="v-slot-8">SLOT 8 (ZUFALL)</div>
+                </div>
+                <button style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; margin-top: 15px; font-weight: bold; cursor: pointer; border-radius: 5px;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
+            </div>
+        </div> 
+
+        <div id="ebene5-bereich">
+            <div class="freie-zone-text">
+            </div>
+        </div>
 
     </div>
 
@@ -159,7 +189,7 @@
     </div>
 
 <script>
-    let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5 };
+    let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5, zaehlerInterval: null };
     const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
     let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
@@ -171,7 +201,7 @@
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
     function adminUnlock() {
-        themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
+        themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; userBackstage.sektorZeiten[i] = 1801; });
         userBackstage.isQualifiziert = true;
         updateNumColors();
         if (ebene > 1) updateUI();
@@ -179,13 +209,10 @@
         alert("ADMIN: Alle Barrieren entfernt.");
     }
 
+    // INTELLIGENTE WEICHE
     function showInfo(t, id) { 
         tId = id; 
         aktuellesThema = t; 
-        
-        // Chat leeren, wenn wir einen Raum betreten (auch aus dem Dashboard)
-        resetChatBox();
-
         if (geleseneThemen.has(id)) {
             ebene = 3; 
         } else {
@@ -198,19 +225,23 @@
         updateUI(); 
     }
 
-    function resetChatBox() {
-        document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${tId+1} bereit...</i>`;
-        document.getElementById('chat-input').value = "";
-    }
+    function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
+    function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
+    function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv')) { ebene = 5; updateUI(); } }
 
     function updateUI() {
         const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
         document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
+        document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
+        document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
+        document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
         document.getElementById('main-text').style.display = (ebene < 3) ? 'block' : 'none';
-        document.getElementById('info-titel').innerText = aktuellesThema;
+        document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
+        document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
         document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
         document.getElementById('btn-back').style.visibility = 'visible';
-
+        
+        document.getElementById('info-titel').innerText = aktuellesThema;
         if (ebene === 2) {
             document.getElementById('main-text').innerText = "Inhalt für " + aktuellesThema + "...";
         }
@@ -230,6 +261,7 @@
         } else {
             btnNext.style.visibility = (ebene < 7) ? 'visible' : 'hidden';
             btnNext.innerText = "Weiter →";
+            sigGelb.classList.remove('signal-aktiv');
         }
 
         let alleRaeumeFertig = Object.values(interaktionsZaehler).every(val => val >= 20);
@@ -239,28 +271,31 @@
         updateDots(); startRotation();
     }
 
+    function aktiviereKandidatenLicht() {
+        const sigL1 = document.getElementById('sig-l1');
+        if (userBackstage.isQualifiziert || userBackstage.rankingPlatz <= 22) { sigL1.className = "oval-side elite-aktiv"; sigL1.onclick = () => portalZuEbene5(); }
+    }
+
+    function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
+    
     function nextPage() { 
         if ((ebene === 2 || ebene === 3) && tId < 19) { 
             tId++; 
             aktuellesThema = themen[tId];
             if (ebene === 2) geleseneThemen.add(tId);
-            resetChatBox(); // Leeren beim "Weiter"-Klick im Chat
             updateUI();
             updateNumColors();
+            if (ebene === 3) {
+                document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${tId+1} bereit...</i>`;
+            }
         } else if (ebene < 7 && ebene !== 2 && ebene !== 3) { 
             ebene++; 
             updateUI(); 
         } 
     }
 
-    function showDashboard() { 
-        ebene = 1; 
-        resetChatBox(); // Sicherheitshalber auch hier leeren
-        document.getElementById('page-skelett').style.display = 'none'; 
-        document.getElementById('dashboard').style.display = 'flex'; 
-        updateNumColors(); 
-    }
-
+    function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
+    
     function registriereSenden() { 
         const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); 
         if (text === "") return; 
@@ -270,24 +305,23 @@
         chatBox.scrollTop = chatBox.scrollHeight; 
         updateUI(); 
     }
-
+    
     function updateNumColors() {
         themen.forEach((_, i) => {
             const nBox = document.getElementById(`num-${i}`);
             if (nBox) {
-                if (interaktionsZaehler[i] >= 20) nBox.className = "num num-fertig";
-                else if (interaktionsZaehler[i] > 0) nBox.className = "num num-offen";
-                else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen";
-                else nBox.className = "num num-neutral";
+                if (interaktionsZaehler[i] >= 20) {
+                    nBox.className = "num num-fertig";
+                } else if (interaktionsZaehler[i] > 0) {
+                    nBox.className = "num num-offen";
+                } else if (geleseneThemen.has(i)) {
+                    nBox.className = "num num-gelesen";
+                } else {
+                    nBox.className = "num num-neutral";
+                }
             }
         });
     }
 
-    function aktiviereKandidatenLicht() {
-        const sigL1 = document.getElementById('sig-l1');
-        if (userBackstage.isQualifiziert) { sigL1.className = "oval-side elite-aktiv"; sigL1.onclick = () => portalZuEbene5(); }
-    }
-
-    function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
     function startRotation() { clearInterval(wechselInterval); const bg = document.getElementById('werbe-bg'); if(!bg) return; bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; bg.classList.add('bild-aktiv'); wechselInterval = setInterval(() => { bg.classList.remove('bild-aktiv'); setTimeout(() => { bg.classList.add('bild-aktiv'); }, 50); }, 10000); }
 </script></body></html>
