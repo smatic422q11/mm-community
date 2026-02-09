@@ -47,20 +47,31 @@
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
 
-        /* TAFEL DESIGNS */
-        .info-section { width: 80%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; position: relative; overflow: hidden; margin-top: 2vh; }
-        .tafel-layout { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; margin-top: 1vh; height: 26vh; flex-shrink: 0; }
-        .info-section-ebene { width: 80% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
+       /* TAFEL DESIGNS KORREKTUR */
+.info-section-ebene { 
+    width: 90% !important; /* Von 80% auf 90% erhöht für Bündigkeit */
+    height: 100%; 
+    border: 2px solid #003d8f; 
+    background-color: #000; 
+    position: relative; 
+    overflow: hidden; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+    z-index: 10; 
+}
 
-        .buttons-links { position: absolute; left: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
-        .buttons-rechts { position: absolute; right: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
-        .oval-side { width: 45px; height: 22px; border-radius: 12px; border: 1px solid #fff; opacity: 0.8; transition: all 0.3s; }
-        .ov-schwarz { background: #000; border: 1.5px solid #003d8f; }
-        .ov-grun { background: #00ff00; }
-        .ov-blau { background: #0000ff; }
-        .ov-rot { background: #ff0000; }
-        .ov-pink { background: #ff00ff; }
-        .ov-gelb { background: #ffff00; }
+.tafel-layout { 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    width: 100%; /* Nutzt die volle Breite für die Zentrierung */
+    position: relative; 
+    margin-top: 1vh; 
+    height: 26vh; 
+    flex-shrink: 0; 
+}
 
         /* GRID DASHBOARD */
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 10px; width: 95%; max-width: 1450px; margin-top: 30px; border: 3px solid #00ff00; padding: 15px; border-radius: 10px; }
