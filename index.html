@@ -16,6 +16,10 @@
         .pulsieren { animation: pulsieren 2s infinite ease-in-out; font-weight: bold; }
         .signal-aktiv { animation: signalBlink 1.0s infinite ease-in-out !important; border: 2px solid #fff !important; cursor: pointer; }
 
+        /* LILA BALKEN */
+        .lila-registrierung-leiste { width: 100%; height: 80px; background: #8b00ff; border-top: 2px solid #fff; border-bottom: 2px solid #fff; display: flex; align-items: center; justify-content: center; margin-top: 20px; box-shadow: 0 0 20px #8b00ff; }
+        .registrierung-text { color: #fff; font-size: 2.2rem; font-weight: 900; letter-spacing: 15px; text-transform: uppercase; }
+
         /* HEADER & TAFEL */
         .dashboard-header { width: 100%; position: absolute; top: 3%; display: flex; justify-content: flex-start; padding: 0 2%; box-sizing: border-box; z-index: 20; }
         .logo-ring { width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; }
@@ -43,12 +47,12 @@
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
         /* BEREICHE */
-        #chat-area, #drawer-ebene4, #ebene5-bereich { width: 90% !important; flex-grow: 1; display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; overflow-y: auto; position: relative; }
+        #chat-area, #drawer-ebene4, #ebene5-bereich { width: 90% !important; flex-grow: 1; display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; position: relative; }
         .chat-msgs { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px 0; color: #fff; font-size: 1.1rem; overflow-y: auto; }
         .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; flex-shrink: 0; }
         
-        /* EBENE 4 SPEZIAL: SCROLLBARER BEREICH */
-        #drawer-ebene4 { display: none; overflow-y: auto; scroll-behavior: smooth; padding-right: 5px; }
+        /* EBENE 4: SCROLLBARER BEREICH */
+        #drawer-ebene4 { overflow-y: auto; scroll-behavior: smooth; padding-right: 5px; }
         .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; flex-shrink: 0; margin-bottom: 20px; }
         .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; position: relative; }
         .slot-1-user { border-color: #00ff00; color: #00ff00; }
@@ -57,7 +61,10 @@
         .schublade { border: 1px solid #003d8f; margin-bottom: 5px; background: #050505; }
         .schublade-header { padding: 10px; font-size: 0.75rem; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; background: #001a3d; }
         .schublade-content { padding: 0 10px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; font-size: 0.85rem; color: #ccc; }
-        .schublade.open .schublade-content { max-height: 300px; padding: 15px; border-top: 1px solid #003d8f; }
+        .schublade.open .schublade-content { max-height: 400px; padding: 15px; border-top: 1px solid #003d8f; }
+
+        /* EBENE 5: ADMIN ZONE */
+        .freie-zone-text { font-size: 3rem; font-weight: 900; color: #ffd700; text-align: center; margin-top: 50px; text-shadow: 0 0 20px #ffd700; }
 
         /* NAVIGATION */
         .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; background: #000; z-index: 100; border-top: 1px solid #333; }
@@ -123,6 +130,9 @@
                     <div class="oval-side ov-gelb" id="sig-r4" onclick="portalZuEbene3()"></div>
                 </div>
             </div>
+            <div id="lila-balken-container" style="display: none; width: 100%;">
+                <div class="lila-registrierung-leiste"><div class="registrierung-text">REGISTRIERUNG</div></div>
+            </div>
         </div>
 
         <p id="main-text" style="width: 85%; text-align: justify; color: #ccc; margin-top: 2vh; font-size: 1.3rem; line-height: 1.8; max-height: 50vh; overflow-y: auto;"></p>
@@ -147,7 +157,6 @@
                 <div class="video-slot" id="v-slot-8">SLOT 8 (ZUFALL)</div>
             </div>
             <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 5px; flex-shrink:0;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
-            
             <div id="sektoren-schubladen"></div>
         </div> 
 
@@ -162,7 +171,7 @@
 
 <script>
     let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5 };
-    const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
+    const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
     let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
@@ -196,6 +205,14 @@
         if (!isOpen) { d.classList.add('open'); arrow.innerText = '▲'; }
     }
 
+    function adminUnlock() {
+        themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
+        userBackstage.isQualifiziert = true;
+        updateNumColors();
+        updateUI();
+        alert("ADMIN: Alle Barrieren entfernt.");
+    }
+
     function showInfo(t, id) { 
         tId = id; aktuellesThema = t; 
         document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
@@ -208,14 +225,18 @@
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
     function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
+    function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv')) { ebene = 5; updateUI(); } }
 
     function updateUI() {
-        const isChat = (ebene === 3), isVideo = (ebene === 4);
+        const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
         document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
         document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
+        document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
+        document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
+        
         document.getElementById('main-text').style.display = (ebene < 3) ? 'block' : 'none';
         document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
-        document.getElementById('info-titel').style.display = isVideo ? 'none' : 'block';
+        document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
         document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
         document.getElementById('btn-back').style.visibility = 'visible';
         
@@ -225,6 +246,7 @@
         const btnNext = document.getElementById('btn-next');
         const sigGelb = document.getElementById('sig-r4');
         const sigRot = document.getElementById('sig-l4');
+        const sigL1 = document.getElementById('sig-l1');
 
         if (ebene === 2) {
             btnNext.style.visibility = (tId < 19) ? 'visible' : 'hidden';
@@ -236,6 +258,15 @@
             let alleFertig = Object.values(interaktionsZaehler).every(val => val >= 20);
             sigRot.classList.toggle('signal-aktiv', alleFertig);
         } else sigRot.classList.remove('signal-aktiv');
+
+        // Kandidaten-Licht Logik
+        if (userBackstage.isQualifiziert && ebene < 5) {
+            sigL1.className = "oval-side elite-aktiv";
+            sigL1.onclick = portalZuEbene5;
+        } else {
+            sigL1.className = "oval-side ov-schwarz";
+            sigL1.onclick = null;
+        }
 
         updateDots(); 
         startRotation();
@@ -249,7 +280,7 @@
             document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${tId+1} bereit...</i>`;
             if (ebene === 2) geleseneThemen.add(tId);
             updateUI(); updateNumColors();
-        } else if (ebene < 7 && ebene !== 2 && ebene !== 3) { ebene++; updateUI(); } 
+        } else if (ebene < 7 && ebene !== 2 && ebene !== 3 && ebene !== 4 && ebene !== 5) { ebene++; updateUI(); } 
     }
     
     function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
