@@ -268,7 +268,24 @@
     function nextPage() { if (ebene === 2 && tId < 19) { tId++; showInfo(themen[tId], tId); } else if (ebene < 7) { ebene++; updateUI(); } }
     function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
     function registriereSenden() { const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); if (text === "") return; chatBox.innerHTML += `<div><strong>Du:</strong> ${text}</div>`; if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++; input.value = ""; chatBox.scrollTop = chatBox.scrollHeight; updateUI(); }
-    function updateNumColors() { themen.forEach((_, i) => { const nBox = document.getElementById(`num-${i}`); if (nBox) { if (interaktionsZaehler[i] >= 20) nBox.className = "num num-fertig"; else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen"; } }); }
+    
+    function updateNumColors() {
+        themen.forEach((_, i) => {
+            const nBox = document.getElementById(`num-${i}`);
+            if (nBox) {
+                if (interaktionsZaehler[i] >= 20) {
+                    nBox.className = "num num-fertig";
+                } else if (interaktionsZaehler[i] > 0) {
+                    nBox.className = "num num-offen";
+                } else if (geleseneThemen.has(i)) {
+                    nBox.className = "num num-gelesen";
+                } else {
+                    nBox.className = "num num-neutral";
+                }
+            }
+        });
+    }
+
     function startRotation() { clearInterval(wechselInterval); const bg = document.getElementById('werbe-bg'); if(!bg) return; bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; bg.classList.add('bild-aktiv'); wechselInterval = setInterval(() => { bg.classList.remove('bild-aktiv'); setTimeout(() => { bg.classList.add('bild-aktiv'); }, 50); }, 10000); }
 </script>
 </body>
