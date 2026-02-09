@@ -209,10 +209,14 @@
         alert("ADMIN: Alle Barrieren entfernt.");
     }
 
-    // INTELLIGENTE WEICHE
+  // INTELLIGENTE WEICHE
     function showInfo(t, id) { 
         tId = id; 
         aktuellesThema = t; 
+
+        // DIESE ZEILE HINZUFÜGEN: Leert den Chat-Verlauf beim Raumwechsel via Dashboard
+        document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
+
         if (geleseneThemen.has(id)) {
             ebene = 3; 
         } else {
@@ -223,7 +227,7 @@
         document.getElementById('dashboard').style.display = 'none'; 
         document.getElementById('page-skelett').style.display = 'flex'; 
         updateUI(); 
-    }
+    } 
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
     function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
