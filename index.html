@@ -156,6 +156,10 @@
                 <div class="video-slot" id="v-slot-2">SLOT 2 (ZUFALL)</div>
                 <div class="video-slot" id="v-slot-3">SLOT 3 (ZUFALL)</div>
                 <div class="video-slot" id="v-slot-4">SLOT 4 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-5">SLOT 5 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-6">SLOT 6 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-7">SLOT 7 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-8">SLOT 8 (ZUFALL)</div>
             </div>
             <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 12px; margin-top: 10px; font-weight: bold; cursor: pointer; border-radius: 5px;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
             
@@ -177,11 +181,9 @@
     let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
-    // Dashboard Grid
     const grid = document.getElementById('main-grid');
     themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; });
     
-    // Schubladen füllen
     const drawerArea = document.getElementById('sektoren-schubladen');
     themen.forEach((t, i) => {
         drawerArea.innerHTML += `
@@ -193,7 +195,6 @@
                 <div class="schublade-content">
                     Hier liegen die Dokumente und Beweise für den Sektor "${t}". 
                     Die Wahl der Vorsitzenden erfolgt erst nach der stillen Million.
-                    <br><br>Status: Aktiviert im Video-Beweis-Modus.
                 </div>
             </div>`;
     });
@@ -205,15 +206,9 @@
         const d = document.getElementById(`drawer-${id}`);
         const arrow = document.getElementById(`arrow-${id}`);
         const isOpen = d.classList.contains('open');
-        
-        // Alle anderen schließen (optional für mehr Ordnung)
         document.querySelectorAll('.schublade').forEach(s => s.classList.remove('open'));
         document.querySelectorAll('.schublade-header span[id^="arrow"]').forEach(a => a.innerText = '▼');
-
-        if (!isOpen) {
-            d.classList.add('open');
-            arrow.innerText = '▲';
-        }
+        if (!isOpen) { d.classList.add('open'); arrow.innerText = '▲'; }
     }
 
     function adminUnlock() {
@@ -325,7 +320,7 @@
             const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
             meinSlot.innerHTML = `<video id="user-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>`;
             document.getElementById('user-video').srcObject = stream;
-            for(let i=2; i<=4; i++) {
+            for(let i=2; i<=8; i++) {
                 const s = document.getElementById(`v-slot-${i}`);
                 s.innerHTML = `<div class="pulsieren" style="color:#ffd700;">VERBUNDEN</div>`;
             }
