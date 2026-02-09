@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
+<!DOCTYPE html><html lang="de"><head>
     <meta charset="UTF-8">
     <title>M&M-COMMUNITY - Admin Modus</title>
     <style>
@@ -120,9 +118,7 @@
         .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
         .tafel-intern-logo { position: absolute; top: 10px; left: 10px; z-index: 5; }
         .werbe-text-overlay { color: rgba(255, 255, 255, 0.3); font-weight: bold; font-size: 1.2rem; letter-spacing: 5px; z-index: 5; text-align: center; text-shadow: 2px 2px 5px #000; }
-    </style>
-</head>
-<body>
+    </style></head><body>
 
     <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="dashboard-header">
@@ -211,9 +207,7 @@
         <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Dashboard</button>
         <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
         <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
-    </div>
-
-<script>
+    </div><script>
     let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5, zaehlerInterval: null };
     const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
     let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
@@ -250,11 +244,29 @@
         document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
         document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
         document.getElementById('btn-back').style.visibility = 'visible';
-        if (ebene === 2) { document.getElementById('info-titel').innerText = aktuellesThema; document.getElementById('main-text').innerText = "Inhalt für " + aktuellesThema + "..."; }
-        const sigGelb = document.getElementById('sig-r4'), sigRot = document.getElementById('sig-l4');
-        sigGelb.classList.toggle('signal-aktiv', (ebene === 2 && geleseneThemen.size === 20));
+        
+        if (ebene === 2) { 
+            document.getElementById('info-titel').innerText = aktuellesThema; 
+            document.getElementById('main-text').innerText = "Inhalt für " + aktuellesThema + "..."; 
+        }
+
+        const btnNext = document.getElementById('btn-next');
+        const sigGelb = document.getElementById('sig-r4');
+        const sigRot = document.getElementById('sig-l4');
+
+        if (ebene === 2) {
+            // Weiter-Button nur zeigen, wenn wir noch NICHT beim letzten Thema sind
+            btnNext.style.visibility = (tId < 19) ? 'visible' : 'hidden';
+            // Gelbe Leuchte an, wenn alle 20 Themen in geleseneThemen sind
+            sigGelb.classList.toggle('signal-aktiv', geleseneThemen.size === 20);
+        } else {
+            btnNext.style.visibility = (ebene < 7) ? 'visible' : 'hidden';
+            sigGelb.classList.remove('signal-aktiv');
+        }
+
         let alleRaeumeFertig = Object.values(interaktionsZaehler).every(val => val >= 20);
         sigRot.classList.toggle('signal-aktiv', (ebene === 3 && alleRaeumeFertig));
+
         aktiviereKandidatenLicht();
         updateDots(); startRotation();
     }
@@ -286,7 +298,4 @@
         });
     }
 
-    function startRotation() { clearInterval(wechselInterval); const bg = document.getElementById('werbe-bg'); if(!bg) return; bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; bg.classList.add('bild-aktiv'); wechselInterval = setInterval(() => { bg.classList.remove('bild-aktiv'); setTimeout(() => { bg.classList.add('bild-aktiv'); }, 50); }, 10000); }
-</script>
-</body>
-</html>
+    function startRotation() { clearInterval(wechselInterval); const bg = document.getElementById('werbe-bg'); if(!bg) return; bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; bg.classList.add('bild-aktiv'); wechselInterval = setInterval(() => { bg.classList.remove('bild-aktiv'); setTimeout(() => { bg.classList.add('bild-aktiv'); }, 50); }, 10000); }</script></body></html>
