@@ -17,10 +17,12 @@
             100% { box-shadow: 0 0 5px #fff; opacity: 0.8; }
         }
 
-        @keyframes eliteBlink {
-            0% { background-color: #000; box-shadow: 0 0 5px #333; }
-            50% { background-color: #444; box-shadow: 0 0 20px #666, inset 0 0 10px #000; transform: scale(1.1); }
-            100% { background-color: #000; box-shadow: 0 0 5px #333; }
+        /* KEIN BLINKEN MEHR FÜR ELITE */
+        .elite-aktiv { 
+            background-color: #ffd700 !important; 
+            box-shadow: 0 0 10px #ffd700; 
+            border: 2px solid #fff !important; 
+            cursor: pointer; 
         }
 
         @keyframes pulsieren {
@@ -31,7 +33,6 @@
         .pulsieren { animation: pulsieren 2s infinite ease-in-out; font-weight: bold; }
 
         .signal-aktiv { animation: signalBlink 1.0s infinite ease-in-out !important; border: 2px solid #fff !important; cursor: pointer; }
-        .elite-aktiv { animation: eliteBlink 2s infinite ease-in-out !important; border: 2px solid #ffd700 !important; cursor: pointer; }
 
         /* LILA BALKEN */
         .lila-registrierung-leiste {
@@ -47,12 +48,8 @@
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
 
         /* TAFEL DESIGNS */
-        /* Dashboard bleibt bei 80% */
         .info-section { width: 80%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; position: relative; overflow: hidden; margin-top: 2vh; }
-        
         .tafel-layout { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; margin-top: 1vh; height: 26vh; flex-shrink: 0; }
-        
-        /* Die Ebenen 2-5 bleiben bei 90% */
         .info-section-ebene { width: 90% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
 
         .buttons-links { position: absolute; left: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
@@ -187,7 +184,6 @@
     </div>
 
 <script>
-    /* ... (Restlicher JavaScript Code bleibt identisch wie zuvor) ... */
     let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5 };
     const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
     let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
@@ -219,7 +215,7 @@
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
     function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
-    function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv')) { ebene = 5; updateUI(); } }
+    function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
 
     function updateUI() {
         const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
@@ -263,10 +259,19 @@
 
     function aktiviereKandidatenLicht() {
         const sigL1 = document.getElementById('sig-l1');
-        if (userBackstage.isQualifiziert && ebene < 5) { 
+        
+        // AUF EBENE 4: IMMER STILLGELEGT (SCHWARZ & KEIN KLICK)
+        if (ebene === 4) {
+            sigL1.className = "oval-side ov-schwarz";
+            sigL1.onclick = null;
+        } 
+        // SONST: WENN QUALIFIZIERT -> GOLD (ELITE-AKTIV), ABER OHNE BLINKEN
+        else if (userBackstage.isQualifiziert && ebene < 5) { 
             sigL1.className = "oval-side elite-aktiv"; 
             sigL1.onclick = () => portalZuEbene5(); 
-        } else {
+        } 
+        // BASIS-ZUSTAND
+        else {
             sigL1.className = "oval-side ov-schwarz";
             sigL1.onclick = null;
         }
