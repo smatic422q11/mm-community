@@ -90,9 +90,7 @@
 
         .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
         .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
-    </style>
-</head>
-<body>
+    </style></head><body>
 
     <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="dashboard-header">
@@ -173,9 +171,7 @@
         <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Dashboard</button>
         <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
         <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
-    </div>
-
-<script>
+    </div><script>
     let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5 };
     const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
     let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
@@ -221,6 +217,7 @@
 
     function showInfo(t, id) { 
         tId = id; aktuellesThema = t; 
+        // CHAT LEEREN BEI NEUEM THEMA
         document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
         if (geleseneThemen.has(id)) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
         updateNumColors(); 
@@ -276,13 +273,17 @@
     }
 
     function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
+    
     function nextPage() { 
         if ((ebene === 2 || ebene === 3) && tId < 19) { 
             tId++; aktuellesThema = themen[tId];
+            // CHAT LEEREN BEIM WEITER-KLICKEN
+            document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${tId+1} bereit...</i>`;
             if (ebene === 2) geleseneThemen.add(tId);
             updateUI(); updateNumColors();
         } else if (ebene < 7 && ebene !== 2 && ebene !== 3) { ebene++; updateUI(); } 
     }
+    
     function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
     
     function registriereSenden() { 
@@ -325,7 +326,4 @@
                 s.innerHTML = `<div class="pulsieren" style="color:#ffd700;">VERBUNDEN</div>`;
             }
         } catch (err) { alert("Kamera-Fehler"); }
-    }
-</script>
-</body>
-</html>
+    }</script></body></html>
