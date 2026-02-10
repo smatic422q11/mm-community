@@ -26,7 +26,19 @@
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
         .info-section { width: 80%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; position: relative; overflow: hidden; margin-top: 2vh; }
-        .tafel-layout { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; margin-top: 1vh; height: 26vh; flex-shrink: 0; }
+        
+        .tafel-layout { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            width: 100%; 
+            position: relative; 
+            margin-top: 1vh; 
+            height: 26vh; 
+            min-height: 26vh; 
+            flex-shrink: 0; 
+        }
+
         .info-section-ebene { width: 90% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
 
         /* BUTTONS */
@@ -47,8 +59,33 @@
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
         /* BEREICHE */
-        #chat-area, #drawer-ebene4, #ebene5-bereich { width: 90% !important; flex-grow: 1; display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; position: relative; }
-        .chat-msgs { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px 0; color: #fff; font-size: 1.1rem; overflow-y: auto; }
+        #chat-area { 
+            width: 90% !important; 
+            height: 40vh; 
+            flex-grow: 1; 
+            display: none; 
+            flex-direction: column; 
+            margin-top: 5px; 
+            margin-bottom: 70px; 
+            position: relative; 
+            overflow: hidden; 
+        }
+
+        #drawer-ebene4, #ebene5-bereich { width: 90% !important; flex-grow: 1; display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; position: relative; }
+
+        .chat-msgs { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: flex-start; 
+            padding: 10px; 
+            color: #fff; 
+            font-size: 1.1rem; 
+            overflow-y: auto; 
+            border-left: 1px solid #003d8f;
+            border-right: 1px solid #003d8f;
+        }
+
         .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; flex-shrink: 0; }
         
         /* EBENE 4: SCROLLBARER BEREICH */
