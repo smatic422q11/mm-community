@@ -101,9 +101,32 @@
             </p>
         </div>
         <div class="grid" id="main-grid"></div>
-        <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 80px;">
+        <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 10px;">
             <div class="fundament-box" style="flex: 1;"><div class="num">21</div><div class="text">Kapital und Verwaltung</div></div>
             <div class="fundament-box" style="flex: 1;"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div></div>
+        </div>
+
+        <div class="zugang-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-bottom: 80px;">
+            <div class="fundament-box" style="flex: 1; border-color: #555; cursor: pointer;" onclick="showZugangInfo('gast')">
+                <div class="num" style="background-color: #333;">G</div>
+                <div class="text">Gast-Zugang (Eingeschränkt)</div>
+            </div>
+            <div class="fundament-box" style="flex: 1; border-color: #8b00ff; cursor: pointer;" onclick="showZugangInfo('email')">
+                <div class="num" style="background-color: #8b00ff;">V</div>
+                <div class="text" style="color: #ffd700;">Verifizierter Status (Voller Zugriff 1-4)</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="zugang-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10000; justify-content:center; align-items:center;">
+        <div style="background:#000; border:2px solid #003d8f; padding:30px; width:400px; text-align:center; border-radius:10px;">
+            <h3 id="modal-titel" style="color:#fff; margin-top:0;"></h3>
+            <p id="modal-text" style="color:#ccc; font-size:0.9rem; line-height:1.5; margin:20px 0;"></p>
+            <div id="email-input-field" style="display:none; margin-bottom:20px;">
+                <input type="email" id="user-email-input" placeholder="Deine E-Mail Adresse" style="width:90%; padding:10px; background:#111; border:1px solid #8b00ff; color:#fff;">
+            </div>
+            <button id="modal-confirm-btn" style="background:#ffd700; color:#000; border:none; padding:10px 20px; font-weight:bold; cursor:pointer; margin-right:10px;">AKZEPTIEREN</button>
+            <button onclick="document.getElementById('zugang-modal').style.display='none'" style="background:#333; color:#fff; border:none; padding:10px 20px; cursor:pointer;">ABBRECHEN</button>
         </div>
     </div>
 
@@ -170,13 +193,13 @@
     </div>
 
 <script>
-    let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5 };
+    let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, isVerifiziert: false, stammSektor: null, rankingPlatz: 5 };
     const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
     let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
     const grid = document.getElementById('main-grid');
-    themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; });
+    themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="checkAccess(${i}, '${t}')">${t}</div></div>`; });
     
     const drawerArea = document.getElementById('sektoren-schubladen');
     themen.forEach((t, i) => {
@@ -196,6 +219,43 @@
     const dots = document.getElementById('dot-holder');
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
+    function showZugangInfo(typ) {
+        const modal = document.getElementById('zugang-modal');
+        const titel = document.getElementById('modal-titel');
+        const text = document.getElementById('modal-text');
+        const emailField = document.getElementById('email-input-field');
+        const confirmBtn = document.getElementById('modal-confirm-btn');
+        modal.style.display = 'flex';
+        if(typ === 'gast') {
+            titel.innerText = "Gast-Modus";
+            titel.style.color = "#fff";
+            text.innerText = "Dein Fortschritt wird nur lokal gespeichert. Löschst du deinen Browser-Verlauf, musst du in Ebene 1 neu beginnen. Der dauerhafte Zugang zu Ebene 1-4 ist nicht garantiert.";
+            emailField.style.display = 'none';
+            confirmBtn.onclick = () => { userBackstage.isVerifiziert = false; modal.style.display = 'none'; alert("Gast-Modus aktiv."); };
+        } else {
+            titel.innerText = "Verifizierter Status";
+            titel.style.color = "#ffd700";
+            text.innerText = "Vorteil: Alle von dir freigeschalteten Sektoren und Ebenen (1-4) bleiben dauerhaft für dich geöffnet. Du kannst jederzeit direkt dort einsteigen, wo du aufgehört hast.";
+            emailField.style.display = 'block';
+            confirmBtn.onclick = () => { 
+                const mail = document.getElementById('user-email-input').value;
+                if(mail.includes('@')) {
+                    userBackstage.isVerifiziert = true;
+                    modal.style.display = 'none'; 
+                    alert("Verifizierung erfolgreich! Dein Fortschritt wird nun dauerhaft gesichert.");
+                } else { alert("Bitte gib eine gültige E-Mail ein."); }
+            };
+        }
+    }
+
+    function checkAccess(id, t) {
+        if (userBackstage.isVerifiziert || geleseneThemen.has(id) || id === 0 || geleseneThemen.size >= id) {
+            showInfo(t, id);
+        } else {
+            alert("Bitte bearbeite die Sektoren der Reihe nach oder nutze den verifizierten Status.");
+        }
+    }
+
     function toggleDrawer(id) {
         const d = document.getElementById(`drawer-${id}`);
         const arrow = document.getElementById(`arrow-${id}`);
@@ -208,6 +268,7 @@
     function adminUnlock() {
         themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
         userBackstage.isQualifiziert = true;
+        userBackstage.isVerifiziert = true;
         updateNumColors();
         updateUI();
         alert("ADMIN: Alle Barrieren entfernt.");
@@ -233,13 +294,11 @@
         document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
         document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
         document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
-        
         document.getElementById('main-text').style.display = (ebene < 3) ? 'block' : 'none';
         document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
         document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
         document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
         document.getElementById('btn-back').style.visibility = 'visible';
-        
         document.getElementById('info-titel').innerText = aktuellesThema;
         if (ebene === 2) document.getElementById('main-text').innerText = "Inhalt für " + aktuellesThema + "...";
 
@@ -259,7 +318,6 @@
             sigRot.classList.toggle('signal-aktiv', alleFertig);
         } else sigRot.classList.remove('signal-aktiv');
 
-        // Kandidaten-Licht Logik
         if (userBackstage.isQualifiziert && ebene < 5) {
             sigL1.className = "oval-side elite-aktiv";
             sigL1.onclick = portalZuEbene5;
@@ -267,13 +325,11 @@
             sigL1.className = "oval-side ov-schwarz";
             sigL1.onclick = null;
         }
-
         updateDots(); 
         startRotation();
     }
 
     function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
-    
     function nextPage() { 
         if ((ebene === 2 || ebene === 3) && tId < 19) { 
             tId++; aktuellesThema = themen[tId];
@@ -282,9 +338,7 @@
             updateUI(); updateNumColors();
         } else if (ebene < 7 && ebene !== 2 && ebene !== 3 && ebene !== 4 && ebene !== 5) { ebene++; updateUI(); } 
     }
-    
     function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
-    
     function registriereSenden() { 
         const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); 
         if (text === "") return; 
@@ -293,7 +347,6 @@
         input.value = ""; chatBox.scrollTop = chatBox.scrollHeight; 
         updateUI(); 
     }
-    
     function updateNumColors() {
         themen.forEach((_, i) => {
             const nBox = document.getElementById(`num-${i}`);
@@ -305,7 +358,6 @@
             }
         });
     }
-
     function startRotation() { 
         clearInterval(wechselInterval); 
         const bg = document.getElementById('werbe-bg'); 
@@ -313,7 +365,6 @@
         bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; 
         bg.classList.add('bild-aktiv'); 
     }
-
     async function starteVideoKonferenz() {
         const meinSlot = document.getElementById('v-slot-1');
         try {
