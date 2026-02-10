@@ -58,36 +58,50 @@
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
-        /* BEREICHE */
-        #chat-area { 
-            width: 90% !important; 
-            height: 40vh; 
-            flex-grow: 1; 
-            display: none; 
-            flex-direction: column; 
-            margin-top: 5px; 
-            margin-bottom: 70px; 
-            position: relative; 
-            overflow: hidden; 
-        }
+  /* EBENE 3: Chat-Bereich ohne Ränder, bündig zur Tafel */
+#chat-area {
+    width: 90% !important; /* Exakt bündig mit .info-section-ebene */
+    height: 45vh; 
+    flex-grow: 1; 
+    display: none; 
+    flex-direction: column; 
+    margin: 0 auto 70px auto; 
+    position: relative; 
+    overflow: hidden;
+    border: none !important;
+    /* Der sanfte Übergang nach oben */
+    mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 100%);
+}
 
-        #drawer-ebene4, #ebene5-bereich { width: 90% !important; flex-grow: 1; display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; position: relative; }
+.chat-msgs { 
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: flex-end; 
+    padding: 10px 0; 
+    color: #fff; 
+    font-size: 1.1rem; 
+    overflow-y: auto; 
+    border: none !important; 
+    scrollbar-width: none; 
+}
+/* Scrollbar für Chrome/Safari unsichtbar machen */
+.chat-msgs::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+}
 
-        .chat-msgs { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: flex-start; 
-            padding: 10px; 
-            color: #fff; 
-            font-size: 1.1rem; 
-            overflow-y: auto; 
-            border-left: 1px solid #003d8f;
-            border-right: 1px solid #003d8f;
-        }
-
-        .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; flex-shrink: 0; }
-        
+.chat-input-row { 
+    display: flex; 
+    border: 1px solid #003d8f; 
+    background: rgba(0, 0, 0, 0.9); 
+    padding: 5px; 
+    border-radius: 4px; 
+    flex-shrink: 0;
+    margin-top: 5px;
+    z-index: 10; /* Damit das Input-Feld immer über dem Text liegt */
+}
         /* EBENE 4: SCROLLBARER BEREICH */
         #drawer-ebene4 { overflow-y: auto; scroll-behavior: smooth; padding-right: 5px; }
         .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; flex-shrink: 0; margin-bottom: 20px; }
@@ -376,14 +390,23 @@
         } else if (ebene < 7 && ebene !== 2 && ebene !== 3 && ebene !== 4 && ebene !== 5) { ebene++; updateUI(); } 
     }
     function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
-    function registriereSenden() { 
-        const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); 
-        if (text === "") return; 
-        chatBox.innerHTML += `<div><strong>Du:</strong> ${text}</div>`; 
-        if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++; 
-        input.value = ""; chatBox.scrollTop = chatBox.scrollHeight; 
-        updateUI(); 
-    }
+   function registriereSenden() { 
+    const input = document.getElementById('chat-input'), 
+          chatBox = document.getElementById('chat-box'), 
+          text = input.value.trim(); 
+    
+    if (text === "") return; 
+    
+    // Nachricht einfügen
+    chatBox.innerHTML += `<div style="margin-bottom: 8px;"><strong>Du:</strong> ${text}</div>`; 
+    
+    if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++; 
+    
+    input.value = ""; 
+    // Automatischer Scroll nach unten, schiebt Text nach oben durch
+    chatBox.scrollTop = chatBox.scrollHeight; 
+    updateUI(); 
+}
     function updateNumColors() {
         themen.forEach((_, i) => {
             const nBox = document.getElementById(`num-${i}`);
