@@ -216,60 +216,20 @@
             </div>
         </div> 
 
-       <div id="drawer-ebene4" style="display: none; width: 90%; flex-direction: column; align-items: center;">
-    
-    <div class="video-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 10px;">
-        <div class="video-slot slot-1-user" id="v-slot-1">SLOT 1 (DU)</div>
-        <div class="video-slot" id="v-slot-2">SLOT 2</div>
-        <div class="video-slot" id="v-slot-3">SLOT 3</div>
-        <div class="video-slot" id="v-slot-4">SLOT 4</div>
-    </div>
-
-    <div class="tafel-layout" style="margin: 10px 0;">
-        <div class="buttons-links">
-            <div class="oval-side ov-schwarz" id="sig-l1-v"></div>
-            <div class="oval-side ov-grun" id="sig-l2-v"></div>
-            <div class="oval-side ov-blau" id="sig-l3-v"></div>
-            <div class="oval-side ov-rot" id="sig-l4-v"></div>
-        </div>
-        <div class="info-section-ebene">
-            <div class="werbe-bild-bg" id="werbe-bg-v"></div>
-            <div id="counter-box-v" style="display:block; position: absolute; right: 0; top: 0; background: #000; border: 1px solid #003d8f; padding: 5px;">
-                <span style="font-size:0.4rem; color:#fff; display:block;">STILLE MILLION</span>
-                <span class="counter-value">842.336</span>
+        <div id="drawer-ebene4">
+            <div class="video-grid">
+                <div class="video-slot slot-1-user" id="v-slot-1">SLOT 1 (DU)</div>
+                <div class="video-slot" id="v-slot-2">SLOT 2 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-3">SLOT 3 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-4">SLOT 4 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-5">SLOT 5 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-6">SLOT 6 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-7">SLOT 7 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-8">SLOT 8 (ZUFALL)</div>
             </div>
-            <div style="z-index: 5; text-align: center; font-weight: bold; color: rgba(255,255,255,0.3); letter-spacing: 5px;">WERBEFLÄCHE</div>
-        </div>
-        <div class="buttons-rechts">
-            <div class="oval-side ov-grun" id="sig-r1-v"></div>
-            <div class="oval-side ov-blau" id="sig-r2-v"></div>
-            <div class="oval-side ov-pink" id="sig-r3-v"></div>
-            <div class="oval-side ov-gelb" id="sig-r4-v"></div>
-        </div>
-    </div>
-
-    <div class="video-grid" style="grid-template-columns: repeat(4, 1fr); margin-top: 10px;">
-        <div class="video-slot" id="v-slot-5">SLOT 5</div>
-        <div class="video-slot" id="v-slot-6">SLOT 6</div>
-        <div class="video-slot" id="v-slot-7">SLOT 7</div>
-        <div class="video-slot" id="v-slot-8">SLOT 8</div>
-    </div>
-
-    <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 5px; margin: 20px 0;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
-    
-    <div id="sektoren-schubladen" style="width: 100%;">
-        <div class="schublade" id="haupt-schublade">
-            <div class="schublade-header" onclick="toggleHauptDrawer()">
-                <span id="schublade-titel">DOKUMENTE & BEWEISE (ALLE SEKTOREN)</span>
-                <span id="haupt-arrow">▼</span>
-            </div>
-            <div class="schublade-content" id="haupt-content">
-                Hier liegen die gesammelten Dokumente und Beweise. 
-                <strong>Die Wahl der Vorsitzenden erfolgt erst nach Erreichen der stillen Million.</strong>
-            </div>
-        </div>
-    </div>
-</div>
+            <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 5px; flex-shrink:0;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
+            <div id="sektoren-schubladen"></div>
+        </div> 
 
         <div id="ebene5-bereich" style="display:none;"><div class="freie-zone-text">ADMIN ZONE</div></div>
     </div>
@@ -289,6 +249,21 @@
     const grid = document.getElementById('main-grid');
     themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="checkAccess(${i}, '${t}')">${t}</div></div>`; });
     
+    const drawerArea = document.getElementById('sektoren-schubladen');
+    themen.forEach((t, i) => {
+        drawerArea.innerHTML += `
+            <div class="schublade" id="drawer-${i}">
+                <div class="schublade-header" onclick="toggleDrawer(${i})">
+                    <span>SEKTOR ${i+1}: ${t}</span>
+                    <span id="arrow-${i}">▼</span>
+                </div>
+                <div class="schublade-content">
+                    Hier liegen die Dokumente und Beweise für den Sektor "${t}". 
+                    Die Wahl der Vorsitzenden erfolgt erst nach der stillen Million.
+                </div>
+            </div>`;
+    });
+
     const dots = document.getElementById('dot-holder');
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
@@ -329,12 +304,13 @@
         }
     }
 
-    function toggleHauptDrawer() {
-        const d = document.getElementById('haupt-schublade');
-        const arrow = document.getElementById('haupt-arrow');
+    function toggleDrawer(id) {
+        const d = document.getElementById(`drawer-${id}`);
+        const arrow = document.getElementById(`arrow-${id}`);
         const isOpen = d.classList.contains('open');
+        document.querySelectorAll('.schublade').forEach(s => s.classList.remove('open'));
+        document.querySelectorAll('.schublade-header span[id^="arrow"]').forEach(a => a.innerText = '▼');
         if (!isOpen) { d.classList.add('open'); arrow.innerText = '▲'; }
-        else { d.classList.remove('open'); arrow.innerText = '▼'; }
     }
 
     function adminUnlock() {
