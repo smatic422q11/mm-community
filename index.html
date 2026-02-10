@@ -27,18 +27,7 @@
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
         .info-section { width: 80%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; position: relative; overflow: hidden; margin-top: 2vh; }
         
-        .tafel-layout { 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            width: 100%; 
-            position: relative; 
-            margin-top: 1vh; 
-            height: 26vh; 
-            min-height: 26vh; 
-            flex-shrink: 0; 
-        }
-
+        .tafel-layout { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; margin-top: 1vh; height: 26vh; min-height: 26vh; flex-shrink: 0; }
         .info-section-ebene { width: 90% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
 
         /* BUTTONS */
@@ -59,60 +48,66 @@
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
         /* EBENE 3: Chat-Bereich */
-        #chat-area {
-            width: 90% !important;
-            height: 45vh; 
-            flex-grow: 1; 
-            display: none; 
-            flex-direction: column; 
-            margin: 0 auto 70px auto; 
-            position: relative; 
-            overflow: hidden;
-            border: none !important;
-            mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 100%);
-            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 100%);
-        }
-
-        .chat-msgs { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: flex-end; 
-            padding: 10px 0; 
-            color: #fff; 
-            font-size: 1.1rem; 
-            overflow-y: auto; 
-            border: none !important; 
-            scrollbar-width: none; 
-        }
-
+        #chat-area { width: 90% !important; height: 45vh; flex-grow: 1; display: none; flex-direction: column; margin: 0 auto 70px auto; position: relative; overflow: hidden; border: none !important; mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 100%); -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 100%); }
+        .chat-msgs { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px 0; color: #fff; font-size: 1.1rem; overflow-y: auto; border: none !important; scrollbar-width: none; }
         .chat-msgs::-webkit-scrollbar { width: 0px; background: transparent; }
+        .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; flex-shrink: 0; margin-top: 5px; z-index: 10; }
 
-        .chat-input-row { 
-            display: flex; 
-            border: 1px solid #003d8f; 
-            background: rgba(0, 0, 0, 0.9); 
-            padding: 5px; 
-            border-radius: 4px; 
-            flex-shrink: 0;
-            margin-top: 5px;
-            z-index: 10;
+        /* EBENE 4: SPEZIAL LOGIK */
+        #drawer-ebene4 { width: 90%; display: none; flex-direction: column; overflow-y: auto; }
+        
+        /* Diese Klasse wird per JS gesetzt, wenn die Konferenz startet */
+        .konferenz-aktiv #drawer-ebene4 {
+            position: fixed;
+            top: 0;
+            left: 5%;
+            width: 90%;
+            height: calc(100vh - 70px);
+            z-index: 90;
+            background: #000;
+            overflow: hidden; /* Ganze Ebene starr */
         }
 
-        /* EBENE 4: SCROLLBARER BEREICH */
-        #drawer-ebene4 { overflow-y: auto; scroll-behavior: smooth; padding-right: 5px; width: 90%; display: none; flex-direction: column; }
         .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; flex-shrink: 0; margin-bottom: 20px; }
+        
+        /* Video Fixierung während Konferenz */
+        .konferenz-aktiv .video-grid {
+            position: sticky;
+            top: 0;
+            background: #000;
+            z-index: 100;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ff0000;
+        }
+
         .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; position: relative; }
         .slot-1-user { border-color: #00ff00; color: #00ff00; }
 
         #sektoren-schubladen { width: 100%; margin-top: 10px; padding-bottom: 20px; }
-        .schublade { border: 1px solid #003d8f; margin-bottom: 5px; background: #050505; }
-        .schublade-header { padding: 10px; font-size: 0.75rem; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; background: #001a3d; }
-        .schublade-content { padding: 0 10px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; font-size: 0.85rem; color: #ccc; }
-        .schublade.open .schublade-content { max-height: 400px; padding: 15px; border-top: 1px solid #003d8f; }
+        
+        .schublade { border: 1px solid #003d8f; margin-bottom: 5px; background: #050505; display: flex; flex-direction: column; }
+        
+        /* Wenn Konferenz aktiv, füllt die offene Schublade den Restplatz */
+        .konferenz-aktiv .schublade.open {
+            flex-grow: 1;
+            height: 100%;
+            margin-bottom: 0;
+        }
 
-        /* EBENE 5: ADMIN ZONE */
-        .freie-zone-text { font-size: 3rem; font-weight: 900; color: #ffd700; text-align: center; margin-top: 50px; text-shadow: 0 0 20px #ffd700; }
+        .schublade-header { padding: 10px; font-size: 0.75rem; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; background: #001a3d; flex-shrink: 0; }
+        
+        .schublade-content { padding: 0 10px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; font-size: 0.85rem; color: #ccc; }
+        
+        .schublade.open .schublade-content { 
+            max-height: none; 
+            flex-grow: 1; 
+            padding: 15px; 
+            border-top: 1px solid #003d8f; 
+            overflow-y: auto; /* Internes Scrollen */
+        }
+
+        /* Notizfeld */
+        .notiz-text { width: 100%; min-height: 200px; background: #111; border: 1px solid #444; color: #fff; padding: 10px; margin-top: 10px; resize: vertical; }
 
         /* NAVIGATION */
         .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; background: #000; z-index: 100; border-top: 1px solid #333; }
@@ -179,7 +174,7 @@
     </div>
 
     <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
-        <div class="top-container">
+        <div class="top-container" id="global-header-ebene">
             <h1 id="info-titel" class="page-title-white"></h1>
             <div id="ebene4-title-red" class="ebene4-header-red">DER VIDEO-BEWEIS</div>
             <div class="tafel-layout">
@@ -217,7 +212,7 @@
         </div> 
 
         <div id="drawer-ebene4">
-            <div class="video-grid">
+            <div class="video-grid" id="video-anker">
                 <div class="video-slot slot-1-user" id="v-slot-1">SLOT 1 (DU)</div>
                 <div class="video-slot" id="v-slot-2">SLOT 2 (ZUFALL)</div>
                 <div class="video-slot" id="v-slot-3">SLOT 3 (ZUFALL)</div>
@@ -227,7 +222,7 @@
                 <div class="video-slot" id="v-slot-7">SLOT 7 (ZUFALL)</div>
                 <div class="video-slot" id="v-slot-8">SLOT 8 (ZUFALL)</div>
             </div>
-            <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 5px; flex-shrink:0;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
+            <button id="konferenz-start-btn" onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 5px; flex-shrink:0;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
             <div id="sektoren-schubladen"></div>
         </div> 
 
@@ -258,8 +253,9 @@
                     <span id="arrow-${i}">▼</span>
                 </div>
                 <div class="schublade-content">
-                    Hier liegen die Dokumente und Beweise für den Sektor "${t}". 
-                    Die Wahl der Vorsitzenden erfolgt erst nach der stillen Million.
+                    <div style="color:#ffd700; margin-bottom:10px; font-weight:bold;">Beweise & Dokumente</div>
+                    <p>Hier können Sie Informationen zum Sektor ${t} einsehen, bearbeiten oder löschen.</p>
+                    <textarea class="notiz-text" placeholder="Ihre Notizen zu diesem Sektor..."></textarea>
                 </div>
             </div>`;
     });
@@ -269,35 +265,28 @@
 
     function showZugangInfo(typ) {
         const modal = document.getElementById('zugang-modal');
-        const titel = document.getElementById('modal-titel');
-        const text = document.getElementById('modal-text');
-        const emailField = document.getElementById('email-input-field');
         const confirmBtn = document.getElementById('modal-confirm-btn');
         modal.style.display = 'flex';
         if(typ === 'gast') {
-            titel.innerText = "Gast-Modus";
-            titel.style.color = "#fff";
-            text.innerText = "Dein Fortschritt wird nur lokal gespeichert. Löschst du deinen Browser-Verlauf, musst du in Ebene 1 neu beginnen.";
-            emailField.style.display = 'none';
-            confirmBtn.onclick = () => { userBackstage.isVerifiziert = false; modal.style.display = 'none'; alert("Gast-Modus aktiv."); };
+            document.getElementById('modal-titel').innerText = "Gast-Modus";
+            document.getElementById('modal-text').innerText = "Dein Fortschritt wird nur lokal gespeichert.";
+            document.getElementById('email-input-field').style.display = 'none';
+            confirmBtn.onclick = () => { userBackstage.isVerifiziert = false; modal.style.display = 'none'; };
         } else {
-            titel.innerText = "Verifizierter Status";
-            titel.style.color = "#ffd700";
-            text.innerText = "Alle freigeschalteten Sektoren bleiben dauerhaft gesichert.";
-            emailField.style.display = 'block';
+            document.getElementById('modal-titel').innerText = "Verifizierter Status";
+            document.getElementById('modal-text').innerText = "Alle Sektoren bleiben dauerhaft gesichert.";
+            document.getElementById('email-input-field').style.display = 'block';
             confirmBtn.onclick = () => { 
-                const mail = document.getElementById('user-email-input').value;
-                if(mail.includes('@')) {
+                if(document.getElementById('user-email-input').value.includes('@')) {
                     userBackstage.isVerifiziert = true;
                     modal.style.display = 'none'; 
-                    alert("Verifizierung erfolgreich!");
-                } else { alert("Bitte gib eine gültige E-Mail ein."); }
+                }
             };
         }
     }
 
     function checkAccess(id, t) {
-        if (userBackstage.isVerifiziert || geleseneThemen.has(id) || id === 0 || geleseneThemen.size >= id) {
+        if (userBackstage.isVerverified || geleseneThemen.has(id) || id === 0 || geleseneThemen.size >= id) {
             showInfo(t, id);
         } else {
             alert("Bitte bearbeite die Sektoren der Reihe nach.");
@@ -306,11 +295,14 @@
 
     function toggleDrawer(id) {
         const d = document.getElementById(`drawer-${id}`);
-        const arrow = document.getElementById(`arrow-${id}`);
         const isOpen = d.classList.contains('open');
         document.querySelectorAll('.schublade').forEach(s => s.classList.remove('open'));
-        document.querySelectorAll('.schublade-header span[id^="arrow"]').forEach(a => a.innerText = '▼');
-        if (!isOpen) { d.classList.add('open'); arrow.innerText = '▲'; }
+        if (!isOpen) { 
+            d.classList.add('open'); 
+            if(document.body.classList.contains('konferenz-aktiv')) {
+                d.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
     }
 
     function adminUnlock() {
@@ -319,12 +311,10 @@
         userBackstage.isVerifiziert = true;
         updateNumColors();
         updateUI();
-        alert("ADMIN: Alle Barrieren entfernt.");
     }
 
     function showInfo(t, id) { 
         tId = id; aktuellesThema = t; 
-        document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
         if (geleseneThemen.has(id)) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
         updateNumColors(); 
         document.getElementById('dashboard').style.display = 'none'; 
@@ -334,72 +324,38 @@
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
     function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
-    function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv')) { ebene = 5; updateUI(); } }
 
     function updateUI() {
         const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
         document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
         document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
         document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
-        document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
         document.getElementById('main-text').style.display = (ebene < 3) ? 'block' : 'none';
         document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
-        document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
-        document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
+        document.getElementById('global-header-ebene').style.display = (isVideo && document.body.classList.contains('konferenz-aktiv')) ? 'none' : 'flex';
+        
         document.getElementById('btn-back').style.visibility = 'visible';
         document.getElementById('info-titel').innerText = aktuellesThema;
-        if (ebene === 2) document.getElementById('main-text').innerText = "Inhalt für " + aktuellesThema + "...";
 
-        const btnNext = document.getElementById('btn-next');
         const sigGelb = document.getElementById('sig-r4');
         const sigRot = document.getElementById('sig-l4');
-        const sigL1 = document.getElementById('sig-l1');
+        sigGelb.classList.toggle('signal-aktiv', (ebene === 2 && geleseneThemen.size === 20));
+        
+        let alleFertig = Object.values(interaktionsZaehler).every(val => val >= 20);
+        sigRot.classList.toggle('signal-aktiv', (ebene === 3 && alleFertig));
 
-        if (ebene === 2) {
-            btnNext.style.visibility = (tId < 19) ? 'visible' : 'hidden';
-            sigGelb.classList.toggle('signal-aktiv', geleseneThemen.size === 20);
-        } else sigGelb.classList.remove('signal-aktiv');
-
-        if (ebene === 3) {
-            btnNext.style.visibility = (tId < 19) ? 'visible' : 'hidden';
-            let alleFertig = Object.values(interaktionsZaehler).every(val => val >= 20);
-            sigRot.classList.toggle('signal-aktiv', alleFertig);
-        } else sigRot.classList.remove('signal-aktiv');
-
-        if (userBackstage.isQualifiziert && ebene < 5) {
-            sigL1.className = "oval-side elite-aktiv";
-            sigL1.onclick = portalZuEbene5;
-        } else {
-            sigL1.className = "oval-side ov-schwarz";
-            sigL1.onclick = null;
-        }
         updateDots(); 
         startRotation();
     }
 
     function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
     
-    function nextPage() { 
-        if ((ebene === 2 || ebene === 3) && tId < 19) { 
-            tId++; aktuellesThema = themen[tId];
-            document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${tId+1} bereit...</i>`;
-            if (ebene === 2) geleseneThemen.add(tId);
-            updateUI(); updateNumColors();
-        } else if (ebene < 7 && ebene !== 2 && ebene !== 3 && ebene !== 4 && ebene !== 5) { ebene++; updateUI(); } 
-    }
-
-    function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
-    
-    function registriereSenden() { 
-        const input = document.getElementById('chat-input'), 
-              chatBox = document.getElementById('chat-box'), 
-              text = input.value.trim(); 
-        if (text === "") return; 
-        chatBox.innerHTML += `<div style="margin-bottom: 8px;"><strong>Du:</strong> ${text}</div>`; 
-        if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++; 
-        input.value = ""; 
-        chatBox.scrollTop = chatBox.scrollHeight; 
-        updateUI(); 
+    function showDashboard() { 
+        ebene = 1; 
+        document.body.classList.remove('konferenz-aktiv');
+        document.getElementById('page-skelett').style.display = 'none'; 
+        document.getElementById('dashboard').style.display = 'flex'; 
+        updateNumColors(); 
     }
 
     function updateNumColors() {
@@ -423,16 +379,19 @@
     }
 
     async function starteVideoKonferenz() {
+        document.body.classList.add('konferenz-aktiv');
+        document.getElementById('konferenz-start-btn').style.display = 'none';
+        updateUI(); // Header ausblenden
+
         const meinSlot = document.getElementById('v-slot-1');
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
             meinSlot.innerHTML = `<video id="user-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>`;
             document.getElementById('user-video').srcObject = stream;
             for(let i=2; i<=8; i++) {
-                const s = document.getElementById(`v-slot-${i}`);
-                s.innerHTML = `<div class="pulsieren" style="color:#ffd700;">VERBUNDEN</div>`;
+                document.getElementById(`v-slot-${i}`).innerHTML = `<div class="pulsieren" style="color:#ffd700; font-size:0.5rem;">VERBUNDEN</div>`;
             }
-        } catch (err) { alert("Kamera-Fehler"); }
+        } catch (err) { console.log("Kamera-Fehler"); }
     }
 </script>
 </body>
