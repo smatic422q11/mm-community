@@ -58,52 +58,49 @@
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
-  /* EBENE 3: Chat-Bereich ohne Ränder, bündig zur Tafel */
-#chat-area {
-    width: 90% !important; /* Exakt bündig mit .info-section-ebene */
-    height: 45vh; 
-    flex-grow: 1; 
-    display: none; 
-    flex-direction: column; 
-    margin: 0 auto 70px auto; 
-    position: relative; 
-    overflow: hidden;
-    border: none !important;
-    /* Der sanfte Übergang nach oben */
-    mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 100%);
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 100%);
-}
+        /* EBENE 3: Chat-Bereich */
+        #chat-area {
+            width: 90% !important;
+            height: 45vh; 
+            flex-grow: 1; 
+            display: none; 
+            flex-direction: column; 
+            margin: 0 auto 70px auto; 
+            position: relative; 
+            overflow: hidden;
+            border: none !important;
+            mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 100%);
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 100%);
+        }
 
-.chat-msgs { 
-    flex: 1; 
-    display: flex; 
-    flex-direction: column; 
-    justify-content: flex-end; 
-    padding: 10px 0; 
-    color: #fff; 
-    font-size: 1.1rem; 
-    overflow-y: auto; 
-    border: none !important; 
-    scrollbar-width: none; 
-}
-/* Scrollbar für Chrome/Safari unsichtbar machen */
-.chat-msgs::-webkit-scrollbar {
-    width: 0px;
-    background: transparent;
-}
+        .chat-msgs { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: flex-end; 
+            padding: 10px 0; 
+            color: #fff; 
+            font-size: 1.1rem; 
+            overflow-y: auto; 
+            border: none !important; 
+            scrollbar-width: none; 
+        }
 
-.chat-input-row { 
-    display: flex; 
-    border: 1px solid #003d8f; 
-    background: rgba(0, 0, 0, 0.9); 
-    padding: 5px; 
-    border-radius: 4px; 
-    flex-shrink: 0;
-    margin-top: 5px;
-    z-index: 10; /* Damit das Input-Feld immer über dem Text liegt */
-}
+        .chat-msgs::-webkit-scrollbar { width: 0px; background: transparent; }
+
+        .chat-input-row { 
+            display: flex; 
+            border: 1px solid #003d8f; 
+            background: rgba(0, 0, 0, 0.9); 
+            padding: 5px; 
+            border-radius: 4px; 
+            flex-shrink: 0;
+            margin-top: 5px;
+            z-index: 10;
+        }
+
         /* EBENE 4: SCROLLBARER BEREICH */
-        #drawer-ebene4 { overflow-y: auto; scroll-behavior: smooth; padding-right: 5px; }
+        #drawer-ebene4 { overflow-y: auto; scroll-behavior: smooth; padding-right: 5px; width: 90%; display: none; flex-direction: column; }
         .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; flex-shrink: 0; margin-bottom: 20px; }
         .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; position: relative; }
         .slot-1-user { border-color: #00ff00; color: #00ff00; }
@@ -234,7 +231,7 @@
             <div id="sektoren-schubladen"></div>
         </div> 
 
-        <div id="ebene5-bereich"><div class="freie-zone-text">ADMIN ZONE</div></div>
+        <div id="ebene5-bereich" style="display:none;"><div class="freie-zone-text">ADMIN ZONE</div></div>
     </div>
 
     <div class="bottom-nav">
@@ -280,20 +277,20 @@
         if(typ === 'gast') {
             titel.innerText = "Gast-Modus";
             titel.style.color = "#fff";
-            text.innerText = "Dein Fortschritt wird nur lokal gespeichert. Löschst du deinen Browser-Verlauf, musst du in Ebene 1 neu beginnen. Der dauerhafte Zugang zu Ebene 1-4 ist nicht garantiert.";
+            text.innerText = "Dein Fortschritt wird nur lokal gespeichert. Löschst du deinen Browser-Verlauf, musst du in Ebene 1 neu beginnen.";
             emailField.style.display = 'none';
             confirmBtn.onclick = () => { userBackstage.isVerifiziert = false; modal.style.display = 'none'; alert("Gast-Modus aktiv."); };
         } else {
             titel.innerText = "Verifizierter Status";
             titel.style.color = "#ffd700";
-            text.innerText = "Vorteil: Alle von dir freigeschalteten Sektoren und Ebenen (1-4) bleiben dauerhaft für dich geöffnet. Du kannst jederzeit direkt dort einsteigen, wo du aufgehört hast.";
+            text.innerText = "Alle freigeschalteten Sektoren bleiben dauerhaft gesichert.";
             emailField.style.display = 'block';
             confirmBtn.onclick = () => { 
                 const mail = document.getElementById('user-email-input').value;
                 if(mail.includes('@')) {
                     userBackstage.isVerifiziert = true;
                     modal.style.display = 'none'; 
-                    alert("Verifizierung erfolgreich! Dein Fortschritt wird nun dauerhaft gesichert.");
+                    alert("Verifizierung erfolgreich!");
                 } else { alert("Bitte gib eine gültige E-Mail ein."); }
             };
         }
@@ -303,7 +300,7 @@
         if (userBackstage.isVerifiziert || geleseneThemen.has(id) || id === 0 || geleseneThemen.size >= id) {
             showInfo(t, id);
         } else {
-            alert("Bitte bearbeite die Sektoren der Reihe nach oder nutze den verifizierten Status.");
+            alert("Bitte bearbeite die Sektoren der Reihe nach.");
         }
     }
 
@@ -381,6 +378,7 @@
     }
 
     function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
+    
     function nextPage() { 
         if ((ebene === 2 || ebene === 3) && tId < 19) { 
             tId++; aktuellesThema = themen[tId];
@@ -389,24 +387,21 @@
             updateUI(); updateNumColors();
         } else if (ebene < 7 && ebene !== 2 && ebene !== 3 && ebene !== 4 && ebene !== 5) { ebene++; updateUI(); } 
     }
+
     function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
-   function registriereSenden() { 
-    const input = document.getElementById('chat-input'), 
-          chatBox = document.getElementById('chat-box'), 
-          text = input.value.trim(); 
     
-    if (text === "") return; 
-    
-    // Nachricht einfügen
-    chatBox.innerHTML += `<div style="margin-bottom: 8px;"><strong>Du:</strong> ${text}</div>`; 
-    
-    if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++; 
-    
-    input.value = ""; 
-    // Automatischer Scroll nach unten, schiebt Text nach oben durch
-    chatBox.scrollTop = chatBox.scrollHeight; 
-    updateUI(); 
-}
+    function registriereSenden() { 
+        const input = document.getElementById('chat-input'), 
+              chatBox = document.getElementById('chat-box'), 
+              text = input.value.trim(); 
+        if (text === "") return; 
+        chatBox.innerHTML += `<div style="margin-bottom: 8px;"><strong>Du:</strong> ${text}</div>`; 
+        if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++; 
+        input.value = ""; 
+        chatBox.scrollTop = chatBox.scrollHeight; 
+        updateUI(); 
+    }
+
     function updateNumColors() {
         themen.forEach((_, i) => {
             const nBox = document.getElementById(`num-${i}`);
@@ -418,6 +413,7 @@
             }
         });
     }
+
     function startRotation() { 
         clearInterval(wechselInterval); 
         const bg = document.getElementById('werbe-bg'); 
@@ -425,6 +421,7 @@
         bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; 
         bg.classList.add('bild-aktiv'); 
     }
+
     async function starteVideoKonferenz() {
         const meinSlot = document.getElementById('v-slot-1');
         try {
