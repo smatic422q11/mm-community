@@ -25,27 +25,11 @@
         .tafel-layout { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; margin-top: 1vh; height: 26vh; min-height: 26vh; flex-shrink: 0; }
         .info-section-ebene { width: 90% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
 
-        /* BUTTONS */
-        .buttons-links { position: absolute; left: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
-        .buttons-rechts { position: absolute; right: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
-        .oval-side { width: 45px; height: 22px; border-radius: 12px; border: 1px solid #fff; opacity: 0.8; transition: all 0.3s; }
-        .ov-schwarz { background: #000; border: 1.5px solid #003d8f; }
-        .ov-grun { background: #00ff00; }
-        .ov-blau { background: #0000ff; }
-        .ov-rot { background: #ff0000; }
-        .ov-pink { background: #ff00ff; }
-        .ov-gelb { background: #ffff00; }
-
         /* GRID & BOXEN */
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 10px; width: 95%; max-width: 1450px; margin-top: 30px; border: 3px solid #00ff00; padding: 15px; border-radius: 10px; }
         .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; overflow: hidden; }
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
-
-        /* CHAT BEREICH */
-        #chat-area { width: 90% !important; height: 45vh; flex-grow: 1; display: none; flex-direction: column; margin: 0 auto 70px auto; position: relative; overflow: hidden; border: none !important; mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 100%); -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 100%); }
-        .chat-msgs { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px 0; color: #fff; font-size: 1.1rem; overflow-y: auto; scrollbar-width: none; }
-        .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; flex-shrink: 0; margin-top: 5px; z-index: 10; }
 
         /* EBENE 4: VIDEO & SCHUBLADEN */
         #drawer-ebene4 { display: none; flex-direction: column; width: 90%; height: 52vh; overflow: hidden; position: relative; }
@@ -95,6 +79,16 @@
         .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
         .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
         .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
+        
+        .buttons-links, .buttons-rechts { position: absolute; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
+        .buttons-links { left: 1.5%; } .buttons-rechts { right: 1.5%; }
+        .oval-side { width: 45px; height: 22px; border-radius: 12px; border: 1px solid #fff; opacity: 0.8; transition: all 0.3s; }
+        .ov-schwarz { background: #000; border: 1.5px solid #003d8f; }
+        .ov-grun { background: #00ff00; }
+        .ov-blau { background: #0000ff; }
+        .ov-rot { background: #ff0000; }
+        .ov-pink { background: #ff00ff; }
+        .ov-gelb { background: #ffff00; }
     </style>
 </head>
 <body>
@@ -116,11 +110,11 @@
             <div class="fundament-box" style="flex: 1;"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div></div>
         </div>
         <div class="zugang-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-bottom: 80px;">
-            <div class="fundament-box" style="flex: 1; border-color: #555; cursor: pointer;" onclick="showZugangInfo('gast')">
-                <div class="num" style="background-color: #333;">G</div><div class="text">Gast-Zugang (Eingeschränkt)</div>
+            <div class="fundament-box" style="flex: 1; border-color: #555; cursor: pointer;">
+                <div class="num" style="background-color: #333;">G</div><div class="text">Gast-Zugang</div>
             </div>
-            <div class="fundament-box" style="flex: 1; border-color: #8b00ff; cursor: pointer;" onclick="showZugangInfo('email')">
-                <div class="num" style="background-color: #8b00ff;">V</div><div class="text" style="color: #ffd700;">Verifizierter Status (Voller Zugriff 1-4)</div>
+            <div class="fundament-box" style="flex: 1; border-color: #8b00ff; cursor: pointer;">
+                <div class="num" style="background-color: #8b00ff;">V</div><div class="text" style="color: #ffd700;">Verifizierter Status</div>
             </div>
         </div>
     </div>
@@ -131,9 +125,9 @@
             <div id="ebene4-title-red" class="ebene4-header-red">DER VIDEO-BEWEIS</div>
             <div class="tafel-layout">
                 <div class="buttons-links">
-                    <div class="oval-side ov-schwarz" id="sig-l1"></div>
-                    <div class="oval-side ov-grun" id="sig-l2"></div>
-                    <div class="oval-side ov-blau" id="sig-l3"></div>
+                    <div class="oval-side ov-schwarz"></div>
+                    <div class="oval-side ov-grun"></div>
+                    <div class="oval-side ov-blau"></div>
                     <div class="oval-side ov-rot" id="sig-l4" onclick="portalZuEbene4()"></div>
                 </div>
                 <div class="info-section-ebene">
@@ -142,9 +136,9 @@
                     <div style="z-index: 5; text-align: center; font-weight: bold; color: rgba(255,255,255,0.3); letter-spacing: 5px;">PLATZ FÜR WERBUNG</div>
                 </div>
                 <div class="buttons-rechts">
-                    <div class="oval-side ov-grun" id="sig-r1"></div>
-                    <div class="oval-side ov-blau" id="sig-r2"></div>
-                    <div class="oval-side ov-pink" id="sig-r3"></div>
+                    <div class="oval-side ov-grun"></div>
+                    <div class="oval-side ov-blau"></div>
+                    <div class="oval-side ov-pink"></div>
                     <div class="oval-side ov-gelb" id="sig-r4" onclick="portalZuEbene3()"></div>
                 </div>
             </div>
@@ -190,19 +184,25 @@
     let ebene = 1, tId = 0, aktuellesThema = "", geleseneThemen = new Set(), interaktionsZaehler = {};
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
+    // GRID INITIALISIEREN
     const grid = document.getElementById('main-grid');
     themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="checkAccess(${i}, '${t}')">${t}</div></div>`; });
     
+    // SCHUBLADEN INITIALISIEREN (DIREKT BEIM START)
     const drawerArea = document.getElementById('sektoren-schubladen');
-    themen.forEach((t, i) => {
-        drawerArea.innerHTML += `
-            <div class="schublade" id="drawer-${i}">
-                <div class="schublade-header" onclick="toggleDrawer(${i})">
-                    <span>SEKTOR ${i+1}: ${t}</span><span id="arrow-${i}">▼</span>
-                </div>
-                <div class="schublade-content">Inhalt Sektor ${i+1}. Die Wahl erfolgt nach der stillen Million.</div>
-            </div>`;
-    });
+    function initialisiereSchubladen() {
+        drawerArea.innerHTML = "";
+        themen.forEach((t, i) => {
+            drawerArea.innerHTML += `
+                <div class="schublade" id="drawer-${i}">
+                    <div class="schublade-header" onclick="toggleDrawer(${i})">
+                        <span>SEKTOR ${i+1}: ${t}</span><span id="arrow-${i}">▼</span>
+                    </div>
+                    <div class="schublade-content">Inhalt Sektor ${i+1}. Vorbereitung läuft...</div>
+                </div>`;
+        });
+    }
+    initialisiereSchubladen();
 
     const dots = document.getElementById('dot-holder');
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
