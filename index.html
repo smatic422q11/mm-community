@@ -334,8 +334,15 @@
         alert("ADMIN UNLOCK");
     }
 
+    // BEHEBUNG MANGEL 1 (Dashboard Klick)
     function showInfo(t, id) { 
-        tId = id; aktuellesThema = t; 
+        tId = id; 
+        aktuellesThema = t; 
+        
+        // Chat-Eingabe leeren beim Sektor-Wechsel
+        const input = document.getElementById('chat-input');
+        if(input) input.value = "";
+
         if (geleseneThemen.has(id)) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
         updateNumColors(); 
         document.getElementById('dashboard').style.display = 'none'; 
@@ -376,7 +383,6 @@
         const redBar = document.getElementById('ebene4-title-red');
         if (isVideo) {
             redBar.style.display = 'block';
-            // AUTOMATISCHE ZUORDNUNG DES NAMENS IM ROTEN BALKEN
             redBar.innerText = `SEKTOR: ${aktuellesThema}`;
         } else {
             redBar.style.display = 'none';
@@ -413,12 +419,23 @@
 
     function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
     
+    // BEHEBUNG MANGEL 1 ("Weiter" Button)
     function nextPage() { 
         if ((ebene === 2 || ebene === 3) && tId < 19) { 
-            tId++; aktuellesThema = themen[tId];
+            tId++; 
+            aktuellesThema = themen[tId];
+            
+            // Chat-Eingabe leeren beim Sektor-Wechsel
+            const input = document.getElementById('chat-input');
+            if(input) input.value = ""; 
+            
             if (ebene === 2) geleseneThemen.add(tId);
-            updateUI(); updateNumColors();
-        } else if (ebene < 7 && ebene !== 2 && ebene !== 3 && ebene !== 4 && ebene !== 5) { ebene++; updateUI(); } 
+            updateUI(); 
+            updateNumColors();
+        } else if (ebene < 7 && ebene !== 2 && ebene !== 3 && ebene !== 4 && ebene !== 5) { 
+            ebene++; 
+            updateUI(); 
+        } 
     }
 
     function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
