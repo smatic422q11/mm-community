@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
+<!DOCTYPE html><html lang="de"><head>
     <meta charset="UTF-8">
     <title>M&M-COMMUNITY - Admin Modus</title>
     <style>
@@ -75,9 +73,7 @@
         .num-gelesen { background-color: #ffd700 !important; color: #000 !important; }
         .num-offen { background-color: #ff4d4d !important; }
         .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
-    </style>
-</head>
-<body>
+    </style></head><body>
 
     <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="dashboard-header">
@@ -164,13 +160,17 @@
         <h1 style="color:#ff0000;">SEKTOR-VIDEO WÄHLEN</h1>
         <div id="wahl-liste" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; width:90%; padding:20px;"></div>
         <button onclick="document.getElementById('video-wahl-modal').style.display='none'" class="nav-btn">SCHLIESSEN</button>
-    </div>
-
-<script>
+    </div><script>
     let userState = { hasAccess: false, verifiziert: false, qualifiziert: false };
     const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
     let ebene = 1, tId = 0, aktuellesThema = "", geleseneThemen = new Set(), interaktionsZaehler = {};
-    themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
+    
+    // NEU: Ein Objekt zum Speichern der Chatverläufe pro Sektor
+    let chatSpeicher = {};
+    themen.forEach((t, i) => { 
+        interaktionsZaehler[i] = 0; 
+        chatSpeicher[i] = "<i>Dialog startet...</i>"; // Initialer Text
+    });
 
     // Grid Bauen
     const grid = document.getElementById('main-grid');
@@ -230,6 +230,13 @@
         document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
         document.getElementById('ebene5-bereich').style.display = isAdmin ? 'block' : 'none';
         
+        // --- CHAT RESET LOGIK ---
+        if (isChat) {
+            const box = document.getElementById('chat-box');
+            // Lade den gespeicherten Verlauf für diesen Sektor
+            box.innerHTML = chatSpeicher[tId];
+        }
+
         const sigGelb = document.getElementById('sig-r4');
         const sigRot = document.getElementById('sig-l4');
         const btnNext = document.getElementById('btn-next');
@@ -238,9 +245,7 @@
             document.getElementById('info-titel').innerText = aktuellesThema;
             document.getElementById('main-text').innerText = "Hier steht der Inhalt für Sektor " + (tId+1) + ": " + aktuellesThema + ". Lies diesen Text aufmerksam durch, um zum nächsten Sektor zu gelangen.";
             
-            // NAVIGATION FIX: Weiter Button anzeigen wenn nicht am Ende
             btnNext.style.visibility = (tId < 19) ? "visible" : "hidden";
-            // Gelbes Licht Signal
             sigGelb.classList.toggle('signal-aktiv', geleseneThemen.size === 20);
         } else {
             btnNext.style.visibility = "visible";
@@ -290,7 +295,14 @@
     function registriereSenden() {
         const input = document.getElementById('chat-input'), box = document.getElementById('chat-box');
         if(!input.value) return;
-        box.innerHTML += `<div><strong>Du:</strong> ${input.value}</div>`;
+        
+        // Nachricht zur Box hinzufügen
+        let neueNachricht = `<div><strong>Du:</strong> ${input.value}</div>`;
+        box.innerHTML += neueNachricht;
+        
+        // Verlauf im Speicher ablegen, damit er beim Wechsel nicht verloren geht
+        chatSpeicher[tId] = box.innerHTML;
+
         if(interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++;
         input.value = ""; box.scrollTop = box.scrollHeight; updateUI();
     }
@@ -314,7 +326,4 @@
     }
 
     function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
-    function adminUnlock() { userState.qualifiziert = true; userState.verifiziert = true; userState.hasAccess = true; geleseneThemen = new Set(themen.keys()); updateNumColors(); updateUI(); alert("ADMIN MODUS."); }
-</script>
-</body>
-</html>
+    function adminUnlock() { userState.qualifiziert = true; userState.verifiziert = true; userState.hasAccess = true; geleseneThemen = new Set(themen.keys()); updateNumColors(); updateUI(); alert("ADMIN MODUS."); }</script></body></html>
