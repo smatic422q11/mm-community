@@ -27,18 +27,7 @@
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
         .info-section { width: 80%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; position: relative; overflow: hidden; margin-top: 2vh; }
         
-        .tafel-layout { 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            width: 100%; 
-            position: relative; 
-            margin-top: 1vh; 
-            height: 26vh; 
-            min-height: 26vh; 
-            flex-shrink: 0; 
-        }
-
+        .tafel-layout { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; margin-top: 1vh; height: 26vh; min-height: 26vh; flex-shrink: 0; }
         .info-section-ebene { width: 90% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
 
         /* BUTTONS */
@@ -58,61 +47,17 @@
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
-        /* EBENE 3: Chat-Bereich */
-        #chat-area {
-            width: 90% !important;
-            height: 45vh; 
-            flex-grow: 1; 
-            display: none; 
-            flex-direction: column; 
-            margin: 0 auto 70px auto; 
-            position: relative; 
-            overflow: hidden;
-            border: none !important;
-            mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 100%);
-            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 100%);
-        }
-
-        .chat-msgs { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: flex-end; 
-            padding: 10px 0; 
-            color: #fff; 
-            font-size: 1.1rem; 
-            overflow-y: auto; 
-            border: none !important; 
-            scrollbar-width: none; 
-        }
-
+        /* EBENE 3: Chat */
+        #chat-area { width: 90% !important; height: 45vh; flex-grow: 1; display: none; flex-direction: column; margin: 0 auto 70px auto; position: relative; overflow: hidden; mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 100%); -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 100%); }
+        .chat-msgs { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px 0; color: #fff; font-size: 1.1rem; overflow-y: auto; scrollbar-width: none; }
         .chat-msgs::-webkit-scrollbar { width: 0px; background: transparent; }
+        .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; margin-top: 5px; z-index: 10; }
 
-        .chat-input-row { 
-            display: flex; 
-            border: 1px solid #003d8f; 
-            background: rgba(0, 0, 0, 0.9); 
-            padding: 5px; 
-            border-radius: 4px; 
-            flex-shrink: 0;
-            margin-top: 5px;
-            z-index: 10;
-        }
-
-        /* EBENE 4: SCROLLBARER BEREICH */
-        #drawer-ebene4 { overflow-y: auto; scroll-behavior: smooth; padding-right: 5px; width: 90%; display: none; flex-direction: column; }
-        .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; flex-shrink: 0; margin-bottom: 20px; }
+        /* EBENE 4: Video-Bereich */
+        #drawer-ebene4 { width: 90%; display: none; flex-direction: column; }
+        .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; margin-bottom: 20px; }
         .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; position: relative; }
         .slot-1-user { border-color: #00ff00; color: #00ff00; }
-
-        #sektoren-schubladen { width: 100%; margin-top: 10px; padding-bottom: 20px; }
-        .schublade { border: 1px solid #003d8f; margin-bottom: 5px; background: #050505; }
-        .schublade-header { padding: 10px; font-size: 0.75rem; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; background: #001a3d; }
-        .schublade-content { padding: 0 10px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; font-size: 0.85rem; color: #ccc; }
-        .schublade.open .schublade-content { max-height: 400px; padding: 15px; border-top: 1px solid #003d8f; }
-
-        /* EBENE 5: ADMIN ZONE */
-        .freie-zone-text { font-size: 3rem; font-weight: 900; color: #ffd700; text-align: center; margin-top: 50px; text-shadow: 0 0 20px #ffd700; }
 
         /* NAVIGATION */
         .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; background: #000; z-index: 100; border-top: 1px solid #333; }
@@ -228,7 +173,6 @@
                 <div class="video-slot" id="v-slot-8">SLOT 8 (ZUFALL)</div>
             </div>
             <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 5px; flex-shrink:0;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
-            <div id="sektoren-schubladen"></div>
         </div> 
 
         <div id="ebene5-bereich" style="display:none;"><div class="freie-zone-text">ADMIN ZONE</div></div>
@@ -241,28 +185,13 @@
     </div>
 
 <script>
-    let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, isVerifiziert: false, stammSektor: null, rankingPlatz: 5 };
+    let userBackstage = { isQualifiziert: false, isVerifiziert: false };
     const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
-    let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
+    let ebene = 1, tId = 0, aktuellesThema = "", geleseneThemen = new Set(), interaktionsZaehler = {};
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
     const grid = document.getElementById('main-grid');
     themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="checkAccess(${i}, '${t}')">${t}</div></div>`; });
-    
-    const drawerArea = document.getElementById('sektoren-schubladen');
-    themen.forEach((t, i) => {
-        drawerArea.innerHTML += `
-            <div class="schublade" id="drawer-${i}">
-                <div class="schublade-header" onclick="toggleDrawer(${i})">
-                    <span>SEKTOR ${i+1}: ${t}</span>
-                    <span id="arrow-${i}">▼</span>
-                </div>
-                <div class="schublade-content">
-                    Hier liegen die Dokumente und Beweise für den Sektor "${t}". 
-                    Die Wahl der Vorsitzenden erfolgt erst nach der stillen Million.
-                </div>
-            </div>`;
-    });
 
     const dots = document.getElementById('dot-holder');
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
@@ -277,55 +206,42 @@
         if(typ === 'gast') {
             titel.innerText = "Gast-Modus";
             titel.style.color = "#fff";
-            text.innerText = "Dein Fortschritt wird nur lokal gespeichert. Löschst du deinen Browser-Verlauf, musst du in Ebene 1 neu beginnen.";
+            text.innerText = "Fortschritt nur lokal gespeichert.";
             emailField.style.display = 'none';
-            confirmBtn.onclick = () => { userBackstage.isVerifiziert = false; modal.style.display = 'none'; alert("Gast-Modus aktiv."); };
+            confirmBtn.onclick = () => { modal.style.display = 'none'; };
         } else {
             titel.innerText = "Verifizierter Status";
             titel.style.color = "#ffd700";
-            text.innerText = "Alle freigeschalteten Sektoren bleiben dauerhaft gesichert.";
+            text.innerText = "Sektoren bleiben dauerhaft gesichert.";
             emailField.style.display = 'block';
             confirmBtn.onclick = () => { 
                 const mail = document.getElementById('user-email-input').value;
-                if(mail.includes('@')) {
-                    userBackstage.isVerifiziert = true;
-                    modal.style.display = 'none'; 
-                    alert("Verifizierung erfolgreich!");
-                } else { alert("Bitte gib eine gültige E-Mail ein."); }
+                if(mail.includes('@')) { userBackstage.isVerifiziert = true; modal.style.display = 'none'; updateNumColors(); } 
+                else { alert("E-Mail ungültig."); }
             };
         }
     }
 
     function checkAccess(id, t) {
-        if (userBackstage.isVerifiziert || geleseneThemen.has(id) || id === 0 || geleseneThemen.size >= id) {
+        if (userBackstage.isVerifiziert || id === 0 || geleseneThemen.has(id) || geleseneThemen.size >= id) {
             showInfo(t, id);
         } else {
-            alert("Bitte bearbeite die Sektoren der Reihe nach.");
+            alert("Sektoren der Reihe nach bearbeiten.");
         }
-    }
-
-    function toggleDrawer(id) {
-        const d = document.getElementById(`drawer-${id}`);
-        const arrow = document.getElementById(`arrow-${id}`);
-        const isOpen = d.classList.contains('open');
-        document.querySelectorAll('.schublade').forEach(s => s.classList.remove('open'));
-        document.querySelectorAll('.schublade-header span[id^="arrow"]').forEach(a => a.innerText = '▼');
-        if (!isOpen) { d.classList.add('open'); arrow.innerText = '▲'; }
     }
 
     function adminUnlock() {
         themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
         userBackstage.isQualifiziert = true;
         userBackstage.isVerifiziert = true;
-        updateNumColors();
-        updateUI();
-        alert("ADMIN: Alle Barrieren entfernt.");
+        updateNumColors(); updateUI();
     }
 
     function showInfo(t, id) { 
         tId = id; aktuellesThema = t; 
         document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
-        if (geleseneThemen.has(id)) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
+        ebene = geleseneThemen.has(id) ? 3 : 2;
+        geleseneThemen.add(id);
         updateNumColors(); 
         document.getElementById('dashboard').style.display = 'none'; 
         document.getElementById('page-skelett').style.display = 'flex'; 
@@ -391,15 +307,12 @@
     function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
     
     function registriereSenden() { 
-        const input = document.getElementById('chat-input'), 
-              chatBox = document.getElementById('chat-box'), 
-              text = input.value.trim(); 
+        const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); 
         if (text === "") return; 
-        chatBox.innerHTML += `<div style="margin-bottom: 8px;"><strong>Du:</strong> ${text}</div>`; 
+        chatBox.innerHTML += `<div><strong>Du:</strong> ${text}</div>`; 
         if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++; 
-        input.value = ""; 
-        chatBox.scrollTop = chatBox.scrollHeight; 
-        updateUI(); 
+        input.value = ""; chatBox.scrollTop = chatBox.scrollHeight; 
+        updateUI(); updateNumColors();
     }
 
     function updateNumColors() {
@@ -415,7 +328,6 @@
     }
 
     function startRotation() { 
-        clearInterval(wechselInterval); 
         const bg = document.getElementById('werbe-bg'); 
         if(!bg) return; 
         bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; 
@@ -428,11 +340,9 @@
             const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
             meinSlot.innerHTML = `<video id="user-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>`;
             document.getElementById('user-video').srcObject = stream;
-            for(let i=2; i<=8; i++) {
-                const s = document.getElementById(`v-slot-${i}`);
-                s.innerHTML = `<div class="pulsieren" style="color:#ffd700;">VERBUNDEN</div>`;
-            }
+            for(let i=2; i<=8; i++) { document.getElementById(`v-slot-${i}`).innerHTML = `<div class="pulsieren" style="color:#ffd700;">VERBUNDEN</div>`; }
         } catch (err) { alert("Kamera-Fehler"); }
     }
 </script>
 </body>
+</html>
