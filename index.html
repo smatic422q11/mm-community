@@ -259,38 +259,103 @@
     let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
-    // Initialisierung Dashboard
     const grid = document.getElementById('main-grid');
-    if(grid) {
-        grid.innerHTML = "";
-        themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="checkAccess(${i}, '${t}')">${t}</div></div>`; });
+    themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="checkAccess(${i}, '${t}')">${t}</div></div>`; });
+    
+    const drawerArea = document.getElementById('sektoren-schubladen');
+    themen.forEach((t, i) => {
+        drawerArea.innerHTML += `
+            <div class="schublade" id="drawer-${i}">
+                <div class="schublade-header" onclick="toggleDrawer(${i})">
+                    <span>SEKTOR ${i+1}: ${t}</span>
+                    <span id="arrow-${i}">▼</span>
+                </div>
+                <div class="schublade-content">
+                    <p>Hinterlegen Sie hier Dokumente oder Gedanken zum Thema "${t}".</p>
+                    <textarea id="note-${i}" class="schublade-textarea" placeholder="Hier tippen..."></textarea>
+                    <br>
+                    <button class="save-btn" onclick="saveNote(${i})">DOKUMENT SICHERN</button>
+                </div>
+            </div>`;
+    });
+
+    const dots = document.getElementById('dot-holder');
+    for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
+
+    function saveNote(id) {
+        alert("Dokument für Sektor " + (id+1) + " lokal gesichert.");
     }
 
-    function checkAccess(id, t) {
-        // Erlaubt Zugriff wenn: Verifiziert ODER Sektor 1 ODER Vorgänger gelesen
-        if (userBackstage.isVerifiziert || id === 0 || geleseneThemen.has(id - 1)) { 
-            showInfo(t, id); 
-        } else { 
-            alert("Bitte lesen Sie die Sektoren der Reihe nach!"); 
+    function showZugangInfo(typ) {
+        const modal = document.getElementById('zugang-modal');
+        const titel = document.getElementById('modal-titel');
+        const text = document.getElementById('modal-text');
+        const emailField = document.getElementById('email-input-field');
+        const confirmBtn = document.getElementById('modal-confirm-btn');
+        modal.style.display = 'flex';
+        if(typ === 'gast') {
+            titel.innerText = "Gast-Modus";
+            text.innerText = "Dein Fortschritt wird nur lokal gespeichert.";
+            emailField.style.display = 'none';
+            confirmBtn.onclick = () => { userBackstage.isVerifiziert = false; modal.style.display = 'none'; updateUI(); };
+        } else {
+            titel.innerText = "Verifizierter Status";
+            text.innerText = "Alle freigeschalteten Sektoren bleiben dauerhaft gesichert.";
+            emailField.style.display = 'block';
+            confirmBtn.onclick = () => { 
+                const mail = document.getElementById('user-email-input').value;
+                if(mail.includes('@')) { userBackstage.isVerifiziert = true; modal.style.display = 'none'; updateUI(); alert("Erfolgreich verifiziert!"); } 
+                else { alert("E-Mail ungültig."); }
+            };
         }
     }
 
+    function checkAccess(id, t) {
+        // Zugangskontrolle: Man muss die Reihenfolge einhalten (außer man ist verifiziert oder hat den Sektor schon gelesen)
+        if (userBackstage.isVerifiziert || geleseneThemen.has(id) || id === 0 || geleseneThemen.size >= id) { 
+            showInfo(t, id); 
+        } 
+        else { alert("Reihenfolge einhalten!"); }
+    }
+
+    function toggleDrawer(id) {
+        const d = document.getElementById(`drawer-${id}`);
+        const arrow = document.getElementById(`arrow-${id}`);
+        const isOpen = d.classList.contains('open');
+        document.querySelectorAll('.schublade').forEach(s => s.classList.remove('open'));
+        document.querySelectorAll('.schublade-header span[id^="arrow"]').forEach(a => a.innerText = '▼');
+        if (!isOpen) { d.classList.add('open'); arrow.innerText = '▲'; }
+    }
+
+    function adminUnlock() {
+        themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
+        userBackstage.isQualifiziert = true;
+        userBackstage.isVerifiziert = true;
+        updateNumColors();
+        updateUI();
+        alert("ADMIN UNLOCK");
+    }
+
+    // --- KORRIGIERTE showInfo FUNKTION ---
     function showInfo(t, id) { 
         tId = id; 
         aktuellesThema = t; 
         
-        // Chat-Vorbereitung
         const chatBox = document.getElementById('chat-box');
         if(chatBox) chatBox.innerHTML = "<i>System: Dialog für " + t + " bereit...</i>";
         
-        // Die "Gelbe Lampen" Prüfung: Wurden alle 20 Sektoren mindestens einmal besucht?
-        const fundamentKomplettGelesen = (geleseneThemen.size >= 20);
+        const input = document.getElementById('chat-input');
+        if(input) input.value = "";
 
-        // LOGIK: Nur wenn verifiziert UND Fundament fertig, dann direkt Chat (Ebene 3)
-        if (userBackstage.isVerifiziert && fundamentKomplettGelesen) { 
+        // PRÜFUNG: Hat der User das Fundament (Sektor 20 / Index 19) bereits jemals abgeschlossen?
+        const fundamentAbgeschlossen = geleseneThemen.has(19);
+
+        // LOGIK: Erst wenn verifiziert UND Fundament komplett gelesen, darf man direkt in Ebene 3
+        if (userBackstage.isVerifiziert && fundamentAbgeschlossen) { 
             ebene = 3; 
         } else { 
-            ebene = 2; // Zuerst immer Ebene 2 (Lesen)
+            // Pflicht: Erst Ebene 2 (Inhalt lesen)
+            ebene = 2; 
             geleseneThemen.add(id); 
         }
         
@@ -300,66 +365,115 @@
         updateUI(); 
     } 
 
-    function updateUI() {
-        const isDashboard = (ebene === 1);
-        const isLesen = (ebene === 2);
-        const isChat = (ebene === 3);
-        const isVideo = (ebene === 4);
-        const isAdmin = (ebene === 5);
-        
-        // Bereiche ein/ausblenden
-        document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
-        document.getElementById('main-text').style.display = isLesen ? 'block' : 'none';
-        document.getElementById('info-titel').innerText = aktuellesThema;
-        if (isLesen) document.getElementById('main-text').innerText = "Inhalt für " + aktuellesThema + "... (Hier stehen die wichtigen Informationen)";
-
-        // Buttons steuern
-        const nextBtn = document.getElementById('btn-next');
-        const backBtn = document.getElementById('btn-back');
-
-        if (isDashboard) {
-            backBtn.style.visibility = 'hidden';
-            // Dashboard "Weiter" Knopf NUR wenn alle 20 gelb sind
-            nextBtn.style.visibility = (geleseneThemen.size >= 20) ? 'visible' : 'hidden';
-        } else {
-            backBtn.style.visibility = 'visible';
-            // In Sektoren: Weiter-Knopf für Verifizierte (bis Sektor 20)
-            nextBtn.style.visibility = (userBackstage.isVerifiziert && tId < 19) ? 'visible' : 'hidden';
-        }
-
-        updateDots(); 
+    function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
+    
+    function portalZuEbene4() { 
+        if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { 
+            const modal = document.getElementById('video-wahl-modal');
+            const liste = document.getElementById('wahl-liste');
+            liste.innerHTML = "";
+            themen.forEach((t, i) => {
+                liste.innerHTML += `<div onclick="setzeSektorUndVideo(${i}, '${t}')" style="border:1px solid #fff; padding:10px; cursor:pointer; text-align:center; font-size:0.8rem;">SEKTOR ${i+1}:<br>${t}</div>`;
+            });
+            modal.style.display = 'flex';
+        } 
     }
 
-    function nextPage() { 
-        // Fall 1: Vom Dashboard (Ebene 1) zur Ebene 3 springen (wenn alles gelb)
-        if (ebene === 1 && geleseneThemen.size >= 20) {
-            ebene = 3;
-            updateUI();
+    function setzeSektorUndVideo(id, t) {
+        tId = id; aktuellesThema = t; ebene = 4;
+        document.getElementById('video-wahl-modal').style.display = 'none';
+        updateUI();
+    }
+
+    function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv')) { ebene = 5; updateUI(); } }
+
+    function updateUI() {
+        const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
+        document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
+        document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
+        document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
+        document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
+        document.getElementById('main-text').style.display = (ebene < 3) ? 'block' : 'none';
+        
+        const redBar = document.getElementById('ebene4-title-red');
+        if (isVideo) {
+            redBar.style.display = 'block';
+            redBar.innerText = `SEKTOR: ${aktuellesThema}`;
+        } else {
+            redBar.style.display = 'none';
+        }
+
+        document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
+        document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
+        document.getElementById('btn-back').style.visibility = 'visible';
+        document.getElementById('info-titel').innerText = aktuellesThema;
+        if (ebene === 2) document.getElementById('main-text').innerText = "Inhalt für " + aktuellesThema + "...";
+
+        const nextBtn = document.getElementById('btn-next');
+        if (tId >= 19 || ebene >= 4) {
+            nextBtn.style.visibility = 'hidden';
         } 
-        // Fall 2: Innerhalb der Sektoren (Ebene 2 oder 3) zum nächsten Sektor springen
-        else if (userBackstage.isVerifiziert && (ebene === 2 || ebene === 3) && tId < 19) { 
+        else if (userBackstage.isVerifiziert && (ebene === 2 || ebene === 3)) {
+            nextBtn.style.visibility = 'visible';
+        }
+        else if (!userBackstage.isVerifiziert && (ebene === 2 || ebene === 3)) {
+            nextBtn.style.visibility = 'hidden';
+        }
+        else {
+            nextBtn.style.visibility = (ebene < 7) ? 'visible' : 'hidden';
+        }
+
+        const sigGelb = document.getElementById('sig-r4');
+        const sigRot = document.getElementById('sig-l4');
+        const sigL1 = document.getElementById('sig-l1');
+
+        if (ebene === 2) {
+            sigGelb.classList.toggle('signal-aktiv', geleseneThemen.size === 20);
+        } else sigGelb.classList.remove('signal-aktiv');
+
+        if (ebene === 3) {
+            let alleFertig = Object.values(interaktionsZaehler).every(val => val >= 20);
+            sigRot.classList.toggle('signal-aktiv', alleFertig);
+        } else sigRot.classList.remove('signal-aktiv');
+
+        if (userBackstage.isQualifiziert && ebene < 5) {
+            sigL1.className = "oval-side elite-aktiv";
+            sigL1.onclick = portalZuEbene5;
+        } else {
+            sigL1.className = "oval-side ov-schwarz";
+            sigL1.onclick = null;
+        }
+        updateDots(); startRotation();
+    }
+
+    function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
+    
+    function nextPage() { 
+        if (userBackstage.isVerifiziert && (ebene === 2 || ebene === 3) && tId < 19) { 
             tId++; 
             aktuellesThema = themen[tId];
-            geleseneThemen.add(tId);
-            
-            // Wichtig: Wenn er im Chat war (Ebene 3), bleibt er im Chat. 
-            // Wenn er im Lesen war (Ebene 2), bleibt er im Lesen.
-            
-            // Chat-Inhalt für neuen Sektor resetten
             const chatBox = document.getElementById('chat-box');
             if(chatBox) chatBox.innerHTML = "<i>System: Dialog für " + aktuellesThema + " bereit...</i>";
-
+            const input = document.getElementById('chat-input');
+            if(input) input.value = ""; 
+            if (ebene === 2) geleseneThemen.add(tId);
             updateUI(); 
             updateNumColors();
         } 
+        else if (ebene < 7 && ebene !== 2 && ebene !== 3 && ebene !== 4 && ebene !== 5) { 
+            ebene++; 
+            updateUI(); 
+        } 
     }
 
-    function showDashboard() { 
-        ebene = 1; 
-        document.getElementById('page-skelett').style.display = 'none'; 
-        document.getElementById('dashboard').style.display = 'flex'; 
-        updateUI();
-        updateNumColors(); 
+    function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
+    
+    function registriereSenden() { 
+        const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); 
+        if (text === "") return; 
+        chatBox.innerHTML += `<div style="margin-bottom: 8px;"><strong>Du:</strong> ${text}</div>`; 
+        if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++; 
+        input.value = ""; chatBox.scrollTop = chatBox.scrollHeight; updateUI(); 
     }
 
     function updateNumColors() {
@@ -374,21 +488,21 @@
         });
     }
 
-    function updateDots() { 
-        for(let i=1; i<=7; i++) { 
-            const d = document.getElementById('dot'+i); 
-            if(d) d.classList.toggle('active', i === ebene); 
-        } 
+    function startRotation() { 
+        clearInterval(wechselInterval); 
+        const bg = document.getElementById('werbe-bg'); 
+        if(!bg) return; 
+        bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; 
+        bg.classList.add('bild-aktiv'); 
     }
 
-    function registriereSenden() { 
-        const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); 
-        if (text === "") return; 
-        chatBox.innerHTML += `<div style="margin-bottom:5px;"><strong>Du:</strong> ${text}</div>`; 
-        if(interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++; 
-        input.value = ""; 
-        chatBox.scrollTop = chatBox.scrollHeight; 
-        updateNumColors();
+    async function starteVideoKonferenz() {
+        const meinSlot = document.getElementById('v-slot-1');
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            meinSlot.innerHTML = `<video id="user-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>`;
+            document.getElementById('user-video').srcObject = stream;
+        } catch (err) { alert("Kamera-Fehler"); }
     }
 </script>
 </body>
