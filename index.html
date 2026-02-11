@@ -99,17 +99,17 @@
             z-index: 10;
         }
 
-        /* EBENE 4: SCROLLBARER BEREICH */
-        #drawer-ebene4 { overflow-y: auto; scroll-behavior: smooth; padding-right: 5px; width: 90%; display: none; flex-direction: column; }
+        /* EBENE 4: ZWISCHENRAUM (VIDEO & SCHUBLADEN) */
+        #drawer-ebene4 { overflow-y: auto; scroll-behavior: smooth; padding-right: 5px; width: 90%; display: none; flex-direction: column; height: 55vh; margin-bottom: 80px; }
         .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; flex-shrink: 0; margin-bottom: 20px; }
         .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; position: relative; }
         .slot-1-user { border-color: #00ff00; color: #00ff00; }
 
-        #sektoren-schubladen { width: 100%; margin-top: 10px; padding-bottom: 20px; }
-        .schublade { border: 1px solid #003d8f; margin-bottom: 5px; background: #050505; }
-        .schublade-header { padding: 10px; font-size: 0.75rem; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; background: #001a3d; }
-        .schublade-content { padding: 0 10px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; font-size: 0.85rem; color: #ccc; }
-        .schublade.open .schublade-content { max-height: 400px; padding: 15px; border-top: 1px solid #003d8f; }
+        #sektoren-schubladen { width: 100%; margin-top: 30px; padding-bottom: 50px; }
+        .schublade { border: 1px solid #003d8f; margin-bottom: 5px; background: #050505; width: 100%; }
+        .schublade-header { padding: 15px; font-size: 0.9rem; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; background: #001a3d; border-bottom: 1px solid #003d8f; }
+        .schublade-content { padding: 0 15px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; font-size: 1rem; color: #ccc; background: #000; }
+        .schublade.open .schublade-content { max-height: 500px; padding: 20px; border-top: 1px solid #003d8f; }
 
         /* EBENE 5: ADMIN ZONE */
         .freie-zone-text { font-size: 3rem; font-weight: 900; color: #ffd700; text-align: center; margin-top: 50px; text-shadow: 0 0 20px #ffd700; }
@@ -233,7 +233,8 @@
                 <div class="video-slot" id="v-slot-7">SLOT 7 (ZUFALL)</div>
                 <div class="video-slot" id="v-slot-8">SLOT 8 (ZUFALL)</div>
             </div>
-            <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 5px; flex-shrink:0;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
+            <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 5px; flex-shrink:0; margin-bottom:20px;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
+            
             <div id="sektoren-schubladen"></div>
         </div> 
 
@@ -255,6 +256,7 @@
     const grid = document.getElementById('main-grid');
     themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="checkAccess(${i}, '${t}')">${t}</div></div>`; });
     
+    // Schubladen Generierung
     const drawerArea = document.getElementById('sektoren-schubladen');
     themen.forEach((t, i) => {
         drawerArea.innerHTML += `
@@ -264,8 +266,9 @@
                     <span id="arrow-${i}">▼</span>
                 </div>
                 <div class="schublade-content">
-                    Hier liegen die Dokumente und Beweise für den Sektor "${t}". 
-                    Die Wahl der Vorsitzenden erfolgt erst nach der stillen Million.
+                    <strong>Dokumente & Beweise für Sektor ${i+1}:</strong><br><br>
+                    Hier werden die spezifischen Inhalte, Protokolle und Abstimmungsergebnisse für das Thema "${t}" hinterlegt.<br><br>
+                    Die finale Wahl der Vorsitzenden wird erst eingeleitet, sobald die stille Million erreicht ist.
                 </div>
             </div>`;
     });
@@ -282,7 +285,6 @@
         modal.style.display = 'flex';
         if(typ === 'gast') {
             titel.innerText = "Gast-Modus";
-            titel.style.color = "#fff";
             text.innerText = "Dein Fortschritt wird nur lokal gespeichert. Löschst du deinen Browser-Verlauf, musst du in Ebene 1 neu beginnen.";
             emailField.style.display = 'none';
             confirmBtn.onclick = () => { userBackstage.isVerifiziert = false; modal.style.display = 'none'; alert("Gast-Modus aktiv."); };
@@ -294,7 +296,7 @@
             confirmBtn.onclick = () => { 
                 const mail = document.getElementById('user-email-input').value;
                 if(mail.includes('@')) {
-                    userBackstage.isVerifiziert = true;
+                    userBackstage.isVerverified = true;
                     modal.style.display = 'none'; 
                     alert("Verifizierung erfolgreich!");
                 } else { alert("Bitte gib eine gültige E-Mail ein."); }
@@ -340,7 +342,6 @@
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
     
-    // DIE WAHL-LOGIK FÜR DEN ROTEN KNOPF
     function portalZuEbene4() { 
         if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { 
             const modal = document.getElementById('video-wahl-modal');
@@ -371,11 +372,10 @@
         document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
         document.getElementById('main-text').style.display = (ebene < 3) ? 'block' : 'none';
         
-        // DER FIX FÜR DIE TITEL-ANZEIGE
         const ebene4Title = document.getElementById('ebene4-title-red');
         if (isVideo) {
             ebene4Title.style.display = 'block';
-            ebene4Title.innerText = `SEKTOR ${tId + 1}: ${aktuellesThema}`;
+            ebene4Title.innerText = `ZWISCHENRAUM: SEKTOR ${tId + 1}`;
         } else {
             ebene4Title.style.display = 'none';
         }
