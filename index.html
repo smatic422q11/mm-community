@@ -311,7 +311,9 @@
     }
 
     function checkAccess(id, t) {
-        if (userBackstage.isVerverified || geleseneThemen.has(id) || id === 0 || geleseneThemen.size >= id) { showInfo(t, id); } 
+        if (userBackstage.isVerifiziert || geleseneThemen.has(id) || id === 0 || geleseneThemen.size >= id) { 
+            showInfo(t, id); 
+        } 
         else { alert("Reihenfolge einhalten!"); }
     }
 
@@ -333,12 +335,26 @@
         alert("ADMIN UNLOCK");
     }
 
+    // --- NEUE showInfo (VERBESSERT) ---
     function showInfo(t, id) { 
         tId = id; 
         aktuellesThema = t; 
+        
+        // Chat-Bereich komplett leeren
+        const chatBox = document.getElementById('chat-box');
+        if(chatBox) chatBox.innerHTML = "<i>System: Dialog für " + t + " bereit...</i>";
+        
         const input = document.getElementById('chat-input');
         if(input) input.value = "";
-        if (geleseneThemen.has(id)) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
+
+        // Direkteinstieg Logik
+        if (userBackstage.isVerifiziert && geleseneThemen.has(id)) { 
+            ebene = 3; 
+        } else { 
+            ebene = 2; 
+            geleseneThemen.add(id); 
+        }
+        
         updateNumColors(); 
         document.getElementById('dashboard').style.display = 'none'; 
         document.getElementById('page-skelett').style.display = 'flex'; 
@@ -389,7 +405,6 @@
         document.getElementById('info-titel').innerText = aktuellesThema;
         if (ebene === 2) document.getElementById('main-text').innerText = "Inhalt für " + aktuellesThema + "...";
 
-        // --- WEITER-BUTTON LOGIK ---
         const nextBtn = document.getElementById('btn-next');
         if (tId >= 19 || ebene >= 4) {
             nextBtn.style.visibility = 'hidden';
@@ -403,7 +418,6 @@
         else {
             nextBtn.style.visibility = (ebene < 7) ? 'visible' : 'hidden';
         }
-        // ---------------------------
 
         const sigGelb = document.getElementById('sig-r4');
         const sigRot = document.getElementById('sig-l4');
@@ -430,18 +444,23 @@
 
     function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
     
+    // --- NEUE nextPage (VERBESSERT) ---
     function nextPage() { 
-        // Benefit Logik für Verifizierte
         if (userBackstage.isVerifiziert && (ebene === 2 || ebene === 3) && tId < 19) { 
             tId++; 
             aktuellesThema = themen[tId];
+            
+            // Chat leeren
+            const chatBox = document.getElementById('chat-box');
+            if(chatBox) chatBox.innerHTML = "<i>System: Dialog für " + aktuellesThema + " bereit...</i>";
+            
             const input = document.getElementById('chat-input');
             if(input) input.value = ""; 
+            
             if (ebene === 2) geleseneThemen.add(tId);
             updateUI(); 
             updateNumColors();
         } 
-        // Normales Blättern (z.B. Intro-Ebenen)
         else if (ebene < 7 && ebene !== 2 && ebene !== 3 && ebene !== 4 && ebene !== 5) { 
             ebene++; 
             updateUI(); 
