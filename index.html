@@ -12,8 +12,6 @@
         @keyframes fadeEffect { 0% { opacity: 0; } 15% { opacity: 0.4; } 85% { opacity: 0.4; } 100% { opacity: 0; } }
         @keyframes signalBlink { 0% { box-shadow: 0 0 5px #fff; opacity: 0.8; } 50% { box-shadow: 0 0 25px #fff, 0 0 35px #003d8f; opacity: 1; transform: scale(1.05); } 100% { box-shadow: 0 0 5px #fff; opacity: 0.8; } }
         .elite-aktiv { background-color: #ffd700 !important; box-shadow: 0 0 10px #ffd700; border: 2px solid #fff !important; cursor: pointer; }
-        @keyframes pulsieren { 0% { opacity: 0.5; } 50% { opacity: 1; text-shadow: 0 0 10px #ffd700; } 100% { opacity: 0.5; } }
-        .pulsieren { animation: pulsieren 2s infinite ease-in-out; font-weight: bold; }
         .signal-aktiv { animation: signalBlink 1.0s infinite ease-in-out !important; border: 2px solid #fff !important; cursor: pointer; }
 
         /* LILA BALKEN */
@@ -26,19 +24,7 @@
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
         .info-section { width: 80%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; position: relative; overflow: hidden; margin-top: 2vh; }
-        
-        .tafel-layout { 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            width: 100%; 
-            position: relative; 
-            margin-top: 1vh; 
-            height: 26vh; 
-            min-height: 26vh; 
-            flex-shrink: 0; 
-        }
-
+        .tafel-layout { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; margin-top: 1vh; height: 26vh; min-height: 26vh; flex-shrink: 0; }
         .info-section-ebene { width: 90% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
 
         /* BUTTONS */
@@ -52,93 +38,43 @@
         .ov-pink { background: #ff00ff; }
         .ov-gelb { background: #ffff00; }
 
-        /* DASHBOARD GRID */
+        /* GRID */
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 10px; width: 95%; max-width: 1450px; margin-top: 30px; border: 3px solid #00ff00; padding: 15px; border-radius: 10px; }
         .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; overflow: hidden; }
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
-        /* EBENE 3: Chat-Bereich */
-        #chat-area {
-            width: 90% !important;
-            height: 45vh; 
-            flex-grow: 1; 
-            display: none; 
-            flex-direction: column; 
-            margin: 0 auto 70px auto; 
-            position: relative; 
-            overflow: hidden;
-            border: none !important;
-            mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 100%);
-            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 100%);
-        }
-
-        .chat-msgs { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: flex-end; 
-            padding: 10px 0; 
-            color: #fff; 
-            font-size: 1.1rem; 
-            overflow-y: auto; 
-            border: none !important; 
-            scrollbar-width: none; 
-        }
-
-        .chat-msgs::-webkit-scrollbar { width: 0px; background: transparent; }
-
-        .chat-input-row { 
-            display: flex; 
-            border: 1px solid #003d8f; 
-            background: rgba(0, 0, 0, 0.9); 
-            padding: 5px; 
-            border-radius: 4px; 
-            flex-shrink: 0;
-            margin-top: 5px;
-            z-index: 10;
-        }
-
-        /* EBENE 4: ZWISCHENRAUM */
-        #drawer-ebene4 { overflow-y: auto; scroll-behavior: smooth; padding-right: 5px; width: 90%; display: none; flex-direction: column; height: 60vh; }
-        .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; flex-shrink: 0; margin-bottom: 20px; }
-        .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; position: relative; }
-        .slot-1-user { border-color: #00ff00; color: #00ff00; }
-
-        #sektoren-schubladen { width: 100%; margin-top: 10px; padding-bottom: 120px; }
-        .schublade { border: 1px solid #003d8f; margin-bottom: 10px; background: #050505; transition: all 0.3s; }
-        .schublade-header { padding: 15px; font-size: 1rem; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; background: #001a3d; border-bottom: 1px solid #003d8f; }
-        .schublade-content { padding: 0 15px; max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; font-size: 0.9rem; color: #ccc; }
+        /* EBENE 3 & 4 */
+        #chat-area { width: 90% !important; height: 45vh; flex-grow: 1; display: none; flex-direction: column; margin: 0 auto 70px auto; position: relative; overflow: hidden; mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 100%); -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 100%); }
+        .chat-msgs { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px 0; color: #fff; font-size: 1.1rem; overflow-y: auto; scrollbar-width: none; }
+        .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; margin-top: 5px; z-index: 10; }
+        #drawer-ebene4 { overflow-y: auto; padding-right: 5px; width: 90%; display: none; flex-direction: column; height: 60vh; }
+        .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; margin-bottom: 20px; }
+        .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; }
         
-        /* GROSSER SCHREIBBEREICH */
+        .schublade { border: 1px solid #003d8f; margin-bottom: 10px; background: #050505; }
+        .schublade-header { padding: 15px; font-size: 1rem; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; background: #001a3d; border-bottom: 1px solid #003d8f; }
+        .schublade-content { padding: 0 15px; max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; }
         .schublade.open .schublade-content { max-height: 1200px; padding: 20px; }
-        .schublade-textarea { width: 100%; height: 350px; background: #111; border: 1px solid #003d8f; color: #fff; padding: 15px; margin-top: 15px; font-family: inherit; resize: vertical; font-size: 1rem; line-height: 1.5; }
-        .save-btn { background: #00ff00; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; margin-top: 10px; border-radius: 3px; }
-
-        /* EBENE 5: ADMIN ZONE */
-        .freie-zone-text { font-size: 3rem; font-weight: 900; color: #ffd700; text-align: center; margin-top: 50px; text-shadow: 0 0 20px #ffd700; }
+        .schublade-textarea { width: 100%; height: 350px; background: #111; border: 1px solid #003d8f; color: #fff; padding: 15px; margin-top: 15px; resize: vertical; }
 
         /* NAVIGATION */
-        .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; background: #000; z-index: 100; border-top: 1px solid #333; }
+        .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; background: #000; z-index: 100; border-top: 1px solid #333; box-sizing: border-box;}
         .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
         .dot { width: 10px; height: 10px; background: #444; border-radius: 50%; }
         .dot.active { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
 
-        #counter-box { position: absolute; right: 0; top: 0; width: 100px; padding: 5px; border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f; background: #000; text-align: center; display: none; z-index: 100; }
-        .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
-        .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh; flex-shrink: 0; }
-        .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
+        /* SPEZIAL */
+        #counter-box { position: absolute; right: 0; top: 0; width: 100px; padding: 5px; border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f; background: #000; text-align: center; display: none; }
+        .ebene4-header-red { width: 90%; background: #ff0000; color: #fff; padding: 10px 0; text-align: center; font-weight: 900; font-size: 1.5rem; display: none; }
+        .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
+        .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
         
-        /* ROTER BALKEN */
-        .ebene4-header-red { width: 90%; background: #ff0000; color: #fff; padding: 10px 0; text-align: center; font-weight: 900; font-size: 1.5rem; border-radius: 5px 5px 0 0; display: none; text-transform: uppercase; }
-
+        /* STATUS FARBEN */
         .num-neutral { background-color: #003d8f !important; }
         .num-gelesen { background-color: #ffd700 !important; color: #000 !important; }
         .num-offen { background-color: #ff4d4d !important; }
         .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
-
-        .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
-        .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
     </style>
 </head>
 <body>
@@ -150,315 +86,235 @@
         <div class="info-section">
             <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
             <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
-            <p style="max-width: 85%; color: #ccc; font-size: 1.1rem; margin: 10px 0 0 0; text-align: center;">
-                Die M&M-Community ist das Fundament für alle. <strong>Die Wahl der Vorsitzenden erfolgt erst nach Erreichen der stillen Million.</strong>
-            </p>
+            <p style="max-width: 85%; color: #ccc; font-size: 1.1rem; margin-top: 10px; text-align: center;">Die Wahl der Vorsitzenden erfolgt erst nach Erreichen der stillen Million.</p>
         </div>
         <div class="grid" id="main-grid"></div>
-        <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 10px;">
+        <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px;">
             <div class="fundament-box" style="flex: 1;"><div class="num">21</div><div class="text">Kapital und Verwaltung</div></div>
             <div class="fundament-box" style="flex: 1;"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div></div>
         </div>
-
-        <div class="zugang-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-bottom: 80px;">
-            <div class="fundament-box" style="flex: 1; border-color: #555; cursor: pointer;" onclick="showZugangInfo('gast')">
-                <div class="num" style="background-color: #333;">G</div>
-                <div class="text">Gast-Zugang (Eingeschränkt)</div>
-            </div>
-            <div class="fundament-box" style="flex: 1; border-color: #8b00ff; cursor: pointer;" onclick="showZugangInfo('email')">
-                <div class="num" style="background-color: #8b00ff;">V</div>
-                <div class="text" style="color: #ffd700;">Verifizierter Status (Voller Zugriff 1-4)</div>
-            </div>
+        <div class="zugang-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 80px;">
+            <div class="fundament-box" style="flex: 1; cursor: pointer; border-color: #fff;" onclick="showZugangInfo('gast')"><div class="num" style="background:#333;">G</div><div class="text">Gast-Zugang</div></div>
+            <div class="fundament-box" style="flex: 1; border-color: #8b00ff; cursor: pointer;" onclick="showZugangInfo('email')"><div class="num" style="background:#8b00ff;">V</div><div class="text" style="color: #ffd700;">Verifizierter Status</div></div>
         </div>
     </div>
 
-    <div id="video-wahl-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:20000; flex-direction:column; align-items:center; justify-content:center;">
-        <h1 style="color:#ff0000;">WÄHLE DEINEN VIDEO-RAUM</h1>
-        <div id="wahl-liste" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; width:90%; max-height:60vh; overflow-y:auto; padding:20px;"></div>
-        <button onclick="document.getElementById('video-wahl-modal').style.display='none'" style="margin-top:20px; padding:10px 20px;">ZURÜCK</button>
-    </div>
-
-    <div id="zugang-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10000; justify-content:center; align-items:center;">
-        <div style="background:#000; border:2px solid #003d8f; padding:30px; width:400px; text-align:center; border-radius:10px;">
-            <h3 id="modal-titel" style="color:#fff; margin-top:0;"></h3>
-            <p id="modal-text" style="color:#ccc; font-size:0.9rem; line-height:1.5; margin:20px 0;"></p>
+    <div id="zugang-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:10000; justify-content:center; align-items:center;">
+        <div style="background:#000; border:2px solid #003d8f; padding:40px; width:450px; text-align:center;">
+            <h3 id="modal-titel" style="font-size: 1.5rem;">ZUGANGS-WAHL</h3>
+            <p id="modal-text">Wähle eine Option, um fortzufahren. Ohne Wahl kein Zugriff.</p>
             <div id="email-input-field" style="display:none; margin-bottom:20px;">
-                <input type="email" id="user-email-input" placeholder="Deine E-Mail Adresse" style="width:90%; padding:10px; background:#111; border:1px solid #8b00ff; color:#fff;">
+                <input type="email" id="user-email-input" placeholder="E-Mail Adresse..." style="width:90%; padding:12px; background:#111; color:#fff; border:1px solid #8b00ff;">
             </div>
-            <button id="modal-confirm-btn" style="background:#ffd700; color:#000; border:none; padding:10px 20px; font-weight:bold; cursor:pointer; margin-right:10px;">AKZEPTIEREN</button>
-            <button onclick="document.getElementById('zugang-modal').style.display='none'" style="background:#333; color:#fff; border:none; padding:10px 20px; cursor:pointer;">ABBRECHEN</button>
+            <button id="modal-confirm-btn" class="nav-btn">BESTÄTIGEN</button>
+            <p style="font-size: 0.7rem; color: #555; margin-top: 20px;">M&M COMMUNITY SECURITY SYSTEM</p>
         </div>
     </div>
 
     <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
-        <div class="top-container">
-            <h1 id="info-titel" class="page-title-white"></h1>
+        <div class="top-container" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+            <h1 id="info-titel" style="text-transform:uppercase; font-size:1.8rem; margin: 10px 0; font-weight:900;"></h1>
             <div id="ebene4-title-red" class="ebene4-header-red"></div>
             <div class="tafel-layout">
                 <div class="buttons-links">
                     <div class="oval-side ov-schwarz" id="sig-l1"></div>
-                    <div class="oval-side ov-grun" id="sig-l2"></div>
-                    <div class="oval-side ov-blau" id="sig-l3"></div>
+                    <div class="oval-side ov-grun"></div><div class="oval-side ov-blau"></div>
                     <div class="oval-side ov-rot" id="sig-l4" onclick="portalZuEbene4()"></div>
                 </div>
                 <div class="info-section-ebene">
                     <div class="werbe-bild-bg" id="werbe-bg"></div>
                     <div id="counter-box"><span style="font-size:0.4rem; color:#fff; display:block;">STILLE MILLION</span><span class="counter-value">842.336</span></div>
-                    <div style="z-index: 5; text-align: center; font-weight: bold; color: rgba(255,255,255,0.3); letter-spacing: 5px;">PLATZ FÜR WERBUNG</div>
+                    <div style="z-index: 5; color: rgba(255,255,255,0.2);">WERBEPLATZ</div>
                 </div>
                 <div class="buttons-rechts">
-                    <div class="oval-side ov-grun" id="sig-r1"></div>
-                    <div class="oval-side ov-blau" id="sig-r2"></div>
-                    <div class="oval-side ov-pink" id="sig-r3"></div>
+                    <div class="oval-side ov-grun"></div><div class="oval-side ov-blau"></div><div class="oval-side ov-pink"></div>
                     <div class="oval-side ov-gelb" id="sig-r4" onclick="portalZuEbene3()"></div>
                 </div>
             </div>
-            <div id="lila-balken-container" style="display: none; width: 100%;">
-                <div class="lila-registrierung-leiste"><div class="registrierung-text">REGISTRIERUNG</div></div>
+        </div>
+
+        <p id="main-text" style="width: 85%; color: #ccc; margin-top: 2vh; font-size: 1.3rem; line-height: 1.6; text-align: justify; overflow-y: auto; max-height: 40vh;"></p>
+
+        <div id="chat-area">
+            <div class="chat-msgs" id="chat-box"><i>Dialog startet...</i></div>
+            <div class="chat-input-row">
+                <input type="text" id="chat-input" placeholder="Nachricht..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px; outline:none;" onkeypress="if(event.key==='Enter') registriereSenden()">
+                <button onclick="registriereSenden()" style="background:#003d8f; color:#fff; border:none; padding:0 30px; cursor:pointer; font-weight:bold;">SENDEN</button>
             </div>
         </div>
 
-        <p id="main-text" style="width: 85%; text-align: justify; color: #ccc; margin-top: 2vh; font-size: 1.3rem; line-height: 1.8; max-height: 50vh; overflow-y: auto;"></p>
-
-        <div id="chat-area">
-            <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit...</i></div>
-            <div class="chat-input-row">
-                <input type="text" id="chat-input" placeholder="Nachricht schreiben..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px; outline:none;" onkeypress="if(event.key==='Enter') registriereSenden()">
-                <button onclick="registriereSenden()" style="background:#003d8f; color:#fff; border:none; padding:0 30px; font-weight:bold; cursor:pointer;">SENDEN</button>
-            </div>
-        </div> 
-
         <div id="drawer-ebene4">
-            <div class="video-grid">
-                <div class="video-slot slot-1-user" id="v-slot-1">SLOT 1 (DU)</div>
-                <div class="video-slot" id="v-slot-2">SLOT 2 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-3">SLOT 3 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-4">SLOT 4 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-5">SLOT 5 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-6">SLOT 6 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-7">SLOT 7 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-8">SLOT 8 (ZUFALL)</div>
+            <div class="video-grid" id="v-grid">
+                <div class="video-slot" id="v-slot-1" style="border-color:#0f0; color:#0f0;">DU</div>
+                <div class="video-slot">SLOT 2</div><div class="video-slot">SLOT 3</div><div class="video-slot">SLOT 4</div>
             </div>
-            <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 5px; flex-shrink:0;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
-            
             <div id="sektoren-schubladen"></div>
-        </div> 
+        </div>
 
-        <div id="ebene5-bereich" style="display:none;"><div class="freie-zone-text">ADMIN ZONE</div></div>
+        <div id="ebene5-bereich" style="display:none; text-align:center; margin-top:50px;"><h1 style="color:#ffd700; font-size:3rem; text-shadow:0 0 20px #ffd700;">ADMIN ZONE</h1></div>
+
+        <div class="bottom-nav">
+            <button id="btn-back" class="nav-btn" onclick="showDashboard()">← Dashboard</button>
+            <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
+            <button id="btn-next" class="nav-btn" onclick="nextPage()">Weiter →</button>
+        </div>
     </div>
 
-    <div class="bottom-nav">
-        <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Dashboard</button>
-        <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
-        <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
+    <div id="video-wahl-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:20000; flex-direction:column; align-items:center; justify-content:center;">
+        <h1 style="color:#ff0000;">SEKTOR-VIDEO WÄHLEN</h1>
+        <div id="wahl-liste" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; width:90%; padding:20px;"></div>
+        <button onclick="document.getElementById('video-wahl-modal').style.display='none'" class="nav-btn">SCHLIESSEN</button>
     </div>
 
 <script>
-    let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, isVerifiziert: false, stammSektor: null, rankingPlatz: 5 };
+    let userState = { hasAccess: false, verifiziert: false, qualifiziert: false };
     const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
-    let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
+    let ebene = 1, tId = 0, aktuellesThema = "", geleseneThemen = new Set(), interaktionsZaehler = {};
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
+    // Grid Bauen
     const grid = document.getElementById('main-grid');
-    themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="checkAccess(${i}, '${t}')">${t}</div></div>`; });
-    
-    // SCHUBLADEN GENERIERUNG
+    themen.forEach((t, i) => { grid.innerHTML += `<div class="box"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="tryOpenSektor(${i}, '${t}')">${t}</div></div>`; });
+
+    // Schubladen Bauen
     const drawerArea = document.getElementById('sektoren-schubladen');
     themen.forEach((t, i) => {
-        drawerArea.innerHTML += `
-            <div class="schublade" id="drawer-${i}">
-                <div class="schublade-header" onclick="toggleDrawer(${i})">
-                    <span>SEKTOR ${i+1}: ${t}</span>
-                    <span id="arrow-${i}">▼</span>
-                </div>
-                <div class="schublade-content">
-                    <p>Hinterlegen Sie hier Dokumente oder Gedanken zum Thema "${t}".</p>
-                    <textarea id="note-${i}" class="schublade-textarea" placeholder="Hier tippen..."></textarea>
-                    <br>
-                    <button class="save-btn" onclick="saveNote(${i})">DOKUMENT SICHERN</button>
-                </div>
-            </div>`;
+        drawerArea.innerHTML += `<div class="schublade" id="drawer-${i}"><div class="schublade-header" onclick="toggleDrawer(${i})"><span>SEKTOR ${i+1}: ${t}</span><span id="arrow-${i}">▼</span></div><div class="schublade-content"><textarea class="schublade-textarea" placeholder="Deine Gedanken zu ${t}..."></textarea><br><button class="nav-btn" style="background:#0f0; margin-top:5px;">SICHERN</button></div></div>`;
     });
 
+    // Dots
     const dots = document.getElementById('dot-holder');
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
-    function saveNote(id) {
-        const text = document.getElementById(`note-${id}`).value;
-        alert("Dokument für Sektor " + (id+1) + " lokal gesichert.");
-    }
-
+    // ZUGANGS LOGIK
     function showZugangInfo(typ) {
         const modal = document.getElementById('zugang-modal');
-        const titel = document.getElementById('modal-titel');
-        const text = document.getElementById('modal-text');
         const emailField = document.getElementById('email-input-field');
         const confirmBtn = document.getElementById('modal-confirm-btn');
         modal.style.display = 'flex';
+
         if(typ === 'gast') {
-            titel.innerText = "Gast-Modus";
-            text.innerText = "Dein Fortschritt wird nur lokal gespeichert.";
+            document.getElementById('modal-titel').innerText = "GAST ZUGANG";
+            document.getElementById('modal-text').innerText = "Dein Fortschritt wird nur für diese Sitzung gespeichert.";
             emailField.style.display = 'none';
-            confirmBtn.onclick = () => { userBackstage.isVerifiziert = false; modal.style.display = 'none'; alert("Gast-Modus aktiv."); };
+            confirmBtn.onclick = () => { userState.hasAccess = true; userState.verifiziert = false; modal.style.display = 'none'; };
         } else {
-            titel.innerText = "Verifizierter Status";
-            text.innerText = "Alle freigeschalteten Sektoren bleiben dauerhaft gesichert.";
+            document.getElementById('modal-titel').innerText = "VERIFIZIERUNG";
+            document.getElementById('modal-text').innerText = "Gib deine E-Mail ein, um deinen Status dauerhaft zu sichern.";
             emailField.style.display = 'block';
-            confirmBtn.onclick = () => { 
+            confirmBtn.onclick = () => {
                 const mail = document.getElementById('user-email-input').value;
-                if(mail.includes('@')) { userBackstage.isVerifiziert = true; modal.style.display = 'none'; alert("Erfolgreich!"); } 
-                else { alert("E-Mail ungültig."); }
+                if(mail.includes('@')) {
+                    userState.hasAccess = true; userState.verifiziert = true; modal.style.display = 'none';
+                } else { alert("Bitte gültige E-Mail eingeben!"); }
             };
         }
     }
 
-    function checkAccess(id, t) {
-        if (userBackstage.isVerifiziert || geleseneThemen.has(id) || id === 0 || geleseneThemen.size >= id) { showInfo(t, id); } 
-        else { alert("Reihenfolge einhalten!"); }
+    function tryOpenSektor(id, t) {
+        if(!userState.hasAccess) { alert("Bitte wähle zuerst einen Zugangs-Status (Gast oder Verifiziert)!"); return; }
+        
+        // Prüfen ob Vorheriger gelesen (außer Verifiziert)
+        if (userState.verifiziert || geleseneThemen.has(id) || id === 0 || geleseneThemen.size >= id) {
+            tId = id; aktuellesThema = t; ebene = 2; geleseneThemen.add(id);
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('page-skelett').style.display = 'flex';
+            updateUI();
+        } else { alert("Bitte die Sektoren in der richtigen Reihenfolge lesen!"); }
+    }
+
+    function updateUI() {
+        const isEbene2 = (ebene === 2), isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
+        document.getElementById('main-text').style.display = isEbene2 ? 'block' : 'none';
+        document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
+        document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
+        document.getElementById('ebene5-bereich').style.display = isAdmin ? 'block' : 'none';
+        
+        const sigGelb = document.getElementById('sig-r4');
+        const sigRot = document.getElementById('sig-l4');
+        const btnNext = document.getElementById('btn-next');
+
+        if(isEbene2) {
+            document.getElementById('info-titel').innerText = aktuellesThema;
+            document.getElementById('main-text').innerText = "Hier steht der Inhalt für Sektor " + (tId+1) + ": " + aktuellesThema + ". Lies diesen Text aufmerksam durch, um zum nächsten Sektor zu gelangen.";
+            
+            // NAVIGATION FIX: Weiter Button anzeigen wenn nicht am Ende
+            btnNext.style.visibility = (tId < 19) ? "visible" : "hidden";
+            // Gelbes Licht Signal
+            sigGelb.classList.toggle('signal-aktiv', geleseneThemen.size === 20);
+        } else {
+            btnNext.style.visibility = "visible";
+            sigGelb.classList.remove('signal-aktiv');
+        }
+
+        if(isChat) {
+            let alleFertig = Object.values(interaktionsZaehler).every(v => v >= 20);
+            sigRot.classList.toggle('signal-aktiv', alleFertig);
+        } else { sigRot.classList.remove('signal-aktiv'); }
+
+        const redBar = document.getElementById('ebene4-title-red');
+        if (isVideo) { redBar.style.display = 'block'; redBar.innerText = `SEKTOR: ${aktuellesThema}`; }
+        else { redBar.style.display = 'none'; }
+
+        updateDots(); updateNumColors();
+        document.getElementById('werbe-bg').style.backgroundImage = `url('https://picsum.photos/seed/${tId+ebene}/1200/600')`;
+        document.getElementById('werbe-bg').classList.add('bild-aktiv');
+    }
+
+    function nextPage() {
+        if (ebene === 2 && tId < 19) {
+            tId++; 
+            aktuellesThema = themen[tId]; 
+            geleseneThemen.add(tId); 
+            updateUI();
+        } else if (ebene !== 2 && ebene < 7) {
+            ebene++;
+            updateUI();
+        }
+    }
+
+    function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
+
+    function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
+    function portalZuEbene4() {
+        if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) {
+            const modal = document.getElementById('video-wahl-modal');
+            const liste = document.getElementById('wahl-liste');
+            liste.innerHTML = "";
+            themen.forEach((t, i) => { liste.innerHTML += `<div onclick="setVideo(${i},'${t}')" style="border:1px solid #fff; padding:10px; cursor:pointer;">SEKTOR ${i+1}</div>`; });
+            modal.style.display = 'flex';
+        }
+    }
+    function setVideo(id, t) { tId = id; aktuellesThema = t; ebene = 4; document.getElementById('video-wahl-modal').style.display = 'none'; updateUI(); }
+
+    function registriereSenden() {
+        const input = document.getElementById('chat-input'), box = document.getElementById('chat-box');
+        if(!input.value) return;
+        box.innerHTML += `<div><strong>Du:</strong> ${input.value}</div>`;
+        if(interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++;
+        input.value = ""; box.scrollTop = box.scrollHeight; updateUI();
     }
 
     function toggleDrawer(id) {
         const d = document.getElementById(`drawer-${id}`);
-        const arrow = document.getElementById(`arrow-${id}`);
         const isOpen = d.classList.contains('open');
         document.querySelectorAll('.schublade').forEach(s => s.classList.remove('open'));
-        document.querySelectorAll('.schublade-header span[id^="arrow"]').forEach(a => a.innerText = '▼');
-        if (!isOpen) { d.classList.add('open'); arrow.innerText = '▲'; }
-    }
-
-    function adminUnlock() {
-        themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
-        userBackstage.isQualifiziert = true;
-        updateNumColors();
-        updateUI();
-        alert("ADMIN UNLOCK");
-    }
-
-    function showInfo(t, id) { 
-        tId = id; aktuellesThema = t; 
-        if (geleseneThemen.has(id)) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
-        updateNumColors(); 
-        document.getElementById('dashboard').style.display = 'none'; 
-        document.getElementById('page-skelett').style.display = 'flex'; 
-        updateUI(); 
-    } 
-
-    function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
-    
-    function portalZuEbene4() { 
-        if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { 
-            const modal = document.getElementById('video-wahl-modal');
-            const liste = document.getElementById('wahl-liste');
-            liste.innerHTML = "";
-            themen.forEach((t, i) => {
-                liste.innerHTML += `<div onclick="setzeSektorUndVideo(${i}, '${t}')" style="border:1px solid #fff; padding:10px; cursor:pointer; text-align:center; font-size:0.8rem;">SEKTOR ${i+1}:<br>${t}</div>`;
-            });
-            modal.style.display = 'flex';
-        } 
-    }
-
-    function setzeSektorUndVideo(id, t) {
-        tId = id; aktuellesThema = t; ebene = 4;
-        document.getElementById('video-wahl-modal').style.display = 'none';
-        updateUI();
-    }
-
-    function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv')) { ebene = 5; updateUI(); } }
-
-    function updateUI() {
-        const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
-        document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
-        document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
-        document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
-        document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
-        document.getElementById('main-text').style.display = (ebene < 3) ? 'block' : 'none';
-        
-        const redBar = document.getElementById('ebene4-title-red');
-        if (isVideo) {
-            redBar.style.display = 'block';
-            // AUTOMATISCHE ZUORDNUNG DES NAMENS IM ROTEN BALKEN
-            redBar.innerText = `SEKTOR: ${aktuellesThema}`;
-        } else {
-            redBar.style.display = 'none';
-        }
-
-        document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
-        document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
-        document.getElementById('btn-back').style.visibility = 'visible';
-        document.getElementById('info-titel').innerText = aktuellesThema;
-        if (ebene === 2) document.getElementById('main-text').innerText = "Inhalt für " + aktuellesThema + "...";
-
-        const sigGelb = document.getElementById('sig-r4');
-        const sigRot = document.getElementById('sig-l4');
-        const sigL1 = document.getElementById('sig-l1');
-
-        if (ebene === 2) {
-            sigGelb.classList.toggle('signal-aktiv', geleseneThemen.size === 20);
-        } else sigGelb.classList.remove('signal-aktiv');
-
-        if (ebene === 3) {
-            let alleFertig = Object.values(interaktionsZaehler).every(val => val >= 20);
-            sigRot.classList.toggle('signal-aktiv', alleFertig);
-        } else sigRot.classList.remove('signal-aktiv');
-
-        if (userBackstage.isQualifiziert && ebene < 5) {
-            sigL1.className = "oval-side elite-aktiv";
-            sigL1.onclick = portalZuEbene5;
-        } else {
-            sigL1.className = "oval-side ov-schwarz";
-            sigL1.onclick = null;
-        }
-        updateDots(); startRotation();
-    }
-
-    function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
-    
-    function nextPage() { 
-        if ((ebene === 2 || ebene === 3) && tId < 19) { 
-            tId++; aktuellesThema = themen[tId];
-            if (ebene === 2) geleseneThemen.add(tId);
-            updateUI(); updateNumColors();
-        } else if (ebene < 7 && ebene !== 2 && ebene !== 3 && ebene !== 4 && ebene !== 5) { ebene++; updateUI(); } 
-    }
-
-    function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
-    
-    function registriereSenden() { 
-        const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); 
-        if (text === "") return; 
-        chatBox.innerHTML += `<div style="margin-bottom: 8px;"><strong>Du:</strong> ${text}</div>`; 
-        if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++; 
-        input.value = ""; chatBox.scrollTop = chatBox.scrollHeight; updateUI(); 
+        if(!isOpen) d.classList.add('open');
     }
 
     function updateNumColors() {
         themen.forEach((_, i) => {
-            const nBox = document.getElementById(`num-${i}`);
-            if (nBox) {
-                if (interaktionsZaehler[i] >= 20) nBox.className = "num num-fertig";
-                else if (interaktionsZaehler[i] > 0) nBox.className = "num num-offen";
-                else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen";
-                else nBox.className = "num num-neutral";
-            }
+            const n = document.getElementById(`num-${i}`);
+            if(!n) return;
+            if (interaktionsZaehler[i] >= 20) n.className = "num num-fertig";
+            else if (interaktionsZaehler[i] > 0) n.className = "num num-offen";
+            else if (geleseneThemen.has(i)) n.className = "num num-gelesen";
+            else n.className = "num num-neutral";
         });
     }
 
-    function startRotation() { 
-        clearInterval(wechselInterval); 
-        const bg = document.getElementById('werbe-bg'); 
-        if(!bg) return; 
-        bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; 
-        bg.classList.add('bild-aktiv'); 
-    }
-
-    async function starteVideoKonferenz() {
-        const meinSlot = document.getElementById('v-slot-1');
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            meinSlot.innerHTML = `<video id="user-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>`;
-            document.getElementById('user-video').srcObject = stream;
-        } catch (err) { alert("Kamera-Fehler"); }
-    }
+    function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
+    function adminUnlock() { userState.qualifiziert = true; userState.verifiziert = true; userState.hasAccess = true; geleseneThemen = new Set(themen.keys()); updateNumColors(); updateUI(); alert("ADMIN MODUS."); }
 </script>
 </body>
 </html>
