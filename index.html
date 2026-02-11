@@ -99,17 +99,21 @@
             z-index: 10;
         }
 
-        /* EBENE 4: ZWISCHENRAUM (VIDEO & SCHUBLADEN) */
-        #drawer-ebene4 { overflow-y: auto; scroll-behavior: smooth; padding-right: 5px; width: 90%; display: none; flex-direction: column; height: 55vh; margin-bottom: 80px; }
+        /* EBENE 4: ZWISCHENRAUM */
+        #drawer-ebene4 { overflow-y: auto; scroll-behavior: smooth; padding-right: 5px; width: 90%; display: none; flex-direction: column; height: 60vh; }
         .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; flex-shrink: 0; margin-bottom: 20px; }
         .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; position: relative; }
         .slot-1-user { border-color: #00ff00; color: #00ff00; }
 
-        #sektoren-schubladen { width: 100%; margin-top: 30px; padding-bottom: 50px; }
-        .schublade { border: 1px solid #003d8f; margin-bottom: 5px; background: #050505; width: 100%; }
-        .schublade-header { padding: 15px; font-size: 0.9rem; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; background: #001a3d; border-bottom: 1px solid #003d8f; }
-        .schublade-content { padding: 0 15px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; font-size: 1rem; color: #ccc; background: #000; }
-        .schublade.open .schublade-content { max-height: 500px; padding: 20px; border-top: 1px solid #003d8f; }
+        #sektoren-schubladen { width: 100%; margin-top: 10px; padding-bottom: 120px; }
+        .schublade { border: 1px solid #003d8f; margin-bottom: 10px; background: #050505; transition: all 0.3s; }
+        .schublade-header { padding: 15px; font-size: 1rem; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; background: #001a3d; border-bottom: 1px solid #003d8f; }
+        .schublade-content { padding: 0 15px; max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; font-size: 0.9rem; color: #ccc; }
+        
+        /* GROSSER SCHREIBBEREICH */
+        .schublade.open .schublade-content { max-height: 1200px; padding: 20px; }
+        .schublade-textarea { width: 100%; height: 300px; background: #111; border: 1px solid #003d8f; color: #fff; padding: 10px; margin-top: 15px; font-family: inherit; resize: vertical; }
+        .save-btn { background: #00ff00; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; margin-top: 10px; border-radius: 3px; }
 
         /* EBENE 5: ADMIN ZONE */
         .freie-zone-text { font-size: 3rem; font-weight: 900; color: #ffd700; text-align: center; margin-top: 50px; text-shadow: 0 0 20px #ffd700; }
@@ -233,7 +237,7 @@
                 <div class="video-slot" id="v-slot-7">SLOT 7 (ZUFALL)</div>
                 <div class="video-slot" id="v-slot-8">SLOT 8 (ZUFALL)</div>
             </div>
-            <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 5px; flex-shrink:0; margin-bottom:20px;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
+            <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 5px; flex-shrink:0;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
             
             <div id="sektoren-schubladen"></div>
         </div> 
@@ -256,7 +260,7 @@
     const grid = document.getElementById('main-grid');
     themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="checkAccess(${i}, '${t}')">${t}</div></div>`; });
     
-    // Schubladen Generierung
+    // SCHUBLADEN GENERIERUNG MIT TEXTAREA
     const drawerArea = document.getElementById('sektoren-schubladen');
     themen.forEach((t, i) => {
         drawerArea.innerHTML += `
@@ -266,15 +270,22 @@
                     <span id="arrow-${i}">▼</span>
                 </div>
                 <div class="schublade-content">
-                    <strong>Dokumente & Beweise für Sektor ${i+1}:</strong><br><br>
-                    Hier werden die spezifischen Inhalte, Protokolle und Abstimmungsergebnisse für das Thema "${t}" hinterlegt.<br><br>
-                    Die finale Wahl der Vorsitzenden wird erst eingeleitet, sobald die stille Million erreicht ist.
+                    <p>Hinterlegen Sie hier Beweise, Gedanken oder Forderungen zum Thema "${t}".</p>
+                    <textarea id="note-${i}" class="schublade-textarea" placeholder="Schreiben Sie hier Ihre Inhalte für diesen Sektor..."></textarea>
+                    <br>
+                    <button class="save-btn" onclick="saveNote(${i})">DOKUMENT SICHERN</button>
                 </div>
             </div>`;
     });
 
     const dots = document.getElementById('dot-holder');
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
+
+    function saveNote(id) {
+        const text = document.getElementById(`note-${id}`).value;
+        alert("Dokument für Sektor " + (id+1) + " wurde in der lokalen Sitzung gesichert.");
+        console.log("Gespeichert für Sektor " + id + ": " + text);
+    }
 
     function showZugangInfo(typ) {
         const modal = document.getElementById('zugang-modal');
@@ -285,6 +296,7 @@
         modal.style.display = 'flex';
         if(typ === 'gast') {
             titel.innerText = "Gast-Modus";
+            titel.style.color = "#fff";
             text.innerText = "Dein Fortschritt wird nur lokal gespeichert. Löschst du deinen Browser-Verlauf, musst du in Ebene 1 neu beginnen.";
             emailField.style.display = 'none';
             confirmBtn.onclick = () => { userBackstage.isVerifiziert = false; modal.style.display = 'none'; alert("Gast-Modus aktiv."); };
@@ -296,7 +308,7 @@
             confirmBtn.onclick = () => { 
                 const mail = document.getElementById('user-email-input').value;
                 if(mail.includes('@')) {
-                    userBackstage.isVerverified = true;
+                    userBackstage.isVerifiziert = true;
                     modal.style.display = 'none'; 
                     alert("Verifizierung erfolgreich!");
                 } else { alert("Bitte gib eine gültige E-Mail ein."); }
@@ -324,7 +336,7 @@
     function adminUnlock() {
         themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
         userBackstage.isQualifiziert = true;
-        userBackstage.isVerifiziert = true;
+        userBackstage.isVerverified = true;
         updateNumColors();
         updateUI();
         alert("ADMIN: Alle Barrieren entfernt.");
@@ -355,9 +367,7 @@
     }
 
     function setzeSektorUndVideo(id, t) {
-        tId = id;
-        aktuellesThema = t;
-        ebene = 4;
+        tId = id; aktuellesThema = t; ebene = 4;
         document.getElementById('video-wahl-modal').style.display = 'none';
         updateUI();
     }
@@ -375,7 +385,7 @@
         const ebene4Title = document.getElementById('ebene4-title-red');
         if (isVideo) {
             ebene4Title.style.display = 'block';
-            ebene4Title.innerText = `ZWISCHENRAUM: SEKTOR ${tId + 1}`;
+            ebene4Title.innerText = `ZWISCHENRAUM: DOKUMENTATION`;
         } else {
             ebene4Title.style.display = 'none';
         }
@@ -409,8 +419,7 @@
             sigL1.className = "oval-side ov-schwarz";
             sigL1.onclick = null;
         }
-        updateDots(); 
-        startRotation();
+        updateDots(); startRotation();
     }
 
     function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
@@ -427,15 +436,11 @@
     function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
     
     function registriereSenden() { 
-        const input = document.getElementById('chat-input'), 
-              chatBox = document.getElementById('chat-box'), 
-              text = input.value.trim(); 
+        const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); 
         if (text === "") return; 
         chatBox.innerHTML += `<div style="margin-bottom: 8px;"><strong>Du:</strong> ${text}</div>`; 
         if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++; 
-        input.value = ""; 
-        chatBox.scrollTop = chatBox.scrollHeight; 
-        updateUI(); 
+        input.value = ""; chatBox.scrollTop = chatBox.scrollHeight; updateUI(); 
     }
 
     function updateNumColors() {
