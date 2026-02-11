@@ -335,20 +335,22 @@
         alert("ADMIN UNLOCK");
     }
 
-    // --- NEUE showInfo (VERBESSERT) ---
+    // --- AKTUALISIERTE showInfo ---
     function showInfo(t, id) { 
         tId = id; 
         aktuellesThema = t; 
         
-        // Chat-Bereich komplett leeren
         const chatBox = document.getElementById('chat-box');
         if(chatBox) chatBox.innerHTML = "<i>System: Dialog für " + t + " bereit...</i>";
         
         const input = document.getElementById('chat-input');
         if(input) input.value = "";
 
-        // Direkteinstieg Logik
-        if (userBackstage.isVerifiziert && geleseneThemen.has(id)) { 
+        // PRÜFUNG: Hat der User Sektor 20 (ID 19) jemals erreicht?
+        const fundamentAbgeschlossen = geleseneThemen.has(19);
+
+        // Prüfung auf verifizierten Status UND Abschluss des Fundaments
+        if (userBackstage.isVerifiziert && fundamentAbgeschlossen) { 
             ebene = 3; 
         } else { 
             ebene = 2; 
@@ -444,19 +446,14 @@
 
     function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
     
-    // --- NEUE nextPage (VERBESSERT) ---
     function nextPage() { 
         if (userBackstage.isVerifiziert && (ebene === 2 || ebene === 3) && tId < 19) { 
             tId++; 
             aktuellesThema = themen[tId];
-            
-            // Chat leeren
             const chatBox = document.getElementById('chat-box');
             if(chatBox) chatBox.innerHTML = "<i>System: Dialog für " + aktuellesThema + " bereit...</i>";
-            
             const input = document.getElementById('chat-input');
             if(input) input.value = ""; 
-            
             if (ebene === 2) geleseneThemen.add(tId);
             updateUI(); 
             updateNumColors();
