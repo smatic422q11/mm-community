@@ -259,34 +259,16 @@
     let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
+    // Initialisierung Dashboard
     const grid = document.getElementById('main-grid');
-    themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="checkAccess(${i}, '${t}')">${t}</div></div>`; });
-    
-    const dots = document.getElementById('dot-holder');
-    for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
-
-    function showZugangInfo(typ) {
-        const modal = document.getElementById('zugang-modal');
-        const confirmBtn = document.getElementById('modal-confirm-btn');
-        modal.style.display = 'flex';
-        if(typ === 'gast') {
-            document.getElementById('modal-titel').innerText = "Gast-Modus";
-            document.getElementById('email-input-field').style.display = 'none';
-            confirmBtn.onclick = () => { userBackstage.isVerifiziert = false; modal.style.display = 'none'; updateUI(); };
-        } else {
-            document.getElementById('modal-titel').innerText = "Verifizierter Status";
-            document.getElementById('email-input-field').style.display = 'block';
-            confirmBtn.onclick = () => { 
-                const mail = document.getElementById('user-email-input').value;
-                if(mail.includes('@')) { userBackstage.isVerifiziert = true; modal.style.display = 'none'; updateUI(); alert("Erfolgreich verifiziert!"); } 
-                else { alert("E-Mail ungültig."); }
-            };
-        }
+    if(grid) {
+        grid.innerHTML = "";
+        themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="checkAccess(${i}, '${t}')">${t}</div></div>`; });
     }
 
     function checkAccess(id, t) {
-        // Reihenfolge-Check: Nur wenn verifiziert oder Vorgänger gelesen
-        if (userBackstage.isVerifiziert || id === 0 || geleseneThemen.has(id-1)) { 
+        // Erlaubt Zugriff wenn: Verifiziert ODER Sektor 1 ODER Vorgänger gelesen
+        if (userBackstage.isVerifiziert || id === 0 || geleseneThemen.has(id - 1)) { 
             showInfo(t, id); 
         } else { 
             alert("Bitte lesen Sie die Sektoren der Reihe nach!"); 
@@ -297,17 +279,18 @@
         tId = id; 
         aktuellesThema = t; 
         
-        // Reset Chat
+        // Chat-Vorbereitung
         const chatBox = document.getElementById('chat-box');
         if(chatBox) chatBox.innerHTML = "<i>System: Dialog für " + t + " bereit...</i>";
         
-        // WICHTIG: Nur wenn Sektor 20 (Index 19) GANZ FERTIG (gelbe Lampe) ist, darf man direkt in Ebene 3
+        // Die "Gelbe Lampen" Prüfung: Wurden alle 20 Sektoren mindestens einmal besucht?
         const fundamentKomplettGelesen = (geleseneThemen.size >= 20);
 
+        // LOGIK: Nur wenn verifiziert UND Fundament fertig, dann direkt Chat (Ebene 3)
         if (userBackstage.isVerifiziert && fundamentKomplettGelesen) { 
             ebene = 3; 
         } else { 
-            ebene = 2; // IMMER erst lesen
+            ebene = 2; // Zuerst immer Ebene 2 (Lesen)
             geleseneThemen.add(id); 
         }
         
@@ -319,44 +302,53 @@
 
     function updateUI() {
         const isDashboard = (ebene === 1);
-        const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
+        const isLesen = (ebene === 2);
+        const isChat = (ebene === 3);
+        const isVideo = (ebene === 4);
+        const isAdmin = (ebene === 5);
         
+        // Bereiche ein/ausblenden
         document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
-        document.getElementById('main-text').style.display = (ebene === 2) ? 'block' : 'none';
+        document.getElementById('main-text').style.display = isLesen ? 'block' : 'none';
         document.getElementById('info-titel').innerText = aktuellesThema;
+        if (isLesen) document.getElementById('main-text').innerText = "Inhalt für " + aktuellesThema + "... (Hier stehen die wichtigen Informationen)";
 
-        // Navigations-Buttons Logik
+        // Buttons steuern
         const nextBtn = document.getElementById('btn-next');
         const backBtn = document.getElementById('btn-back');
 
         if (isDashboard) {
             backBtn.style.visibility = 'hidden';
-            // "Weiter" im Dashboard nur, wenn ALLES gelb ist
+            // Dashboard "Weiter" Knopf NUR wenn alle 20 gelb sind
             nextBtn.style.visibility = (geleseneThemen.size >= 20) ? 'visible' : 'hidden';
         } else {
             backBtn.style.visibility = 'visible';
-            // In Ebene 2/3: "Weiter" nur für Verifizierte (um zum nächsten Sektor zu springen)
+            // In Sektoren: Weiter-Knopf für Verifizierte (bis Sektor 20)
             nextBtn.style.visibility = (userBackstage.isVerifiziert && tId < 19) ? 'visible' : 'hidden';
         }
-
-        // Signallampen Check
-        const sigGelb = document.getElementById('sig-r4');
-        sigGelb.classList.toggle('signal-aktiv', (ebene === 2 && geleseneThemen.size >= 20));
 
         updateDots(); 
     }
 
     function nextPage() { 
+        // Fall 1: Vom Dashboard (Ebene 1) zur Ebene 3 springen (wenn alles gelb)
         if (ebene === 1 && geleseneThemen.size >= 20) {
-            // Sprung vom Dashboard in den Chat-Modus nach Abschluss
             ebene = 3;
             updateUI();
-        } else if (userBackstage.isVerifiziert && (ebene === 2 || ebene === 3) && tId < 19) { 
-            // Verifizierter springt zum nächsten Sektor-Inhalt
+        } 
+        // Fall 2: Innerhalb der Sektoren (Ebene 2 oder 3) zum nächsten Sektor springen
+        else if (userBackstage.isVerifiziert && (ebene === 2 || ebene === 3) && tId < 19) { 
             tId++; 
             aktuellesThema = themen[tId];
             geleseneThemen.add(tId);
-            ebene = 2; 
+            
+            // Wichtig: Wenn er im Chat war (Ebene 3), bleibt er im Chat. 
+            // Wenn er im Lesen war (Ebene 2), bleibt er im Lesen.
+            
+            // Chat-Inhalt für neuen Sektor resetten
+            const chatBox = document.getElementById('chat-box');
+            if(chatBox) chatBox.innerHTML = "<i>System: Dialog für " + aktuellesThema + " bereit...</i>";
+
             updateUI(); 
             updateNumColors();
         } 
@@ -382,15 +374,21 @@
         });
     }
 
-    function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
-    
-    // Andere Funktionen (Video/Admin/ChatSenden) bleiben gleich...
+    function updateDots() { 
+        for(let i=1; i<=7; i++) { 
+            const d = document.getElementById('dot'+i); 
+            if(d) d.classList.toggle('active', i === ebene); 
+        } 
+    }
+
     function registriereSenden() { 
         const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); 
         if (text === "") return; 
-        chatBox.innerHTML += `<div><strong>Du:</strong> ${text}</div>`; 
-        interaktionsZaehler[tId]++; 
-        input.value = ""; chatBox.scrollTop = chatBox.scrollHeight; updateNumColors();
+        chatBox.innerHTML += `<div style="margin-bottom:5px;"><strong>Du:</strong> ${text}</div>`; 
+        if(interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++; 
+        input.value = ""; 
+        chatBox.scrollTop = chatBox.scrollHeight; 
+        updateNumColors();
     }
 </script>
 </body>
