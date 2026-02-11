@@ -16,6 +16,10 @@
         .pulsieren { animation: pulsieren 2s infinite ease-in-out; font-weight: bold; }
         .signal-aktiv { animation: signalBlink 1.0s infinite ease-in-out !important; border: 2px solid #fff !important; cursor: pointer; }
 
+        /* LILA BALKEN */
+        .lila-registrierung-leiste { width: 100%; height: 80px; background: #8b00ff; border-top: 2px solid #fff; border-bottom: 2px solid #fff; display: flex; align-items: center; justify-content: center; margin-top: 20px; box-shadow: 0 0 20px #8b00ff; }
+        .registrierung-text { color: #fff; font-size: 2.2rem; font-weight: 900; letter-spacing: 15px; text-transform: uppercase; }
+
         /* HEADER & TAFEL */
         .dashboard-header { width: 100%; position: absolute; top: 3%; display: flex; justify-content: flex-start; padding: 0 2%; box-sizing: border-box; z-index: 20; }
         .logo-ring { width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; }
@@ -53,25 +57,30 @@
         #drawer-ebene4 { overflow-y: auto; padding-right: 5px; width: 90%; display: none; flex-direction: column; height: 60vh; }
         .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; margin-bottom: 20px; }
         .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; position: relative; }
-        
+        .slot-1-user { border-color: #00ff00; color: #00ff00; }
+
         .schublade { border: 1px solid #003d8f; margin-bottom: 10px; background: #050505; }
         .schublade-header { padding: 15px; font-size: 1rem; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; background: #001a3d; border-bottom: 1px solid #003d8f; }
         .schublade-content { padding: 0 15px; max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; }
         .schublade.open .schublade-content { max-height: 1200px; padding: 20px; }
-        .schublade-textarea { width: 100%; height: 350px; background: #111; border: 1px solid #003d8f; color: #fff; padding: 15px; margin-top: 15px; font-family: inherit; resize: vertical; }
+        .schublade-textarea { width: 100%; height: 350px; background: #111; border: 1px solid #003d8f; color: #fff; padding: 15px; margin-top: 15px; font-family: inherit; resize: vertical; font-size: 1rem; }
         .save-btn { background: #00ff00; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; margin-top: 10px; }
 
-        /* NAV */
+        /* NAVIGATION UNTEN */
         .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; background: #000; z-index: 100; border-top: 1px solid #333; }
         .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
         .dot { width: 10px; height: 10px; background: #444; border-radius: 50%; }
         .dot.active { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
 
+        /* SPEZIALELEMENTE */
         #counter-box { position: absolute; right: 0; top: 0; width: 100px; padding: 5px; border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f; background: #000; text-align: center; display: none; z-index: 100; }
-        .ebene4-header-red { width: 90%; background: #ff0000; color: #fff; padding: 10px 0; text-align: center; font-weight: 900; font-size: 1.5rem; display: none; text-transform: uppercase; }
+        .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
+        .ebene4-header-red { width: 90%; background: #ff0000; color: #fff; padding: 10px 0; text-align: center; font-weight: 900; font-size: 1.5rem; display: none; text-transform: uppercase; border-radius: 5px 5px 0 0; }
+        .freie-zone-text { font-size: 3rem; font-weight: 900; color: #ffd700; text-align: center; margin-top: 50px; text-shadow: 0 0 20px #ffd700; }
 
         .num-neutral { background-color: #003d8f !important; }
         .num-gelesen { background-color: #ffd700 !important; color: #000 !important; }
+        .num-offen { background-color: #ff4d4d !important; }
         .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
 
         .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
@@ -95,14 +104,14 @@
             <div class="fundament-box" style="flex: 1;"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div></div>
         </div>
         <div class="zugang-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 80px;">
-            <div class="fundament-box" style="flex: 1; cursor: pointer;" onclick="showZugangInfo('gast')"><div class="num" style="background:#333;">G</div><div class="text">Gast-Zugang</div></div>
+            <div class="fundament-box" style="flex: 1; cursor: pointer;" onclick="showZugangInfo('gast')"><div class="num" style="background:#333;">G</div><div class="text">Gast-Zugang (Eingeschränkt)</div></div>
             <div class="fundament-box" style="flex: 1; border-color: #8b00ff; cursor: pointer;" onclick="showZugangInfo('email')"><div class="num" style="background:#8b00ff;">V</div><div class="text" style="color: #ffd700;">Verifizierter Status</div></div>
         </div>
     </div>
 
     <div id="video-wahl-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:20000; flex-direction:column; align-items:center; justify-content:center;">
         <h1 style="color:#ff0000;">WÄHLE DEINEN VIDEO-RAUM</h1>
-        <div id="wahl-liste" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; width:90%; padding:20px;"></div>
+        <div id="wahl-liste" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; width:90%; max-height:60vh; overflow-y:auto; padding:20px;"></div>
         <button onclick="document.getElementById('video-wahl-modal').style.display='none'" class="nav-btn">ZURÜCK</button>
     </div>
 
@@ -110,14 +119,14 @@
         <div style="background:#000; border:2px solid #003d8f; padding:30px; width:400px; text-align:center;">
             <h3 id="modal-titel"></h3>
             <p id="modal-text"></p>
-            <div id="email-input-field" style="display:none; margin-bottom:20px;"><input type="email" id="user-email-input" style="width:90%; padding:10px;"></div>
+            <div id="email-input-field" style="display:none; margin-bottom:20px;"><input type="email" id="user-email-input" placeholder="E-Mail..." style="width:90%; padding:10px;"></div>
             <button id="modal-confirm-btn" class="nav-btn">AKZEPTIEREN</button>
         </div>
     </div>
 
     <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
-        <div class="top-container" style="width:100%; display:flex; flex-direction:column; align-items:center;">
-            <h1 id="info-titel" class="page-title-white" style="text-transform:uppercase; font-size:1.8rem; margin:10px 0;"></h1>
+        <div class="top-container" style="width:100%; display:flex; flex-direction:column; align-items:center; margin-top:1vh;">
+            <h1 id="info-titel" style="text-transform:uppercase; font-size:1.8rem; margin-bottom:5px; font-weight:900;"></h1>
             <div id="ebene4-title-red" class="ebene4-header-red"></div>
             <div class="tafel-layout">
                 <div class="buttons-links">
@@ -128,26 +137,35 @@
                 <div class="info-section-ebene">
                     <div class="werbe-bild-bg" id="werbe-bg"></div>
                     <div id="counter-box"><span style="font-size:0.4rem; color:#fff; display:block;">STILLE MILLION</span><span class="counter-value">842.336</span></div>
+                    <div style="z-index: 5; text-align: center; color: rgba(255,255,255,0.3);">WERBUNG</div>
                 </div>
                 <div class="buttons-rechts">
                     <div class="oval-side ov-grun"></div><div class="oval-side ov-blau"></div><div class="oval-side ov-pink"></div>
                     <div class="oval-side ov-gelb" id="sig-r4" onclick="portalZuEbene3()"></div>
                 </div>
             </div>
+            <div id="lila-balken-container" style="display: none; width: 100%;">
+                <div class="lila-registrierung-leiste"><div class="registrierung-text">REGISTRIERUNG</div></div>
+            </div>
         </div>
 
-        <p id="main-text" style="width: 85%; color: #ccc; margin-top: 2vh; font-size: 1.3rem; line-height: 1.8;"></p>
+        <p id="main-text" style="width: 85%; color: #ccc; margin-top: 2vh; font-size: 1.3rem; line-height: 1.8; text-align: justify;"></p>
 
         <div id="chat-area">
-            <div class="chat-msgs" id="chat-box"></div>
+            <div class="chat-msgs" id="chat-box"><i>Dialog bereit...</i></div>
             <div class="chat-input-row">
-                <input type="text" id="chat-input" placeholder="Nachricht..." style="flex:1; background:transparent; border:none; color:#fff; padding:10px;" onkeypress="if(event.key==='Enter') registriereSenden()">
-                <button onclick="registriereSenden()" class="nav-btn">SENDEN</button>
+                <input type="text" id="chat-input" placeholder="Nachricht..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px; outline:none;" onkeypress="if(event.key==='Enter') registriereSenden()">
+                <button onclick="registriereSenden()" style="background:#003d8f; color:#fff; border:none; padding:0 30px; cursor:pointer;">SENDEN</button>
             </div>
         </div> 
 
         <div id="drawer-ebene4">
-            <div class="video-grid" id="v-grid"></div>
+            <div class="video-grid" id="v-grid">
+                <div class="video-slot slot-1-user" id="v-slot-1">SLOT 1 (DU)</div>
+                <div class="video-slot">SLOT 2</div><div class="video-slot">SLOT 3</div><div class="video-slot">SLOT 4</div>
+                <div class="video-slot">SLOT 5</div><div class="video-slot">SLOT 6</div><div class="video-slot">SLOT 7</div><div class="video-slot">SLOT 8</div>
+            </div>
+            <button onclick="starteVideoKonferenz()" style="width:100%; background:#00ff00; color:#000; padding:12px; font-weight:bold; cursor:pointer; margin-bottom:20px;">VIDEO BEITRETEN</button>
             <div id="sektoren-schubladen"></div>
         </div> 
 
@@ -166,84 +184,99 @@
     let ebene = 1, tId = 0, aktuellesThema = "", geleseneThemen = new Set(), interaktionsZaehler = {};
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
-    // Grid Init
+    // Init Grid
     const grid = document.getElementById('main-grid');
     themen.forEach((t, i) => { grid.innerHTML += `<div class="box"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="checkAccess(${i}, '${t}')">${t}</div></div>`; });
     
-    // Schubladen Init
+    // Init Schubladen
     const drawerArea = document.getElementById('sektoren-schubladen');
     themen.forEach((t, i) => {
-        drawerArea.innerHTML += `<div class="schublade" id="drawer-${i}"><div class="schublade-header" onclick="toggleDrawer(${i})"><span>SEKTOR ${i+1}: ${t}</span><span id="arrow-${i}">▼</span></div><div class="schublade-content"><textarea id="note-${i}" class="schublade-textarea" placeholder="Hier tippen..."></textarea><br><button class="save-btn" onclick="saveNote(${i})">DOKUMENT SICHERN</button></div></div>`;
+        drawerArea.innerHTML += `<div class="schublade" id="drawer-${i}"><div class="schublade-header" onclick="toggleDrawer(${i})"><span>SEKTOR ${i+1}: ${t}</span><span id="arrow-${i}">▼</span></div><div class="schublade-content"><textarea id="note-${i}" class="schublade-textarea" placeholder="Hier tippen..."></textarea><br><button class="save-btn" onclick="saveNote(${i})">SICHERN</button></div></div>`;
     });
 
-    // Dots Init
+    // Init Dots
     const dots = document.getElementById('dot-holder');
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
     function checkAccess(id, t) {
-        if (userBackstage.isVerifiziert || geleseneThemen.has(id) || id === 0 || geleseneThemen.size >= id) { showInfo(t, id); } 
-        else { alert("Bitte der Reihe nach!"); }
-    }
-
-    function showInfo(t, id) { 
-        tId = id; aktuellesThema = t; ebene = 2; geleseneThemen.add(id);
-        document.getElementById('dashboard').style.display = 'none'; 
-        document.getElementById('page-skelett').style.display = 'flex'; 
-        updateUI(); 
+        if (userBackstage.isVerifiziert || geleseneThemen.has(id) || id === 0 || geleseneThemen.size >= id) { 
+            tId = id; aktuellesThema = t; ebene = 2; geleseneThemen.add(id);
+            document.getElementById('dashboard').style.display = 'none'; 
+            document.getElementById('page-skelett').style.display = 'flex'; 
+            updateUI(); 
+        } else { alert("Reihenfolge einhalten!"); }
     }
 
     function updateUI() {
-        const isEbene2 = (ebene === 2), isChat = (ebene === 3), isVideo = (ebene === 4);
+        const isEbene2 = (ebene === 2), isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
         document.getElementById('main-text').style.display = isEbene2 ? 'block' : 'none';
         document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
         document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
-        
-        // Navigation Logik
+        document.getElementById('ebene5-bereich').style.display = isAdmin ? 'block' : 'none';
+        document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
+        document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
+        document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
+
         const btnNext = document.getElementById('btn-next');
         const btnBack = document.getElementById('btn-back');
-        const redBar = document.getElementById('ebene4-title-red');
         const sigGelb = document.getElementById('sig-r4');
+        const sigRot = document.getElementById('sig-l4');
+        const sigElite = document.getElementById('sig-l1');
 
         if (isEbene2) {
             document.getElementById('info-titel').innerText = aktuellesThema;
-            document.getElementById('main-text').innerText = "Inhalt für " + aktuellesThema + "...";
+            document.getElementById('main-text').innerText = "Inhalt für Sektor " + (tId+1) + ": " + aktuellesThema;
             
-            // DIE BRÜCKE LOGIK
-            if (tId === 19) {
+            // NAVIGATION LOGIK FIX
+            if (tId === 19) { // Die Brücke
                 btnNext.style.visibility = "hidden";
                 btnBack.innerText = "← ZUM DASHBOARD";
             } else {
                 btnNext.style.visibility = "visible";
                 btnBack.innerText = "← Dashboard";
             }
-            // Gelbes Licht Signal
+            // Gelbes Licht Signal (leuchtet wenn alle 20 gelesen)
             sigGelb.classList.toggle('signal-aktiv', geleseneThemen.size === 20);
         } else {
             btnNext.style.visibility = "visible";
             btnBack.innerText = "← Dashboard";
+            sigGelb.classList.remove('signal-aktiv');
         }
 
+        // Roter Balken in Ebene 4
+        const redBar = document.getElementById('ebene4-title-red');
         if (isVideo) {
             redBar.style.display = 'block';
             redBar.innerText = `SEKTOR: ${aktuellesThema}`;
         } else { redBar.style.display = 'none'; }
+
+        // Rotes Signal (Ebene 3 -> 4)
+        if (ebene === 3) {
+            let alleFertig = Object.values(interaktionsZaehler).every(v => v >= 20);
+            sigRot.classList.toggle('signal-aktiv', alleFertig);
+        } else { sigRot.classList.remove('signal-aktiv'); }
+
+        // Elite Signal
+        if (userBackstage.isQualifiziert && ebene < 5) {
+            sigElite.className = "oval-side elite-aktiv";
+            sigElite.onclick = () => { ebene = 5; updateUI(); };
+        } else { sigElite.className = "oval-side ov-schwarz"; sigElite.onclick = null; }
 
         updateDots(); updateNumColors(); startRotation();
     }
 
     function nextPage() { 
         if (ebene === 2 && tId < 19) { tId++; aktuellesThema = themen[tId]; geleseneThemen.add(tId); updateUI(); } 
-        else if (ebene !== 2) { ebene++; updateUI(); }
+        else if (ebene !== 2 && ebene < 7) { ebene++; updateUI(); }
     }
 
     function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
-    function toggleDrawer(id) { document.querySelectorAll('.schublade').forEach((s, idx) => s.classList.toggle('open', idx === id && !s.classList.contains('open'))); }
-    function saveNote(id) { alert("Gesichert."); }
-
+    
     function showZugangInfo(typ) {
         const modal = document.getElementById('zugang-modal');
         document.getElementById('email-input-field').style.display = (typ==='email'?'block':'none');
-        document.getElementById('modal-titel').innerText = (typ==='email'?'Verifiziert':'Gast');
+        document.getElementById('modal-titel').innerText = (typ==='email'?'Verifizierter Status':'Gast-Modus');
+        document.getElementById('modal-text').innerText = (typ==='email'?'Alle Sektoren bleiben dauerhaft gesichert.':'Fortschritt wird nur lokal gespeichert.');
         modal.style.display = 'flex';
         document.getElementById('modal-confirm-btn').onclick = () => {
             if(typ==='email') userBackstage.isVerifiziert = true;
@@ -253,26 +286,58 @@
     }
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
-    function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
+    function portalZuEbene4() { 
+        if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { 
+            const modal = document.getElementById('video-wahl-modal');
+            const liste = document.getElementById('wahl-liste');
+            liste.innerHTML = "";
+            themen.forEach((t, i) => {
+                liste.innerHTML += `<div onclick="setSektorVideo(${i}, '${t}')" style="border:1px solid #fff; padding:10px; cursor:pointer; text-align:center;">SEKTOR ${i+1}</div>`;
+            });
+            modal.style.display = 'flex';
+        } 
+    }
+    function setSektorVideo(id, t) { tId = id; aktuellesThema = t; ebene = 4; document.getElementById('video-wahl-modal').style.display = 'none'; updateUI(); }
+
+    function registriereSenden() { 
+        const input = document.getElementById('chat-input'), box = document.getElementById('chat-box'), val = input.value.trim();
+        if(!val) return;
+        box.innerHTML += `<div><strong>Du:</strong> ${val}</div>`;
+        if(interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++;
+        input.value = ""; box.scrollTop = box.scrollHeight; updateUI();
+    }
+
+    function toggleDrawer(id) {
+        const d = document.getElementById(`drawer-${id}`);
+        const isOpen = d.classList.contains('open');
+        document.querySelectorAll('.schublade').forEach(s => s.classList.remove('open'));
+        if(!isOpen) d.classList.add('open');
+    }
+
+    function saveNote(id) { alert("Sektor " + (id+1) + " gesichert."); }
 
     function updateNumColors() {
         themen.forEach((_, i) => {
             const n = document.getElementById(`num-${i}`);
-            if (n) {
-                if (interaktionsZaehler[i] >= 20) n.className = "num num-fertig";
-                else if (geleseneThemen.has(i)) n.className = "num num-gelesen";
-                else n.className = "num num-neutral";
-            }
+            if(!n) return;
+            if (interaktionsZaehler[i] >= 20) n.className = "num num-fertig";
+            else if (interaktionsZaehler[i] > 0) n.className = "num num-offen";
+            else if (geleseneThemen.has(i)) n.className = "num num-gelesen";
+            else n.className = "num num-neutral";
         });
     }
 
     function updateDots() { for(let i=1; i<=7; i++) document.getElementById('dot'+i).classList.toggle('active', i === ebene); }
-    function startRotation() { 
-        const bg = document.getElementById('werbe-bg'); 
-        bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId+ebene}/1200/600')`; 
-        bg.classList.add('bild-aktiv'); 
+    function startRotation() { document.getElementById('werbe-bg').style.backgroundImage = `url('https://picsum.photos/seed/${tId+ebene}/1200/600')`; document.getElementById('werbe-bg').classList.add('bild-aktiv'); }
+    function adminUnlock() { userBackstage.isQualifiziert = true; userBackstage.isVerifiziert = true; geleseneThemen = new Set(themen.keys()); updateNumColors(); updateUI(); alert("Admin Modus."); }
+
+    async function starteVideoKonferenz() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            document.getElementById('v-slot-1').innerHTML = `<video id="user-v" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>`;
+            document.getElementById('user-v').srcObject = stream;
+        } catch(e) { alert("Kamera nicht gefunden."); }
     }
-    function adminUnlock() { userBackstage.isQualifiziert = true; userBackstage.isVerifiziert = true; alert("Admin Aktiv"); }
 </script>
 </body>
 </html>
