@@ -311,6 +311,7 @@
     }
 
     function checkAccess(id, t) {
+        // Zugangskontrolle: Man muss die Reihenfolge einhalten (außer man ist verifiziert oder hat den Sektor schon gelesen)
         if (userBackstage.isVerifiziert || geleseneThemen.has(id) || id === 0 || geleseneThemen.size >= id) { 
             showInfo(t, id); 
         } 
@@ -335,7 +336,7 @@
         alert("ADMIN UNLOCK");
     }
 
-    // --- AKTUALISIERTE showInfo ---
+    // --- KORRIGIERTE showInfo FUNKTION ---
     function showInfo(t, id) { 
         tId = id; 
         aktuellesThema = t; 
@@ -346,13 +347,14 @@
         const input = document.getElementById('chat-input');
         if(input) input.value = "";
 
-        // PRÜFUNG: Hat der User Sektor 20 (ID 19) jemals erreicht?
+        // PRÜFUNG: Hat der User das Fundament (Sektor 20 / Index 19) bereits jemals abgeschlossen?
         const fundamentAbgeschlossen = geleseneThemen.has(19);
 
-        // Prüfung auf verifizierten Status UND Abschluss des Fundaments
+        // LOGIK: Erst wenn verifiziert UND Fundament komplett gelesen, darf man direkt in Ebene 3
         if (userBackstage.isVerifiziert && fundamentAbgeschlossen) { 
             ebene = 3; 
         } else { 
+            // Pflicht: Erst Ebene 2 (Inhalt lesen)
             ebene = 2; 
             geleseneThemen.add(id); 
         }
