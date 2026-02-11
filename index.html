@@ -112,7 +112,7 @@
         
         /* GROSSER SCHREIBBEREICH */
         .schublade.open .schublade-content { max-height: 1200px; padding: 20px; }
-        .schublade-textarea { width: 100%; height: 300px; background: #111; border: 1px solid #003d8f; color: #fff; padding: 10px; margin-top: 15px; font-family: inherit; resize: vertical; }
+        .schublade-textarea { width: 100%; height: 350px; background: #111; border: 1px solid #003d8f; color: #fff; padding: 15px; margin-top: 15px; font-family: inherit; resize: vertical; font-size: 1rem; line-height: 1.5; }
         .save-btn { background: #00ff00; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; margin-top: 10px; border-radius: 3px; }
 
         /* EBENE 5: ADMIN ZONE */
@@ -128,7 +128,9 @@
         .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
         .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh; flex-shrink: 0; }
         .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
-        .ebene4-header-red { width: 90%; background: #ff0000; color: #fff; padding: 10px 0; text-align: center; font-weight: 900; font-size: 1.5rem; border-radius: 5px 5px 0 0; display: none; }
+        
+        /* ROTER BALKEN */
+        .ebene4-header-red { width: 90%; background: #ff0000; color: #fff; padding: 10px 0; text-align: center; font-weight: 900; font-size: 1.5rem; border-radius: 5px 5px 0 0; display: none; text-transform: uppercase; }
 
         .num-neutral { background-color: #003d8f !important; }
         .num-gelesen { background-color: #ffd700 !important; color: #000 !important; }
@@ -191,7 +193,7 @@
     <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
         <div class="top-container">
             <h1 id="info-titel" class="page-title-white"></h1>
-            <div id="ebene4-title-red" class="ebene4-header-red">DER VIDEO-BEWEIS</div>
+            <div id="ebene4-title-red" class="ebene4-header-red"></div>
             <div class="tafel-layout">
                 <div class="buttons-links">
                     <div class="oval-side ov-schwarz" id="sig-l1"></div>
@@ -260,7 +262,7 @@
     const grid = document.getElementById('main-grid');
     themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="checkAccess(${i}, '${t}')">${t}</div></div>`; });
     
-    // SCHUBLADEN GENERIERUNG MIT TEXTAREA
+    // SCHUBLADEN GENERIERUNG
     const drawerArea = document.getElementById('sektoren-schubladen');
     themen.forEach((t, i) => {
         drawerArea.innerHTML += `
@@ -270,8 +272,8 @@
                     <span id="arrow-${i}">▼</span>
                 </div>
                 <div class="schublade-content">
-                    <p>Hinterlegen Sie hier Beweise, Gedanken oder Forderungen zum Thema "${t}".</p>
-                    <textarea id="note-${i}" class="schublade-textarea" placeholder="Schreiben Sie hier Ihre Inhalte für diesen Sektor..."></textarea>
+                    <p>Hinterlegen Sie hier Dokumente oder Gedanken zum Thema "${t}".</p>
+                    <textarea id="note-${i}" class="schublade-textarea" placeholder="Hier tippen..."></textarea>
                     <br>
                     <button class="save-btn" onclick="saveNote(${i})">DOKUMENT SICHERN</button>
                 </div>
@@ -283,8 +285,7 @@
 
     function saveNote(id) {
         const text = document.getElementById(`note-${id}`).value;
-        alert("Dokument für Sektor " + (id+1) + " wurde in der lokalen Sitzung gesichert.");
-        console.log("Gespeichert für Sektor " + id + ": " + text);
+        alert("Dokument für Sektor " + (id+1) + " lokal gesichert.");
     }
 
     function showZugangInfo(typ) {
@@ -296,32 +297,24 @@
         modal.style.display = 'flex';
         if(typ === 'gast') {
             titel.innerText = "Gast-Modus";
-            titel.style.color = "#fff";
-            text.innerText = "Dein Fortschritt wird nur lokal gespeichert. Löschst du deinen Browser-Verlauf, musst du in Ebene 1 neu beginnen.";
+            text.innerText = "Dein Fortschritt wird nur lokal gespeichert.";
             emailField.style.display = 'none';
             confirmBtn.onclick = () => { userBackstage.isVerifiziert = false; modal.style.display = 'none'; alert("Gast-Modus aktiv."); };
         } else {
             titel.innerText = "Verifizierter Status";
-            titel.style.color = "#ffd700";
             text.innerText = "Alle freigeschalteten Sektoren bleiben dauerhaft gesichert.";
             emailField.style.display = 'block';
             confirmBtn.onclick = () => { 
                 const mail = document.getElementById('user-email-input').value;
-                if(mail.includes('@')) {
-                    userBackstage.isVerifiziert = true;
-                    modal.style.display = 'none'; 
-                    alert("Verifizierung erfolgreich!");
-                } else { alert("Bitte gib eine gültige E-Mail ein."); }
+                if(mail.includes('@')) { userBackstage.isVerifiziert = true; modal.style.display = 'none'; alert("Erfolgreich!"); } 
+                else { alert("E-Mail ungültig."); }
             };
         }
     }
 
     function checkAccess(id, t) {
-        if (userBackstage.isVerifiziert || geleseneThemen.has(id) || id === 0 || geleseneThemen.size >= id) {
-            showInfo(t, id);
-        } else {
-            alert("Bitte bearbeite die Sektoren der Reihe nach.");
-        }
+        if (userBackstage.isVerifiziert || geleseneThemen.has(id) || id === 0 || geleseneThemen.size >= id) { showInfo(t, id); } 
+        else { alert("Reihenfolge einhalten!"); }
     }
 
     function toggleDrawer(id) {
@@ -336,15 +329,13 @@
     function adminUnlock() {
         themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
         userBackstage.isQualifiziert = true;
-        userBackstage.isVerverified = true;
         updateNumColors();
         updateUI();
-        alert("ADMIN: Alle Barrieren entfernt.");
+        alert("ADMIN UNLOCK");
     }
 
     function showInfo(t, id) { 
         tId = id; aktuellesThema = t; 
-        document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
         if (geleseneThemen.has(id)) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
         updateNumColors(); 
         document.getElementById('dashboard').style.display = 'none'; 
@@ -382,12 +373,13 @@
         document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
         document.getElementById('main-text').style.display = (ebene < 3) ? 'block' : 'none';
         
-        const ebene4Title = document.getElementById('ebene4-title-red');
+        const redBar = document.getElementById('ebene4-title-red');
         if (isVideo) {
-            ebene4Title.style.display = 'block';
-            ebene4Title.innerText = `ZWISCHENRAUM: DOKUMENTATION`;
+            redBar.style.display = 'block';
+            // AUTOMATISCHE ZUORDNUNG DES NAMENS IM ROTEN BALKEN
+            redBar.innerText = `SEKTOR: ${aktuellesThema}`;
         } else {
-            ebene4Title.style.display = 'none';
+            redBar.style.display = 'none';
         }
 
         document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
@@ -396,18 +388,15 @@
         document.getElementById('info-titel').innerText = aktuellesThema;
         if (ebene === 2) document.getElementById('main-text').innerText = "Inhalt für " + aktuellesThema + "...";
 
-        const btnNext = document.getElementById('btn-next');
         const sigGelb = document.getElementById('sig-r4');
         const sigRot = document.getElementById('sig-l4');
         const sigL1 = document.getElementById('sig-l1');
 
         if (ebene === 2) {
-            btnNext.style.visibility = (tId < 19) ? 'visible' : 'hidden';
             sigGelb.classList.toggle('signal-aktiv', geleseneThemen.size === 20);
         } else sigGelb.classList.remove('signal-aktiv');
 
         if (ebene === 3) {
-            btnNext.style.visibility = (tId < 19) ? 'visible' : 'hidden';
             let alleFertig = Object.values(interaktionsZaehler).every(val => val >= 20);
             sigRot.classList.toggle('signal-aktiv', alleFertig);
         } else sigRot.classList.remove('signal-aktiv');
@@ -427,7 +416,6 @@
     function nextPage() { 
         if ((ebene === 2 || ebene === 3) && tId < 19) { 
             tId++; aktuellesThema = themen[tId];
-            document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${tId+1} bereit...</i>`;
             if (ebene === 2) geleseneThemen.add(tId);
             updateUI(); updateNumColors();
         } else if (ebene < 7 && ebene !== 2 && ebene !== 3 && ebene !== 4 && ebene !== 5) { ebene++; updateUI(); } 
@@ -469,10 +457,6 @@
             const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
             meinSlot.innerHTML = `<video id="user-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>`;
             document.getElementById('user-video').srcObject = stream;
-            for(let i=2; i<=8; i++) {
-                const s = document.getElementById(`v-slot-${i}`);
-                s.innerHTML = `<div class="pulsieren" style="color:#ffd700;">VERBUNDEN</div>`;
-            }
         } catch (err) { alert("Kamera-Fehler"); }
     }
 </script>
