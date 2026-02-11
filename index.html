@@ -99,17 +99,46 @@
             z-index: 10;
         }
 
-        /* EBENE 4: SCROLLBARER BEREICH */
-        #drawer-ebene4 { overflow-y: auto; scroll-behavior: smooth; padding-right: 5px; width: 90%; display: none; flex-direction: column; }
-        .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; flex-shrink: 0; margin-bottom: 20px; }
-        .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; position: relative; }
-        .slot-1-user { border-color: #00ff00; color: #00ff00; }
+       /* KORRIGIERTE BASIS FÜR MEHR PLATZ */
+body { 
+    background-color: #000; 
+    color: #fff; 
+    font-family: 'Segoe UI', Arial, sans-serif; 
+    margin: 0; 
+    padding: 0; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    /* Änderungen hier: */
+    min-height: 100vh; 
+    overflow-y: auto; 
+}
 
-        #sektoren-schubladen { width: 100%; margin-top: 10px; padding-bottom: 20px; }
-        .schublade { border: 1px solid #003d8f; margin-bottom: 5px; background: #050505; }
-        .schublade-header { padding: 10px; font-size: 0.75rem; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; background: #001a3d; }
-        .schublade-content { padding: 0 10px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; font-size: 0.85rem; color: #ccc; }
-        .schublade.open .schublade-content { max-height: 400px; padding: 15px; border-top: 1px solid #003d8f; }
+/* EBENE 4: JETZT MIT UNENDLICHEM PLATZ NACH UNTEN */
+#drawer-ebene4 { 
+    overflow: visible; /* Sperre entfernt */
+    padding-right: 5px; 
+    width: 90%; 
+    display: none; 
+    flex-direction: column; 
+    padding-bottom: 150px; /* Platzhalter für die freien Zonen */
+}
+
+/* PAGE SKELETT ANPASSUNG */
+#page-skelett { 
+    display: none; 
+    width: 100%; 
+    flex-direction: column; 
+    align-items: center; 
+    min-height: 100vh; /* Wächst mit dem Inhalt mit */
+}
+
+/* Damit die Schubladen beim Öffnen nicht den Rahmen sprengen */
+.schublade.open .schublade-content { 
+    max-height: none; /* Vorher 400px - jetzt soviel Platz wie nötig */
+    padding: 15px; 
+    border-top: 1px solid #003d8f; 
+}
 
         /* EBENE 5: ADMIN ZONE */
         .freie-zone-text { font-size: 3rem; font-weight: 900; color: #ffd700; text-align: center; margin-top: 50px; text-shadow: 0 0 20px #ffd700; }
