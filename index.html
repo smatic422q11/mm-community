@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>M&M-COMMUNITY - Admin Modus</title>
     <style>
-        /* BASIS-LAYOUT - Schraube 1: Scrollen erlaubt */
+        /* BASIS-LAYOUT - Schraube gelockert für Ebene 4 */
         body { 
             background-color: #000; 
             color: #fff; 
@@ -14,8 +14,14 @@
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            min-height: 100vh; 
-            overflow-y: auto; 
+            min-height: 100vh; /* Erlaubt Wachstum */
+            overflow-x: hidden;
+            overflow-y: hidden; /* Standardmäßig gesperrt */
+        }
+
+        /* Wenn Ebene 4 aktiv ist, wird das Scrollen im Body erlaubt */
+        body.ebene4-active {
+            overflow-y: auto;
         }
 
         /* ANIMATIONEN */
@@ -59,39 +65,32 @@
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
         /* EBENE 3 */
-        #chat-area { width: 90% !important; height: 45vh; flex-grow: 1; display: none; flex-direction: column; margin: 0 auto 70px auto; position: relative; overflow: hidden; border: none !important; }
-        .chat-msgs { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px 0; color: #fff; font-size: 1.1rem; overflow-y: auto; scrollbar-width: none; }
-        .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; flex-shrink: 0; margin-top: 5px; z-index: 10; }
+        #chat-area { width: 90% !important; height: 45vh; display: none; flex-direction: column; margin: 0 auto 70px auto; }
 
-        /* EBENE 4 & SCHUBLADEN - Schraube 2 & 3: Freie Zonen */
-        #drawer-ebene4 { width: 90%; display: none; flex-direction: column; padding-bottom: 150px; overflow: visible; }
-        .schublade { border: 1px solid #003d8f; margin-bottom: 5px; background: #000; width: 100%; }
-        .schublade-header { padding: 12px; background: #001a3d; cursor: pointer; display: flex; justify-content: space-between; }
-        .schublade-content { max-height: 0; overflow: hidden; transition: max-height 0.3s; }
-        .schublade.open .schublade-content { max-height: none; padding: 15px; border-top: 1px solid #003d8f; }
+        /* EBENE 4: SCROLLBARER BEREICH */
+        #drawer-ebene4 { 
+            width: 90%; 
+            display: none; 
+            flex-direction: column; 
+            padding-bottom: 120px; /* Platzhalter nach unten */
+        }
+        .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; margin-bottom: 20px; }
+        .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; }
 
-        .freie-zone { border: 1px dashed #444; padding: 20px; margin: 10px 0; text-align: center; color: #666; }
+        #sektoren-schubladen { width: 100%; margin-top: 10px; }
+        .schublade { border: 1px solid #003d8f; margin-bottom: 5px; background: #050505; }
+        .schublade-header { padding: 10px; font-size: 0.75rem; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; background: #001a3d; }
+        .schublade-content { padding: 0 10px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        .schublade.open .schublade-content { max-height: 1000px; padding: 15px; border-top: 1px solid #003d8f; }
 
-        .video-grid { display: grid; grid-template-columns: repeat(4, 2fr); gap: 10px; margin-bottom: 20px; }
-        .video-slot { height: 100px; border: 1px solid #333; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; }
-
-        /* PAGE SKELETT */
-        #page-skelett { display: none; width: 100%; flex-direction: column; align-items: center; min-height: 100vh; }
-
-        /* NAV */
+        /* NAVIGATION */
         .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; background: #000; z-index: 100; border-top: 1px solid #333; }
         .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
         .dot { width: 10px; height: 10px; background: #444; border-radius: 50%; }
-        .dot.active { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
+        .dot.active { background: #ffd700; }
 
-        #counter-box { position: absolute; right: 0; top: 0; width: 100px; padding: 5px; border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f; background: #000; text-align: center; display: none; z-index: 100; }
-        .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
+        .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh; flex-shrink: 0; }
         .ebene4-header-red { width: 90%; background: #ff0000; color: #fff; padding: 10px 0; text-align: center; font-weight: 900; font-size: 1.5rem; border-radius: 5px 5px 0 0; display: none; }
-        
-        .num-neutral { background-color: #003d8f !important; }
-        .num-gelesen { background-color: #ffd700 !important; color: #000 !important; }
-        .num-offen { background-color: #ff4d4d !important; }
-        .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
         .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
         .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
     </style>
@@ -109,47 +108,12 @@
                 Die M&M-Community ist das Fundament für alle. <strong>Die Wahl der Vorsitzenden erfolgt erst nach Erreichen der stillen Million.</strong>
             </p>
         </div>
-        
-        <div class="grid" id="main-grid">
-            <div class="box" id="box-0"><div class="num num-neutral" id="num-0">1</div><div class="text" onclick="checkAccess(0, 'Recht auf Gefühls Forderung')">Recht auf Gefühls Forderung</div></div>
-            <div class="box" id="box-1"><div class="num num-neutral" id="num-1">2</div><div class="text" onclick="checkAccess(1, 'Wie werde ich Mensch')">Wie werde ich Mensch</div></div>
-            <div class="box" id="box-2"><div class="num num-neutral" id="num-2">3</div><div class="text" onclick="checkAccess(2, 'Glaube an Friede')">Glaube an Friede</div></div>
-            <div class="box" id="box-3"><div class="num num-neutral" id="num-3">4</div><div class="text" onclick="checkAccess(3, 'Programm für Bürgerliche Rechte')">Programm für Bürgerliche Rechte</div></div>
-            <div class="box" id="box-4"><div class="num num-neutral" id="num-4">5</div><div class="text" onclick="checkAccess(4, 'Moralische Pflicht und Verantwortung')">Moralische Pflicht und Verantwortung</div></div>
-            <div class="box" id="box-5"><div class="num num-neutral" id="num-5">6</div><div class="text" onclick="checkAccess(5, 'Menschlichkeit Wiederherstellung')">Menschlichkeit Wiederherstellung</div></div>
-            <div class="box" id="box-6"><div class="num num-neutral" id="num-6">7</div><div class="text" onclick="checkAccess(6, 'Kinderschutz-Pflicht-Elternrechte')">Kinderschutz-Pflicht-Elternrechte</div></div>
-            <div class="box" id="box-7"><div class="num num-neutral" id="num-7">8</div><div class="text" onclick="checkAccess(7, 'Wahre Richtung und Kunst')">Wahre Richtung und Kunst</div></div>
-            <div class="box" id="box-8"><div class="num num-neutral" id="num-8">9</div><div class="text" onclick="checkAccess(8, 'LGBTQ und Kirche')">LGBTQ und Kirche</div></div>
-            <div class="box" id="box-9"><div class="num num-neutral" id="num-9">10</div><div class="text" onclick="checkAccess(9, 'Trend and Tradition')">Trend and Tradition</div></div>
-            <div class="box" id="box-10"><div class="num num-neutral" id="num-10">11</div><div class="text" onclick="checkAccess(10, 'Religionsbekenntnis oder Selbstwahl')">Religionsbekenntnis oder Selbstwahl</div></div>
-            <div class="box" id="box-11"><div class="num num-neutral" id="num-11">12</div><div class="text" onclick="checkAccess(11, 'Gesundheitswesen und Verhalten')">Gesundheitswesen und Verhalten</div></div>
-            <div class="box" id="box-12"><div class="num num-neutral" id="num-12">13</div><div class="text" onclick="checkAccess(12, 'Arbeitswelt und Du')">Arbeitswelt und Du</div></div>
-            <div class="box" id="box-13"><div class="num num-neutral" id="num-13">14</div><div class="text" onclick="checkAccess(13, 'Mobbing am Arbeitsplatz')">Mobbing am Arbeitsplatz</div></div>
-            <div class="box" id="box-14"><div class="num num-neutral" id="num-14">15</div><div class="text" onclick="checkAccess(14, 'Jugendsprecher')">Jugendsprecher</div></div>
-            <div class="box" id="box-15"><div class="num num-neutral" id="num-15">16</div><div class="text" onclick="checkAccess(15, 'Ratgeber für Pensionisten')">Ratgeber für Pensionisten</div></div>
-            <div class="box" id="box-16"><div class="num num-neutral" id="num-16">17</div><div class="text" onclick="checkAccess(16, 'Sozialgefallen und Widerkehr')">Sozialgefallen und Widerkehr</div></div>
-            <div class="box" id="box-17"><div class="num num-neutral" id="num-17">18</div><div class="text" onclick="checkAccess(17, 'Nachbarschaft und Gemeinschaft')">Nachbarschaft und Gemeinschaft</div></div>
-            <div class="box" id="box-18"><div class="num num-neutral" id="num-18">19</div><div class="text" onclick="checkAccess(18, 'Mensch und Technik')">Mensch und Technik</div></div>
-            <div class="box" id="box-19"><div class="num num-neutral" id="num-19">20</div><div class="text" onclick="checkAccess(19, 'Die Brücke')">Die Brücke</div></div>
+        <div class="grid" id="main-grid"></div>
         </div>
 
-        <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 10px;">
-            <div class="fundament-box" style="flex: 1;"><div class="num">21</div><div class="text">Kapital und Verwaltung</div></div>
-            <div class="fundament-box" style="flex: 1;"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div></div>
-        </div>
-        <div class="zugang-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-bottom: 80px;">
-            <div class="fundament-box" style="flex: 1; border-color: #555; cursor: pointer;" onclick="showZugangInfo('gast')">
-                <div class="num" style="background-color: #333;">G</div><div class="text">Gast-Zugang (Eingeschränkt)</div>
-            </div>
-            <div class="fundament-box" style="flex: 1; border-color: #8b00ff; cursor: pointer;" onclick="showZugangInfo('email')">
-                <div class="num" style="background-color: #8b00ff;">V</div><div class="text" style="color: #ffd700;">Verifizierter Status (Voller Zugriff 1-4)</div>
-            </div>
-        </div>
-    </div>
-
-    <div id="page-skelett">
-        <div class="top-container" style="width:100%; display:flex; flex-direction:column; align-items:center;">
-            <h1 id="info-titel" class="page-title-white"></h1>
+    <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+        <div class="top-container">
+            <h1 id="info-titel" class="page-title-white" style="text-transform: uppercase; font-size: 1.8rem; font-weight: 900;"></h1>
             <div id="ebene4-title-red" class="ebene4-header-red">DER VIDEO-BEWEIS</div>
             <div class="tafel-layout">
                 <div class="buttons-links">
@@ -160,7 +124,6 @@
                 </div>
                 <div class="info-section-ebene">
                     <div class="werbe-bild-bg" id="werbe-bg"></div>
-                    <div id="counter-box"><span style="font-size:0.4rem; color:#fff; display:block;">STILLE MILLION</span><span class="counter-value">842.336</span></div>
                     <div style="z-index: 5; text-align: center; font-weight: bold; color: rgba(255,255,255,0.3); letter-spacing: 5px;">PLATZ FÜR WERBUNG</div>
                 </div>
                 <div class="buttons-rechts">
@@ -174,82 +137,83 @@
 
         <p id="main-text" style="width: 85%; text-align: justify; color: #ccc; margin-top: 2vh; font-size: 1.3rem; line-height: 1.8;"></p>
 
-        <div id="chat-area">
-            <div class="chat-msgs" id="chat-box"></div>
-            <div class="chat-input-row">
-                <input type="text" id="chat-input" placeholder="Nachricht schreiben..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px; outline:none;" onkeypress="if(event.key==='Enter') registriereSenden()">
-                <button onclick="registriereSenden()" style="background:#003d8f; color:#fff; border:none; padding:0 30px; font-weight:bold; cursor:pointer;">SENDEN</button>
-            </div>
-        </div> 
-
         <div id="drawer-ebene4">
             <div class="video-grid">
-                <div class="video-slot">SLOT 1 (DU)</div>
-                <div class="video-slot">SLOT 2</div>
-                <div class="video-slot">SLOT 3</div>
-                <div class="video-slot">SLOT 4</div>
+                <div class="video-slot" style="border-color:#00ff00; color:#00ff00;">SLOT 1 (DU)</div>
+                <div class="video-slot">SLOT 2</div><div class="video-slot">SLOT 3</div><div class="video-slot">SLOT 4</div>
             </div>
-            <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 5px; margin-bottom: 20px;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
-            
-            <div id="sektoren-schubladen">
-                <div class="schublade" id="drawer-0">
-                    <div class="schublade-header" onclick="toggleDrawer(0)"><span>SEKTOR 1: Recht auf Gefühls Forderung</span><span id="arrow-0">▼</span></div>
-                    <div class="schublade-content">
-                        <div class="freie-zone">FREIE ZONE: DOKUMENTE</div>
-                        <p>Hier liegen die Beweise.</p>
-                        <div class="freie-zone">FREIE ZONE: MULTIMEDIA</div>
-                    </div>
-                </div>
-                </div>
+            <div id="sektoren-schubladen"></div>
         </div> 
     </div>
 
     <div class="bottom-nav">
-        <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Dashboard</button>
-        <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
-        <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
+        <button class="nav-btn" onclick="showDashboard()">← Dashboard</button>
+        <div id="dot-holder" style="display: flex; gap: 8px;"></div>
+        <button class="nav-btn" style="visibility: hidden;">Weiter →</button>
     </div>
 
 <script>
-    // Script-Logik bleibt erhalten, da sie die Funktionen steuert
-    let userBackstage = { isQualifiziert: false, isVerifiziert: false };
     const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
-    let ebene = 1, tId = 0, aktuellesThema = "", geleseneThemen = new Set(), interaktionsZaehler = {};
-    themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
+    let ebene = 1, tId = 0;
 
-    // Funktionen wie gehabt...
+    // Grid generieren
+    const grid = document.getElementById('main-grid');
+    themen.forEach((t, i) => { grid.innerHTML += `<div class="box"><div class="num">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; });
+
+    // Schubladen generieren
+    const drawerArea = document.getElementById('sektoren-schubladen');
+    themen.forEach((t, i) => {
+        drawerArea.innerHTML += `<div class="schublade" id="drawer-${i}"><div class="schublade-header" onclick="toggleDrawer(${i})"><span>SEKTOR ${i+1}: ${t}</span><span>▼</span></div><div class="schublade-content">Hier liegen die Dokumente für ${t}.</div></div>`;
+    });
+
+    function showInfo(t, id) {
+        tId = id; ebene = 2;
+        document.getElementById('dashboard').style.display = 'none';
+        document.getElementById('page-skelett').style.display = 'flex';
+        document.getElementById('info-titel').innerText = t;
+        document.body.classList.remove('ebene4-active');
+        updateUI();
+    }
+
+    function portalZuEbene4() {
+        ebene = 4;
+        updateUI();
+    }
+
     function toggleDrawer(id) {
         const d = document.getElementById(`drawer-${id}`);
-        const isOpen = d.classList.contains('open');
-        if (!isOpen) { d.classList.add('open'); } else { d.classList.remove('open'); }
-    }
-
-    function checkAccess(id, t) {
-        showInfo(t, id);
-    }
-
-    function showInfo(t, id) { 
-        tId = id; aktuellesThema = t; 
-        ebene = 2; geleseneThemen.add(id);
-        document.getElementById('dashboard').style.display = 'none'; 
-        document.getElementById('page-skelett').style.display = 'flex'; 
-        updateUI(); 
+        d.classList.toggle('open');
     }
 
     function updateUI() {
-        document.getElementById('info-titel').innerText = aktuellesThema;
-        document.getElementById('chat-area').style.display = (ebene === 3) ? 'flex' : 'none';
-        document.getElementById('drawer-ebene4').style.display = (ebene === 4) ? 'flex' : 'none';
-        document.getElementById('btn-back').style.visibility = 'visible';
-        // Dots Update
+        const isVideo = (ebene === 4);
+        document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
+        document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
+        document.getElementById('info-titel').style.display = isVideo ? 'none' : 'block';
+        
+        // Der entscheidende Teil für das Scrollen
+        if(isVideo) {
+            document.body.classList.add('ebene4-active');
+        } else {
+            document.body.classList.remove('ebene4-active');
+            window.scrollTo(0,0);
+        }
+
         const dots = document.getElementById('dot-holder');
         dots.innerHTML = "";
-        for(let i=1; i<=7; i++) dots.innerHTML += `<div class="dot ${i===ebene?'active':''}"></div>`;
+        for(let i=1; i<=5; i++) dots.innerHTML += `<div class="dot ${i===ebene?'active':''}"></div>`;
+        
+        const bg = document.getElementById('werbe-bg');
+        bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId}/1200/600')`;
+        bg.classList.add('bild-aktiv');
     }
 
-    function portalZuEbene3() { ebene = 3; updateUI(); }
-    function portalZuEbene4() { ebene = 4; updateUI(); }
-    function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; }
+    function showDashboard() {
+        ebene = 1;
+        document.getElementById('page-skelett').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'flex';
+        document.body.classList.remove('ebene4-active');
+    }
 </script>
 </body>
 </html>
