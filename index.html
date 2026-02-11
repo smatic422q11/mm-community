@@ -165,11 +165,11 @@
     const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
     let ebene = 1, tId = 0, aktuellesThema = "", geleseneThemen = new Set(), interaktionsZaehler = {};
     
-    // NEU: Ein Objekt zum Speichern der Chatverläufe pro Sektor
+    // Speicher für Chatverläufe
     let chatSpeicher = {};
     themen.forEach((t, i) => { 
         interaktionsZaehler[i] = 0; 
-        chatSpeicher[i] = "<i>Dialog startet...</i>"; // Initialer Text
+        chatSpeicher[i] = "<i>Dialog startet...</i>"; 
     });
 
     // Grid Bauen
@@ -213,8 +213,6 @@
 
     function tryOpenSektor(id, t) {
         if(!userState.hasAccess) { alert("Bitte wähle zuerst einen Zugangs-Status (Gast oder Verifiziert)!"); return; }
-        
-        // Prüfen ob Vorheriger gelesen (außer Verifiziert)
         if (userState.verifiziert || geleseneThemen.has(id) || id === 0 || geleseneThemen.size >= id) {
             tId = id; aktuellesThema = t; ebene = 2; geleseneThemen.add(id);
             document.getElementById('dashboard').style.display = 'none';
@@ -230,12 +228,7 @@
         document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
         document.getElementById('ebene5-bereich').style.display = isAdmin ? 'block' : 'none';
         
-        // --- CHAT RESET LOGIK ---
-        if (isChat) {
-            const box = document.getElementById('chat-box');
-            // Lade den gespeicherten Verlauf für diesen Sektor
-            box.innerHTML = chatSpeicher[tId];
-        }
+        if (isChat) document.getElementById('chat-box').innerHTML = chatSpeicher[tId];
 
         const sigGelb = document.getElementById('sig-r4');
         const sigRot = document.getElementById('sig-l4');
@@ -243,8 +236,7 @@
 
         if(isEbene2) {
             document.getElementById('info-titel').innerText = aktuellesThema;
-            document.getElementById('main-text').innerText = "Hier steht der Inhalt für Sektor " + (tId+1) + ": " + aktuellesThema + ". Lies diesen Text aufmerksam durch, um zum nächsten Sektor zu gelangen.";
-            
+            document.getElementById('main-text').innerText = "Hier steht der Inhalt für Sektor " + (tId+1) + ": " + aktuellesThema + ". Lies diesen Text aufmerksam durch.";
             btnNext.style.visibility = (tId < 19) ? "visible" : "hidden";
             sigGelb.classList.toggle('signal-aktiv', geleseneThemen.size === 20);
         } else {
@@ -268,19 +260,24 @@
 
     function nextPage() {
         if (ebene === 2 && tId < 19) {
-            tId++; 
-            aktuellesThema = themen[tId]; 
-            geleseneThemen.add(tId); 
-            updateUI();
+            tId++; aktuellesThema = themen[tId]; geleseneThemen.add(tId); updateUI();
         } else if (ebene !== 2 && ebene < 7) {
-            ebene++;
-            updateUI();
+            ebene++; updateUI();
         }
     }
 
     function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
 
-    function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
+    // --- KORRIGIERTE PORTAL FUNKTIONEN (ZUGRIFFSSPERRE) ---
+    function portalZuEbene3() { 
+        if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { 
+            ebene = 3; 
+            updateUI(); 
+        } else {
+            alert("ZUGANG GESPERRT: Du musst erst alle 20 Sektoren im Dashboard freischalten (gelbes Signal)!");
+        }
+    }
+
     function portalZuEbene4() {
         if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) {
             const modal = document.getElementById('video-wahl-modal');
@@ -288,21 +285,18 @@
             liste.innerHTML = "";
             themen.forEach((t, i) => { liste.innerHTML += `<div onclick="setVideo(${i},'${t}')" style="border:1px solid #fff; padding:10px; cursor:pointer;">SEKTOR ${i+1}</div>`; });
             modal.style.display = 'flex';
+        } else {
+            alert("ZUGANG GESPERRT: Du musst erst in JEDEM Sektor 20 Nachrichten im Chat schreiben (rotes Signal)!");
         }
     }
+
     function setVideo(id, t) { tId = id; aktuellesThema = t; ebene = 4; document.getElementById('video-wahl-modal').style.display = 'none'; updateUI(); }
 
     function registriereSenden() {
         const input = document.getElementById('chat-input'), box = document.getElementById('chat-box');
         if(!input.value) return;
-        
-        // Nachricht zur Box hinzufügen
-        let neueNachricht = `<div><strong>Du:</strong> ${input.value}</div>`;
-        box.innerHTML += neueNachricht;
-        
-        // Verlauf im Speicher ablegen, damit er beim Wechsel nicht verloren geht
+        box.innerHTML += `<div><strong>Du:</strong> ${input.value}</div>`;
         chatSpeicher[tId] = box.innerHTML;
-
         if(interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++;
         input.value = ""; box.scrollTop = box.scrollHeight; updateUI();
     }
@@ -326,4 +320,14 @@
     }
 
     function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
-    function adminUnlock() { userState.qualifiziert = true; userState.verifiziert = true; userState.hasAccess = true; geleseneThemen = new Set(themen.keys()); updateNumColors(); updateUI(); alert("ADMIN MODUS."); }</script></body></html>
+    
+    function adminUnlock() { 
+        userState.qualifiziert = true; 
+        userState.verifiziert = true; 
+        userState.hasAccess = true; 
+        geleseneThemen = new Set(themen.keys()); 
+        // Admin setzt Interaktionen auf Max, damit Signale sofort leuchten
+        themen.forEach((_, i) => interaktionsZaehler[i] = 20);
+        updateNumColors(); updateUI(); alert("ADMIN MODUS AKTIVIERT."); 
+    }
+</script></body></html>
