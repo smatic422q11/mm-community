@@ -166,6 +166,12 @@
         </div>
     </div>
 
+    <div id="video-wahl-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:20000; flex-direction:column; align-items:center; justify-content:center;">
+        <h1 style="color:#ff0000;">WÄHLE DEINEN VIDEO-RAUM</h1>
+        <div id="wahl-liste" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; width:90%; max-height:60vh; overflow-y:auto; padding:20px;"></div>
+        <button onclick="document.getElementById('video-wahl-modal').style.display='none'" style="margin-top:20px; padding:10px 20px;">ZURÜCK</button>
+    </div>
+
     <div id="zugang-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10000; justify-content:center; align-items:center;">
         <div style="background:#000; border:2px solid #003d8f; padding:30px; width:400px; text-align:center; border-radius:10px;">
             <h3 id="modal-titel" style="color:#fff; margin-top:0;"></h3>
@@ -333,7 +339,28 @@
     } 
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
-    function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
+    
+    // DIE WAHL-LOGIK FÜR DEN ROTEN KNOPF
+    function portalZuEbene4() { 
+        if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { 
+            const modal = document.getElementById('video-wahl-modal');
+            const liste = document.getElementById('wahl-liste');
+            liste.innerHTML = "";
+            themen.forEach((t, i) => {
+                liste.innerHTML += `<div onclick="setzeSektorUndVideo(${i}, '${t}')" style="border:1px solid #fff; padding:10px; cursor:pointer; text-align:center; font-size:0.8rem;">SEKTOR ${i+1}:<br>${t}</div>`;
+            });
+            modal.style.display = 'flex';
+        } 
+    }
+
+    function setzeSektorUndVideo(id, t) {
+        tId = id;
+        aktuellesThema = t;
+        ebene = 4;
+        document.getElementById('video-wahl-modal').style.display = 'none';
+        updateUI();
+    }
+
     function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv')) { ebene = 5; updateUI(); } }
 
     function updateUI() {
@@ -343,7 +370,16 @@
         document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
         document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
         document.getElementById('main-text').style.display = (ebene < 3) ? 'block' : 'none';
-        document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
+        
+        // DER FIX FÜR DIE TITEL-ANZEIGE
+        const ebene4Title = document.getElementById('ebene4-title-red');
+        if (isVideo) {
+            ebene4Title.style.display = 'block';
+            ebene4Title.innerText = `SEKTOR ${tId + 1}: ${aktuellesThema}`;
+        } else {
+            ebene4Title.style.display = 'none';
+        }
+
         document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
         document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
         document.getElementById('btn-back').style.visibility = 'visible';
@@ -436,3 +472,4 @@
     }
 </script>
 </body>
+</html>
