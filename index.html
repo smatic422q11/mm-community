@@ -262,7 +262,6 @@
     const grid = document.getElementById('main-grid');
     themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="checkAccess(${i}, '${t}')">${t}</div></div>`; });
     
-    // SCHUBLADEN GENERIERUNG
     const drawerArea = document.getElementById('sektoren-schubladen');
     themen.forEach((t, i) => {
         drawerArea.innerHTML += `
@@ -284,7 +283,6 @@
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
     function saveNote(id) {
-        const text = document.getElementById(`note-${id}`).value;
         alert("Dokument für Sektor " + (id+1) + " lokal gesichert.");
     }
 
@@ -299,21 +297,21 @@
             titel.innerText = "Gast-Modus";
             text.innerText = "Dein Fortschritt wird nur lokal gespeichert.";
             emailField.style.display = 'none';
-            confirmBtn.onclick = () => { userBackstage.isVerifiziert = false; modal.style.display = 'none'; alert("Gast-Modus aktiv."); };
+            confirmBtn.onclick = () => { userBackstage.isVerifiziert = false; modal.style.display = 'none'; updateUI(); };
         } else {
             titel.innerText = "Verifizierter Status";
             text.innerText = "Alle freigeschalteten Sektoren bleiben dauerhaft gesichert.";
             emailField.style.display = 'block';
             confirmBtn.onclick = () => { 
                 const mail = document.getElementById('user-email-input').value;
-                if(mail.includes('@')) { userBackstage.isVerifiziert = true; modal.style.display = 'none'; alert("Erfolgreich!"); } 
+                if(mail.includes('@')) { userBackstage.isVerifiziert = true; modal.style.display = 'none'; updateUI(); alert("Erfolgreich verifiziert!"); } 
                 else { alert("E-Mail ungültig."); }
             };
         }
     }
 
     function checkAccess(id, t) {
-        if (userBackstage.isVerifiziert || geleseneThemen.has(id) || id === 0 || geleseneThemen.size >= id) { showInfo(t, id); } 
+        if (userBackstage.isVerverified || geleseneThemen.has(id) || id === 0 || geleseneThemen.size >= id) { showInfo(t, id); } 
         else { alert("Reihenfolge einhalten!"); }
     }
 
@@ -329,20 +327,17 @@
     function adminUnlock() {
         themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
         userBackstage.isQualifiziert = true;
+        userBackstage.isVerifiziert = true;
         updateNumColors();
         updateUI();
         alert("ADMIN UNLOCK");
     }
 
-    // BEHEBUNG MANGEL 1 (Dashboard Klick)
     function showInfo(t, id) { 
         tId = id; 
         aktuellesThema = t; 
-        
-        // Chat-Eingabe leeren beim Sektor-Wechsel
         const input = document.getElementById('chat-input');
         if(input) input.value = "";
-
         if (geleseneThemen.has(id)) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
         updateNumColors(); 
         document.getElementById('dashboard').style.display = 'none'; 
@@ -394,6 +389,22 @@
         document.getElementById('info-titel').innerText = aktuellesThema;
         if (ebene === 2) document.getElementById('main-text').innerText = "Inhalt für " + aktuellesThema + "...";
 
+        // --- WEITER-BUTTON LOGIK ---
+        const nextBtn = document.getElementById('btn-next');
+        if (tId >= 19 || ebene >= 4) {
+            nextBtn.style.visibility = 'hidden';
+        } 
+        else if (userBackstage.isVerifiziert && (ebene === 2 || ebene === 3)) {
+            nextBtn.style.visibility = 'visible';
+        }
+        else if (!userBackstage.isVerifiziert && (ebene === 2 || ebene === 3)) {
+            nextBtn.style.visibility = 'hidden';
+        }
+        else {
+            nextBtn.style.visibility = (ebene < 7) ? 'visible' : 'hidden';
+        }
+        // ---------------------------
+
         const sigGelb = document.getElementById('sig-r4');
         const sigRot = document.getElementById('sig-l4');
         const sigL1 = document.getElementById('sig-l1');
@@ -419,20 +430,19 @@
 
     function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
     
-    // BEHEBUNG MANGEL 1 ("Weiter" Button)
     function nextPage() { 
-        if ((ebene === 2 || ebene === 3) && tId < 19) { 
+        // Benefit Logik für Verifizierte
+        if (userBackstage.isVerifiziert && (ebene === 2 || ebene === 3) && tId < 19) { 
             tId++; 
             aktuellesThema = themen[tId];
-            
-            // Chat-Eingabe leeren beim Sektor-Wechsel
             const input = document.getElementById('chat-input');
             if(input) input.value = ""; 
-            
             if (ebene === 2) geleseneThemen.add(tId);
             updateUI(); 
             updateNumColors();
-        } else if (ebene < 7 && ebene !== 2 && ebene !== 3 && ebene !== 4 && ebene !== 5) { 
+        } 
+        // Normales Blättern (z.B. Intro-Ebenen)
+        else if (ebene < 7 && ebene !== 2 && ebene !== 3 && ebene !== 4 && ebene !== 5) { 
             ebene++; 
             updateUI(); 
         } 
