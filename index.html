@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>M&M-COMMUNITY - Admin Modus</title>
     <style>
-        /* DEIN ORIGINAL CSS - UNVERÄNDERT */
+        /* CSS UNVERÄNDERT ÜBERNOMMEN */
         body { background-color: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
         @keyframes kenburns { 0% { transform: scale(1) translate(0, 0); } 50% { transform: scale(1.15) translate(-1%, -1%); } 100% { transform: scale(1) translate(0, 0); } }
         @keyframes fadeEffect { 0% { opacity: 0; } 15% { opacity: 0.4; } 85% { opacity: 0.4; } 100% { opacity: 0; } }
@@ -157,6 +157,10 @@
                 <div class="video-slot" id="v-slot-2">SLOT 2 (ZUFALL)</div>
                 <div class="video-slot" id="v-slot-3">SLOT 3 (ZUFALL)</div>
                 <div class="video-slot" id="v-slot-4">SLOT 4 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-5">SLOT 5 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-6">SLOT 6 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-7">SLOT 7 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-8">SLOT 8 (ZUFALL)</div>
             </div>
             <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 5px; flex-shrink:0;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
             <div id="sektoren-schubladen"></div>
@@ -180,7 +184,6 @@
     let ebene = 1, tId = 0, aktuellesThema = "", geleseneThemen = new Set(), interaktionsZaehler = {};
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
-    // LADEN
     const saved = localStorage.getItem('mm_community_v2');
     if (saved) {
         const d = JSON.parse(saved);
@@ -195,7 +198,6 @@
         }));
     }
 
-    // INITIALISIERUNG GRID
     const grid = document.getElementById('main-grid');
     themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="checkAccess(${i}, '${t}')">${t}</div></div>`; });
     
@@ -227,6 +229,7 @@
 
     function showInfo(t, id) { 
         tId = id; aktuellesThema = t; ebene = 2; geleseneThemen.add(id);
+        document.getElementById('chat-box').innerHTML = ""; // REPARATUR: Chat leeren
         document.getElementById('dashboard').style.display = 'none'; 
         document.getElementById('page-skelett').style.display = 'flex'; 
         startRotation(); updateUI(); updateNumColors(); sync();
@@ -234,16 +237,17 @@
 
     function startRotation() {
         const bg = document.getElementById('werbe-bg');
-        bg.src = ""; // Reset
-        bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + 50}/1200/600')`;
+        bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + 123}/1200/600')`; // REPARATUR: Bilder laden
         bg.classList.remove('bild-aktiv');
-        void bg.offsetWidth; // Trigger Reflow
+        void bg.offsetWidth; 
         bg.classList.add('bild-aktiv');
     }
 
     function nextPage() {
         if(userBackstage.isVerifiziert && tId < 19) {
             tId++; aktuellesThema = themen[tId]; geleseneThemen.add(tId);
+            document.getElementById('chat-box').innerHTML = ""; // REPARATUR: Chat leeren beim Springen
+            ebene = 2; // Immer zurück auf Inhaltsebene
             startRotation(); updateUI(); updateNumColors(); sync();
         }
     }
@@ -259,10 +263,8 @@
         document.getElementById('info-titel').innerText = aktuellesThema;
         document.getElementById('main-text').innerHTML = `<strong>Inhalt Sektor ${tId+1}:</strong><br>Thema: ${aktuellesThema}.`;
 
-        // NAVIGATION BUTTONS
-        document.getElementById('btn-next').style.visibility = (userBackstage.isVerifiziert && ebene === 2) ? 'visible' : 'hidden';
+        document.getElementById('btn-next').style.visibility = (userBackstage.isVerifiziert && ebene === 2 && tId < 19) ? 'visible' : 'hidden';
 
-        // SIGNALE
         const sigGelb = document.getElementById('sig-r4'), sigRot = document.getElementById('sig-l4'), sigL1 = document.getElementById('sig-l1');
         sigGelb.classList.toggle('signal-aktiv', ebene === 2 && geleseneThemen.size >= 20);
         sigRot.classList.toggle('signal-aktiv', ebene === 3 && interaktionsZaehler[tId] >= 20);
@@ -275,6 +277,7 @@
     function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
     function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
     function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
+    
     function registriereSenden() { 
         const input = document.getElementById('chat-input'), box = document.getElementById('chat-box');
         if (input.value.trim() === "") return; 
