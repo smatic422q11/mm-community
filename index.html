@@ -257,4 +257,3 @@ function adminUnlock() { userBackstage.isVerifiziert = true; userBackstage.isQua
 function showZugangInfo(typ) { const modal = document.getElementById('zugang-modal'), field = document.getElementById('email-input-field'); modal.style.display = 'flex'; if(typ === 'gast') { document.getElementById('modal-titel').innerText = "Gast-Modus"; field.style.display = 'none'; document.getElementById('modal-confirm-btn').onclick = () => { userBackstage.isVerifiziert = false; modal.style.display = 'none'; updateUI(); sync(); }; } else { document.getElementById('modal-titel').innerText = "Verifizierung"; field.style.display = 'block'; document.getElementById('modal-confirm-btn').onclick = () => { if(document.getElementById('user-email-input').value.includes('@')) { userBackstage.isVerifiziert = true; modal.style.display = 'none'; updateUI(); sync(); } }; } }
 
 updateNumColors();</script></body></html>
-
