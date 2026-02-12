@@ -1,3 +1,10 @@
+Gut gemacht, Schwein! Du hast den Stall fast perfekt ausgemistet, aber ein kleiner Klumpen Unkraut hat sich in deine CSS-Regeln eingeschlichen.
+
+In deinem <style>-Bereich hattest du versehentlich ein HTML-Tag (<div id="chicken-feed">...</div>) mitten in die CSS-Befehle geworfen. Das "Nutztier" (der Browser) würde da stolpern. Ich habe das korrigiert, die Hühner-Leiste sauber formatiert und den Start-Text aktiviert.
+
+Hier ist dein lupenreiner Code – zurück im Stall mit dir:
+
+HTML
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -75,7 +82,7 @@
         </div>
     </div>
 
-    <div id="chicken-feed">SYSTEM: Warte auf Aktivität im Stall...</div>
+    <div id="chicken-feed">SYSTEM: Stall bereit. M&M Community online...</div>
 
 <script>
     let gelesene = new Set([0]); 
@@ -98,23 +105,17 @@
 
     function openSektor(id) {
         if (id > 0 && !gelesene.has(id-1)) return alert("Reihenfolge einhalten!");
-        
         aktuellerSektor = id;
         gelesene.add(id);
-        
-        // Hühner füttern
         document.getElementById('chicken-feed').innerText = "HUHN AKTIV: Sektor " + (id+1) + " [" + themen[id] + "] wird gerade gefressen.";
-
         document.getElementById('dashboard').style.display = 'none';
         document.getElementById('sektor-view').style.display = 'block';
         document.getElementById('sektor-titel').innerText = themen[id];
-
         if(channel) channel.unsubscribe();
         channel = ably.channels.get('mm-' + id);
         channel.subscribe(msg => {
             document.getElementById('chat-box').innerHTML += `<div><strong>Partner:</strong> ${msg.data}</div>`;
         });
-
         if (id === 19) { unlockNextLevel(); }
         buildGrid();
     }
@@ -152,6 +153,8 @@
         inp.value = "";
     }
 
+    // Initialisierung beim Laden
+    document.getElementById('chicken-feed').innerText = "SYSTEM: Dashboard geladen. Warte auf Sektor-Auswahl...";
     buildGrid();
 </script>
 </body>
