@@ -5,8 +5,21 @@
     <title>M&M - Neustart</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <style>
-        body { background: #000; color: #fff; font-family: sans-serif; margin: 0; text-align: center; overflow-x: hidden; }
-        
+       /* Der rote Counter oben rechts */
+.counter-box {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: #ff0000;
+    color: #fff;
+    padding: 10px 20px;
+    border: 2px solid #fff;
+    border-radius: 5px;
+    font-weight: bold;
+    font-family: 'Courier New', Courier, monospace;
+    box-shadow: 0 0 10px #ff0000;
+    z-index: 100;
+}
         /* Dashboard Grid */
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 20px; max-width: 1000px; margin: 40px auto; }
         .box { border: 1px solid #003d8f; padding: 20px; cursor: pointer; background: #050505; transition: 0.3s; }
@@ -39,7 +52,9 @@
     </style>
 </head>
 <body>
-
+<div class="counter-box">
+    STILLE MILLION: <span id="count-num">842.336</span>
+</div>
     <div id="dashboard">
         <div class="logo-header">
             <div class="logo-ring">
