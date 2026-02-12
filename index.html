@@ -503,25 +503,53 @@
 </script>
 
 <script>
-// LIVE-VERBINDUNG START
+// LIVE-VERBINDUNG START (KORRIGIERT)
 const ably = new Ably.Realtime('8_Z6_g.x8999g:pYlD6QyG-A_v9H_A'); 
 const channel = ably.channels.get('mm-community-live');
 
+// Eindeutige ID für diesen Tab generieren, damit man nicht seine eigenen Nachrichten als "Partner" sieht
+const meinTabId = Math.random().toString(36).substring(7);
+
 channel.subscribe('message', (msg) => {
-    const chatBox = document.getElementById('chat-box');
-    if(chatBox) {
-        chatBox.innerHTML += `<div style="margin-bottom: 8px; color: #ffd700;"><strong>Partner:</strong> ${msg.data}</div>`;
-        chatBox.scrollTop = chatBox.scrollHeight;
+    // Nur anzeigen, wenn die Nachricht NICHT von mir selbst kommt
+    if (msg.data.senderId !== meinTabId) {
+        const chatBox = document.getElementById('chat-box');
+        if(chatBox) {
+            chatBox.innerHTML += `<div style="margin-bottom: 8px; color: #ffd700;"><strong>Partner:</strong> ${msg.data.text}</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
     }
 });
 
-const backupSenden = window.registriereSenden;
+// Wir schreiben die Funktion komplett neu, um sicherzugehen
 window.registriereSenden = function() {
     const input = document.getElementById('chat-input');
+    const chatBox = document.getElementById('chat-box');
+    
     if(input && input.value.trim() !== "") {
-        channel.publish('message', input.value); 
+        const gesendeterText = input.value.trim();
+
+        // 1. An das Netzwerk senden (mit meiner Tab-ID)
+        channel.publish('message', {
+            text: gesendeterText,
+            senderId: meinTabId
+        });
+
+        // 2. Lokal bei mir anzeigen
+        chatBox.innerHTML += `<div style="margin-bottom: 8px;"><strong>Du:</strong> ${gesendeterText}</div>`;
+        
+        // 3. Counter hochzählen (für die Logik im Spiel)
+        if (interaktionsZaehler[tId] < 20) {
+            interaktionsZaehler[tId]++;
+        }
+
+        // 4. Feld leeren und scrollen
+        input.value = "";
+        chatBox.scrollTop = chatBox.scrollHeight;
+        
+        // UI Update (für Buttons/Signale)
+        updateUI();
     }
-    if(backupSenden) backupSenden(); 
 };
 // LIVE-VERBINDUNG ENDE
 </script>
