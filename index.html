@@ -2,103 +2,80 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>M&M-COMMUNITY - Admin Modus</title>
+    <title>M&M-COMMUNITY - FINAL TEST</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <style>
-        body { background-color: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
-        @keyframes signalBlink { 0% { box-shadow: 0 0 5px #fff; opacity: 0.8; } 50% { box-shadow: 0 0 25px #fff, 0 0 35px #003d8f; opacity: 1; transform: scale(1.05); } 100% { box-shadow: 0 0 5px #fff; opacity: 0.8; } }
-        .signal-aktiv { animation: signalBlink 1.0s infinite ease-in-out !important; border: 2px solid #fff !important; cursor: pointer; }
-        .dashboard-header { width: 100%; position: absolute; top: 3%; display: flex; justify-content: flex-start; padding: 0 2%; box-sizing: border-box; z-index: 20; }
-        .logo-ring { width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; }
-        .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
-        .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
-        .info-section { width: 80%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; margin-top: 2vh; }
-        .tafel-layout { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; margin-top: 1vh; height: 26vh; }
-        .info-section-ebene { width: 90% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
-        .buttons-links, .buttons-rechts { position: absolute; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
-        .buttons-links { left: 1.5%; } .buttons-rechts { right: 1.5%; }
-        .oval-side { width: 45px; height: 22px; border-radius: 12px; border: 1px solid #fff; opacity: 0.8; cursor: pointer; }
-        .ov-schwarz { background: #000; border: 1.5px solid #003d8f; }
-        .ov-grun { background: #00ff00; } .ov-blau { background: #0000ff; } .ov-rot { background: #ff0000; } .ov-pink { background: #ff00ff; } .ov-gelb { background: #ffff00; }
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 10px; width: 95%; max-width: 1450px; margin-top: 30px; border: 3px solid #00ff00; padding: 15px; border-radius: 10px; }
-        .box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; }
-        .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; }
-        .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
-        #chat-area { width: 90%; height: 45vh; display: none; flex-direction: column; margin-bottom: 70px; }
-        .chat-msgs { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; justify-content: flex-end; }
-        .chat-input-row { display: flex; border: 1px solid #003d8f; padding: 5px; }
-        #drawer-ebene4 { width: 90%; display: none; flex-direction: column; height: 60vh; }
-        .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
-        .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; overflow: hidden; }
-        .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; background: #000; z-index: 100; border-top: 1px solid #333; }
-        .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
-        .ebene4-header-red { width: 90%; background: #ff0000; color: #fff; padding: 10px; text-align: center; font-weight: 900; display: none; }
+        body { background:#000; color:#fff; font-family:sans-serif; margin:0; display:flex; flex-direction:column; align-items:center; height:100vh; overflow:hidden; }
+        .dashboard-header { width:100%; padding:20px; display:flex; justify-content:flex-start; }
+        .logo-ring { width:100px; height:100px; border:3px solid #fff; border-radius:50%; background:#003d8f; display:flex; align-items:center; justify-content:center; cursor:pointer; font-weight:900; }
+        .info-section { width:85%; height:25vh; border:2px solid #003d8f; margin:20px 0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+        .grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; width:95%; border:2px solid #00ff00; padding:15px; }
+        .box { display:flex; border:1px solid #003d8f; height:50px; background:#000; }
+        .num { width:40px; background:#003d8f; display:flex; align-items:center; justify-content:center; font-weight:bold; }
+        .text { flex:1; padding:5px; font-size:0.65rem; display:flex; align-items:center; cursor:pointer; text-transform:uppercase; }
+        #page-skelett { display:none; width:100%; flex-direction:column; align-items:center; }
+        .ebene4-header-red { width:100%; background:red; color:#fff; padding:10px; text-align:center; font-weight:bold; display:none; }
+        .tafel-layout { display:flex; width:90%; align-items:center; justify-content:center; position:relative; height:20vh; margin:20px 0; }
+        .buttons-links { position:absolute; left:0; display:flex; flex-direction:column; gap:10px; }
+        .oval-side { width:40px; height:20px; border:1px solid #fff; border-radius:10px; cursor:pointer; }
+        #chat-area, #drawer-ebene4 { width:90%; display:none; flex-direction:column; }
+        .chat-msgs { height:35vh; border:1px solid #003d8f; overflow-y:auto; margin-bottom:10px; padding:10px; background:#050505; }
+        .video-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+        .video-slot { aspect-ratio:16/9; background:#111; border:1px solid #003d8f; display:flex; align-items:center; justify-content:center; font-size:0.6rem; overflow:hidden; }
+        .bottom-nav { position:fixed; bottom:0; width:100%; display:flex; justify-content:space-between; padding:15px; background:#000; border-top:1px solid #333; }
+        .nav-btn { background:#ffd700; color:#000; border:none; padding:10px 20px; font-weight:bold; cursor:pointer; }
     </style>
 </head>
 <body>
 
-    <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-        <div class="dashboard-header">
-            <div class="logo-ring" onclick="adminUnlock()"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
-        </div>
-        <div class="info-section">
-            <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
-            <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
-        </div>
+    <div id="dashboard">
+        <div class="dashboard-header"><div class="logo-ring">M&M</div></div>
+        <div class="info-section"><h1>DAS WAS & WARUM</h1><h2 style="color:#003d8f">DIE STILLE MILLION</h2></div>
         <div class="grid" id="main-grid"></div>
     </div>
 
-    <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+    <div id="page-skelett">
         <div class="ebene4-header-red" id="ebene4-title-red">SEKTOR LIVE</div>
         <div class="tafel-layout">
             <div class="buttons-links">
-                <div class="oval-side ov-schwarz" onclick="showDashboard()"></div>
-                <div class="oval-side ov-grun" onclick="setEbene(2)"></div>
-                <div class="oval-side ov-blau" onclick="setEbene(3)"></div>
-                <div class="oval-side ov-rot" onclick="setEbene(4)"></div>
+                <div class="oval-side" style="background:#000" onclick="showDashboard()"></div>
+                <div class="oval-side" style="background:#00ff00" onclick="setEbene(2)"></div>
+                <div class="oval-side" style="background:#0000ff" onclick="setEbene(3)"></div>
+                <div class="oval-side" style="background:#ff0000" onclick="setEbene(4)"></div>
             </div>
-            <div class="info-section-ebene">
-                <h1 id="info-titel" style="text-transform: uppercase;">SEKTOR</h1>
-            </div>
-            <div class="buttons-rechts">
-                <div class="oval-side ov-pink"></div>
-                <div class="oval-side ov-gelb"></div>
+            <div class="info-section-ebene" style="border:2px solid #003d8f; width:85%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <h1 id="info-titel" style="font-size:1.5rem; text-align:center;"></h1>
             </div>
         </div>
-
         <div id="chat-area">
             <div class="chat-msgs" id="chat-box"></div>
-            <div class="chat-input-row">
-                <input type="text" id="chat-input" placeholder="Schreiben..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px; outline:none;" onkeypress="if(event.key==='Enter') sendMsg()">
-                <button onclick="sendMsg()" style="background:#003d8f; color:#fff; border:none; padding:0 30px; cursor:pointer;">SENDEN</button>
-            </div>
+            <input type="text" id="chat-input" placeholder="Schreiben..." style="width:100%; padding:15px; background:#000; color:#fff; border:1px solid #003d8f; outline:none;" onkeypress="if(event.key==='Enter') sendMsg()">
         </div>
-
         <div id="drawer-ebene4">
-            <div class="video-grid" id="v-grid">
+            <div class="video-grid">
                 <div class="video-slot" id="v-slot-1">DU</div>
                 <div class="video-slot" id="v-slot-2">PARTNER</div>
-                <div class="video-slot" id="v-slot-3">...</div>
-                <div class="video-slot" id="v-slot-4">...</div>
+                <div class="video-slot">...</div>
+                <div class="video-slot">...</div>
             </div>
-            <button onclick="startVideo()" style="width:100%; background:#00ff00; padding:15px; font-weight:bold; cursor:pointer; color:#000; border-radius:5px;">KAMERA AKTIVIEREN</button>
+            <button onclick="startVideo()" style="width:100%; padding:20px; background:#00ff00; font-weight:bold; margin-top:10px; cursor:pointer; border:none;">KAMERA AKTIVIEREN</button>
         </div>
     </div>
 
     <div class="bottom-nav">
         <button class="nav-btn" onclick="showDashboard()">DASHBOARD</button>
-        <button class="nav-btn" onclick="nextEbene()">NÄCHSTE EBENE</button>
+        <button class="nav-btn" onclick="nextEbene()">WEITER</button>
     </div>
 
 <script>
     const ably = new Ably.Realtime('8_Z6_g.x8999g:pYlD6QyG-A_v9H_A');
-    const myId = Math.random().toString(36).substring(7);
+    const myId = "User-" + Math.random().toString(36).substring(7);
     const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
-    let currentSektor = 0, ebene = 1, channel = null;
+    let ebene = 1, currentSektor = 0, channel = null;
 
-    const grid = document.getElementById('main-grid');
+    const g = document.getElementById('main-grid');
     themen.forEach((t, i) => {
-        grid.innerHTML += `<div class="box"><div class="num" id="num-${i}">${i+1}</div><div class="text" onclick="openSektor(${i},'${t}')">${t}</div></div>`;
+        g.innerHTML += `<div class="box"><div class="num">${i+1}</div><div class="text" onclick="openSektor(${i},'${t}')">${t}</div></div>`;
     });
 
     function openSektor(id, t) {
@@ -107,12 +84,11 @@
         document.getElementById('dashboard').style.display = 'none';
         document.getElementById('page-skelett').style.display = 'flex';
         setEbene(2);
-        
         if(channel) channel.unsubscribe();
         channel = ably.channels.get('mm-sektor-' + id);
         channel.subscribe('message', m => {
             if(m.data.sender !== myId) {
-                document.getElementById('chat-box').innerHTML += `<div style="color:#ffd700; margin-bottom:5px;"><strong>Partner:</strong> ${m.data.text}</div>`;
+                document.getElementById('chat-box').innerHTML += `<div style="color:#ffd700; margin-bottom:10px;"><strong>Partner:</strong> ${m.data.text}</div>`;
                 document.getElementById('chat-box').scrollTop = document.getElementById('chat-box').scrollHeight;
             }
         });
@@ -122,16 +98,16 @@
         const inp = document.getElementById('chat-input');
         if(!inp.value || !channel) return;
         channel.publish('message', {text: inp.value, sender: myId});
-        document.getElementById('chat-box').innerHTML += `<div style="margin-bottom:5px;"><strong>Du:</strong> ${inp.value}</div>`;
+        document.getElementById('chat-box').innerHTML += `<div style="margin-bottom:10px;"><strong>Du:</strong> ${inp.value}</div>`;
         inp.value = "";
         document.getElementById('chat-box').scrollTop = document.getElementById('chat-box').scrollHeight;
     }
 
     function setEbene(n) {
         ebene = n;
-        document.getElementById('chat-area').style.display = n === 3 ? 'flex' : 'none';
-        document.getElementById('drawer-ebene4').style.display = n === 4 ? 'flex' : 'none';
-        document.getElementById('ebene4-title-red').style.display = n === 4 ? 'block' : 'none';
+        document.getElementById('chat-area').style.display = (n === 3) ? 'flex' : 'none';
+        document.getElementById('drawer-ebene4').style.display = (n === 4) ? 'flex' : 'none';
+        document.getElementById('ebene4-title-red').style.display = (n === 4) ? 'block' : 'none';
     }
 
     function nextEbene() { if(ebene < 4) setEbene(ebene + 1); }
@@ -144,13 +120,8 @@
             v.srcObject = stream; v.autoplay = true; v.muted = true; v.style.width="100%"; v.style.height="100%"; v.style.objectFit="cover";
             const slot = document.getElementById('v-slot-1');
             slot.innerHTML = ""; slot.appendChild(v);
-            if(channel) channel.publish('video-sync', {sender: myId, action: 'join'});
-        } catch(e) { alert("Kamera-Fehler"); }
+        } catch(e) { alert("Kamera-Fehler! Bitte Zugriff erlauben."); }
     }
-
-    function adminUnlock() { alert("Alle Systeme bereit für Probelauf."); }
 </script>
 </body>
 </html>
-    
-  
