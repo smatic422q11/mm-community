@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>M&M-COMMUNITY - Admin Modus</title>
+    <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <style>
         /* BASIS-LAYOUT */
         body { background-color: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
@@ -311,7 +312,6 @@
     }
 
     function checkAccess(id, t) {
-        // Zugangskontrolle: Man muss die Reihenfolge einhalten (außer man ist verifiziert oder hat den Sektor schon gelesen)
         if (userBackstage.isVerifiziert || geleseneThemen.has(id) || id === 0 || geleseneThemen.size >= id) { 
             showInfo(t, id); 
         } 
@@ -336,7 +336,6 @@
         alert("ADMIN UNLOCK");
     }
 
-    // --- KORRIGIERTE showInfo FUNKTION ---
     function showInfo(t, id) { 
         tId = id; 
         aktuellesThema = t; 
@@ -347,14 +346,11 @@
         const input = document.getElementById('chat-input');
         if(input) input.value = "";
 
-        // PRÜFUNG: Hat der User das Fundament (Sektor 20 / Index 19) bereits jemals abgeschlossen?
         const fundamentAbgeschlossen = geleseneThemen.has(19);
 
-        // LOGIK: Erst wenn verifiziert UND Fundament komplett gelesen, darf man direkt in Ebene 3
         if (userBackstage.isVerifiziert && fundamentAbgeschlossen) { 
             ebene = 3; 
         } else { 
-            // Pflicht: Erst Ebene 2 (Inhalt lesen)
             ebene = 2; 
             geleseneThemen.add(id); 
         }
@@ -505,6 +501,30 @@
         } catch (err) { alert("Kamera-Fehler"); }
     }
 </script>
+
+<script>
+// LIVE-VERBINDUNG START
+const ably = new Ably.Realtime('8_Z6_g.x8999g:pYlD6QyG-A_v9H_A'); 
+const channel = ably.channels.get('mm-community-live');
+
+channel.subscribe('message', (msg) => {
+    const chatBox = document.getElementById('chat-box');
+    if(chatBox) {
+        chatBox.innerHTML += `<div style="margin-bottom: 8px; color: #ffd700;"><strong>Partner:</strong> ${msg.data}</div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+});
+
+const backupSenden = window.registriereSenden;
+window.registriereSenden = function() {
+    const input = document.getElementById('chat-input');
+    if(input && input.value.trim() !== "") {
+        channel.publish('message', input.value); 
+    }
+    if(backupSenden) backupSenden(); 
+};
+// LIVE-VERBINDUNG ENDE
+</script>
+
 </body>
 </html>
-       
