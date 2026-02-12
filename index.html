@@ -2,193 +2,122 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>M&M - Der Frosch-Stall</title>
+    <title>M&M - Digitales Parlament</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <style>
-        /* DAS FUNDAMENT */
-        body { background: #000; color: #fff; font-family: sans-serif; margin: 0; text-align: center; overflow-x: hidden; padding-bottom: 60px; }
+        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; text-align: center; }
         
-        /* HÜHNER LEISTE GANZ UNTEN */
-        #chicken-feed {
+        /* Informationsticker am Boden - Sachlich */
+        #system-log {
             position: fixed; bottom: 0; left: 0; width: 100%;
-            background: rgba(0, 40, 0, 0.95); color: #32CD32;
-            font-size: 0.8rem; padding: 10px 15px; border-top: 2px solid #32CD32;
-            font-family: 'Courier New', monospace; z-index: 1000; text-align: left;
-            text-shadow: 0 0 5px #32CD32;
+            background: #001a00; color: #00ff00;
+            font-size: 0.85rem; padding: 10px; border-top: 1px solid #00ff00;
+            font-family: monospace; z-index: 1000; text-align: left;
         }
 
-        /* DER ROTE COUNTER */
-        .counter-box { position: absolute; top: 20px; right: 20px; background: #ff0000; color: #fff; padding: 10px 20px; border: 2px solid #fff; border-radius: 5px; font-weight: bold; font-family: 'Courier New', monospace; box-shadow: 0 0 15px #ff0000; z-index: 100; }
+        /* Statusanzeige oben rechts */
+        .status-box { position: absolute; top: 20px; right: 20px; border: 1px solid #fff; padding: 10px 20px; font-family: monospace; background: #300000; }
 
-        /* LOGO & LILA LEISTE */
-        .logo-header { position: absolute; top: 10px; left: 20px; text-align: center; }
-        .logo-ring { width: 80px; height: 80px; border: 3px solid #fff; background: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; }
-        .logo-mm { font-size: 1.5rem; font-weight: 900; line-height: 0.8; }
-        .logo-community { font-size: 0.4rem; letter-spacing: 1px; font-weight: bold; }
-        .lila-leiste { width: 100%; background: #8b00ff; border-top: 2px solid #fff; border-bottom: 2px solid #fff; margin-top: 110px; padding: 15px 0; box-shadow: 0 0 15px #8b00ff; }
-        .leiste-text { font-size: 1.5rem; font-weight: 900; letter-spacing: 10px; }
-
-        /* DAS GRID (DASHBOARD) */
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 20px; max-width: 1000px; margin: 40px auto; }
-        .box { border: 1px solid #003d8f; padding: 20px; cursor: pointer; background: #050505; transition: 0.3s; border-radius: 5px; }
-        .box:hover { border-color: #ffd700; transform: scale(1.05); box-shadow: 0 0 10px #ffd700; }
-        .box.locked { opacity: 0.2; cursor: not-allowed; }
-        .box.read { background: #003d8f; border-color: #00eeff; }
-
-        /* SEKTOR ANSICHT & CHAT */
-        #bridge-btn { display: none; background: linear-gradient(gold, darkgoldenrod); color: black; padding: 20px; font-weight: bold; border: 2px solid white; cursor: pointer; margin: 20px auto; width: 300px; box-shadow: 0 0 20px gold; border-radius: 10px; }
-        #sektor-view { display: none; padding: 50px; }
-        #chat-box { border: 1px solid #333; height: 300px; overflow-y: auto; margin: 20px auto; max-width: 600px; padding: 15px; text-align: left; background: #111; border-radius: 10px; }
-        #chat-in { padding: 10px; width: 250px; background: #222; color: #fff; border: 1px solid #555; }
+        /* Header & Logo */
+        .header-area { margin-top: 20px; display: flex; flex-direction: column; align-items: center; }
+        .logo-circle { width: 100px; height: 100px; border: 2px solid #fff; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; background: #003d8f; margin-bottom: 20px; }
+        .logo-text { font-size: 1.8rem; font-weight: bold; }
         
-        /* VERIFIZIERUNG OVERLAY */
-        #verify-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 2000; justify-content: center; align-items: center; }
-        .verify-card { background: #003d8f; padding: 40px; border: 4px solid #ffd700; border-radius: 20px; text-align: center; box-shadow: 0 0 50px #ffd700; }
+        /* Die zentrale Leiste */
+        .main-bar { width: 100%; background: #8b00ff; padding: 20px 0; border-y: 2px solid #fff; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(139, 0, 255, 0.3); }
+        .bar-title { font-size: 1.6rem; letter-spacing: 8px; font-weight: bold; text-transform: uppercase; }
 
-        /* DAS FROSCH-AUGE (EBENE 4) */
-        .eye-container { width: 200px; height: 100px; background: #ccffcc; border-radius: 50%; position: relative; overflow: hidden; border: 4px solid #006400; box-shadow: 0 0 30px #32CD32; margin: 20px auto; }
-        .pupil { width: 45px; height: 45px; background: #000; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 4px solid #32CD32; box-shadow: 0 0 15px #32CD32; }
+        /* Grid der Gesellschaftsthemen */
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; padding: 20px; max-width: 1100px; margin: 0 auto; }
+        .topic-card { border: 1px solid #003d8f; padding: 25px; cursor: pointer; background: #0a0a0a; transition: all 0.2s ease; border-radius: 4px; }
+        .topic-card:hover { background: #001a33; border-color: #00eeff; transform: translateY(-2px); }
+        .topic-card.locked { opacity: 0.3; cursor: not-allowed; }
+        .topic-card.completed { border-color: #00ff00; background: #001a00; }
+
+        /* Interaktions-Bereich */
+        #sektor-ansicht { display: none; padding: 40px; }
+        #chat-area { border: 1px solid #222; height: 400px; overflow-y: auto; margin: 20px auto; max-width: 800px; background: #050505; padding: 20px; text-align: left; }
+        
+        .btn-action { background: #003d8f; color: white; border: 1px solid #fff; padding: 10px 25px; cursor: pointer; font-size: 1rem; }
+        .btn-action:hover { background: #0056b3; }
     </style>
 </head>
 <body>
 
-    <div class="counter-box">STILLE MILLION: <span id="count-num">842.336</span></div>
+    <div class="status-box">TEILHABE: <span id="reg-count">842.336</span></div>
 
     <div id="dashboard">
-        <div class="logo-header">
-            <div class="logo-ring">
-                <div class="logo-mm">M&M</div>
-                <div class="logo-community">COMMUNITY</div>
+        <div class="header-area">
+            <div class="logo-circle">
+                <div class="logo-text">M&M</div>
+                <div style="font-size: 0.5rem;">COMMUNITY</div>
             </div>
         </div>
-        <div class="lila-leiste"><div class="leiste-text">REGISTRIERUNG</div></div>
-        <div class="grid" id="main-grid"></div>
-        <button id="bridge-btn" onclick="startVerification()">DIE BRÜCKE ÜBERQUEREN</button>
-    </div>
-
-    <div id="sektor-view">
-        <button onclick="showDashboard()" style="background:#ffd700; border:none; padding:12px 25px; cursor:pointer; font-weight:bold; border-radius:5px;">← ZURÜCK ZUM STALL</button>
-        <h2 id="sektor-titel" style="color: #00eeff; margin-top: 30px;">Sektor</h2>
-        <div id="chat-box"></div>
-        <input type="text" id="chat-in" placeholder="Nachricht für die Hühner...">
-        <button onclick="sendMsg()" style="padding: 10px 20px; background: #00ff00; border:none; font-weight:bold; cursor:pointer;">QUAK</button>
-    </div>
-
-    <div id="verify-overlay">
-        <div class="verify-card">
-            <h2 style="color: gold;">EBENE 3: VERIFIZIERUNG</h2>
-            <p>Gib deine Mail ein, damit der Frosch dich durchlässt:</p>
-            <input type="email" id="user-email" placeholder="deine@mail.de" style="padding:12px; width:80%; border-radius:5px; border:none;">
-            <br><br>
-            <button onclick="completeVerification()" style="padding:12px 30px; background:gold; border:none; font-weight:bold; cursor:pointer; border-radius:5px;">ZUTRITT GEWÄHREN</button>
+        
+        <div class="main-bar">
+            <div class="bar-title">Gesellschaftlicher Dialog</div>
         </div>
+
+        <div class="grid-container" id="topic-grid"></div>
     </div>
 
-    <div id="chicken-feed">SYSTEM: Stall wird vorbereitet...</div>
+    <div id="sektor-ansicht">
+        <button onclick="backToOverview()" class="btn-action">← ZURÜCK ZUR ÜBERSICHT</button>
+        <h2 id="current-title" style="margin-top: 30px; color: #00eeff;"></h2>
+        <div id="chat-area"></div>
+        <input type="text" id="msg-input" style="width: 300px; padding: 10px; background: #111; color: #fff; border: 1px solid #444;" placeholder="Ihre Position...">
+        <button onclick="sendContribution()" class="btn-action">BEITRAG SENDEN</button>
+    </div>
+
+    <div id="system-log">SYSTEM: Authentifizierung abgeschlossen. Das Parlament ist bereit für Beiträge.</div>
 
 <script>
-    let gelesene = new Set([0]); 
+    let unlockedSectors = new Set([0]);
     const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
 
-    const ably = new Ably.Realtime('8_Z6_g.x8999g:pYlD6QyG-A_v9H_A');
-    let channel = null;
-
-    function logToFeed(text) {
-        document.getElementById('chicken-feed').innerText = "SYSTEM: " + text;
+    function updateLog(msg) {
+        document.getElementById('system-log').innerText = "SYSTEM: " + msg;
     }
 
-    function buildGrid() {
-        const container = document.getElementById('main-grid');
-        if(!container) return;
-        container.innerHTML = "";
+    function renderGrid() {
+        const grid = document.getElementById('topic-grid');
+        grid.innerHTML = "";
         themen.forEach((t, i) => {
-            const isLocked = i > 0 && !gelesene.has(i-1);
-            const statusClass = isLocked ? "locked" : (gelesene.has(i) ? "read" : "");
-            container.innerHTML += `<div class="box ${statusClass}" onclick="openSektor(${i})"><strong>${i+1}</strong><br><small>${t}</small></div>`;
+            const isLocked = i > 0 && !unlockedSectors.has(i-1);
+            const isDone = unlockedSectors.has(i);
+            grid.innerHTML += `
+                <div class="topic-card ${isLocked ? 'locked' : ''} ${isDone ? 'completed' : ''}" 
+                     onclick="enterSektor(${i})">
+                    <div style="font-size: 0.8rem; color: #666;">SEKTOR ${String(i+1).padStart(2, '0')}</div>
+                    <div style="margin-top: 10px; font-weight: bold;">${t}</div>
+                </div>`;
         });
     }
 
-    function openSektor(id) {
-        if (id > 0 && !gelesene.has(id-1)) return alert("Reihenfolge einhalten, Schwein!");
-        gelesene.add(id);
-        logToFeed("Sektor " + (id+1) + " [" + themen[id] + "] wird vom Schwein gefressen...");
+    function enterSektor(id) {
+        if (id > 0 && !unlockedSectors.has(id-1)) return;
+        unlockedSectors.add(id);
         document.getElementById('dashboard').style.display = 'none';
-        document.getElementById('sektor-view').style.display = 'block';
-        document.getElementById('sektor-titel').innerText = themen[id];
-        
-        if(channel) channel.unsubscribe();
-        channel = ably.channels.get('mm-' + id);
-        channel.subscribe(msg => {
-            document.getElementById('chat-box').innerHTML += `<div style="margin-bottom:5px;"><strong>Partner:</strong> ${msg.data}</div>`;
-            document.getElementById('chat-box').scrollTop = document.getElementById('chat-box').scrollHeight;
-        });
-        
-        if (id === 19) { 
-            document.getElementById('bridge-btn').style.display = 'block'; 
-            logToFeed("DIE BRÜCKE IST FREI! AUGE AKTIVIERT!");
-        }
-        buildGrid();
+        document.getElementById('sektor-ansicht').style.display = 'block';
+        document.getElementById('current-title').innerText = themen[id];
+        updateLog("Dialog in Sektor '" + themen[id] + "' aktiv.");
+        renderGrid();
     }
 
-    function showDashboard() {
+    function backToOverview() {
         document.getElementById('dashboard').style.display = 'block';
-        document.getElementById('sektor-view').style.display = 'none';
-        logToFeed("Zurück im Stall. Das Schwein ruht sich aus.");
+        document.getElementById('sektor-ansicht').style.display = 'none';
     }
 
-    function startVerification() { document.getElementById('verify-overlay').style.display = 'flex'; }
+    // Ein ruhiger Ticker für die Teilhabe
+    setInterval(() => {
+        const el = document.getElementById('reg-count');
+        let count = parseInt(el.innerText.replace(/\./g, '')) + Math.floor(Math.random()*3);
+        el.innerText = count.toLocaleString('de-DE');
+    }, 8000);
 
-    function completeVerification() {
-        if (document.getElementById('user-email').value.includes('@')) {
-            document.getElementById('verify-overlay').style.display = 'none';
-            startVideoLevel(); 
-        } else { alert("Ohne Mail kein Froschaugen-Blick!"); }
-    }
-
-    function startVideoLevel() {
-        const dash = document.getElementById('dashboard');
-        dash.innerHTML = `
-            <h1 style="color: #32CD32; text-shadow: 0 0 15px #32CD32;">EBENE 4: FROSCH-ÜBERWACHUNG</h1>
-            <div id="eye-box" style="background: #050505; height: 450px; border: 3px solid #32CD32; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 20px;">
-                <div class="eye-container"><div id="pupil" class="pupil"></div></div>
-                <p id="eye-status" style="font-family: monospace; color: #32CD32; letter-spacing: 2px;">SCANNE SCHWEIN MIT FROSCHAUGEN...</p>
-            </div>`;
-        dash.style.display = 'block';
-        logToFeed("FROSCH-MODUS: DAS AUGE VERFOLGT JEDE BEWEGUNG.");
-
-        document.addEventListener('mousemove', (e) => {
-            const pupil = document.getElementById('pupil');
-            if (!pupil) return;
-            const rect = pupil.parentElement.getBoundingClientRect();
-            const eyeX = rect.left + rect.width / 2;
-            const eyeY = rect.top + rect.height / 2;
-            const angle = Math.atan2(e.clientY - eyeY, e.clientX - eyeX);
-            const dist = Math.min(rect.width/4, Math.hypot(e.clientX-eyeX, e.clientY-eyeY)/12);
-            pupil.style.transform = `translate(calc(-50% + ${Math.cos(angle)*dist}px), calc(-50% + ${Math.sin(angle)*dist}px))`;
-        });
-    }
-
-    function starteMillionTicker() {
-        setInterval(() => {
-            const el = document.getElementById('count-num');
-            let zahl = parseInt(el.innerText.replace(/\./g, '')) + Math.floor(Math.random()*4+1);
-            el.innerText = zahl.toLocaleString('de-DE');
-            logToFeed("+ " + (zahl % 3 + 1) + " neue Hühner im System registriert.");
-        }, 6000);
-    }
-
-    function sendMsg() {
-        const inp = document.getElementById('chat-in');
-        if(inp.value) { 
-            channel.publish('msg', inp.value); 
-            document.getElementById('chat-box').innerHTML += `<div style="color:gold;"><strong>Du (Schwein):</strong> ${inp.value}</div>`; 
-            inp.value = ""; 
-        }
-    }
-
-    buildGrid();
-    starteMillionTicker();
-    logToFeed("Stall bereit. Schwein und Frosch sind online.");
+    renderGrid();
 </script>
 </body>
 </html>
+ 
