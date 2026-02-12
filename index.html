@@ -2,203 +2,98 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>M&M-COMMUNITY - Admin Modus</title>
+    <title>M&M - Neustart</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <style>
-        /* BASIS-LAYOUT */
-        body { background-color: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
-
-        /* ANIMATIONEN */
-        @keyframes kenburns { 0% { transform: scale(1) translate(0, 0); } 50% { transform: scale(1.15) translate(-1%, -1%); } 100% { transform: scale(1) translate(0, 0); } }
-        @keyframes fadeEffect { 0% { opacity: 0; } 15% { opacity: 0.4; } 85% { opacity: 0.4; } 100% { opacity: 0; } }
-        @keyframes signalBlink { 0% { box-shadow: 0 0 5px #fff; opacity: 0.8; } 50% { box-shadow: 0 0 25px #fff, 0 0 35px #003d8f; opacity: 1; transform: scale(1.05); } 100% { box-shadow: 0 0 5px #fff; opacity: 0.8; } }
+        body { background: #000; color: #fff; font-family: sans-serif; margin: 0; text-align: center; }
         
-        .signal-aktiv { animation: signalBlink 1.0s infinite ease-in-out !important; border: 2px solid #fff !important; cursor: pointer; }
+        /* Dashboard Grid */
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 20px; max-width: 1000px; margin: auto; }
+        .box { border: 1px solid #003d8f; padding: 20px; cursor: pointer; background: #050505; }
+        .box:hover { border-color: #ffd700; }
+        .box.locked { opacity: 0.3; cursor: not-allowed; }
+        .box.read { background: #003d8f; }
 
-        /* LILA BALKEN */
-        .lila-registrierung-leiste { width: 100%; height: 80px; background: #8b00ff; border-top: 2px solid #fff; border-bottom: 2px solid #fff; display: flex; align-items: center; justify-content: center; margin-top: 20px; box-shadow: 0 0 20px #8b00ff; }
-        .registrierung-text { color: #fff; font-size: 2.2rem; font-weight: 900; letter-spacing: 15px; text-transform: uppercase; }
-
-        /* HEADER & TAFEL */
-        .dashboard-header { width: 100%; padding: 20px; box-sizing: border-box; z-index: 20; }
-        .logo-ring { width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; }
-        .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
-        .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
+        /* Sektor Ansicht */
+        #sektor-view { display: none; padding: 50px; }
+        .back-btn { background: #ffd700; padding: 10px 20px; cursor: pointer; border: none; font-weight: bold; }
         
-        .info-section { width: 80%; border: 2px solid #003d8f; padding: 20px; background-color: #000; text-align: center; margin-top: 2vh; }
-
-        /* DASHBOARD GRID */
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 95%; max-width: 1450px; margin-top: 20px; border: 3px solid #00ff00; padding: 15px; border-radius: 10px; }
-        .box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; overflow: hidden; }
-        .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; font-size: 0.85rem; }
-        .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
-
-        .num-neutral { background-color: #003d8f; }
-        .num-gelesen { background-color: #ffd700; color: #000; }
-        .num-offen { background-color: #ff4d4d; }
-        .num-fertig { background-color: #00ff00; color: #000; }
-
-        /* NAV */
-        .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; background: #000; border-top: 1px solid #333; }
-        .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
-
-        /* CHAT */
-        #chat-area { width: 90%; height: 40vh; display: none; flex-direction: column; margin-top: 20px; }
-        .chat-msgs { flex: 1; overflow-y: auto; border: 1px solid #003d8f; padding: 10px; margin-bottom: 10px; }
-        
-        .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0.3; z-index: -1; }
+        #chat-box { border: 1px solid #333; height: 200px; overflow-y: auto; margin: 20px auto; max-width: 600px; padding: 10px; text-align: left; }
     </style>
 </head>
 <body>
 
-    <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center; overflow-y: auto;">
-        <div class="dashboard-header">
-            <div class="logo-ring" ondblclick="adminUnlock()"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
-        </div>
-        <div class="info-section">
-            <h1 style="font-size: 2rem; margin: 0;">DAS WAS & WARUM</h1>
-            <p style="color: #ccc;">Wahl erst nach Erreichen der stillen Million.</p>
-        </div>
+    <div id="dashboard">
+        <h1>M&M COMMUNITY</h1>
         <div class="grid" id="main-grid"></div>
-        
-        <div class="zugang-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin: 20px 0 100px 0;">
-            <div class="box" style="flex: 1; cursor: pointer;" onclick="showZugangInfo('gast')"><div class="num">G</div><div class="text">Gast</div></div>
-            <div class="box" style="flex: 1; cursor: pointer; border-color: #8b00ff;" onclick="showZugangInfo('email')"><div class="num" style="background:#8b00ff;">V</div><div class="text" style="color:#ffd700;">Verifiziert</div></div>
-        </div>
     </div>
 
-    <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh; position: relative;">
-        <div class="werbe-bild-bg" id="werbe-bg"></div>
-        <h1 id="info-titel" style="text-transform: uppercase; margin-top: 20px;"></h1>
-        
-        <p id="main-text" style="width: 80%; text-align: center; font-size: 1.2rem;"></p>
-
-        <div id="chat-area">
-            <div class="chat-msgs" id="chat-box"></div>
-            <div style="display:flex; gap:10px;">
-                <input type="text" id="chat-input" style="flex:1; padding:10px;" placeholder="Nachricht...">
-                <button onclick="registriereSenden()" style="padding:10px 20px; background:#003d8f; color:#fff; border:none;">SENDEN</button>
-            </div>
-        </div>
-
-        <div class="bottom-nav">
-            <button class="nav-btn" onclick="showDashboard()">← Dashboard</button>
-            <button id="btn-next" class="nav-btn" onclick="nextPage()" style="visibility:hidden;">Weiter →</button>
-        </div>
-    </div>
-
-    <div id="zugang-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10000; justify-content:center; align-items:center;">
-        <div style="background:#000; border:2px solid #003d8f; padding:30px; text-align:center;">
-            <h3 id="modal-titel"></h3>
-            <div id="email-field" style="display:none; margin:10px;"><input type="email" id="user-email" placeholder="E-Mail"></div>
-            <button onclick="confirmAccess()" style="padding:10px; background:#ffd700;">OK</button>
-        </div>
+    <div id="sektor-view">
+        <button class="back-btn" onclick="showDashboard()">← ZURÜCK</button>
+        <h2 id="sektor-titel">Sektor Titel</h2>
+        <div id="chat-box"></div>
+        <input type="text" id="chat-in" placeholder="Nachricht...">
+        <button onclick="sendMsg()">SENDEN</button>
     </div>
 
 <script>
-    const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
-    
-    let userBackstage = { isVerifiziert: false };
-    let geleseneThemen = new Set();
-    let interaktionsZaehler = Array(20).fill(0);
-    let ebene = 1, tId = 0;
+    const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung"];
+    let gelesene = new Set([0]); // Erster Sektor ist immer offen
+    let aktuellerSektor = null;
 
-    const ably = new Ably.Realtime('8_Z6_g.x8999g:pYlD6QyG-A_v9H_A'); 
-    const meinTabId = Math.random().toString(36).substring(7);
-    let aktuellerChannel = null;
+    // Ably Setup
+    const ably = new Ably.Realtime('8_Z6_g.x8999g:pYlD6QyG-A_v9H_A');
+    let channel = null;
 
-    // Grid beim Start füllen
-    const grid = document.getElementById('main-grid');
-    themen.forEach((t, i) => {
-        grid.innerHTML += `
-            <div class="box" onclick="checkAccess(${i}, '${t}')">
-                <div class="num num-neutral" id="num-${i}">${i+1}</div>
-                <div class="text">${t}</div>
-            </div>`;
-    });
-
-    function checkAccess(id, t) {
-        if (userBackstage.isVerifiziert || id === 0 || geleseneThemen.has(id-1)) {
-            showInfo(t, id);
-        } else {
-            alert("Bitte die Reihenfolge einhalten!");
-        }
+    // Grid bauen
+    function buildGrid() {
+        const container = document.getElementById('main-grid');
+        container.innerHTML = "";
+        themen.forEach((t, i) => {
+            const isLocked = i > 0 && !gelesene.has(i-1);
+            const statusClass = isLocked ? "locked" : (gelesene.has(i) ? "read" : "");
+            
+            container.innerHTML += `
+                <div class="box ${statusClass}" onclick="openSektor(${i})">
+                    <strong>${i+1}</strong><br><small>${t}</small>
+                </div>`;
+        });
     }
 
-    function showInfo(t, id) {
-        tId = id;
-        ebene = (userBackstage.isVerifiziert && geleseneThemen.has(19)) ? 3 : 2;
-        geleseneThemen.add(id);
+    function openSektor(id) {
+        if (id > 0 && !gelesene.has(id-1)) return alert("Reihenfolge einhalten!");
         
+        aktuellerSektor = id;
+        gelesene.add(id);
         document.getElementById('dashboard').style.display = 'none';
-        document.getElementById('page-skelett').style.display = 'flex';
-        document.getElementById('info-titel').innerText = t;
-        document.getElementById('main-text').innerText = "Lerne mehr über: " + t;
-        document.getElementById('chat-area').style.display = (ebene >= 2) ? 'flex' : 'none';
+        document.getElementById('sektor-view').style.display = 'block';
+        document.getElementById('sektor-titel').innerText = themen[id];
         
-        updateNumColors();
-        verbindeMitSektorChat(id);
-    }
-
-    function verbindeMitSektorChat(id) {
-        if (aktuellerChannel) aktuellerChannel.unsubscribe();
-        aktuellerChannel = ably.channels.get('mm-sektor-' + id);
-        aktuellerChannel.subscribe('message', (msg) => {
-            if (msg.data.senderId !== meinTabId) {
-                document.getElementById('chat-box').innerHTML += `<div style="color:#ffd700;">Partner: ${msg.data.text}</div>`;
-            }
+        // Chat verbinden
+        if(channel) channel.unsubscribe();
+        channel = ably.channels.get('mm-' + id);
+        channel.subscribe(msg => {
+            document.getElementById('chat-box').innerHTML += `<div>Partner: ${msg.data}</div>`;
         });
-    }
-
-    function registriereSenden() {
-        const input = document.getElementById('chat-input');
-        if (!input.value || !aktuellerChannel) return;
-        aktuellerChannel.publish('message', { text: input.value, senderId: meinTabId });
-        document.getElementById('chat-box').innerHTML += `<div>Du: ${input.value}</div>`;
-        input.value = "";
-    }
-
-    function updateNumColors() {
-        themen.forEach((_, i) => {
-            const el = document.getElementById(`num-${i}`);
-            if (interaktionsZaehler[i] >= 20) el.className = "num num-fertig";
-            else if (geleseneThemen.has(i)) el.className = "num num-gelesen";
-        });
+        
+        buildGrid();
     }
 
     function showDashboard() {
-        document.getElementById('page-skelett').style.display = 'none';
-        document.getElementById('dashboard').style.display = 'flex';
+        document.getElementById('dashboard').style.display = 'block';
+        document.getElementById('sektor-view').style.display = 'none';
     }
 
-    function showZugangInfo(typ) {
-        document.getElementById('zugang-modal').style.display = 'flex';
-        document.getElementById('email-field').style.display = (typ === 'email') ? 'block' : 'none';
-        document.getElementById('modal-titel').innerText = typ === 'email' ? 'Verifizierung' : 'Gast-Modus';
+    function sendMsg() {
+        const inp = document.getElementById('chat-in');
+        channel.publish('msg', inp.value);
+        document.getElementById('chat-box').innerHTML += `<div>Du: ${inp.value}</div>`;
+        inp.value = "";
     }
 
-    function confirmAccess() {
-        const email = document.getElementById('user-email').value;
-        if (document.getElementById('email-field').style.display === 'block' && !email.includes('@')) {
-            alert("Email ungültig");
-            return;
-        }
-        userBackstage.isVerifiziert = (document.getElementById('email-field').style.display === 'block');
-        document.getElementById('zugang-modal').style.display = 'none';
-        updateNumColors();
-    }
-
-    function adminUnlock() {
-        themen.forEach((_, i) => geleseneThemen.add(i));
-        userBackstage.isVerifiziert = true;
-        updateNumColors();
-        alert("ADMIN FREIGESCHALTET");
-    }
+    buildGrid();
 </script>
 </body>
 </html>
-
-   
-   
-   
+       
      
