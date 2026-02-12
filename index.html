@@ -260,6 +260,11 @@
     let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
+    // ABLY SETUP
+    const ably = new Ably.Realtime('8_Z6_g.x8999g:pYlD6QyG-A_v9H_A'); 
+    const meinTabId = Math.random().toString(36).substring(7);
+    let aktuellerChannel = null;
+
     const grid = document.getElementById('main-grid');
     themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="checkAccess(${i}, '${t}')">${t}</div></div>`; });
     
@@ -283,83 +288,82 @@
     const dots = document.getElementById('dot-holder');
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
-    function saveNote(id) {
-        alert("Dokument für Sektor " + (id+1) + " lokal gesichert.");
-    }
+    function saveNote(id) { alert("Dokument für Sektor " + (id+1) + " lokal gesichert."); }
 
     function showZugangInfo(typ) {
         const modal = document.getElementById('zugang-modal');
-        const titel = document.getElementById('modal-titel');
-        const text = document.getElementById('modal-text');
         const emailField = document.getElementById('email-input-field');
-        const confirmBtn = document.getElementById('modal-confirm-btn');
         modal.style.display = 'flex';
         if(typ === 'gast') {
-            titel.innerText = "Gast-Modus";
-            text.innerText = "Dein Fortschritt wird nur lokal gespeichert.";
+            document.getElementById('modal-titel').innerText = "Gast-Modus";
+            document.getElementById('modal-text').innerText = "Dein Fortschritt wird nur lokal gespeichert.";
             emailField.style.display = 'none';
-            confirmBtn.onclick = () => { userBackstage.isVerifiziert = false; modal.style.display = 'none'; updateUI(); };
+            document.getElementById('modal-confirm-btn').onclick = () => { userBackstage.isVerifiziert = false; modal.style.display = 'none'; updateUI(); };
         } else {
-            titel.innerText = "Verifizierter Status";
-            text.innerText = "Alle freigeschalteten Sektoren bleiben dauerhaft gesichert.";
+            document.getElementById('modal-titel').innerText = "Verifizierter Status";
+            document.getElementById('modal-text').innerText = "Alle freigeschalteten Sektoren bleiben dauerhaft gesichert.";
             emailField.style.display = 'block';
-            confirmBtn.onclick = () => { 
+            document.getElementById('modal-confirm-btn').onclick = () => { 
                 const mail = document.getElementById('user-email-input').value;
-                if(mail.includes('@')) { userBackstage.isVerifiziert = true; modal.style.display = 'none'; updateUI(); alert("Erfolgreich verifiziert!"); } 
+                if(mail.includes('@')) { userBackstage.isVerverified = true; modal.style.display = 'none'; updateUI(); alert("Erfolgreich verifiziert!"); } 
                 else { alert("E-Mail ungültig."); }
             };
         }
     }
 
     function checkAccess(id, t) {
-        if (userBackstage.isVerifiziert || geleseneThemen.has(id) || id === 0 || geleseneThemen.size >= id) { 
-            showInfo(t, id); 
-        } 
+        if (userBackstage.isVerifiziert || geleseneThemen.has(id) || id === 0 || geleseneThemen.size >= id) { showInfo(t, id); } 
         else { alert("Reihenfolge einhalten!"); }
     }
 
     function toggleDrawer(id) {
         const d = document.getElementById(`drawer-${id}`);
-        const arrow = document.getElementById(`arrow-${id}`);
         const isOpen = d.classList.contains('open');
         document.querySelectorAll('.schublade').forEach(s => s.classList.remove('open'));
         document.querySelectorAll('.schublade-header span[id^="arrow"]').forEach(a => a.innerText = '▼');
-        if (!isOpen) { d.classList.add('open'); arrow.innerText = '▲'; }
-    }
-
-    function adminUnlock() {
-        themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
-        userBackstage.isQualifiziert = true;
-        userBackstage.isVerifiziert = true;
-        updateNumColors();
-        updateUI();
-        alert("ADMIN UNLOCK");
+        if (!isOpen) { d.classList.add('open'); document.getElementById(`arrow-${id}`).innerText = '▲'; }
     }
 
     function showInfo(t, id) { 
         tId = id; 
         aktuellesThema = t; 
+        if(document.getElementById('chat-box')) document.getElementById('chat-box').innerHTML = "<i>System: Dialog für " + t + " bereit...</i>";
         
-        const chatBox = document.getElementById('chat-box');
-        if(chatBox) chatBox.innerHTML = "<i>System: Dialog für " + t + " bereit...</i>";
-        
-        const input = document.getElementById('chat-input');
-        if(input) input.value = "";
-
         const fundamentAbgeschlossen = geleseneThemen.has(19);
-
-        if (userBackstage.isVerifiziert && fundamentAbgeschlossen) { 
-            ebene = 3; 
-        } else { 
-            ebene = 2; 
-            geleseneThemen.add(id); 
-        }
+        if (userBackstage.isVerifiziert && fundamentAbgeschlossen) { ebene = 3; } 
+        else { ebene = 2; geleseneThemen.add(id); }
         
         updateNumColors(); 
         document.getElementById('dashboard').style.display = 'none'; 
         document.getElementById('page-skelett').style.display = 'flex'; 
         updateUI(); 
+        verbindeMitSektorChat(id); // AKTIVIERT DEN RAUM-WECHSEL
     } 
+
+    function verbindeMitSektorChat(sektorId) {
+        if (aktuellerChannel) { aktuellerChannel.unsubscribe(); }
+        aktuellerChannel = ably.channels.get('mm-sektor-' + sektorId);
+        aktuellerChannel.subscribe('message', (msg) => {
+            if (msg.data.senderId !== meinTabId) {
+                const chatBox = document.getElementById('chat-box');
+                if(chatBox) {
+                    chatBox.innerHTML += `<div style="margin-bottom: 8px; color: #ffd700;"><strong>Partner:</strong> ${msg.data.text}</div>`;
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                    if (interaktionsZaehler[sektorId] < 20) { interaktionsZaehler[sektorId]++; updateNumColors(); }
+                }
+            }
+        });
+    }
+
+    function registriereSenden() { 
+        const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); 
+        if (text === "" || !aktuellerChannel) return; 
+        
+        aktuellerChannel.publish('message', { text: text, senderId: meinTabId });
+        chatBox.innerHTML += `<div style="margin-bottom: 8px;"><strong>Du:</strong> ${text}</div>`; 
+        if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++; 
+        input.value = ""; chatBox.scrollTop = chatBox.scrollHeight; updateUI(); 
+    }
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
     
@@ -379,9 +383,8 @@
         tId = id; aktuellesThema = t; ebene = 4;
         document.getElementById('video-wahl-modal').style.display = 'none';
         updateUI();
+        verbindeMitSektorChat(id); // AKTIVIERT DEN RAUM-WECHSEL FÜR VIDEO-EBENE
     }
-
-    function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv')) { ebene = 5; updateUI(); } }
 
     function updateUI() {
         const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
@@ -392,12 +395,8 @@
         document.getElementById('main-text').style.display = (ebene < 3) ? 'block' : 'none';
         
         const redBar = document.getElementById('ebene4-title-red');
-        if (isVideo) {
-            redBar.style.display = 'block';
-            redBar.innerText = `SEKTOR: ${aktuellesThema}`;
-        } else {
-            redBar.style.display = 'none';
-        }
+        if (isVideo) { redBar.style.display = 'block'; redBar.innerText = `SEKTOR: ${aktuellesThema}`; } 
+        else { redBar.style.display = 'none'; }
 
         document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
         document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
@@ -406,39 +405,12 @@
         if (ebene === 2) document.getElementById('main-text').innerText = "Inhalt für " + aktuellesThema + "...";
 
         const nextBtn = document.getElementById('btn-next');
-        if (tId >= 19 || ebene >= 4) {
-            nextBtn.style.visibility = 'hidden';
-        } 
-        else if (userBackstage.isVerifiziert && (ebene === 2 || ebene === 3)) {
-            nextBtn.style.visibility = 'visible';
-        }
-        else if (!userBackstage.isVerifiziert && (ebene === 2 || ebene === 3)) {
-            nextBtn.style.visibility = 'hidden';
-        }
-        else {
-            nextBtn.style.visibility = (ebene < 7) ? 'visible' : 'hidden';
-        }
+        nextBtn.style.visibility = (userBackstage.isVerifiziert && (ebene === 2 || ebene === 3) && tId < 19) ? 'visible' : 'hidden';
 
-        const sigGelb = document.getElementById('sig-r4');
-        const sigRot = document.getElementById('sig-l4');
-        const sigL1 = document.getElementById('sig-l1');
+        document.getElementById('sig-r4').classList.toggle('signal-aktiv', (ebene === 2 && geleseneThemen.size === 20));
+        let alleFertig = Object.values(interaktionsZaehler).every(val => val >= 20);
+        document.getElementById('sig-l4').classList.toggle('signal-aktiv', (ebene === 3 && alleFertig));
 
-        if (ebene === 2) {
-            sigGelb.classList.toggle('signal-aktiv', geleseneThemen.size === 20);
-        } else sigGelb.classList.remove('signal-aktiv');
-
-        if (ebene === 3) {
-            let alleFertig = Object.values(interaktionsZaehler).every(val => val >= 20);
-            sigRot.classList.toggle('signal-aktiv', alleFertig);
-        } else sigRot.classList.remove('signal-aktiv');
-
-        if (userBackstage.isQualifiziert && ebene < 5) {
-            sigL1.className = "oval-side elite-aktiv";
-            sigL1.onclick = portalZuEbene5;
-        } else {
-            sigL1.className = "oval-side ov-schwarz";
-            sigL1.onclick = null;
-        }
         updateDots(); startRotation();
     }
 
@@ -447,30 +419,11 @@
     function nextPage() { 
         if (userBackstage.isVerifiziert && (ebene === 2 || ebene === 3) && tId < 19) { 
             tId++; 
-            aktuellesThema = themen[tId];
-            const chatBox = document.getElementById('chat-box');
-            if(chatBox) chatBox.innerHTML = "<i>System: Dialog für " + aktuellesThema + " bereit...</i>";
-            const input = document.getElementById('chat-input');
-            if(input) input.value = ""; 
-            if (ebene === 2) geleseneThemen.add(tId);
-            updateUI(); 
-            updateNumColors();
-        } 
-        else if (ebene < 7 && ebene !== 2 && ebene !== 3 && ebene !== 4 && ebene !== 5) { 
-            ebene++; 
-            updateUI(); 
+            showInfo(themen[tId], tId);
         } 
     }
 
     function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
-    
-    function registriereSenden() { 
-        const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); 
-        if (text === "") return; 
-        chatBox.innerHTML += `<div style="margin-bottom: 8px;"><strong>Du:</strong> ${text}</div>`; 
-        if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++; 
-        input.value = ""; chatBox.scrollTop = chatBox.scrollHeight; updateUI(); 
-    }
 
     function updateNumColors() {
         themen.forEach((_, i) => {
@@ -485,7 +438,6 @@
     }
 
     function startRotation() { 
-        clearInterval(wechselInterval); 
         const bg = document.getElementById('werbe-bg'); 
         if(!bg) return; 
         bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; 
@@ -493,64 +445,82 @@
     }
 
     async function starteVideoKonferenz() {
-        const meinSlot = document.getElementById('v-slot-1');
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            meinSlot.innerHTML = `<video id="user-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>`;
+            document.getElementById('v-slot-1').innerHTML = `<video id="user-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>`;
             document.getElementById('user-video').srcObject = stream;
         } catch (err) { alert("Kamera-Fehler"); }
+    }
+    
+    function adminUnlock() {
+        themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
+        userBackstage.isQualifiziert = true; userBackstage.isVerifiziert = true;
+        updateNumColors(); updateUI(); alert("ADMIN UNLOCK");
     }
 </script>
 
 <script>
-// LIVE-VERBINDUNG START (KORRIGIERT)
+// LIVE-VERBINDUNG START
 const ably = new Ably.Realtime('8_Z6_g.x8999g:pYlD6QyG-A_v9H_A'); 
-const channel = ably.channels.get('mm-community-live');
-
-// Eindeutige ID für diesen Tab generieren, damit man nicht seine eigenen Nachrichten als "Partner" sieht
 const meinTabId = Math.random().toString(36).substring(7);
+let aktuellerChannel = null;
 
-channel.subscribe('message', (msg) => {
-    // Nur anzeigen, wenn die Nachricht NICHT von mir selbst kommt
-    if (msg.data.senderId !== meinTabId) {
-        const chatBox = document.getElementById('chat-box');
-        if(chatBox) {
-            chatBox.innerHTML += `<div style="margin-bottom: 8px; color: #ffd700;"><strong>Partner:</strong> ${msg.data.text}</div>`;
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
+// Diese Funktion wird jetzt JEDES MAL aufgerufen, wenn du einen Sektor öffnest
+function verbindeMitSektorChat(sektorId) {
+    // 1. Falls wir noch in einem alten Raum sind: Abmelden
+    if (aktuellerChannel) {
+        aktuellerChannel.unsubscribe();
     }
-});
 
-// Wir schreiben die Funktion komplett neu, um sicherzugehen
+    // 2. Neuen Raum erstellen (z.B. "sektor-0", "sektor-1", etc.)
+    aktuellerChannel = ably.channels.get('mm-sektor-' + sektorId);
+
+    // 3. Nachrichten NUR für diesen Raum empfangen
+    aktuellerChannel.subscribe('message', (msg) => {
+        if (msg.data.senderId !== meinTabId) {
+            const chatBox = document.getElementById('chat-box');
+            if(chatBox) {
+                chatBox.innerHTML += `<div style="margin-bottom: 8px; color: #ffd700;"><strong>Partner (Sektor ${sektorId+1}):</strong> ${msg.data.text}</div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+                
+                if (interaktionsZaehler[sektorId] < 20) {
+                    interaktionsZaehler[sektorId]++;
+                    updateNumColors();
+                }
+            }
+        }
+    });
+}
+
+// Die Sende-Funktion nutzt jetzt immer den "aktuellerChannel"
 window.registriereSenden = function() {
     const input = document.getElementById('chat-input');
     const chatBox = document.getElementById('chat-box');
     
-    if(input && input.value.trim() !== "") {
+    if(input && input.value.trim() !== "" && aktuellerChannel) {
         const gesendeterText = input.value.trim();
 
-        // 1. An das Netzwerk senden (mit meiner Tab-ID)
-        channel.publish('message', {
+        // Senden an den Sektor-Raum
+        aktuellerChannel.publish('message', {
             text: gesendeterText,
             senderId: meinTabId
         });
 
-        // 2. Lokal bei mir anzeigen
         chatBox.innerHTML += `<div style="margin-bottom: 8px;"><strong>Du:</strong> ${gesendeterText}</div>`;
         
-        // 3. Counter hochzählen (für die Logik im Spiel)
         if (interaktionsZaehler[tId] < 20) {
             interaktionsZaehler[tId]++;
         }
 
-        // 4. Feld leeren und scrollen
         input.value = "";
         chatBox.scrollTop = chatBox.scrollHeight;
-        
-        // UI Update (für Buttons/Signale)
         updateUI();
+        updateNumColors();
     }
 };
+
+// WICHTIG: In deiner bestehenden showInfo(t, id) Funktion musst du den Aufruf ergänzen:
+// Füge dort am Ende einfach ein: verbindeMitSektorChat(id);
 // LIVE-VERBINDUNG ENDE
 </script>
 
