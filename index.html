@@ -6,8 +6,16 @@
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <style>
         /* DAS FUNDAMENT */
-        body { background: #000; color: #fff; font-family: sans-serif; margin: 0; text-align: center; overflow-x: hidden; }
+        body { background: #000; color: #fff; font-family: sans-serif; margin: 0; text-align: center; overflow-x: hidden; padding-bottom: 40px; }
         
+        /* HÜHNER LEISTE GANZ UNTEN */
+        #chicken-feed {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: rgba(0, 50, 0, 0.9); color: #00ff00;
+            font-size: 0.75rem; padding: 5px 15px; border-top: 1px solid #00ff00;
+            font-family: monospace; z-index: 1000; text-align: left;
+        }
+
         /* DER ROTE COUNTER */
         .counter-box { position: absolute; top: 20px; right: 20px; background: #ff0000; color: #fff; padding: 10px 20px; border: 2px solid #fff; border-radius: 5px; font-weight: bold; font-family: 'Courier New', Courier, monospace; box-shadow: 0 0 10px #ff0000; z-index: 100; }
 
@@ -28,19 +36,15 @@
         .box.locked { opacity: 0.2; cursor: not-allowed; }
         .box.read { background: #003d8f; border-color: #00eeff; }
 
-        /* DER BRÜCKEN-BUTTON */
-        #bridge-btn { display: none; background: linear-gradient(gold, darkgoldenrod); color: black; padding: 20px; font-weight: bold; border: 2px solid white; cursor: pointer; margin: 20px auto; width: 300px; box-shadow: 0 0 20px gold; }
-
-        /* SEKTOR ANSICHT & CHAT */
+        /* BUTTONS & CHAT */
+        #bridge-btn { display: none; background: gold; color: black; padding: 20px; font-weight: bold; border: 2px solid white; cursor: pointer; margin: 20px auto; width: 300px; box-shadow: 0 0 20px gold; }
         #sektor-view { display: none; padding: 50px; }
         .back-btn { background: #ffd700; padding: 10px 20px; cursor: pointer; border: none; font-weight: bold; margin-bottom: 20px; }
         #chat-box { border: 1px solid #333; height: 300px; overflow-y: auto; margin: 20px auto; max-width: 600px; padding: 10px; text-align: left; background: #111; }
 
         /* EBENE 3: VERIFIZIERUNG OVERLAY */
-        #verify-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 200; justify-content: center; align-items: center; }
-        .verify-card { background: #003d8f; padding: 40px; border: 3px solid #ffd700; border-radius: 15px; box-shadow: 0 0 30px #ffd700; text-align: center; max-width: 400px; }
-        .verify-card input { width: 80%; padding: 10px; margin: 20px 0; border-radius: 5px; border: none; font-size: 1rem; }
-        .verify-btn { background: #ffd700; color: black; padding: 10px 30px; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; }
+        #verify-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 2000; justify-content: center; align-items: center; }
+        .verify-card { background: #003d8f; padding: 40px; border: 3px solid #ffd700; border-radius: 15px; text-align: center; }
     </style>
 </head>
 <body>
@@ -48,12 +52,7 @@
     <div class="counter-box">STILLE MILLION: <span id="count-num">842.336</span></div>
 
     <div id="dashboard">
-        <div class="logo-header">
-            <div class="logo-ring">
-                <div class="logo-mm">M&M</div>
-                <div class="logo-community">COMMUNITY</div>
-            </div>
-        </div>
+        <div class="logo-header"><div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div></div>
         <div class="lila-leiste"><div class="leiste-text">REGISTRIERUNG</div></div>
         <div class="grid" id="main-grid"></div>
         <button id="bridge-btn" onclick="startVerification()">DIE BRÜCKE ÜBERQUEREN</button>
@@ -70,12 +69,13 @@
     <div id="verify-overlay">
         <div class="verify-card">
             <h2>EBENE 3: VERIFIZIERUNG</h2>
-            <p>Um die Brücke zu überqueren, gib deine E-Mail ein:</p>
+            <p>E-Mail eingeben:</p>
             <input type="email" id="user-email" placeholder="deine@mail.de">
-            <br>
-            <button class="verify-btn" onclick="completeVerification()">ZUTRITT GEWÄHREN</button>
+            <button onclick="completeVerification()">ZUTRITT GEWÄHREN</button>
         </div>
     </div>
+
+    <div id="chicken-feed">SYSTEM: Warte auf Aktivität im Stall...</div>
 
 <script>
     let gelesene = new Set([0]); 
@@ -97,17 +97,24 @@
     }
 
     function openSektor(id) {
-        if (id > 0 && !gelesene.has(id-1)) return alert("Bitte die Reihenfolge einhalten!");
+        if (id > 0 && !gelesene.has(id-1)) return alert("Reihenfolge einhalten!");
+        
         aktuellerSektor = id;
         gelesene.add(id);
+        
+        // Hühner füttern
+        document.getElementById('chicken-feed').innerText = "HUHN AKTIV: Sektor " + (id+1) + " [" + themen[id] + "] wird gerade gefressen.";
+
         document.getElementById('dashboard').style.display = 'none';
         document.getElementById('sektor-view').style.display = 'block';
         document.getElementById('sektor-titel').innerText = themen[id];
+
         if(channel) channel.unsubscribe();
         channel = ably.channels.get('mm-' + id);
         channel.subscribe(msg => {
             document.getElementById('chat-box').innerHTML += `<div><strong>Partner:</strong> ${msg.data}</div>`;
         });
+
         if (id === 19) { unlockNextLevel(); }
         buildGrid();
     }
@@ -117,19 +124,14 @@
         document.body.style.border = "5px solid #ffd700";
     }
 
-    function startVerification() {
-        document.getElementById('verify-overlay').style.display = 'flex';
-    }
+    function startVerification() { document.getElementById('verify-overlay').style.display = 'flex'; }
 
     function completeVerification() {
         const email = document.getElementById('user-email').value;
-        if (email.includes('@') && email.length > 5) {
-            alert("E-Mail akzeptiert, Schwein. Der Frosch macht den Weg frei!");
+        if (email.includes('@')) {
             document.getElementById('verify-overlay').style.display = 'none';
             startVideoLevel(); 
-        } else {
-            alert("Das Schwein sagt: Keine gültige E-Mail!");
-        }
+        } else { alert("Das Schwein sagt: Keine gültige E-Mail!"); }
     }
 
     function startVideoLevel() {
