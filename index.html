@@ -59,8 +59,8 @@
         .num-gelesen { background-color: #ffd700 !important; color: #000 !important; }
         .num-offen { background-color: #ff4d4d !important; }
         .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
-        .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
-        .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
+        .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; transition: opacity 1s; }
+        .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; opacity: 0.4 !important; }
     </style>
 </head>
 <body>
@@ -157,10 +157,6 @@
                 <div class="video-slot" id="v-slot-2">SLOT 2 (ZUFALL)</div>
                 <div class="video-slot" id="v-slot-3">SLOT 3 (ZUFALL)</div>
                 <div class="video-slot" id="v-slot-4">SLOT 4 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-5">SLOT 5 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-6">SLOT 6 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-7">SLOT 7 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-8">SLOT 8 (ZUFALL)</div>
             </div>
             <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 5px; flex-shrink:0;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
             <div id="sektoren-schubladen"></div>
@@ -168,20 +164,18 @@
 
         <div id="ebene5-bereich" style="display:none; padding: 50px; text-align: center;">
              <h1 style="font-size: 4rem; color: #ffd700; text-shadow: 0 0 20px #ffd700;">ADMIN ZONE</h1>
-             <p>Willkommen im Herzen der Community. Hier werden die Fäden gezogen.</p>
              <button onclick="localStorage.clear(); location.reload();" style="background: red; color: white; border: none; padding: 15px; cursor: pointer; font-weight: bold;">TEST-SPEICHER LÖSCHEN (RESET)</button>
         </div>
     </div>
 
     <div class="bottom-nav">
-        <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Dashboard</button>
+        <button id="btn-back" class="nav-btn" onclick="showDashboard()">← Dashboard</button>
         <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
-        <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
+        <button id="btn-next" class="nav-btn" onclick="nextPage()">Weiter →</button>
     </div>
 
 <script>
-    // --- STATUS ---
-    let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, isVerifiziert: false, stammSektor: null };
+    let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, isVerifiziert: false };
     const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
     let ebene = 1, tId = 0, aktuellesThema = "", geleseneThemen = new Set(), interaktionsZaehler = {};
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
@@ -201,44 +195,27 @@
         }));
     }
 
-    // INITIALISIERUNG
+    // INITIALISIERUNG GRID
     const grid = document.getElementById('main-grid');
     themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="checkAccess(${i}, '${t}')">${t}</div></div>`; });
     
     const drawerArea = document.getElementById('sektoren-schubladen');
     themen.forEach((t, i) => {
-        drawerArea.innerHTML += `
-            <div class="schublade" id="drawer-${i}">
-                <div class="schublade-header" onclick="toggleDrawer(${i})">
-                    <span>SEKTOR ${i+1}: ${t}</span>
-                    <span id="arrow-${i}">▼</span>
-                </div>
-                <div class="schublade-content">
-                    <textarea id="note-${i}" class="schublade-textarea" placeholder="Hinterlegen Sie hier Ihre Dokumente..."></textarea>
-                    <button class="save-btn" onclick="saveNote(${i})">DOKUMENT SICHERN</button>
-                </div>
-            </div>`;
+        drawerArea.innerHTML += `<div class="schublade" id="drawer-${i}"><div class="schublade-header" onclick="toggleDrawer(${i})"><span>SEKTOR ${i+1}: ${t}</span><span id="arrow-${i}">▼</span></div><div class="schublade-content"><textarea id="note-${i}" class="schublade-textarea"></textarea><button class="save-btn" onclick="alert('Gesichert')">DOKUMENT SICHERN</button></div></div>`;
     });
 
     for(let i=1; i<=7; i++) document.getElementById('dot-holder').innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
-
-    updateNumColors();
-
-    // LOGIK
-    function saveNote(id) { alert("Sektor " + (id+1) + " dokumentiert."); sync(); }
 
     function showZugangInfo(typ) {
         const modal = document.getElementById('zugang-modal'), emailField = document.getElementById('email-input-field');
         modal.style.display = 'flex';
         if(typ === 'gast') {
-            document.getElementById('modal-titel').innerText = "Gast-Modus";
-            emailField.style.display = 'none';
+            document.getElementById('modal-titel').innerText = "Gast-Modus"; emailField.style.display = 'none';
             document.getElementById('modal-confirm-btn').onclick = () => { userBackstage.isVerifiziert = false; modal.style.display = 'none'; updateUI(); sync(); };
         } else {
-            document.getElementById('modal-titel').innerText = "Verifizierter Status";
-            emailField.style.display = 'block';
+            document.getElementById('modal-titel').innerText = "Verifizierter Status"; emailField.style.display = 'block';
             document.getElementById('modal-confirm-btn').onclick = () => { 
-                if(document.getElementById('user-email-input').value.includes('@')) { userBackstage.isVerverified = true; userBackstage.isVerifiziert = true; modal.style.display = 'none'; updateUI(); sync(); }
+                if(document.getElementById('user-email-input').value.includes('@')) { userBackstage.isVerifiziert = true; modal.style.display = 'none'; updateUI(); sync(); }
             };
         }
     }
@@ -248,91 +225,61 @@
         else { alert("Bitte der Reihe nach freischalten!"); }
     }
 
-    function toggleDrawer(id) {
-        const d = document.getElementById(`drawer-${id}`);
-        const isOpen = d.classList.contains('open');
-        document.querySelectorAll('.schublade').forEach(s => s.classList.remove('open'));
-        if (!isOpen) d.classList.add('open');
-    }
-
-    // ADMIN UNLOCK - SETZT ALLES AUF MAXIMUM FÜR TESTS
-    function adminUnlock() {
-        themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
-        userBackstage.isQualifiziert = true; userBackstage.isVerifiziert = true;
-        updateNumColors(); updateUI(); sync();
-        alert("ADMIN MODUS: Alle Sektoren & Ebenen frei!");
-    }
-
     function showInfo(t, id) { 
-        tId = id; aktuellesThema = t; 
-        ebene = 2;
-        geleseneThemen.add(id);
+        tId = id; aktuellesThema = t; ebene = 2; geleseneThemen.add(id);
         document.getElementById('dashboard').style.display = 'none'; 
         document.getElementById('page-skelett').style.display = 'flex'; 
-        updateUI(); updateNumColors(); sync();
+        startRotation(); updateUI(); updateNumColors(); sync();
     } 
 
-    function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
-    
-    function portalZuEbene4() { 
-        if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { 
-            const modal = document.getElementById('video-wahl-modal'), liste = document.getElementById('wahl-liste');
-            liste.innerHTML = "";
-            themen.forEach((t, i) => {
-                liste.innerHTML += `<div onclick="setzeSektorUndVideo(${i}, '${t}')" style="border:1px solid #003d8f; padding:10px; cursor:pointer; text-align:center; background: #001a3d;">SEKTOR ${i+1}<br><small>${t}</small></div>`;
-            });
-            modal.style.display = 'flex';
-        } 
+    function startRotation() {
+        const bg = document.getElementById('werbe-bg');
+        bg.src = ""; // Reset
+        bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + 50}/1200/600')`;
+        bg.classList.remove('bild-aktiv');
+        void bg.offsetWidth; // Trigger Reflow
+        bg.classList.add('bild-aktiv');
     }
 
-    function setzeSektorUndVideo(id, t) { tId = id; aktuellesThema = t; ebene = 4; document.getElementById('video-wahl-modal').style.display = 'none'; updateUI(); }
-
-    function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv')) { ebene = 5; updateUI(); } }
+    function nextPage() {
+        if(userBackstage.isVerifiziert && tId < 19) {
+            tId++; aktuellesThema = themen[tId]; geleseneThemen.add(tId);
+            startRotation(); updateUI(); updateNumColors(); sync();
+        }
+    }
 
     function updateUI() {
-        const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
-        document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
-        document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
-        document.getElementById('ebene5-bereich').style.display = isAdmin ? 'block' : 'none';
+        document.getElementById('chat-area').style.display = (ebene === 3) ? 'flex' : 'none';
+        document.getElementById('drawer-ebene4').style.display = (ebene === 4) ? 'flex' : 'none';
+        document.getElementById('ebene5-bereich').style.display = (ebene === 5) ? 'block' : 'none';
         document.getElementById('main-text').style.display = (ebene < 3) ? 'block' : 'none';
-        
-        const redBar = document.getElementById('ebene4-title-red');
-        redBar.style.display = isVideo ? 'block' : 'none';
-        if(isVideo) redBar.innerText = `SEKTOR: ${aktuellesThema}`;
+        document.getElementById('ebene4-title-red').style.display = (ebene === 4) ? 'block' : 'none';
+        if(ebene === 4) document.getElementById('ebene4-title-red').innerText = `SEKTOR: ${aktuellesThema}`;
 
-        document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
-        document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
-        document.getElementById('btn-back').style.visibility = 'visible';
         document.getElementById('info-titel').innerText = aktuellesThema;
-        
-        if (ebene === 2) document.getElementById('main-text').innerHTML = `<strong>Inhalt Sektor ${tId+1}:</strong><br>Hier beginnt die Erarbeitung des Themas "${aktuellesThema}".`;
+        document.getElementById('main-text').innerHTML = `<strong>Inhalt Sektor ${tId+1}:</strong><br>Thema: ${aktuellesThema}.`;
 
+        // NAVIGATION BUTTONS
+        document.getElementById('btn-next').style.visibility = (userBackstage.isVerifiziert && ebene === 2) ? 'visible' : 'hidden';
+
+        // SIGNALE
         const sigGelb = document.getElementById('sig-r4'), sigRot = document.getElementById('sig-l4'), sigL1 = document.getElementById('sig-l1');
-        
-        // EBENE 3 FREISCHALTEN (Gelbes Licht)
-        if (ebene === 2) sigGelb.classList.toggle('signal-aktiv', geleseneThemen.size >= 20);
-        else sigGelb.classList.remove('signal-aktiv');
+        sigGelb.classList.toggle('signal-aktiv', ebene === 2 && geleseneThemen.size >= 20);
+        sigRot.classList.toggle('signal-aktiv', ebene === 3 && interaktionsZaehler[tId] >= 20);
+        if (userBackstage.isQualifiziert) { sigL1.className = "oval-side elite-aktiv"; sigL1.onclick = () => { ebene = 5; updateUI(); }; }
 
-        // EBENE 4 FREISCHALTEN (Rotes Licht)
-        if (ebene === 3) sigRot.classList.toggle('signal-aktiv', Object.values(interaktionsZaehler).every(v => v >= 20));
-        else sigRot.classList.remove('signal-aktiv');
-
-        // EBENE 5 (Elite)
-        if (userBackstage.isQualifiziert) { sigL1.className = "oval-side elite-aktiv"; sigL1.onclick = portalZuEbene5; }
-        
         updateDots();
     }
 
-    function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
-    
+    function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
+    function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
     function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
-    
+    function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
     function registriereSenden() { 
-        const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); 
-        if (text === "") return; 
-        chatBox.innerHTML += `<div style="margin-bottom: 8px;"><strong>Du:</strong> ${text}</div>`; 
-        if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++; 
-        input.value = ""; chatBox.scrollTop = chatBox.scrollHeight; updateUI(); sync();
+        const input = document.getElementById('chat-input'), box = document.getElementById('chat-box');
+        if (input.value.trim() === "") return; 
+        box.innerHTML += `<div><strong>Du:</strong> ${input.value}</div>`; 
+        interaktionsZaehler[tId]++; input.value = ""; box.scrollTop = box.scrollHeight; updateUI(); sync();
     }
 
     function updateNumColors() {
@@ -347,12 +294,13 @@
         });
     }
 
-    // VIDEO LOGIK
-    function starteVideoKonferenz() {
-        const meinSlot = document.getElementById('v-slot-1');
-        const raumName = "MM-Community-Sektor-" + tId; 
-        meinSlot.innerHTML = `<iframe src="https://meet.jit.si/${raumName}#config.prejoinPageEnabled=false" allow="camera; microphone; fullscreen; display-capture" style="height: 100%; width: 100%; border: 0; border-radius:5px;"></iframe>`;
+    function adminUnlock() {
+        userBackstage.isVerifiziert = true; userBackstage.isQualifiziert = true;
+        themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
+        updateNumColors(); updateUI(); sync(); alert("Admin: Alles offen.");
     }
+
+    updateNumColors();
 </script>
 </body>
 </html>
