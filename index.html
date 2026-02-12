@@ -5,92 +5,55 @@
     <title>M&M - Neustart</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <style>
-       /* Der rote Counter oben rechts */
-.counter-box {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: #ff0000;
-    color: #fff;
-    padding: 10px 20px;
-    border: 2px solid #fff;
-    border-radius: 5px;
-    font-weight: bold;
-    font-family: 'Courier New', Courier, monospace;
-    box-shadow: 0 0 10px #ff0000;
-    z-index: 100;
-}
-        /* Dashboard Grid */
+        body { background: #000; color: #fff; font-family: sans-serif; margin: 0; text-align: center; }
+        .counter-box { position: absolute; top: 20px; right: 20px; background: #ff0000; color: #fff; padding: 10px 20px; border: 2px solid #fff; border-radius: 5px; font-weight: bold; font-family: 'Courier New', Courier, monospace; box-shadow: 0 0 10px #ff0000; z-index: 100; }
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 20px; max-width: 1000px; margin: 40px auto; }
         .box { border: 1px solid #003d8f; padding: 20px; cursor: pointer; background: #050505; transition: 0.3s; }
         .box:hover { border-color: #ffd700; transform: scale(1.02); }
         .box.locked { opacity: 0.2; cursor: not-allowed; }
         .box.read { background: #003d8f; border-color: #00eeff; }
-
-        /* Das M&M Logo oben links */
         .logo-header { position: absolute; top: 10px; left: 20px; text-align: center; }
-        .logo-ring { 
-            width: 80px; height: 80px; border: 3px solid #fff; background: #003d8f; 
-            border-radius: 50%; display: flex; flex-direction: column; 
-            justify-content: center; align-items: center; cursor: pointer; 
-        }
+        .logo-ring { width: 80px; height: 80px; border: 3px solid #fff; background: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; }
         .logo-mm { font-size: 1.5rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.4rem; letter-spacing: 1px; font-weight: bold; }
-
-        /* Der lila Balken */
-        .lila-leiste { 
-            width: 100%; background: #8b00ff; border-top: 2px solid #fff; 
-            border-bottom: 2px solid #fff; margin-top: 110px; padding: 15px 0;
-            box-shadow: 0 0 15px #8b00ff;
-        }
+        .lila-leiste { width: 100%; background: #8b00ff; border-top: 2px solid #fff; border-bottom: 2px solid #fff; margin-top: 110px; padding: 15px 0; box-shadow: 0 0 15px #8b00ff; }
         .leiste-text { font-size: 1.5rem; font-weight: 900; letter-spacing: 10px; }
-
-        /* Sektor Ansicht */
         #sektor-view { display: none; padding: 50px; }
         .back-btn { background: #ffd700; padding: 10px 20px; cursor: pointer; border: none; font-weight: bold; margin-bottom: 20px; }
         #chat-box { border: 1px solid #333; height: 300px; overflow-y: auto; margin: 20px auto; max-width: 600px; padding: 10px; text-align: left; background: #111; }
+        
+        /* Der Brücken-Button */
+        #bridge-btn { display: none; background: linear-gradient(gold, darkgoldenrod); color: black; padding: 20px; font-weight: bold; border: 2px solid white; cursor: pointer; margin: 20px auto; width: 300px; box-shadow: 0 0 20px gold; }
     </style>
 </head>
 <body>
-<div class="counter-box">
-    STILLE MILLION: <span id="count-num">842.336</span>
+
+<div class="counter-box">STILLE MILLION: <span id="count-num">842.336</span></div>
+
+<div id="dashboard">
+    <div class="logo-header">
+        <div class="logo-ring">
+            <div class="logo-mm">M&M</div>
+            <div class="logo-community">COMMUNITY</div>
+        </div>
+    </div>
+    <div class="lila-leiste"><div class="leiste-text">REGISTRIERUNG</div></div>
+    <div class="grid" id="main-grid"></div>
+    <button id="bridge-btn" onclick="startVerification()">DIE BRÜCKE ÜBERQUEREN</button>
 </div>
-    <div id="dashboard">
-        <div class="logo-header">
-            <div class="logo-ring">
-                <div class="logo-mm">M&M</div>
-                <div class="logo-community">COMMUNITY</div>
-            </div>
-        </div>
 
-        <div class="lila-leiste">
-            <div class="leiste-text">REGISTRIERUNG</div>
-        </div>
-
-        <div class="grid" id="main-grid"></div>
-    </div>
-
-    <div id="sektor-view">
-        <button class="back-btn" onclick="showDashboard()">← ZURÜCK</button>
-        <h2 id="sektor-titel">Sektor Titel</h2>
-        <div id="chat-box"></div>
-        <input type="text" id="chat-in" placeholder="Nachricht...">
-        <button onclick="sendMsg()">SENDEN</button>
-    </div>
+<div id="sektor-view">
+    <button class="back-btn" onclick="showDashboard()">← ZURÜCK</button>
+    <h2 id="sektor-titel">Sektor Titel</h2>
+    <div id="chat-box"></div>
+    <input type="text" id="chat-in" placeholder="Nachricht...">
+    <button onclick="sendMsg()">SENDEN</button>
+</div>
 
 <script>
     let gelesene = new Set([0]); 
     let aktuellerSektor = null;
-    const themen = [
-        "Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", 
-        "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", 
-        "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", 
-        "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", 
-        "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", 
-        "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", 
-        "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", 
-        "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"
-    ];
+    const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
 
     const ably = new Ably.Realtime('8_Z6_g.x8999g:pYlD6QyG-A_v9H_A');
     let channel = null;
@@ -102,26 +65,44 @@
         themen.forEach((t, i) => {
             const isLocked = i > 0 && !gelesene.has(i-1);
             const statusClass = isLocked ? "locked" : (gelesene.has(i) ? "read" : "");
-            container.innerHTML += `
-                <div class="box ${statusClass}" onclick="openSektor(${i})">
-                    <strong>${i+1}</strong><br><small>${t}</small>
-                </div>`;
+            container.innerHTML += `<div class="box ${statusClass}" onclick="openSektor(${i})"><strong>${i+1}</strong><br><small>${t}</small></div>`;
         });
     }
 
     function openSektor(id) {
         if (id > 0 && !gelesene.has(id-1)) return alert("Bitte die Reihenfolge einhalten!");
+        
         aktuellerSektor = id;
         gelesene.add(id);
+        
+        // Dashboard ausblenden, Sektor zeigen
         document.getElementById('dashboard').style.display = 'none';
         document.getElementById('sektor-view').style.display = 'block';
         document.getElementById('sektor-titel').innerText = themen[id];
+
+        // Chat-Verbindung
         if(channel) channel.unsubscribe();
         channel = ably.channels.get('mm-' + id);
         channel.subscribe(msg => {
             document.getElementById('chat-box').innerHTML += `<div><strong>Partner:</strong> ${msg.data}</div>`;
         });
+
+        // Prüfung: Wenn letzter Sektor (Die Brücke) erreicht wurde
+        if (id === 19) {
+            unlockNextLevel();
+        }
         buildGrid();
+    }
+
+    function unlockNextLevel() {
+        // Button einblenden
+        document.getElementById('bridge-btn').style.display = 'block';
+        document.body.style.border = "5px solid #ffd700";
+    }
+
+    function startVerification() {
+        alert("Übergang zu Ebene 3: Verifizierung wird gestartet...");
+        // Hier kommt später dein E-Mail-Code rein!
     }
 
     function showDashboard() {
