@@ -36,7 +36,8 @@
         <button onclick="sendMsg()">SENDEN</button>
     </div>
 
-<script>
+<script>let gelesene = new Set([0]); // Das sagt dem System: Sektor 1 ist von Anfang an offen!
+let aktuellerSektor = null;
    const themen = [
     "Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", 
     "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", 
