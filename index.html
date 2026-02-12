@@ -2,152 +2,155 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>M&M-COMMUNITY - Das Fundament</title>
+    <title>M&M-COMMUNITY - Admin Modus</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <style>
-        /* DEIN HERZSTÜCK: DAS AUSSEHEN */
         body { background-color: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
-
-        /* LILA REGISTRIERUNGS-LEISTE */
-        .lila-registrierung-leiste { width: 100%; height: 80px; background: #8b00ff; border-top: 2px solid #fff; border-bottom: 2px solid #fff; display: flex; align-items: center; justify-content: center; margin-top: 20px; box-shadow: 0 0 20px #8b00ff; }
-        .registrierung-text { color: #fff; font-size: 2.2rem; font-weight: 900; letter-spacing: 15px; text-transform: uppercase; }
-
-        /* HEADER & LOGO */
+        @keyframes signalBlink { 0% { box-shadow: 0 0 5px #fff; opacity: 0.8; } 50% { box-shadow: 0 0 25px #fff, 0 0 35px #003d8f; opacity: 1; transform: scale(1.05); } 100% { box-shadow: 0 0 5px #fff; opacity: 0.8; } }
+        .signal-aktiv { animation: signalBlink 1.0s infinite ease-in-out !important; border: 2px solid #fff !important; cursor: pointer; }
         .dashboard-header { width: 100%; position: absolute; top: 3%; display: flex; justify-content: flex-start; padding: 0 2%; box-sizing: border-box; z-index: 20; }
         .logo-ring { width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; }
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
-
-        /* DIE TAFEL / INFO-SECTION */
-        .info-section { width: 80%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; position: relative; overflow: hidden; margin-top: 2vh; }
-        
-        /* DAS GRID (DEIN RÜCKGRAT) */
+        .info-section { width: 80%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; margin-top: 2vh; }
+        .tafel-layout { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; margin-top: 1vh; height: 26vh; }
+        .info-section-ebene { width: 90% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
+        .buttons-links, .buttons-rechts { position: absolute; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
+        .buttons-links { left: 1.5%; } .buttons-rechts { right: 1.5%; }
+        .oval-side { width: 45px; height: 22px; border-radius: 12px; border: 1px solid #fff; opacity: 0.8; cursor: pointer; }
+        .ov-schwarz { background: #000; border: 1.5px solid #003d8f; }
+        .ov-grun { background: #00ff00; } .ov-blau { background: #0000ff; } .ov-rot { background: #ff0000; } .ov-pink { background: #ff00ff; } .ov-gelb { background: #ffff00; }
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 10px; width: 95%; max-width: 1450px; margin-top: 30px; border: 3px solid #00ff00; padding: 15px; border-radius: 10px; }
-        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; overflow: hidden; }
-        .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
+        .box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; }
+        .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
-
-        /* FARBEN FÜR STATUS */
-        .num-neutral { background-color: #003d8f !important; }
-        .num-gelesen { background-color: #ffd700 !important; color: #000 !important; }
-        .num-offen { background-color: #ff4d4d !important; }
-        .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
-
-        /* EBENE 3 & 4 SPEZIFISCH (CHAT & VIDEO) */
-        #chat-area, #drawer-ebene4 { width: 90%; display: none; flex-direction: column; margin: 0 auto; flex-grow: 1; }
-        .chat-msgs { flex: 1; min-height: 200px; padding: 10px; color: #fff; overflow-y: auto; border: 1px solid #003d8f; }
-        .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; margin-bottom: 20px; }
-        .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; }
-
-        /* NAVIGATION */
-        .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; background: #000; border-top: 1px solid #333; z-index: 100; }
+        #chat-area { width: 90%; height: 45vh; display: none; flex-direction: column; margin-bottom: 70px; }
+        .chat-msgs { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; justify-content: flex-end; }
+        .chat-input-row { display: flex; border: 1px solid #003d8f; padding: 5px; }
+        #drawer-ebene4 { width: 90%; display: none; flex-direction: column; height: 60vh; }
+        .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+        .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; overflow: hidden; }
+        .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; background: #000; z-index: 100; border-top: 1px solid #333; }
         .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
-        .dot { width: 10px; height: 10px; background: #444; border-radius: 50%; }
-        .dot.active { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
+        .ebene4-header-red { width: 90%; background: #ff0000; color: #fff; padding: 10px; text-align: center; font-weight: 900; display: none; }
     </style>
 </head>
 <body>
 
     <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="dashboard-header">
-            <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
+            <div class="logo-ring" onclick="adminUnlock()"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
         </div>
         <div class="info-section">
-            <h1 style="font-size: 2.8rem; font-weight: 900;">DAS WAS & WARUM</h1>
-            <h2 style="color: #003d8f; font-size: 1.8rem;">DIE STILLE MILLION</h2>
-            <p style="max-width: 80%; text-align: center; color: #ccc;">Wahl der Vorsitzenden erst nach Erreichen der stillen Million.</p>
+            <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
+            <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
         </div>
         <div class="grid" id="main-grid"></div>
-        
-        <div style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 80px;">
-            <div class="fundament-box" style="flex: 1; cursor: pointer;" onclick="verif(false)"><div class="num">G</div><div class="text">Gast</div></div>
-            <div class="fundament-box" style="flex: 1; cursor: pointer; border-color: #8b00ff;" onclick="verif(true)"><div class="num" style="background: #8b00ff;">V</div><div class="text">Verifiziert (Status 1-4)</div></div>
-        </div>
     </div>
 
-    <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
-        <h1 id="info-titel" style="text-transform: uppercase; font-size: 1.8rem; margin-top: 20px;"></h1>
-        
-        <p id="main-text" style="width: 85%; color: #ccc; line-height: 1.8; font-size: 1.3rem;"></p>
+    <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+        <div class="ebene4-header-red" id="ebene4-title-red">SEKTOR LIVE</div>
+        <div class="tafel-layout">
+            <div class="buttons-links">
+                <div class="oval-side ov-schwarz" onclick="showDashboard()"></div>
+                <div class="oval-side ov-grun" onclick="setEbene(2)"></div>
+                <div class="oval-side ov-blau" onclick="setEbene(3)"></div>
+                <div class="oval-side ov-rot" onclick="setEbene(4)"></div>
+            </div>
+            <div class="info-section-ebene">
+                <h1 id="info-titel" style="text-transform: uppercase;">SEKTOR</h1>
+            </div>
+            <div class="buttons-rechts">
+                <div class="oval-side ov-pink"></div>
+                <div class="oval-side ov-gelb"></div>
+            </div>
+        </div>
 
         <div id="chat-area">
-            <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit...</i></div>
-            <div style="display: flex; margin-top: 10px;">
-                <input type="text" id="chat-input" style="flex:1; padding: 15px; background: #111; border: 1px solid #003d8f; color: #fff;">
-                <button onclick="sendMsg()" style="background: #003d8f; color: #fff; border: none; padding: 0 20px;">SENDEN</button>
+            <div class="chat-msgs" id="chat-box"></div>
+            <div class="chat-input-row">
+                <input type="text" id="chat-input" placeholder="Schreiben..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px; outline:none;" onkeypress="if(event.key==='Enter') sendMsg()">
+                <button onclick="sendMsg()" style="background:#003d8f; color:#fff; border:none; padding:0 30px; cursor:pointer;">SENDEN</button>
             </div>
         </div>
 
         <div id="drawer-ebene4">
-            <div class="video-grid">
-                <div class="video-slot">SLOT 1 (DU)</div>
-                <div class="video-slot">SLOT 2</div>
-                <div class="video-slot">SLOT 3</div>
-                <div class="video-slot">SLOT 4</div>
+            <div class="video-grid" id="v-grid">
+                <div class="video-slot" id="v-slot-1">DU</div>
+                <div class="video-slot" id="v-slot-2">PARTNER</div>
+                <div class="video-slot" id="v-slot-3">...</div>
+                <div class="video-slot" id="v-slot-4">...</div>
             </div>
-            <div class="lila-registrierung-leiste"><div class="registrierung-text">WACHSTUM DER MILLION</div></div>
-            <p style="text-align: center; color: #ff0000; font-weight: 900; font-size: 1.5rem; margin-top: 20px;">
-                DAS PARLAMENT WIRD IM SCHATTEN GESCHMIEDET.
-            </p>
+            <button onclick="startVideo()" style="width:100%; background:#00ff00; padding:15px; font-weight:bold; cursor:pointer; color:#000; border-radius:5px;">KAMERA AKTIVIEREN</button>
         </div>
     </div>
 
     <div class="bottom-nav">
-        <button class="nav-btn" onclick="goHome()">← Dashboard</button>
-        <div style="display: flex; gap: 8px;" id="dot-holder"></div>
-        <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="next()">Weiter →</button>
+        <button class="nav-btn" onclick="showDashboard()">DASHBOARD</button>
+        <button class="nav-btn" onclick="nextEbene()">NÄCHSTE EBENE</button>
     </div>
 
 <script>
+    const ably = new Ably.Realtime('8_Z6_g.x8999g:pYlD6QyG-A_v9H_A');
+    const myId = Math.random().toString(36).substring(7);
     const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
-    let ebene = 1, tId = 0, isVerifiziert = false;
-    let gelesene = new Set();
+    let currentSektor = 0, ebene = 1, channel = null;
 
-    // Grid aufbauen
     const grid = document.getElementById('main-grid');
     themen.forEach((t, i) => {
-        grid.innerHTML += `<div class="box"><div class="num num-neutral" id="n-${i}">${i+1}</div><div class="text" onclick="startSektor(${i})">${t}</div></div>`;
+        grid.innerHTML += `<div class="box"><div class="num" id="num-${i}">${i+1}</div><div class="text" onclick="openSektor(${i},'${t}')">${t}</div></div>`;
     });
 
-    // Dots aufbauen
-    const dots = document.getElementById('dot-holder');
-    for(let i=1; i<=4; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
-
-    function startSektor(id) {
-        tId = id; ebene = 2; gelesene.add(id);
+    function openSektor(id, t) {
+        currentSektor = id;
+        document.getElementById('info-titel').innerText = t;
         document.getElementById('dashboard').style.display = 'none';
         document.getElementById('page-skelett').style.display = 'flex';
-        updateUI();
-    }
-
-    function verif(status) { isVerifiziert = status; alert(status ? "Verifiziert!" : "Gast-Modus aktiv"); updateUI(); }
-
-    function updateUI() {
-        document.getElementById('info-titel').innerText = themen[tId];
-        document.getElementById('main-text').innerText = "Hier liegen die Dokumente und Gedanken zum Sektor: " + themen[tId];
+        setEbene(2);
         
-        document.getElementById('main-text').style.display = (ebene === 2) ? 'block' : 'none';
-        document.getElementById('chat-area').style.display = (ebene === 3) ? 'flex' : 'none';
-        document.getElementById('drawer-ebene4').style.display = (ebene === 4) ? 'flex' : 'none';
-
-        const nextBtn = document.getElementById('btn-next');
-        nextBtn.style.visibility = (isVerifiziert && ebene < 4) ? 'visible' : 'hidden';
-
-        for(let i=1; i<=4; i++) {
-            const d = document.getElementById('dot'+i);
-            if(d) d.classList.toggle('active', i === ebene);
-        }
+        if(channel) channel.unsubscribe();
+        channel = ably.channels.get('mm-sektor-' + id);
+        channel.subscribe('message', m => {
+            if(m.data.sender !== myId) {
+                document.getElementById('chat-box').innerHTML += `<div style="color:#ffd700; margin-bottom:5px;"><strong>Partner:</strong> ${m.data.text}</div>`;
+                document.getElementById('chat-box').scrollTop = document.getElementById('chat-box').scrollHeight;
+            }
+        });
     }
 
-    function next() { if(ebene < 4) { ebene++; updateUI(); } }
-    function goHome() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; }
-    function sendMsg() { 
-        const val = document.getElementById('chat-input').value;
-        if(val) {
-            document.getElementById('chat-box').innerHTML += `<div><strong>Du:</strong> ${val}</div>`;
-            document.getElementById('chat-input').value = "";
-        }
+    function sendMsg() {
+        const inp = document.getElementById('chat-input');
+        if(!inp.value || !channel) return;
+        channel.publish('message', {text: inp.value, sender: myId});
+        document.getElementById('chat-box').innerHTML += `<div style="margin-bottom:5px;"><strong>Du:</strong> ${inp.value}</div>`;
+        inp.value = "";
+        document.getElementById('chat-box').scrollTop = document.getElementById('chat-box').scrollHeight;
     }
+
+    function setEbene(n) {
+        ebene = n;
+        document.getElementById('chat-area').style.display = n === 3 ? 'flex' : 'none';
+        document.getElementById('drawer-ebene4').style.display = n === 4 ? 'flex' : 'none';
+        document.getElementById('ebene4-title-red').style.display = n === 4 ? 'block' : 'none';
+    }
+
+    function nextEbene() { if(ebene < 4) setEbene(ebene + 1); }
+    function showDashboard() { document.getElementById('dashboard').style.display = 'flex'; document.getElementById('page-skelett').style.display = 'none'; ebene = 1; }
+
+    async function startVideo() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({video: true, audio: true});
+            const v = document.createElement('video');
+            v.srcObject = stream; v.autoplay = true; v.muted = true; v.style.width="100%"; v.style.height="100%"; v.style.objectFit="cover";
+            const slot = document.getElementById('v-slot-1');
+            slot.innerHTML = ""; slot.appendChild(v);
+            if(channel) channel.publish('video-sync', {sender: myId, action: 'join'});
+        } catch(e) { alert("Kamera-Fehler"); }
+    }
+
+    function adminUnlock() { alert("Alle Systeme bereit für Probelauf."); }
 </script>
 </body>
 </html>
+    
+  
