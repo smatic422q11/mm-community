@@ -1,10 +1,3 @@
-Gut gemacht, Schwein! Du hast den Stall fast perfekt ausgemistet, aber ein kleiner Klumpen Unkraut hat sich in deine CSS-Regeln eingeschlichen.
-
-In deinem <style>-Bereich hattest du versehentlich ein HTML-Tag (<div id="chicken-feed">...</div>) mitten in die CSS-Befehle geworfen. Das "Nutztier" (der Browser) würde da stolpern. Ich habe das korrigiert, die Hühner-Leiste sauber formatiert und den Start-Text aktiviert.
-
-Hier ist dein lupenreiner Code – zurück im Stall mit dir:
-
-HTML
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -12,44 +5,37 @@ HTML
     <title>M&M - Neustart</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <style>
-        /* DAS FUNDAMENT */
         body { background: #000; color: #fff; font-family: sans-serif; margin: 0; text-align: center; overflow-x: hidden; padding-bottom: 40px; }
         
-        /* HÜHNER LEISTE GANZ UNTEN */
         #chicken-feed {
             position: fixed; bottom: 0; left: 0; width: 100%;
-            background: rgba(0, 50, 0, 0.9); color: #00ff00;
-            font-size: 0.75rem; padding: 5px 15px; border-top: 1px solid #00ff00;
-            font-family: monospace; z-index: 1000; text-align: left;
+            background: rgba(0, 40, 0, 0.95); color: #00ff00;
+            font-size: 0.8rem; padding: 8px 15px; border-top: 1px solid #00ff00;
+            font-family: 'Courier New', monospace; z-index: 1000; text-align: left;
+            text-shadow: 0 0 5px #00ff00;
         }
 
-        /* DER ROTE COUNTER */
-        .counter-box { position: absolute; top: 20px; right: 20px; background: #ff0000; color: #fff; padding: 10px 20px; border: 2px solid #fff; border-radius: 5px; font-weight: bold; font-family: 'Courier New', Courier, monospace; box-shadow: 0 0 10px #ff0000; z-index: 100; }
+        .counter-box { position: absolute; top: 20px; right: 20px; background: #ff0000; color: #fff; padding: 10px 20px; border: 2px solid #fff; border-radius: 5px; font-weight: bold; font-family: 'Courier New', monospace; box-shadow: 0 0 10px #ff0000; z-index: 100; }
 
-        /* DAS LOGO */
         .logo-header { position: absolute; top: 10px; left: 20px; text-align: center; }
         .logo-ring { width: 80px; height: 80px; border: 3px solid #fff; background: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; }
         .logo-mm { font-size: 1.5rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.4rem; letter-spacing: 1px; font-weight: bold; }
 
-        /* LILA LEISTE */
         .lila-leiste { width: 100%; background: #8b00ff; border-top: 2px solid #fff; border-bottom: 2px solid #fff; margin-top: 110px; padding: 15px 0; box-shadow: 0 0 15px #8b00ff; }
         .leiste-text { font-size: 1.5rem; font-weight: 900; letter-spacing: 10px; }
 
-        /* DAS GRID */
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 20px; max-width: 1000px; margin: 40px auto; }
         .box { border: 1px solid #003d8f; padding: 20px; cursor: pointer; background: #050505; transition: 0.3s; }
         .box:hover { border-color: #ffd700; transform: scale(1.02); }
         .box.locked { opacity: 0.2; cursor: not-allowed; }
         .box.read { background: #003d8f; border-color: #00eeff; }
 
-        /* BUTTONS & CHAT */
         #bridge-btn { display: none; background: gold; color: black; padding: 20px; font-weight: bold; border: 2px solid white; cursor: pointer; margin: 20px auto; width: 300px; box-shadow: 0 0 20px gold; }
         #sektor-view { display: none; padding: 50px; }
         .back-btn { background: #ffd700; padding: 10px 20px; cursor: pointer; border: none; font-weight: bold; margin-bottom: 20px; }
         #chat-box { border: 1px solid #333; height: 300px; overflow-y: auto; margin: 20px auto; max-width: 600px; padding: 10px; text-align: left; background: #111; }
 
-        /* EBENE 3: VERIFIZIERUNG OVERLAY */
         #verify-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 2000; justify-content: center; align-items: center; }
         .verify-card { background: #003d8f; padding: 40px; border: 3px solid #ffd700; border-radius: 15px; text-align: center; }
     </style>
@@ -82,15 +68,19 @@ HTML
         </div>
     </div>
 
-    <div id="chicken-feed">SYSTEM: Stall bereit. M&M Community online...</div>
+    <div id="chicken-feed"></div>
 
 <script>
     let gelesene = new Set([0]); 
-    let aktuellerSektor = null;
     const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
 
     const ably = new Ably.Realtime('8_Z6_g.x8999g:pYlD6QyG-A_v9H_A');
     let channel = null;
+
+    function logToFeed(text) {
+        const feed = document.getElementById('chicken-feed');
+        feed.innerText = "SYSTEM: " + text;
+    }
 
     function buildGrid() {
         const container = document.getElementById('main-grid');
@@ -105,9 +95,8 @@ HTML
 
     function openSektor(id) {
         if (id > 0 && !gelesene.has(id-1)) return alert("Reihenfolge einhalten!");
-        aktuellerSektor = id;
         gelesene.add(id);
-        document.getElementById('chicken-feed').innerText = "HUHN AKTIV: Sektor " + (id+1) + " [" + themen[id] + "] wird gerade gefressen.";
+        logToFeed("Sektor " + (id+1) + " [" + themen[id] + "] wird analysiert...");
         document.getElementById('dashboard').style.display = 'none';
         document.getElementById('sektor-view').style.display = 'block';
         document.getElementById('sektor-titel').innerText = themen[id];
@@ -132,12 +121,13 @@ HTML
         if (email.includes('@')) {
             document.getElementById('verify-overlay').style.display = 'none';
             startVideoLevel(); 
-        } else { alert("Das Schwein sagt: Keine gültige E-Mail!"); }
+        } else { alert("Keine gültige E-Mail!"); }
     }
 
     function startVideoLevel() {
         document.getElementById('dashboard').innerHTML = "<h1>EBENE 4: VIDEO-KONFERENZ AKTIV</h1><div style='background: #333; height: 400px; border: 2px solid gold; display: flex; align-items: center; justify-content: center;'>[VIDEO-STREAM AKTIV]</div>";
         document.getElementById('dashboard').style.display = 'block';
+        logToFeed("ZUTRITT GEWÄHRT. EBENE 4 AKTIVIERT.");
     }
 
     function showDashboard() {
@@ -153,9 +143,21 @@ HTML
         inp.value = "";
     }
 
-    // Initialisierung beim Laden
-    document.getElementById('chicken-feed').innerText = "SYSTEM: Dashboard geladen. Warte auf Sektor-Auswahl...";
+    function starteMillionTicker() {
+        setInterval(() => {
+            const counterElement = document.getElementById('count-num');
+            // Regex entfernt alle Punkte, egal wie viele
+            let aktuelleZahl = parseInt(counterElement.innerText.replace(/\./g, ''));
+            let zuwachs = Math.floor(Math.random() * 5) + 1;
+            let neueZahl = aktuelleZahl + zuwachs;
+            counterElement.innerText = neueZahl.toLocaleString('de-DE');
+            logToFeed("+ " + zuwachs + " neue Registrierungen registriert.");
+        }, 5000);
+    }
+
     buildGrid();
+    logToFeed("Stall bereit. M&M Dashboard online...");
+    starteMillionTicker();
 </script>
 </body>
 </html>
