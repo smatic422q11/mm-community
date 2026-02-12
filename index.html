@@ -37,9 +37,16 @@
     </div>
 
 <script>
-    const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung"];
-    let gelesene = new Set([0]); // Erster Sektor ist immer offen
-    let aktuellerSektor = null;
+   const themen = [
+    "Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", 
+    "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", 
+    "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", 
+    "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", 
+    "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", 
+    "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", 
+    "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", 
+    "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"
+];
 
     // Ably Setup
     const ably = new Ably.Realtime('8_Z6_g.x8999g:pYlD6QyG-A_v9H_A');
