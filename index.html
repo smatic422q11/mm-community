@@ -304,7 +304,7 @@
         const textElement = document.getElementById('main-text');
         textElement.innerText = CONTENT_HUB[id] || "Die Wahrheit für diesen Sektor wird noch im Buckel des Frosches geschmiedet...";
         
-        document.getElementById('info-titel').innerText = t;
+       document.getElementById('info-titel').innerHTML = t;
         setEbene(2);
         startRotation();
         verbindeMitSektorChat(id);
