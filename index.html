@@ -249,7 +249,30 @@
         if(counterDisplay) counterDisplay.innerText = currentCount.toLocaleString('de-DE');
     }
     setInterval(updateCounter, 10000);
+function showZugangInfo(typ) {
+    const modal = document.getElementById('zugang-modal');
+    const titel = document.getElementById('modal-titel');
+    const text = document.getElementById('modal-text');
+    const emailField = document.getElementById('email-input-field');
+    const confirmBtn = document.getElementById('modal-confirm-btn');
 
+    modal.style.display = 'flex';
+
+    if(typ === 'gast') {
+        titel.innerText = "GAST-ZUGANG";
+        text.innerText = "Du hast nur Lesezugriff auf die Sektoren. Interaktive Features wie Chat und Video-Konferenz sind deaktiviert.";
+        emailField.style.display = 'none';
+        confirmBtn.onclick = () => modal.style.display = 'none';
+    } else {
+        titel.innerText = "VERIFIZIERUNG";
+        text.innerText = "Gib deine E-Mail an, um vollen Zugriff auf alle 4 Ebenen zu erhalten und Teil des Kollektivs zu werden.";
+        emailField.style.display = 'block';
+        confirmBtn.onclick = () => {
+            alert("Verifizierungs-Link wurde gesendet, Schwein!");
+            modal.style.display = 'none';
+        };
+    }
+}
     function initApp() {
         const grid = document.getElementById('main-grid');
         if(!grid) return;
@@ -260,11 +283,13 @@
         });
         
         const drawerArea = document.getElementById('sektoren-schubladen');
-        drawerArea.innerHTML = "";
-        themen.forEach((t, i) => {
-            const gespeicherterText = userBackstage.sektorNotizen[i] || "";
-            drawerArea.innerHTML += `<div class="schublade" id="drawer-${i}"><div class="schublade-header" onclick="toggleDrawer(${i})"><span>SEKTOR ${i+1}: ${t}</span><span id="arrow-${i}">▼</span></div><div class="schublade-content"><textarea id="note-${i}" class="schublade-textarea">${gespeicherterText}</textarea><br><button class="save-btn" onclick="saveNote(${i})">DOKUMENT SICHERN</button></div></div>`;
-        });
+        if(drawerArea) {
+            drawerArea.innerHTML = "";
+            themen.forEach((t, i) => {
+                const gespeicherterText = userBackstage.sektorNotizen[i] || "";
+                drawerArea.innerHTML += `<div class="schublade" id="drawer-${i}"><div class="schublade-header" onclick="toggleDrawer(${i})"><span>SEKTOR ${i+1}: ${t}</span><span id="arrow-${i}">▼</span></div><div class="schublade-content"><textarea id="note-${i}" class="schublade-textarea">${gespeicherterText}</textarea><br><button class="save-btn" onclick="saveNote(${i})">DOKUMENT SICHERN</button></div></div>`;
+            });
+        }
 
         const dots = document.getElementById('dot-holder');
         dots.innerHTML = "";
@@ -273,42 +298,79 @@
     }
 
     function checkAccess(id, t) {
-        tId = id; aktuellesThema = t;
+        tId = id; 
+        aktuellesThema = t;
+        const chatBox = document.getElementById('chat-box');
+        if(chatBox) chatBox.innerHTML = ""; 
+
         if(!userBackstage.besuchteSektoren.includes(id)) {
             userBackstage.besuchteSektoren.push(id);
             saveToStorage();
         }
+
         document.getElementById('dashboard').style.display = 'none';
         document.getElementById('page-skelett').style.display = 'flex';
+        
         const textElement = document.getElementById('main-text');
-        textElement.innerText = CONTENT_HUB[id] || "";
+        textElement.innerText = CONTENT_HUB[id] || "Text folgt...";
         textElement.classList.add('wahrheits-text');
+        
         setEbene(2);
+        startRotation();
         verbindeMitSektorChat(id);
     }
 
-    function saveNote(id) {
-        userBackstage.sektorNotizen[id] = document.getElementById(`note-${id}`).value;
-        saveToStorage();
-        alert("Im Buckel gesichert!");
+    function startRotation() {
+        const bg = document.getElementById('werbe-bg');
+        if(bg) {
+            bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + 99}/1200/600')`;
+            bg.classList.add('bild-aktiv');
+            bg.style.opacity = "0.4"; 
+        }
     }
 
-    function saveToStorage() { localStorage.setItem('mm_user_data', JSON.stringify(userBackstage)); }
-
-    function setEbene(n) { ebene = n; updateUI(); }
+    function setEbene(n) { 
+        ebene = n; 
+        updateUI(); 
+    }
 
     function updateUI() {
         document.getElementById('chat-area').style.display = (ebene === 3) ? 'flex' : 'none';
         document.getElementById('drawer-ebene4').style.display = (ebene === 4) ? 'flex' : 'none';
         document.getElementById('main-text').style.display = (ebene === 2) ? 'block' : 'none';
-        document.getElementById('info-titel').innerText = aktuellesThema;
+        
+        const ebene4Titel = document.getElementById('ebene4-title-red');
+        if(ebene === 4) {
+            ebene4Titel.style.display = 'block';
+            ebene4Titel.innerText = "SEKTOR KONFERENZ: " + aktuellesThema;
+        } else {
+            ebene4Titel.style.display = 'none';
+        }
+
         for(let i=1; i<=4; i++) {
             const dot = document.getElementById('dot'+i);
             if(dot) dot.classList.toggle('active', i === ebene);
         }
     }
 
-    function showDashboard() { if(jitsiApi) jitsiApi.dispose(); ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; initApp(); }
+    function saveToStorage() { 
+        localStorage.setItem('mm_user_data', JSON.stringify(userBackstage)); 
+    }
+
+    function saveNote(id) {
+        userBackstage.sektorNotizen[id] = document.getElementById(`note-${id}`).value;
+        saveToStorage();
+        alert("Im Buckel des Frosches gesichert, Schwein!");
+    }
+
+    function showDashboard() { 
+        if(jitsiApi) jitsiApi.dispose(); 
+        ebene = 1; 
+        document.getElementById('page-skelett').style.display = 'none'; 
+        document.getElementById('dashboard').style.display = 'flex'; 
+        initApp(); 
+    }
+
     function nextPage() { if(ebene < 4) setEbene(ebene + 1); }
     function toggleDrawer(id) { document.getElementById('drawer-' + id).classList.toggle('open'); }
 
@@ -317,7 +379,8 @@
         aktuellerChannel = ably.channels.get('mm-sektor-' + sektorId);
         aktuellerChannel.subscribe('message', (msg) => {
             if (msg.data.senderId !== meinTabId) {
-                document.getElementById('chat-box').innerHTML += `<div style="color: #ffd700;"><strong>Partner:</strong> ${msg.data.text}</div>`;
+                const cb = document.getElementById('chat-box');
+                if(cb) cb.innerHTML += `<div style="color: #ffd700;"><strong>Partner:</strong> ${msg.data.text}</div>`;
             }
         });
     }
