@@ -9,6 +9,24 @@
         body { background-color: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
 
         /* ANIMATIONEN */
+        @keyframes textErscheinung {
+    0% { opacity: 0; filter: blur(10px); transform: translateY(20px); }
+    100% { opacity: 1; filter: blur(0); transform: translateY(0); }
+}
+#main-text {
+    width: 80%;
+    text-align: center; /* Wahrheit braucht keine Rechtfertigung am Rand */
+    color: #fff;
+    margin: 10vh auto; /* Schön mittig platziert */
+    font-size: 1.8rem; /* Damit man es nicht übersehen kann */
+    line-height: 1.6;
+}
+.wahrheits-text {
+    animation: textErscheinung 2.5s ease-out forwards;
+    color: #fff;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    font-style: italic;
+}
         @keyframes kenburns { 0% { transform: scale(1) translate(0, 0); } 50% { transform: scale(1.15) translate(-1%, -1%); } 100% { transform: scale(1) translate(0, 0); } }
         @keyframes fadeEffect { 0% { opacity: 0; } 15% { opacity: 0.4; } 85% { opacity: 0.4; } 100% { opacity: 0; } }
         @keyframes signalBlink { 0% { box-shadow: 0 0 5px #fff; opacity: 0.8; } 50% { box-shadow: 0 0 25px #fff, 0 0 35px #003d8f; opacity: 1; transform: scale(1.05); } 100% { box-shadow: 0 0 5px #fff; opacity: 0.8; } }
@@ -273,26 +291,40 @@
         updateCounter();
     }
 
-    // --- FUNKTIONEN ---
+ // --- FUNKTIONEN ---
     function checkAccess(id, t) {
-        tId = id; aktuellesThema = t;
+        tId = id; 
+        aktuellesThema = t;
         
+        // --- Die Stille Million erhöhen ---
         let count = parseInt(localStorage.getItem('stille_million')) || 842336;
         localStorage.setItem('stille_million', count + 12);
         
+        // --- Sektor als besucht markieren ---
         if(!userBackstage.besuchteSektoren.includes(id)) {
             userBackstage.besuchteSektoren.push(id);
-            document.getElementById(`num-${id}`).className = 'num num-fertig';
+            const numEl = document.getElementById(`num-${id}`);
+            if(numEl) numEl.className = 'num num-fertig';
             saveToStorage();
         }
         
-        document.getElementById('main-text').innerText = CONTENT_HUB[id] || `Sektor ${id + 1}: Das Fundament für "${t}" wird gelegt.`;
+        // --- Text mit Animation setzen ---
+        const textElement = document.getElementById('main-text');
+        textElement.classList.remove('wahrheits-text');
+        void textElement.offsetWidth; // Force Reflow für die Animation
+        
+        textElement.innerText = CONTENT_HUB[id] || `Sektor ${id + 1}: Hier beginnt die Suche nach der Wahrheit.`;
+        textElement.classList.add('wahrheits-text');
+
+        // --- UI umschalten ---
         document.getElementById('dashboard').style.display = 'none';
         document.getElementById('page-skelett').style.display = 'flex';
+        
         setEbene(2);
         verbindeMitSektorChat(id);
         updateCounter();
     }
+    // Hier endet die Funktion sauber. Alles was danach doppelt war, ist jetzt weg. 
 
     function saveNote(id) {
         const text = document.getElementById(`note-${id}`).value;
