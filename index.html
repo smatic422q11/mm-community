@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="de">
-<head>
+<head><script src='https://8x8.vc/vpaas-magic-cookie-39f826359e1345d38f8304910901e855/external_api.js'></script>
     <meta charset="UTF-8">
     <title>M&M-COMMUNITY - Admin Modus</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
@@ -184,15 +184,12 @@
             </div>
         </div> 
 
-        <div id="drawer-ebene4">
-            <div class="video-grid">
-                <div class="video-slot slot-1-user" id="v-slot-1">SLOT 1 (DU)</div>
-                <div class="video-slot" id="v-slot-2">SLOT 2 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-3">SLOT 3 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-4">SLOT 4 (ZUFALL)</div>
-            </div>
-            <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 5px; flex-shrink:0;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
-            <div id="sektoren-schubladen"></div>
+       <div id="drawer-ebene4">
+            <div id="jitsi-container" style="width:100%; height:500px; background:#111; border:1px solid #ff0000;">
+                </div>
+            
+            <div id="sektoren-schubladen">
+                </div>
         </div> 
     </div>
 
@@ -203,57 +200,134 @@
     </div>
 
 <script>
-    // --- GLOBALE VARIABLEN ---
-    let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, isVerifiziert: false, stammSektor: null, rankingPlatz: 5 };
-    const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
-    let ebene = 1, tId = 0, aktuellesThema = "", geleseneThemen = new Set(), interaktionsZaehler = {};
-    themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
+    // --- GLOBALE VARIABLEN & LOCALSTORAGE ---
+    let userBackstage = JSON.parse(localStorage.getItem('mm_user_data')) || { 
+        sektorNotizen: {}, 
+        besuchteSektoren: [],
+        isVerifiziert: false 
+    };
 
+    const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
+    
+    let ebene = 1, tId = 0, aktuellesThema = "";
+    let jitsiApi = null;
     const ably = new Ably.Realtime('8_Z6_g.x8999g:pYlD6QyG-A_v9H_A'); 
     const meinTabId = Math.random().toString(36).substring(7);
     let aktuellerChannel = null;
 
-    // --- UI INITIALISIERUNG ---
-    const grid = document.getElementById('main-grid');
-    themen.forEach((t, i) => { 
-        grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="checkAccess(${i}, '${t}')">${t}</div></div>`; 
-    });
-    
-    const drawerArea = document.getElementById('sektoren-schubladen');
-    themen.forEach((t, i) => {
-        drawerArea.innerHTML += `<div class="schublade" id="drawer-${i}"><div class="schublade-header" onclick="toggleDrawer(${i})"><span>SEKTOR ${i+1}: ${t}</span><span id="arrow-${i}">▼</span></div><div class="schublade-content"><textarea id="note-${i}" class="schublade-textarea" placeholder="Hier tippen..."></textarea><br><button class="save-btn" onclick="saveNote(${i})">DOKUMENT SICHERN</button></div></div>`;
-    });
+    const CONTENT_HUB = {
+        0: "Gefühle sind keine Schwäche, sondern die Währung der neuen Welt.",
+        1: "Menschsein ist ein Prozess, keine Eigenschaft. Leg die Maske ab.",
+        4: "Verantwortung ist die Antwort auf das Leben. Gib sie jetzt, Schwein!",
+        19: "Die Brücke: Das Bindeglied zwischen Technik und Seele."
+    };
 
-    const dots = document.getElementById('dot-holder');
-    for(let i=1; i<=4; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
-
-    // --- FUNKTIONEN ---
-    function saveNote(id) { alert("Dokument für Sektor " + (id+1) + " lokal gesichert."); }
-
-    function showZugangInfo(typ) {
-        const modal = document.getElementById('zugang-modal');
-        modal.style.display = 'flex';
-        if(typ === 'gast') {
-            document.getElementById('modal-titel').innerText = "Gast-Modus";
-            document.getElementById('modal-confirm-btn').onclick = () => { userBackstage.isVerifiziert = false; modal.style.display = 'none'; updateUI(); };
-        } else {
-            document.getElementById('modal-titel').innerText = "Verifizierter Status";
-            document.getElementById('email-input-field').style.display = 'block';
-            document.getElementById('modal-confirm-btn').onclick = () => { if(document.getElementById('user-email-input').value.includes('@')) { userBackstage.isVerifiziert = true; modal.style.display = 'none'; updateUI(); } };
+    // --- DIE LEBENDIGE MILLION ---
+    function updateCounter() {
+        let currentCount = parseInt(localStorage.getItem('stille_million')) || 842336;
+        currentCount += Math.floor(Math.random() * 5) + 1; 
+        localStorage.setItem('stille_million', currentCount);
+        
+        const counterDisplay = document.querySelector('.counter-value');
+        if(counterDisplay) {
+            counterDisplay.innerText = currentCount.toLocaleString('de-DE');
         }
     }
+    setInterval(updateCounter, 10000);
 
+    // --- INITIALISIERUNG ---
+    function initApp() {
+        const grid = document.getElementById('main-grid');
+        grid.innerHTML = ""; // Clear grid
+        themen.forEach((t, i) => { 
+            const statusClass = userBackstage.besuchteSektoren.includes(i) ? 'num-fertig' : 'num-neutral';
+            grid.innerHTML += `<div class="box" id="box-${i}"><div class="num ${statusClass}" id="num-${i}">${i+1}</div><div class="text" onclick="checkAccess(${i}, '${t}')">${t}</div></div>`; 
+        });
+        
+        const drawerArea = document.getElementById('sektoren-schubladen');
+        drawerArea.innerHTML = "";
+        themen.forEach((t, i) => {
+            const gespeicherterText = userBackstage.sektorNotizen[i] || "";
+            drawerArea.innerHTML += `<div class="schublade" id="drawer-${i}"><div class="schublade-header" onclick="toggleDrawer(${i})"><span>SEKTOR ${i+1}: ${t}</span><span id="arrow-${i}">▼</span></div><div class="schublade-content"><textarea id="note-${i}" class="schublade-textarea" placeholder="Hier tippen...">${gespeicherterText}</textarea><br><button class="save-btn" onclick="saveNote(${i})">DOKUMENT IM BUCKEL SICHERN</button></div></div>`;
+        });
+
+        const dots = document.getElementById('dot-holder');
+        dots.innerHTML = "";
+        for(let i=1; i<=4; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
+        
+        updateCounter();
+    }
+
+    // --- FUNKTIONEN ---
     function checkAccess(id, t) {
         tId = id; aktuellesThema = t;
+        
+        let count = parseInt(localStorage.getItem('stille_million')) || 842336;
+        localStorage.setItem('stille_million', count + 12);
+        
+        if(!userBackstage.besuchteSektoren.includes(id)) {
+            userBackstage.besuchteSektoren.push(id);
+            document.getElementById(`num-${id}`).className = 'num num-fertig';
+            saveToStorage();
+        }
+        
+        document.getElementById('main-text').innerText = CONTENT_HUB[id] || `Sektor ${id + 1}: Das Fundament für "${t}" wird gelegt.`;
         document.getElementById('dashboard').style.display = 'none';
         document.getElementById('page-skelett').style.display = 'flex';
         setEbene(2);
         verbindeMitSektorChat(id);
+        updateCounter();
     }
 
-    function setEbene(n) {
-        ebene = n;
-        updateUI();
+    function saveNote(id) {
+        const text = document.getElementById(`note-${id}`).value;
+        userBackstage.sektorNotizen[id] = text;
+        saveToStorage();
+        alert("Dokument sicher im Buckel des Frosches verstaut!");
+    }
+
+    function saveToStorage() {
+        localStorage.setItem('mm_user_data', JSON.stringify(userBackstage));
+    }
+
+    function portalZuEbene4() {
+        if(!userBackstage.isVerifiziert) {
+            alert("Halt, Schwein! Nur verifizierte Seelen dürfen in die Video-Ebene.");
+            showZugangInfo('email');
+            return;
+        }
+        setEbene(4); 
+        setTimeout(() => { starteVideoKonferenz(); }, 300);
+    }
+
+    function setEbene(n) { ebene = n; updateUI(); }
+
+    function updateUI() {
+        document.getElementById('chat-area').style.display = (ebene === 3) ? 'flex' : 'none';
+        document.getElementById('drawer-ebene4').style.display = (ebene === 4) ? 'flex' : 'none';
+        document.getElementById('main-text').style.display = (ebene === 2) ? 'block' : 'none';
+        document.getElementById('ebene4-title-red').innerText = `SEKTOR: ${aktuellesThema}`;
+        document.getElementById('info-titel').innerText = aktuellesThema;
+        for(let i=1; i<=4; i++) { 
+            const dot = document.getElementById('dot'+i);
+            if(dot) dot.classList.toggle('active', i === ebene); 
+        }
+        startRotation();
+    }
+
+    function showDashboard() { if(jitsiApi) jitsiApi.dispose(); ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; }
+    function nextPage() { if(ebene < 4) { if(ebene === 3) portalZuEbene4(); else setEbene(ebene + 1); } }
+    function toggleDrawer(id) { document.getElementById('drawer-' + id).classList.toggle('open'); }
+    function startRotation() { document.getElementById('werbe-bg').style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; document.getElementById('werbe-bg').classList.add('bild-aktiv'); }
+    
+    function adminUnlock() {
+        const pass = prompt("ADMIN-CODE EINGEBEN:");
+        if(pass === "frosch2026") {
+            userBackstage.isVerifiziert = true;
+            saveToStorage();
+            alert("ZAHNLOSE KONTROLLE AKTIVIERT.");
+            location.reload();
+        }
     }
 
     function verbindeMitSektorChat(sektorId) {
@@ -277,39 +351,36 @@
         input.value = ""; document.getElementById('chat-box').scrollTop = document.getElementById('chat-box').scrollHeight;
     }
 
-    function portalZuEbene3() { setEbene(3); }
-    function portalZuEbene4() { setEbene(4); }
-
-    function updateUI() {
-        document.getElementById('chat-area').style.display = (ebene === 3) ? 'flex' : 'none';
-        document.getElementById('drawer-ebene4').style.display = (ebene === 4) ? 'flex' : 'none';
-        document.getElementById('main-text').style.display = (ebene === 2) ? 'block' : 'none';
-        document.getElementById('ebene4-title-red').style.display = (ebene === 4) ? 'block' : 'none';
-        document.getElementById('ebene4-title-red').innerText = `SEKTOR: ${aktuellesThema}`;
-        document.getElementById('info-titel').innerText = aktuellesThema;
-        document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
-        for(let i=1; i<=4; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); }
-        startRotation();
+    function starteVideoKonferenz() {
+        const domain = "8x8.vc";
+        const options = { roomName: "MM-Community-Sektor-" + (tId + 1), width: "100%", height: 500, parentNode: document.querySelector('#jitsi-container') };
+        if (jitsiApi) jitsiApi.dispose();
+        document.getElementById('jitsi-container').innerHTML = "";
+        jitsiApi = new JitsiMeetExternalAPI(domain, options);
     }
 
-    function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; }
-    function nextPage() { if(ebene < 4) setEbene(ebene + 1); }
-    function startRotation() { 
-        const bg = document.getElementById('werbe-bg'); 
-        bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; 
-        bg.classList.add('bild-aktiv'); 
+    function showZugangInfo(typ) {
+        const modal = document.getElementById('zugang-modal');
+        modal.style.display = 'flex';
+        if(typ === 'gast') {
+            document.getElementById('modal-titel').innerText = "Gast-Modus";
+            document.getElementById('modal-confirm-btn').onclick = () => { userBackstage.isVerifiziert = false; saveToStorage(); modal.style.display = 'none'; };
+        } else {
+            document.getElementById('modal-titel').innerText = "Verifizierter Status";
+            document.getElementById('email-input-field').style.display = 'block';
+            document.getElementById('modal-confirm-btn').onclick = () => { 
+                if(document.getElementById('user-email-input').value.includes('@')) { 
+                    userBackstage.isVerifiziert = true; 
+                    saveToStorage(); 
+                    modal.style.display = 'none'; 
+                    alert("Status: Verifiziert! Der Zugang zur Ebene 4 ist nun frei.");
+                } 
+            };
+        }
     }
 
-    async function starteVideoKonferenz() {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            const slot1 = document.getElementById('v-slot-1');
-            slot1.innerHTML = `<video autoplay playsinline muted style="width:100%; height:100%; object-fit:cover;"></video>`;
-            slot1.querySelector('video').srcObject = stream;
-        } catch (err) { alert("Kamera-Fehler"); }
-    }
-
-    function adminUnlock() { alert("ADMIN AKTIV"); }
+    // Startet alles beim Laden der Seite
+    window.onload = initApp;
 </script>
 </body>
 </html>
