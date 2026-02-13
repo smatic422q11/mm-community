@@ -215,20 +215,28 @@
     const meinTabId = Math.random().toString(36).substring(7);
     let aktuellerChannel = null;
 
-    const CONTENT_HUB = {
+   const CONTENT_HUB = {
         0: "Deine Gefühle sind keine Zierde, sie sind eine Forderung. Wer sie unterdrückt, verrät sein eigenes Leben.",
         1: "Hör auf, dich hinter Masken zu verstecken. Ein Mensch zu werden bedeutet, seine eigene Hässlichkeit zu akzeptieren.",
-        2: "Frieden ohne Wahrheit ist nur ein Waffenstillstand mit der Lüge. Brich das Schweigen.",
+        2: "Frieden ist oft nur die Feigheit vor dem Konflikt. Stell dich deinem inneren Krieg, bevor du von Harmonie faselst.",
         3: "Rechte bekommt man nicht geschenkt, man muss den Mut haben, sie sich aus dem Rachen der Gleichgültigkeit zu reißen.",
         4: "Deine Moral ist wertlos, wenn sie dich nichts kostet. Verantwortung ist Schmerz, den man freiwillig trägt.",
-        5: "Wir restaurieren keine Fassaden, wir graben im Schlamm der Seele, um den Kern zu finden.",
-        6: "Elternrechte sind keine Besitzrechte. Deine Kinder gehören der Zukunft, nicht deinem Ego.",
-        7: "Wahre Kunst muss stören. Wenn sie dich nur beruhigt, ist es Dekoration für dein Gefängnis.",
+        5: "Du bist nicht gut, du bist nur domestiziert. Echte Menschlichkeit beginnt dort, wo du deine dunklen Triebe erkennst und sie bändigst.",
+        6: "Elternrechte sind keine Besitzrechte. Wer Kinder wie Eigentum behandelt, erstickt die Zukunft in seinem eigenen Ego.",
+        7: "Wahre Kunst muss stören. Wenn sie dich nur beruhigt, ist es keine Kunst, sondern Tapete für dein Gefängnis.",
+        8: "Glaube ist oft nur die Angst vor dem Nichts. Wer Gott sucht, um sich selbst nicht finden zu müssen, bleibt verloren.",
+        9: "Tradition ist die Bewahrung der Flamme, nicht die Anbetung der Asche. Du betest oft nur Staub an.",
+        10: "Bekenntnis oder Selbstwahl? Die meisten wählen nur die Fesseln, die am bequemsten sitzen.",
         11: "Dein Körper ist das Schlachtfeld deiner Entscheidungen. Hör auf, Ausreden in Pillenform zu schlucken.",
-        13: "Mobbing gedeiht im Schatten der Wegschauer. Wer schweigt, hält das Messer des Täters.",
+        12: "Arbeit ist oft die Flucht vor sich selbst. Wer bist du, wenn du nicht funktionierst? Nichts?",
+        13: "Der Täter ist ein Feigling, aber der Zuschauer ist ein Verräter. In wessen Schweigen hast du dich heute versteckt?",
+        14: "Jugend ist keine Tugend, sondern Potenzial. Wer nur nachplappert, was modern ist, altert schon in der Wiege.",
+        15: "Das Alter schützt vor Torheit nicht. Bist du weise geworden, oder nur bitter über verpasste Gelegenheiten?",
+        16: "Dein Helfersyndrom ist oft nur die Sucht nach Bedeutung. Hilfst du wirklich, oder kaufst du dir nur ein reines Gewissen?",
+        17: "Nachbarschaft ist oft organisierte Kontrolle. Liebst du deinen Nächsten, oder überwachst du nur sein Versagen?",
+        18: "Technik macht dich nicht gottgleich, sie macht deine Schwächen nur effizienter. Ein Idiot mit KI bleibt ein Idiot.",
         19: "Die Brücke führt nicht weg von der Dunkelheit, sie führt mitten hindurch. Nur wer die Nacht kennt, beherrscht den Tag."
     };
-
     // --- DIE LEBENDIGE MILLION ---
     function updateCounter() {
         let currentCount = parseInt(localStorage.getItem('stille_million')) || 842336;
