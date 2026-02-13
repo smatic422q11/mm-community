@@ -204,7 +204,7 @@
     </div>
 
 <script>
-    let userBackstage = JSON.parse(localStorage.getItem('mm_user_data')) || { 
+   let userBackstage = JSON.parse(localStorage.getItem('mm_user_data')) || { 
         sektorNotizen: {}, 
         besuchteSektoren: [],
         isVerifiziert: false 
@@ -249,39 +249,28 @@
         if(counterDisplay) counterDisplay.innerText = currentCount.toLocaleString('de-DE');
     }
     setInterval(updateCounter, 10000);
-function showZugangInfo(typ) {
-    const modal = document.getElementById('zugang-modal');
-    const titel = document.getElementById('modal-titel');
-    const text = document.getElementById('modal-text');
-    const emailField = document.getElementById('email-input-field');
-    const confirmBtn = document.getElementById('modal-confirm-btn');
 
-    modal.style.display = 'flex';
-
-    if(typ === 'gast') {
-        titel.innerText = "GAST-ZUGANG";
-        text.innerText = "Du hast nur Lesezugriff auf die Sektoren. Interaktive Features wie Chat und Video-Konferenz sind deaktiviert.";
-        emailField.style.display = 'none';
-        confirmBtn.onclick = () => modal.style.display = 'none';
-    } else {
-        titel.innerText = "VERIFIZIERUNG";
-        text.innerText = "Gib deine E-Mail an, um vollen Zugriff auf alle 4 Ebenen zu erhalten und Teil des Kollektivs zu werden.";
-        emailField.style.display = 'block';
-        confirmBtn.onclick = () => {
-            alert("Verifizierungs-Link wurde gesendet, Schwein!");
-            modal.style.display = 'none';
-        };
-    }
-}
     function initApp() {
+        // 1. Visuelle Bestätigung für Verifizierte
+        if(userBackstage.isVerifiziert) {
+            const logo = document.querySelector('.logo-ring');
+            if(logo) {
+                logo.style.borderColor = "#ffd700"; 
+                logo.style.boxShadow = "0 0 20px #ffd700";
+            }
+        }
+
+        // 2. Grid-Aufbau
         const grid = document.getElementById('main-grid');
-        if(!grid) return;
-        grid.innerHTML = ""; 
-        themen.forEach((t, i) => { 
-            const statusClass = userBackstage.besuchteSektoren.includes(i) ? 'num-fertig' : 'num-neutral';
-            grid.innerHTML += `<div class="box" id="box-${i}"><div class="num ${statusClass}" id="num-${i}">${i+1}</div><div class="text" onclick="checkAccess(${i}, '${t}')">${t}</div></div>`; 
-        });
+        if(grid) {
+            grid.innerHTML = ""; 
+            themen.forEach((t, i) => { 
+                const statusClass = userBackstage.besuchteSektoren.includes(i) ? 'num-fertig' : 'num-neutral';
+                grid.innerHTML += `<div class="box" id="box-${i}"><div class="num ${statusClass}" id="num-${i}">${i+1}</div><div class="text" onclick="checkAccess(${i}, '${t}')">${t}</div></div>`; 
+            });
+        }
         
+        // 3. Schubladen-Aufbau
         const drawerArea = document.getElementById('sektoren-schubladen');
         if(drawerArea) {
             drawerArea.innerHTML = "";
@@ -291,9 +280,12 @@ function showZugangInfo(typ) {
             });
         }
 
+        // 4. Navigations-Punkte
         const dots = document.getElementById('dot-holder');
-        dots.innerHTML = "";
-        for(let i=1; i<=4; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
+        if(dots) {
+            dots.innerHTML = "";
+            for(let i=1; i<=4; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
+        }
         updateCounter();
     }
 
@@ -302,78 +294,50 @@ function showZugangInfo(typ) {
         aktuellesThema = t;
         const chatBox = document.getElementById('chat-box');
         if(chatBox) chatBox.innerHTML = ""; 
-
         if(!userBackstage.besuchteSektoren.includes(id)) {
             userBackstage.besuchteSektoren.push(id);
             saveToStorage();
         }
-
         document.getElementById('dashboard').style.display = 'none';
         document.getElementById('page-skelett').style.display = 'flex';
-        
         const textElement = document.getElementById('main-text');
         textElement.innerText = CONTENT_HUB[id] || "Text folgt...";
         textElement.classList.add('wahrheits-text');
-        
         setEbene(2);
         startRotation();
         verbindeMitSektorChat(id);
     }
 
-    function startRotation() {
-        const bg = document.getElementById('werbe-bg');
-        if(bg) {
-            bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + 99}/1200/600')`;
-            bg.classList.add('bild-aktiv');
-            bg.style.opacity = "0.4"; 
-        }
-    }
-
-    function setEbene(n) { 
-        ebene = n; 
-        updateUI(); 
-    }
+    function setEbene(n) { ebene = n; updateUI(); }
 
     function updateUI() {
         document.getElementById('chat-area').style.display = (ebene === 3) ? 'flex' : 'none';
         document.getElementById('drawer-ebene4').style.display = (ebene === 4) ? 'flex' : 'none';
         document.getElementById('main-text').style.display = (ebene === 2) ? 'block' : 'none';
-        
         const ebene4Titel = document.getElementById('ebene4-title-red');
         if(ebene === 4) {
             ebene4Titel.style.display = 'block';
             ebene4Titel.innerText = "SEKTOR KONFERENZ: " + aktuellesThema;
-        } else {
-            ebene4Titel.style.display = 'none';
-        }
-
+        } else { ebene4Titel.style.display = 'none'; }
         for(let i=1; i<=4; i++) {
             const dot = document.getElementById('dot'+i);
             if(dot) dot.classList.toggle('active', i === ebene);
         }
     }
 
-    function saveToStorage() { 
-        localStorage.setItem('mm_user_data', JSON.stringify(userBackstage)); 
-    }
-
+    function saveToStorage() { localStorage.setItem('mm_user_data', JSON.stringify(userBackstage)); }
     function saveNote(id) {
         userBackstage.sektorNotizen[id] = document.getElementById(`note-${id}`).value;
         saveToStorage();
         alert("Im Buckel des Frosches gesichert, Schwein!");
     }
-
-    function showDashboard() { 
-        if(jitsiApi) jitsiApi.dispose(); 
-        ebene = 1; 
-        document.getElementById('page-skelett').style.display = 'none'; 
-        document.getElementById('dashboard').style.display = 'flex'; 
-        initApp(); 
-    }
-
+    function showDashboard() { if(jitsiApi) jitsiApi.dispose(); ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; initApp(); }
     function nextPage() { if(ebene < 4) setEbene(ebene + 1); }
     function toggleDrawer(id) { document.getElementById('drawer-' + id).classList.toggle('open'); }
-
+    function startRotation() {
+        const bg = document.getElementById('werbe-bg');
+        if(bg) { bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + 99}/1200/600')`; bg.classList.add('bild-aktiv'); bg.style.opacity = "0.4"; }
+    }
     function verbindeMitSektorChat(sektorId) {
         if (aktuellerChannel) { aktuellerChannel.unsubscribe(); }
         aktuellerChannel = ably.channels.get('mm-sektor-' + sektorId);
@@ -384,7 +348,6 @@ function showZugangInfo(typ) {
             }
         });
     }
-
     function registriereSenden() {
         const input = document.getElementById('chat-input'), text = input.value.trim();
         if (text === "" || !aktuellerChannel) return;
@@ -392,7 +355,6 @@ function showZugangInfo(typ) {
         document.getElementById('chat-box').innerHTML += `<div><strong>Du:</strong> ${text}</div>`;
         input.value = "";
     }
-
     function portalZuEbene4() {
         if(!userBackstage.isVerifiziert) { alert("Nur für verifizierte Seelen!"); return; }
         setEbene(4);
@@ -400,9 +362,15 @@ function showZugangInfo(typ) {
         const options = { roomName: "MM-Sektor-" + tId, width: "100%", height: 500, parentNode: document.querySelector('#jitsi-container') };
         jitsiApi = new JitsiMeetExternalAPI(domain, options);
     }
-
-    function adminUnlock() {
-        if(prompt("Code?") === "frosch2026") { userBackstage.isVerifiziert = true; saveToStorage(); location.reload(); }
+    function adminUnlock() { if(prompt("Code?") === "frosch2026") { userBackstage.isVerifiziert = true; saveToStorage(); location.reload(); } }
+    function showZugangInfo(typ) {
+        const modal = document.getElementById('zugang-modal'), titel = document.getElementById('modal-titel'), text = document.getElementById('modal-text'), emailField = document.getElementById('email-input-field'), confirmBtn = document.getElementById('modal-confirm-btn');
+        modal.style.display = 'flex';
+        if(typ === 'gast') {
+            titel.innerText = "GAST-ZUGANG"; text.innerText = "Nur Lesezugriff."; emailField.style.display = 'none'; confirmBtn.onclick = () => modal.style.display = 'none';
+        } else {
+            titel.innerText = "VERIFIZIERUNG"; text.innerText = "Teil des Kollektivs werden."; emailField.style.display = 'block'; confirmBtn.onclick = () => { alert("Link gesendet, Schwein!"); modal.style.display = 'none'; };
+        }
     }
 
     window.onload = initApp;
