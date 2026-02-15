@@ -114,57 +114,50 @@
 
         .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
         .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
-/* --- DER RADIKALE AUFRÄUM-MODUS FÜR EBENE 4 --- */
-.ebene-4-aktiv .page-title-white, 
-.ebene-4-aktiv .tafel-layout,
-.ebene-4-aktiv #werbe-bg { 
-    display: none !important; 
+/* --- DIE TIEFEN-ERWEITERUNG FÜR EBENE 4 --- */
+
+/* Wir erlauben dem Body in Ebene 4 das Mitatmen */
+.ebene-4-aktiv {
+    overflow-y: auto !important; /* Löst die Sperre des Hauptbildschirms */
+    height: auto !important;
 }
 
 #drawer-ebene4 {
     display: none;
     width: 100%;
-    height: 90vh; /* Etwas weniger Höhe, damit die Nav-Buttons unten frei bleiben */
+    /* Entferne feste Höhenbegrenzung, damit 20 Sektoren Platz haben */
+    min-height: 100vh; 
     flex-direction: column;
     align-items: center;
-    overflow-y: scroll; /* Erzwingt Scroll-Fähigkeit */
-    overflow-x: hidden;
-    padding-top: 10px;
-    padding-bottom: 150px; /* Viel Platz unten, damit die Leiste nicht von der Nav verdeckt wird */
-    position: relative;
+    /* Wir lassen den Body scrollen, nicht nur den kleinen Div */
+    overflow: visible; 
+    padding-bottom: 200px; /* Puffer für die untere Navigation */
 }
 
 #jitsi-container {
     width: 98%;
-    height: 70vh !important; /* Video-Höhe fixiert */
-    min-height: 400px;
-    flex-shrink: 0; 
-    margin-bottom: 25px; /* Erzeugt den nötigen Abstand zur gelben Leiste */
-    border: 2px solid #ff0000;
+    height: 75vh !important; 
+    flex-shrink: 0;
+    margin-bottom: 30px;
+    z-index: 10;
 }
 
-#jitsi-container iframe {
-    height: 100% !important;
-    width: 100% !important;
-}
-
-/* Der Bereich für die Master-Schublade */
+/* Die gelbe Master-Leiste muss flexibel bleiben */
 #sektoren-schubladen {
     width: 95%;
-    flex-shrink: 0; /* Verhindert, dass die Leiste gequetscht wird */
-    margin-top: 10px;
-    z-index: 50;
+    display: block;
+    margin-top: 20px;
+    position: relative;
+    /* Verhindert, dass die Leiste kollabiert */
+    min-height: 100px; 
 }
 
-/* WICHTIG: Die Master-Leiste (Der Buckel des Frosches) */
-.schublade#master-archiv-container {
-    border: 3px solid #ffff00 !important;
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
-}
-
-#inneres-archiv .schublade {
-    border: 1px solid #333;
-    margin-bottom: 5px;
+/* Damit die aufgeklappten Sektoren den Platz nach unten drücken */
+#inneres-archiv {
+    display: block;
+    height: auto;
+    max-height: none; /* Hebt die 5000px Grenze auf, falls nötig */
+    transition: all 0.5s ease;
 }</style>
 </head>
 <body>
