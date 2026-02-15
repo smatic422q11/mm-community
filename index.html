@@ -244,15 +244,13 @@
     
     <div id="jitsi-container" style="width: 98%; height: 70vh; margin-bottom: 20px;"></div>
 
-    <div id="master-schublade-gelb" style="width: 95%; border: 3px solid #ffff00; background: #111;">
-        <div class="master-header" onclick="toggleMaster()" style="padding: 15px; cursor: pointer; display: flex; justify-content: space-between; background: #222; color: #ffff00; font-weight: bold;">
-            <span>📂 ZENTRALE ARCHIVIERUNG (Sektoren 1-20)</span>
-            <span id="arrow-master">▼</span>
-        </div>
-        <div id="inneres-archiv" style="display: none; width: 100%;">
-            </div>
+   <div id="master-schublade-gelb">
+    <div class="master-header" onclick="toggleMaster()">
+        <span>📂 ZENTRALE ARCHIVIERUNG (Sektoren 1-20)</span>
+        <span id="arrow-master">▼</span>
     </div>
-</div> 
+   <div id="inneres-archiv" style="width: 100%;"></div>
+</div>
 
     <div class="bottom-nav">
         <button id="btn-back" class="nav-btn" onclick="showDashboard()">← Dashboard</button>
@@ -511,10 +509,10 @@ const DASHBOARD_TRUTH = {
 
     if (n === 4) {
         document.body.classList.add('ebene-4-aktiv');
-        initJitsi(); 
+        // initJitsi(); 
         baueSektorenArchiv();
     } 
-    
+   // initJitsi(); 
    updateUI(); // Das hier sorgt dafür...
 }
 
@@ -551,14 +549,14 @@ const DASHBOARD_TRUTH = {
 
 function toggleMaster() {
     const archiv = document.getElementById('inneres-archiv');
-    const arrow = document.getElementById('arrow-master');
+    const pfeil = document.getElementById('arrow-master');
     
-    if (archiv.style.display === "none" || archiv.style.display === "") {
-        archiv.style.display = "block";
-        arrow.innerText = "▲";
+    if (archiv.style.display === 'none' || archiv.style.display === '') {
+        archiv.style.display = 'block'; // Zeigt die 20 Sektoren (den Buckel des Frosches) [cite: 2026-02-13]
+        if (pfeil) pfeil.innerText = '▲';
     } else {
-        archiv.style.display = "none";
-        arrow.innerText = "▼";
+        archiv.style.display = 'none'; // Versteckt sie wieder
+        if (pfeil) pfeil.innerText = '▼';
     }
 }
 
