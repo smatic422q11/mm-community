@@ -380,19 +380,16 @@ const DASHBOARD_TRUTH = {
     }
     setInterval(updateCounter, 10000);
 
- function initApp() {
-        // 1. DASHBOARD GRID BEFÜLLEN (Damit man die Sektoren wieder sieht)
+function initApp() {
+        // 1. DASHBOARD BOXEN (Damit du die Sektoren 1-20 siehst)
         const grid = document.getElementById('main-grid');
         if (grid) {
             grid.innerHTML = "";
             themen.forEach((thema, index) => {
                 const box = document.createElement('div');
                 box.className = 'box';
-                
-                // Status prüfen: Ist der Sektor schon im Buckel des Frosches (besucht)?
                 const istBesucht = userBackstage.besuchteSektoren.includes(index);
                 const numClass = istBesucht ? "num-fertig" : "num-neutral";
-                
                 box.innerHTML = `
                     <div class="num ${numClass}">${index + 1}</div>
                     <div class="text" onclick="checkAccess(${index}, '${thema}')">${thema}</div>
@@ -401,15 +398,13 @@ const DASHBOARD_TRUTH = {
             });
         }
 
-        // 2. EBENE 4: ARCHIV-STRUKTUR VORBEREITEN
+        // 2. EBENE 4: DIE GELBE MASTER-SCHUBLADE BAUEN
         const drawerArea = document.getElementById('sektoren-schubladen');
         if (drawerArea) {
             drawerArea.innerHTML = ""; 
-
-            // Die gelbe Master-Schublade (Sektoren-Zentrale)
             const masterSchublade = document.createElement('div');
             masterSchublade.className = 'schublade';
-            masterSchublade.id = 'master-archiv-container';
+            masterSchublade.id = 'master-archiv-container'; // WICHTIG: Die ID für toggleDrawer
             masterSchublade.innerHTML = `
                 <div class="schublade-header" onclick="toggleDrawer('master')" style="background: #ffd700; color: #000; border: 2px solid #fff; cursor: pointer;">
                     <span style="letter-spacing: 2px; font-weight: 900;">📂 SEKTOREN-ZENTRALE (1-20)</span>
@@ -420,37 +415,29 @@ const DASHBOARD_TRUTH = {
             drawerArea.appendChild(masterSchublade);
 
             const archiv = document.getElementById('inneres-archiv');
-
-            // Die einzelnen Sektoren-Schubladen IN das Archiv generieren
             for (let i = 1; i <= 20; i++) {
                 const daten = DASHBOARD_TRUTH[i];
                 const gespeicherterText = userBackstage.sektorNotizen[i] || "";
-                
                 const sektorDiv = document.createElement('div');
                 sektorDiv.className = 'schublade';
                 sektorDiv.id = `drawer-${i}`;
-                sektorDiv.style.border = "1px solid #333";
-                sektorDiv.style.marginBottom = "5px";
-
                 sektorDiv.innerHTML = `
                     <div class="schublade-header" onclick="toggleDrawer(${i})" style="font-size: 0.8rem; padding: 10px; background: #111; cursor: pointer; color: #ffd700;">
                         <span>SEKTOR ${i}: ${daten ? daten.title : "In der Forschung..."}</span>
                         <span id="arrow-${i}">▼</span>
                     </div>
                     <div class="schublade-content" style="display: none; padding: 10px; background: #050505;">
-                        <p style="font-size: 0.85rem; color: #aaa; font-style: italic;">Die Wahrheit:</p>
                         <div style="color: #fff; font-size: 0.9rem; margin-bottom: 10px; text-align: justify; border-left: 2px solid #ffd700; padding-left: 10px;">
                             ${daten ? daten.content : "..."}
                         </div>
-                        <hr style="border: 0; border-top: 1px dashed #333;">
-                        <textarea id="note-${i}" style="width: 100%; height: 100px; background: #111; color: #fff; border: 1px solid #ffd700; padding: 5px;">${gespeicherterText}</textarea>
-                        <button onclick="saveNote(${i})" style="background: #ffd700; color: #000; border: none; padding: 5px 10px; cursor: pointer; margin-top: 5px; font-weight: bold;">SICHERN</button>
+                        <textarea id="note-${i}" style="width: 100%; height: 100px; background: #111; color: #fff; border: 1px solid #ffd700;">${gespeicherterText}</textarea>
+                        <button onclick="saveNote(${i})" style="background: #ffd700; color: #000; border: none; padding: 5px 10px; cursor: pointer; margin-top: 5px;">SICHERN</button>
                     </div>`;
                 archiv.appendChild(sektorDiv);
             }
         }
         
-        // 3. NAVIGATIONSPUNKTE & COUNTER INITIALISIEREN
+        // 3. NAVIGATIONSPUNKTE & COUNTER
         const dots = document.getElementById('dot-holder');
         if (dots) {
             dots.innerHTML = "";
@@ -460,6 +447,8 @@ const DASHBOARD_TRUTH = {
         }
         updateCounter();
     }
+
+    // --- HIER ENDET INITAPP UND ES FOLGT CHECKACCESS ---
     function checkAccess(id, t) {
         tId = id;
         aktuellesThema = t;
