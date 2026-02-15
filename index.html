@@ -6,110 +6,57 @@
     <title>M&M-COMMUNITY - Admin Modus</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <style>
-        /* BASIS-LAYOUT */
         body { background-color: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
-
-        /* ANIMATIONEN */
-        @keyframes textErscheinung {
-            0% { opacity: 0; filter: blur(10px); transform: translateY(20px); }
-            100% { opacity: 1; filter: blur(0); transform: translateY(0); }
-        }
-        #main-text {
-            width: 85%;
-            text-align: justify;
-            color: #ccc;
-            margin: 2vh auto;
-            font-size: 1.3rem;
-            line-height: 1.8;
-            max-height: 50vh;
-            overflow-y: auto;
-            white-space: pre-wrap;
-        }
-        .wahrheits-text {
-            animation: textErscheinung 2.5s ease-out forwards;
-            color: #fff;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-            font-style: italic;
-        }
-        @keyframes kenburns { 0% { transform: scale(1) translate(0, 0); } 50% { transform: scale(1.15) translate(-1%, -1%); } 100% { transform: scale(1) translate(0, 0); } }
-        @keyframes fadeEffect { 0% { opacity: 0; } 15% { opacity: 0.4; } 85% { opacity: 0.4; } 100% { opacity: 0; } }
-        @keyframes signalBlink { 0% { box-shadow: 0 0 5px #fff; opacity: 0.8; } 50% { box-shadow: 0 0 25px #fff, 0 0 35px #003d8f; opacity: 1; transform: scale(1.05); } 100% { box-shadow: 0 0 5px #fff; opacity: 0.8; } }
-        .elite-aktiv { background-color: #ffd700 !important; box-shadow: 0 0 10px #ffd700; border: 2px solid #fff !important; cursor: pointer; }
-        @keyframes pulsieren { 0% { opacity: 0.5; } 50% { opacity: 1; text-shadow: 0 0 10px #ffd700; } 100% { opacity: 0.5; } }
-        .pulsieren { animation: pulsieren 2s infinite ease-in-out; font-weight: bold; }
-        .signal-aktiv { animation: signalBlink 1.0s infinite ease-in-out !important; border: 2px solid #fff !important; cursor: pointer; }
-
-        /* LILA BALKEN */
-        .lila-registrierung-leiste { width: 100%; height: 80px; background: #8b00ff; border-top: 2px solid #fff; border-bottom: 2px solid #fff; display: flex; align-items: center; justify-content: center; margin-top: 20px; box-shadow: 0 0 20px #8b00ff; }
-        .registrierung-text { color: #fff; font-size: 2.2rem; font-weight: 900; letter-spacing: 15px; text-transform: uppercase; }
-
-        /* HEADER & TAFEL */
+        
+        /* TEXT-ANIMATION */
+        #main-text { width: 85%; text-align: justify; color: #ccc; margin: 2vh auto; font-size: 1.3rem; line-height: 1.8; max-height: 50vh; overflow-y: auto; white-space: pre-wrap; }
+        
+        /* HEADER & DASHBOARD */
         .dashboard-header { width: 100%; position: absolute; top: 3%; display: flex; justify-content: flex-start; padding: 0 2%; box-sizing: border-box; z-index: 20; }
         .logo-ring { width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; }
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
         .info-section { width: 80%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; position: relative; overflow: hidden; margin-top: 2vh; }
         
-        .tafel-layout { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; margin-top: 1vh; height: 26vh; min-height: 26vh; flex-shrink: 0; }
-        .info-section-ebene { width: 90% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
-
-        /* BUTTONS */
-        .buttons-links { position: absolute; left: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
-        .buttons-rechts { position: absolute; right: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
-        .oval-side { width: 45px; height: 22px; border-radius: 12px; border: 1px solid #fff; opacity: 0.8; transition: all 0.3s; }
-        .ov-schwarz { background: #000; border: 1.5px solid #003d8f; }
-        .ov-grun { background: #00ff00; }
-        .ov-blau { background: #0000ff; }
-        .ov-rot { background: #ff0000; }
-        .ov-pink { background: #ff00ff; }
-        .ov-gelb { background: #ffff00; }
-
-        /* DASHBOARD GRID */
+        /* GRID */
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 10px; width: 95%; max-width: 1450px; margin-top: 30px; border: 3px solid #00ff00; padding: 15px; border-radius: 10px; }
         .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; overflow: hidden; }
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
+        .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
-        /* EBENE 3: Chat-Bereich */
-        #chat-area { width: 90% !important; height: 45vh; flex-grow: 1; display: none; flex-direction: column; margin: 0 auto 70px auto; position: relative; overflow: hidden; border: none !important; }
-        .chat-msgs { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px 0; color: #fff; font-size: 1.1rem; overflow-y: auto; scrollbar-width: none; }
-        .chat-msgs::-webkit-scrollbar { width: 0px; background: transparent; }
-        .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; flex-shrink: 0; margin-top: 5px; z-index: 10; }
+        /* EBENEN-STRUKTUR */
+        .tafel-layout { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; margin-top: 1vh; height: 26vh; min-height: 26vh; }
+        .info-section-ebene { width: 90% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
+        .buttons-links, .buttons-rechts { position: absolute; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
+        .buttons-links { left: 1.5%; } .buttons-rechts { right: 1.5%; }
+        .oval-side { width: 45px; height: 22px; border-radius: 12px; border: 1px solid #fff; opacity: 0.8; transition: all 0.3s; cursor: pointer; }
+        .ov-schwarz { background: #000; border: 1.5px solid #003d8f; } .ov-grun { background: #00ff00; } .ov-blau { background: #0000ff; } .ov-rot { background: #ff0000; } .ov-pink { background: #ff00ff; } .ov-gelb { background: #ffff00; }
 
-        /* EBENE 4: ZWISCHENRAUM */
-        #drawer-ebene4 { overflow-y: auto; scroll-behavior: smooth; padding-right: 5px; width: 90%; display: none; flex-direction: column; height: 60vh; }
-        #sektoren-schubladen { width: 100%; margin-top: 10px; padding-bottom: 120px; }
-        .schublade { border: 1px solid #003d8f; margin-bottom: 10px; background: #050505; transition: all 0.3s; }
-        .schublade-header { padding: 15px; font-size: 1rem; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; background: #001a3d; border-bottom: 1px solid #003d8f; }
-        .schublade-content { padding: 0 15px; max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; font-size: 0.9rem; color: #ccc; }
-        .schublade.open > .schublade-content { max-height: 1200px; padding: 20px; }
-        .schublade-textarea { width: 100%; height: 350px; background: #111; border: 1px solid #003d8f; color: #fff; padding: 15px; margin-top: 15px; font-family: inherit; resize: vertical; font-size: 1rem; line-height: 1.5; box-sizing: border-box; }
-        .save-btn { background: #00ff00; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; margin-top: 10px; border-radius: 3px; }
+        /* CHAT */
+        #chat-area { width: 90%; height: 45vh; display: none; flex-direction: column; margin: 0 auto 70px auto; }
+        .chat-msgs { flex: 1; padding: 10px 0; color: #fff; overflow-y: auto; }
+        .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0,0,0,0.9); padding: 5px; }
 
-        /* NAVIGATION */
-        .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; background: #000; z-index: 100; border-top: 1px solid #333; }
-        .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
+        /* EBENE 4 & SCHUBLADEN */
+        #drawer-ebene4 { display: none; width: 95%; flex-direction: column; height: 85vh; overflow-y: auto; }
+        #jitsi-container { width: 100%; height: 500px; border: 2px solid #ff0000; margin-bottom: 20px; flex-shrink: 0; }
+        .schublade { border: 1px solid #003d8f; margin-bottom: 5px; background: #050505; }
+        .schublade-header { padding: 15px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; background: #001a3d; }
+        .schublade-content { padding: 0; max-height: 0; overflow: hidden; transition: max-height 0.4s ease; background: #000; }
+        .schublade.open > .schublade-content { max-height: 1000px; padding: 15px; }
+        .schublade-textarea { width: 100%; height: 200px; background: #111; border: 1px solid #333; color: #fff; padding: 10px; box-sizing: border-box; }
+        .save-btn { background: #00ff00; color: #000; border: none; padding: 8px; margin-top: 5px; cursor: pointer; font-weight: bold; }
+
+        /* NAV */
+        .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; background: #000; border-top: 1px solid #333; }
+        .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; }
         .dot { width: 10px; height: 10px; background: #444; border-radius: 50%; }
-        .dot.active { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
+        .dot.active { background: #ffd700; }
 
-        #counter-box { position: absolute; right: 0; top: 0; width: 100px; padding: 5px; border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f; background: #000; text-align: center; display: none; z-index: 100; }
-        .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
-        .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh; flex-shrink: 0; }
-        .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
-        .ebene4-header-red { width: 90%; background: #ff0000; color: #fff; padding: 10px 0; text-align: center; font-weight: 900; font-size: 1.5rem; border-radius: 5px 5px 0 0; display: none; text-transform: uppercase; }
-
-        .num-neutral { background-color: #003d8f !important; }
-        .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
-
-        .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
-        .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
-
-        .ebene-4-aktiv .page-title-white, .ebene-4-aktiv .tafel-layout, .ebene-4-aktiv #werbe-bg { display: none !important; }
-        #drawer-ebene4 { display: none; width: 100%; height: 95vh; flex-direction: column; align-items: center; overflow: hidden; }
-        #jitsi-container { width: 98%; height: 80vh !important; border: 3px solid #ff0000; background-color: #000; flex-shrink: 0; }
-        #jitsi-container iframe { height: 100% !important; width: 100% !important; }
-        #sektoren-schubladen { width: 95%; margin-top: 5px; flex-grow: 1; overflow-y: auto; }
-        #inneres-archiv .schublade { border: 1px solid #333; margin-bottom: 5px; }
+        .werbe-bild-bg { position: absolute; top:0; left:0; width:100%; height:100%; background-size:cover; opacity:0; z-index:1; }
+        .bild-aktiv { animation: fadeEffect 10s infinite; opacity: 0.4; }
+        @keyframes fadeEffect { 0% { opacity: 0; } 50% { opacity: 0.4; } 100% { opacity: 0; } }
     </style>
 </head>
 <body>
@@ -119,313 +66,186 @@
             <div class="logo-ring" ondblclick="adminUnlock()"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
         </div>
         <div class="info-section">
-            <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
-            <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
-            <p style="max-width: 85%; color: #ccc; font-size: 1.1rem; margin: 10px 0 0 0; text-align: center;">
-                Die M&M-Community ist das Fundament für alle. <strong>Die Wahl der Vorsitzenden erfolgt erst nach Erreichen der stillen Million.</strong>
-            </p>
+            <h1 style="font-size: 2.5rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
+            <h2 style="color: #003d8f; font-size: 1.5rem;">DIE STILLE MILLION</h2>
+            <p style="max-width: 80%; color: #ccc; text-align: center;">Wahl der Vorsitzenden erst nach Erreichen der stillen Million.</p>
         </div>
         <div class="grid" id="main-grid"></div>
-        <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 10px;">
+        <div style="display: flex; width: 95%; gap: 10px; margin: 10px 0;">
             <div class="fundament-box" style="flex: 1;"><div class="num">21</div><div class="text">Kapital und Verwaltung</div></div>
             <div class="fundament-box" style="flex: 1;"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div></div>
         </div>
-        <div class="zugang-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-bottom: 80px;">
-            <div class="fundament-box" style="flex: 1; border-color: #555; cursor: pointer;" onclick="showZugangInfo('gast')">
-                <div class="num" style="background-color: #333;">G</div>
-                <div class="text">Gast-Zugang (Eingeschränkt)</div>
-            </div>
-            <div class="fundament-box" style="flex: 1; border-color: #8b00ff; cursor: pointer;" onclick="showZugangInfo('email')">
-                <div class="num" style="background-color: #8b00ff;">V</div>
-                <div class="text" style="color: #ffd700;">Verifizierter Status (Voller Zugriff 1-4)</div>
-            </div>
+        <div class="zugang-container" style="display: flex; width: 95%; gap: 10px; margin-bottom: 80px;">
+            <div class="fundament-box" style="flex: 1; border-color: #555; cursor: pointer;" onclick="showZugangInfo('gast')"><div class="num" style="background:#333">G</div><div class="text">Gast</div></div>
+            <div class="fundament-box" style="flex: 1; border-color: #8b00ff; cursor: pointer;" onclick="showZugangInfo('email')"><div class="num" style="background:#8b00ff">V</div><div class="text" style="color:#ffd700">Verifiziert</div></div>
         </div>
     </div>
 
-    <div id="zugang-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10000; justify-content:center; align-items:center;">
-        <div style="background:#000; border:2px solid #003d8f; padding:30px; width:400px; text-align:center; border-radius:10px;">
-            <h3 id="modal-titel" style="color:#fff; margin-top:0;"></h3>
-            <p id="modal-text" style="color:#ccc; font-size:0.9rem; line-height:1.5; margin:20px 0;"></p>
-            <div id="email-input-field" style="display:none; margin-bottom:20px;">
-                <input type="email" id="user-email-input" placeholder="Deine E-Mail Adresse" style="width:90%; padding:10px; background:#111; border:1px solid #8b00ff; color:#fff;">
-            </div>
-            <button id="modal-confirm-btn" style="background:#ffd700; color:#000; border:none; padding:10px 20px; font-weight:bold; cursor:pointer; margin-right:10px;">AKZEPTIEREN</button>
-            <button onclick="document.getElementById('zugang-modal').style.display='none'" style="background:#333; color:#fff; border:none; padding:10px 20px; cursor:pointer;">ABBRECHEN</button>
-        </div>
-    </div>
-
-    <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
-        <div class="top-container">
-            <h1 id="info-titel" class="page-title-white"></h1>
-            <div id="ebene4-title-red" class="ebene4-header-red"></div>
+    <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+        <div class="top-container" style="width: 100%; text-align: center;">
+            <h1 id="info-titel" class="page-title-white" style="text-transform: uppercase;"></h1>
             <div class="tafel-layout">
                 <div class="buttons-links">
-                    <div class="oval-side ov-schwarz" id="sig-l1" onclick="showDashboard()"></div>
-                    <div class="oval-side ov-grun" id="sig-l2" onclick="setEbene(2)"></div>
-                    <div class="oval-side ov-blau" id="sig-l3" onclick="setEbene(3)"></div>
-                    <div class="oval-side ov-rot" id="sig-l4" onclick="portalZuEbene4()"></div>
+                    <div class="oval-side ov-schwarz" onclick="showDashboard()"></div>
+                    <div class="oval-side ov-grun" onclick="setEbene(2)"></div>
+                    <div class="oval-side ov-blau" onclick="setEbene(3)"></div>
+                    <div class="oval-side ov-rot" onclick="portalZuEbene4()"></div>
                 </div>
                 <div class="info-section-ebene">
                     <div class="werbe-bild-bg" id="werbe-bg"></div>
-                    <div id="counter-box"><span style="font-size:0.4rem; color:#fff; display:block;">STILLE MILLION</span><span class="counter-value">842.336</span></div>
-                    <div style="z-index: 5; text-align: center; font-weight: bold; color: rgba(255,255,255,0.3); letter-spacing: 5px;">PLATZ FÜR WERBUNG</div>
+                    <div style="z-index: 5; color: rgba(255,255,255,0.3);">STILLE MILLION: <span class="counter-value">842.336</span></div>
                 </div>
                 <div class="buttons-rechts">
-                    <div class="oval-side ov-grun" id="sig-r1"></div>
-                    <div class="oval-side ov-blau" id="sig-r2"></div>
-                    <div class="oval-side ov-pink" id="sig-r3"></div>
-                    <div class="oval-side ov-gelb" id="sig-r4" onclick="setEbene(3)"></div>
+                    <div class="oval-side ov-grun"></div>
+                    <div class="oval-side ov-blau"></div>
+                    <div class="oval-side ov-pink"></div>
+                    <div class="oval-side ov-gelb" onclick="setEbene(3)"></div>
                 </div>
             </div>
         </div>
+        
         <p id="main-text"></p>
+        
         <div id="chat-area">
             <div class="chat-msgs" id="chat-box"></div>
             <div class="chat-input-row">
-                <input type="text" id="chat-input" placeholder="Nachricht schreiben..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px; outline:none;" onkeypress="if(event.key==='Enter') registriereSenden()">
-                <button onclick="registriereSenden()" style="background:#003d8f; color:#fff; border:none; padding:0 30px; font-weight:bold; cursor:pointer;">SENDEN</button>
+                <input type="text" id="chat-input" placeholder="Nachricht..." style="flex:1; background:transparent; border:none; color:#fff; padding:10px; outline:none;">
+                <button onclick="registriereSenden()" style="background:#003d8f; color:#fff; border:none; padding:0 20px; cursor:pointer;">SENDEN</button>
             </div>
-        </div> 
+        </div>
+
         <div id="drawer-ebene4">
             <div id="jitsi-container"></div>
             <div id="sektoren-schubladen"></div>
-        </div> 
+        </div>
     </div>
 
     <div class="bottom-nav">
-        <button id="btn-back" class="nav-btn" onclick="showDashboard()">← Dashboard</button>
-        <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
-        <button id="btn-next" class="nav-btn" onclick="nextPage()">Weiter →</button>
+        <button class="nav-btn" onclick="showDashboard()">← Dashboard</button>
+        <div style="display: flex; gap: 8px;" id="dot-holder"></div>
+        <button class="nav-btn" onclick="nextPage()">Weiter →</button>
     </div>
 
 <script>
-    let userBackstage = JSON.parse(localStorage.getItem('mm_user_data')) || { 
-        sektorNotizen: {}, 
-        besuchteSektoren: [],
-        isVerifiziert: false 
-    };
+    let userBackstage = JSON.parse(localStorage.getItem('mm_user_data')) || { sektorNotizen: {}, besuchteSektoren: [], isVerifiziert: false };
 
     const themen = [
-        "( von M&M Community )<br>Recht auf Gefühlsvorderung oder KI", 
-        "Wie werde ich Mensch", 
-        "Glaube an Friede", 
-        "Programm für Bürgerliche Rechte", 
-        "Moralische Pflicht und Verantwortung", 
-        "Menschlichkeit Wiederherstellung", 
-        "Kinderschutz-Pflicht-Elternrechte", 
-        "Wahre Richtung und Kunst", 
-        "LGBTQ und Kirche", 
-        "Trend and Tradition", 
-        "Religionsbekenntnis oder Selbstwahl", 
-        "Gesundheitswesen und Verhalten", 
-        "Arbeitswelt und Du", 
-        "Mobbing am Arbeitsplatz", 
-        "Jugendsprecher", 
-        "Ratgeber für Pensionisten", 
-        "Nachbarschaft und Gemeinschaft", 
-        "Sozialgefallen und Widerkehr", 
-        "Alleinerziehend & Kind", 
-        "Die Brücke"
+        "( von M&M Community )<br>Recht auf Gefühlsvorderung oder KI", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Nachbarschaft und Gemeinschaft", "Sozialgefallen und Widerkehr", "Alleinerziehend & Kind", "Die Brücke"
     ];
 
     const DASHBOARD_TRUTH = {
-        1: { title: "Recht auf Gefühlsvorderung oder KI", content: `Die digitale Welt hat eine Schicht aus Taubheit über das menschliche Erleben gelegt, die wir jetzt konsequent durchbrechen...` },
-        2: { title: "Wie werde ich Mensch", content: `Die Verbreitung der Menschlichkeit markiert den entscheidenden Übergang...` },
-        3: { title: "Glaube an Friede", content: `Wahrer innerer Friede ist kein passiver Zustand...` },
-        4: { title: "Programm für Bürgerliche Rechte", content: `Die politische Befreiung des Individuums...` },
-        5: { title: "Moralische Pflicht und Verantwortung", content: `Wahre Verantwortung ist keine Last...` },
-        6: { title: "Menschlichkeit Wiederherstellung", content: `Die Wiederherstellung der Menschlichkeit...` },
-        7: { title: "Kinderschutz-Pflicht-Elternrechte", content: `Wahrer Kinderschutz findet seine Wurzeln...` },
-        8: { title: "Wahre Richtung und Kunst", content: `Wahre Kunst ist niemals nur gefällige Dekoration...` },
-        9: { title: "LGBTQ und Kirche", content: `In diesem Sektor vollziehen wir die notwendige Heilung...` },
-        10: { title: "Trend and Tradition", content: `Trend und Tradition sind die unsichtbaren Waffen...` },
-        11: { title: "Religionsbekenntnis oder Selbstwahl", content: `In diesem Sektor laden wir die Seele ein...` },
-        12: { title: "Gesundheitswesen und Verhalten", content: `In diesem Sektor vollziehen wir den radikalen Bruch...` },
-        13: { title: "Arbeitswelt und Du", content: `In diesem Sektor sprengen wir das Modell...` },
-        14: { title: "Mobbing am Arbeitsplatz", content: `Mobbing ist kein privater Konflikt...` },
-        15: { title: "Jugendsprecher", content: `In diesem Sektor geben wir der Zukunft ein Megafon...` },
-        16: { title: "Ratgeber für Pensionisten", content: `In diesem Sektor beenden wir die Schande...` },
-        17: { title: "Nachbarschaft und Gemeinschaft", content: `In diesem Sektor zertrümmern wir die Anonymität...` },
-        18: { title: "Sozialgefallen und Widerkehr", content: `In diesem Sektor entschlüsseln wir das Gesetz...` },
-        19: { title: "Alleinerziehend & Kind", content: `In diesem Sektor korrigieren wir eine Ungerechtigkeit...` },
-        20: { title: "Die Brücke", content: `In diesem Sektor fließen alle Ströme zusammen...` }
+        1: { content: `Die digitale Welt hat eine Schicht aus Taubheit über das menschliche Erleben gelegt... Sektor 1 ist das Fundament dieser Bewegung.` },
+        2: { content: `Die Verbreitung der Menschlichkeit markiert den entscheidenden Übergang... Der Schmerz ist der Kompass.` },
+        3: { content: `Wahrer innerer Friede ist kein passiver Zustand, sondern die Heilung... Hass zerfrisst den Körper.` },
+        4: { content: `Die politische Befreiung des Individuums ist untrennbar mit Geist und Gesetz verbunden. Geheimhaltung herrscht.` },
+        5: { content: `Wahre Verantwortung ist keine Last, sondern Ausdruck der Souveränität. Keine Ausreden mehr.` },
+        6: { content: `Die Wiederherstellung der Menschlichkeit ist der fundamentale Akt der Rebellion gegen Entfremdung.` },
+        7: { content: `Wahrer Kinderschutz findet seine Wurzeln in der kompromisslosen Ehrlichkeit der Eltern.` },
+        8: { content: `Wahre Kunst ist niemals nur gefällige Dekoration; sie ist der radikale Ausbruch der Ur-Kraft.` },
+        9: { content: `Sexualität ist ein privater, heiliger Energiefluss. Das Diplom Gottes verkündet: Unantastbar.` },
+        10: { content: `Trend und Tradition sind die unsichtbaren Waffen. Wir kehren zurück zum echten Zusammenhalt.` },
+        11: { content: `Religionsbekenntnis oder Selbstwahl. Der Spiegel der Biografie zeigt: Die Sehnsucht ist dieselbe.` },
+        12: { content: `Gesundheitswesen und Verhalten. Wer sein Verhalten ändert, ändert seine Chemie.` },
+        13: { content: `Arbeitswelt und Du. Wir sprengen das Modell der Lohnsklaverei. Arbeit folgt der Resonanz.` },
+        14: { content: `Mobbing am Arbeitsplatz. Wer andere klein macht, hat den Vertrag mit der Menschlichkeit gekündigt.` },
+        15: { content: `Jugendsprecher. Keine Kinderecke, sondern das Megafon der Zukunft.` },
+        16: { content: `Ratgeber für Pensionisten. Beendigung der Abstellgleis-Mentalität. Die Ehre des Alters zählt.` },
+        17: { content: `Nachbarschaft und Gemeinschaft. Rückeroberung des Lebensraums gegen die Vereinsamung.` },
+        18: { content: `Sozialgefallen und Widerkehr. Was du aussendest, kommt mit der Wucht deiner Aufrichtigkeit zurück.` },
+        19: { content: `Alleinerziehend & Kind. Anerkennung der Elite der menschlichen Belastbarkeit.` },
+        20: { content: `Die Brücke. Wo alle Ströme zusammenfließen. Das Versprechen der gelebten Realität.` }
     };
 
-    let ebene = 1, tId = 0, aktuellesThema = "";
-    let jitsiApi = null;
-    const ably = new Ably.Realtime('IO8wIA.C7HVjQ:SdzgpyD0_ilg8UOO-mXm94ro0VtTUSao8HUMoW7538sA'); 
+    let ebene = 1, tId = 0, aktuellesThema = "", jitsiApi = null;
+    const ably = new Ably.Realtime('IO8wIA.C7HVjQ:SdzgpyD0_ilg8UOO-mXm94ro0VtTUSao8HUMoW7538sA');
     const meinTabId = Math.random().toString(36).substring(7);
-    let aktuellerChannel = null;
-
-    function updateCounter() {
-        let currentCount = parseInt(localStorage.getItem('stille_million')) || 842336;
-        currentCount += Math.floor(Math.random() * 5) + 1; 
-        localStorage.setItem('stille_million', currentCount);
-        const counterDisplay = document.querySelector('.counter-value');
-        if(counterDisplay) counterDisplay.innerText = currentCount.toLocaleString('de-DE');
-    }
-    setInterval(updateCounter, 10000);
 
     function initApp() {
-        if(userBackstage.isVerifiziert) {
-            const logo = document.querySelector('.logo-ring');
-            if(logo) { logo.style.borderColor = "#ffd700"; logo.style.boxShadow = "0 0 20px #ffd700"; }
-        }
         const grid = document.getElementById('main-grid');
-        if(grid) {
-            grid.innerHTML = ""; 
-            themen.forEach((t, i) => { 
-                const statusClass = userBackstage.besuchteSektoren.includes(i) ? 'num-fertig' : 'num-neutral';
-                grid.innerHTML += `<div class="box" id="box-${i}"><div class="num ${statusClass}" id="num-${i}">${i+1}</div><div class="text" onclick="checkAccess(${i}, '${t}')">${t}</div></div>`; 
-            });
-        }
+        grid.innerHTML = "";
+        themen.forEach((t, i) => {
+            const statusClass = userBackstage.besuchteSektoren.includes(i) ? 'num-fertig' : '';
+            grid.innerHTML += `<div class="box"><div class="num ${statusClass}">${i+1}</div><div class="text" onclick="checkAccess(${i}, '${t}')">${t}</div></div>`;
+        });
+        
+        const dots = document.getElementById('dot-holder');
+        dots.innerHTML = "";
+        for (let i = 1; i <= 4; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i === ebene ? 'active' : ''}"></div>`;
+
+        // Schubladen-Zentrale bauen
         const drawerArea = document.getElementById('sektoren-schubladen');
-        if (drawerArea) {
-            drawerArea.innerHTML = "";
-            const masterSchublade = document.createElement('div');
-            masterSchublade.className = 'schublade';
-            masterSchublade.id = 'master-archiv-container';
-            masterSchublade.innerHTML = `
-                <div class="schublade-header" onclick="toggleDrawer('master')" style="background: #ffd700; color: #000; border: 2px solid #fff;">
-                    <span style="letter-spacing: 2px; font-weight: 900;">📂 SEKTOREN-ZENTRALE (1-20)</span>
-                    <span id="arrow-master">▼</span>
+        drawerArea.innerHTML = `
+            <div class="schublade" id="master-drawer">
+                <div class="schublade-header" onclick="toggleDrawer('master')" style="background:#ffd700; color:#000">
+                    <span>📂 SEKTOREN-ZENTRALE (1-20)</span><span id="arr-master">▼</span>
                 </div>
-                <div id="inneres-archiv" class="schublade-content" style="background: #000; padding: 10px;"></div>
-            `;
-            drawerArea.appendChild(masterSchublade);
-            const archiv = document.getElementById('inneres-archiv');
-            themen.forEach((t, i) => {
-                const gespeicherterText = userBackstage.sektorNotizen[i] || "";
-                const sektorDiv = document.createElement('div');
-                sektorDiv.className = 'schublade';
-                sektorDiv.id = `drawer-${i}`;
-                sektorDiv.innerHTML = `
-                    <div class="schublade-header" onclick="toggleDrawer(${i})" style="font-size: 0.8rem; padding: 10px; background: #111;">
-                        <span>SEKTOR ${i+1}: ${t}</span>
-                        <span id="arrow-${i}">▼</span>
+                <div class="schublade-content" id="master-content"></div>
+            </div>`;
+        
+        const inner = document.getElementById('master-content');
+        themen.forEach((t, i) => {
+            const note = userBackstage.sektorNotizen[i] || "";
+            inner.innerHTML += `
+                <div class="schublade" id="sub-${i}">
+                    <div class="schublade-header" onclick="toggleDrawer(${i})" style="font-size:0.8rem">
+                        <span>SEKTOR ${i+1}</span><span id="arr-${i}">▼</span>
                     </div>
                     <div class="schublade-content">
-                        <textarea id="note-${i}" class="schublade-textarea" style="height: 200px;">${gespeicherterText}</textarea>
-                        <br>
-                        <button class="save-btn" onclick="saveNote(${i})" style="font-size: 0.7rem;">DOKUMENT SICHERN</button>
-                    </div>`;
-                archiv.appendChild(sektorDiv);
-            });
-        }
-        const dots = document.getElementById('dot-holder');
-        if (dots) {
-            dots.innerHTML = "";
-            for (let i = 1; i <= 4; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i === 1 ? 'active' : ''}"></div>`;
-        }
-        updateCounter();
+                        <textarea id="note-${i}" class="schublade-textarea">${note}</textarea>
+                        <button class="save-btn" onclick="saveNote(${i})">SPEICHERN</button>
+                    </div>
+                </div>`;
+        });
     }
 
     function checkAccess(id, t) {
         tId = id; aktuellesThema = t;
-        const chatBox = document.getElementById('chat-box');
-        if (chatBox) chatBox.innerHTML = "";
         if (!userBackstage.besuchteSektoren.includes(id)) { userBackstage.besuchteSektoren.push(id); saveToStorage(); }
         document.getElementById('dashboard').style.display = 'none';
         document.getElementById('page-skelett').style.display = 'flex';
-        const textElement = document.getElementById('main-text');
-        const wahreDaten = DASHBOARD_TRUTH[id + 1];
-        textElement.innerText = wahreDaten ? wahreDaten.content : "Forschung läuft...";
         document.getElementById('info-titel').innerHTML = t;
-        setEbene(2); startRotation(); verbindeMitSektorChat(id);
+        document.getElementById('main-text').innerText = DASHBOARD_TRUTH[id+1].content;
+        setEbene(2);
+        startRotation();
     }
 
     function setEbene(n) {
         ebene = n;
-        document.body.classList.toggle('ebene-4-aktiv', n === 4);
-        updateUI();
+        document.getElementById('main-text').style.display = (n === 2) ? 'block' : 'none';
+        document.getElementById('chat-area').style.display = (n === 3) ? 'flex' : 'none';
+        document.getElementById('drawer-ebene4').style.display = (n === 4) ? 'flex' : 'none';
+        for (let i = 1; i <= 4; i++) document.getElementById('dot'+i).classList.toggle('active', i === n);
     }
-
-    function updateUI() {
-        document.getElementById('chat-area').style.display = (ebene === 3) ? 'flex' : 'none';
-        document.getElementById('drawer-ebene4').style.display = (ebene === 4) ? 'flex' : 'none';
-        document.getElementById('main-text').style.display = (ebene === 2) ? 'block' : 'none';
-        const ebene4Titel = document.getElementById('ebene4-title-red');
-        if (ebene === 4) { ebene4Titel.style.display = 'block'; ebene4Titel.innerText = "SEKTOR KONFERENZ: " + aktuellesThema; }
-        else { ebene4Titel.style.display = 'none'; }
-        for (let i = 1; i <= 4; i++) {
-            const dot = document.getElementById('dot' + i);
-            if (dot) dot.classList.toggle('active', i === ebene);
-        }
-    }
-
-    function saveToStorage() { localStorage.setItem('mm_user_data', JSON.stringify(userBackstage)); }
-    function saveNote(id) {
-        userBackstage.sektorNotizen[id] = document.getElementById(`note-${id}`).value;
-        saveToStorage();
-        alert("Im Buckel des Frosches gesichert, Schwein!");
-    }
-
-    function showDashboard() { if (jitsiApi) jitsiApi.dispose(); ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; initApp(); }
-    function nextPage() { if (ebene < 4) setEbene(ebene + 1); }
 
     function toggleDrawer(id) {
-        const targetId = (id === 'master') ? 'master-archiv-container' : 'drawer-' + id;
-        const arrowId = (id === 'master') ? 'arrow-master' : 'arrow-' + id;
-        const el = document.getElementById(targetId);
-        el.classList.toggle('open');
-        document.getElementById(arrowId).innerText = el.classList.contains('open') ? "▲" : "▼";
+        const target = (id === 'master') ? document.getElementById('master-drawer') : document.getElementById('sub-'+id);
+        target.classList.toggle('open');
     }
 
-    function startRotation() {
-        const bg = document.getElementById('werbe-bg');
-        if (bg) { bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + 99}/1200/600')`; bg.classList.add('bild-aktiv'); bg.style.opacity = "0.4"; }
-    }
-
-    function verbindeMitSektorChat(sektorId) {
-        if (aktuellerChannel) { aktuellerChannel.unsubscribe(); }
-        aktuellerChannel = ably.channels.get('mm-sektor-' + sektorId);
-        aktuellerChannel.subscribe('message', (msg) => {
-            if (msg.data.senderId !== meinTabId) {
-                const cb = document.getElementById('chat-box');
-                if (cb) cb.innerHTML += `<div style="color: #ffd700;"><strong>Partner:</strong> ${msg.data.text}</div>`;
-            }
-        });
-    }
-
-    function registriereSenden() {
-        const input = document.getElementById('chat-input'), text = input.value.trim();
-        if (text === "" || !aktuellerChannel) return;
-        aktuellerChannel.publish('message', { text: text, senderId: meinTabId });
-        document.getElementById('chat-box').innerHTML += `<div><strong>Du:</strong> ${text}</div>`;
-        input.value = "";
+    function saveNote(id) {
+        userBackstage.sektorNotizen[id] = document.getElementById('note-'+id).value;
+        saveToStorage();
+        alert("Im Buckel gesichert, Schwein!");
     }
 
     function portalZuEbene4() {
-        if (!userBackstage.isVerverified) { alert("Nur für verifizierte Seelen!"); return; }
+        if (!userBackstage.isVerifiziert) { alert("Nur für verifizierte Seelen!"); return; }
         setEbene(4);
         if (jitsiApi) jitsiApi.dispose();
-        const options = {
+        jitsiApi = new JitsiMeetExternalAPI("8x8.vc", {
             roomName: "MM-Sektor-" + tId, width: "100%", height: "100%",
             parentNode: document.querySelector('#jitsi-container'),
-            configOverwrite: { startWithAudioMuted: true, tileViewEnabled: true },
-            interfaceConfigOverwrite: { TILE_VIEW_ENABLED: true },
             userInfo: { displayName: 'Ober-Schwein' }
-        };
-        jitsiApi = new JitsiMeetExternalAPI("8x8.vc", options);
+        });
     }
+
+    function showDashboard() { location.reload(); }
+    function nextPage() { if (ebene < 4) setEbene(ebene + 1); }
+    function saveToStorage() { localStorage.setItem('mm_user_data', JSON.stringify(userBackstage)); }
+    function adminUnlock() { if (prompt("Code?") === "frosch2026") { userBackstage.isVerifiziert = true; saveToStorage(); location.reload(); } }
+    function startRotation() { document.getElementById('werbe-bg').style.backgroundImage = `url('https://picsum.photos/seed/${tId}/1200/600')`; document.getElementById('werbe-bg').classList.add('bild-aktiv'); }
 
     window.onload = initApp;
-
-    function adminUnlock() {
-        if (prompt("Code?") === "frosch2026") { userBackstage.isVerifiziert = true; saveToStorage(); location.reload(); }
-    }
-
-    function showZugangInfo(typ) {
-        const modal = document.getElementById('zugang-modal');
-        const emailField = document.getElementById('email-input-field');
-        modal.style.display = 'flex';
-        document.getElementById('modal-titel').innerText = typ === 'gast' ? "GAST-ZUGANG" : "VERIFIZIERUNG";
-        document.getElementById('modal-text').innerText = typ === 'gast' ? "Nur Lesezugriff." : "Werde Teil des Kollektivs.";
-        emailField.style.display = typ === 'gast' ? 'none' : 'block';
-        document.getElementById('modal-confirm-btn').onclick = () => { if(typ!=='gast') alert("Link gesendet!"); modal.style.display = 'none'; };
-    }
 </script>
 </body>
 </html>
-        
-  
