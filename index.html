@@ -188,10 +188,10 @@
                 <div class="num" style="background-color: #333;">G</div>
                 <div class="text">Gast-Zugang (Eingeschränkt)</div>
             </div>
-            <div class="fundament-box" style="flex: 1; border-color: #8b00ff; cursor: pointer;" onclick="showZugangInfo('email')">
-                <div class="num" style="background-color: #8b00ff;">V</div>
-                <div class="text" style="color: #ffd700;">Verifizierter Status (Voller Zugriff 1-4)</div>
-            </div>
+            <div class="fundament-box" style="flex: 1; border-color: #8b00ff; cursor: pointer;" onclick="setEbene(4)">
+    <div class="num" style="background-color: #8b00ff;">V</div>
+    <div class="text" style="color: #ffd700;">Verifizierter Status (Voller Zugriff 1-4)</div>
+</div>
         </div>
     </div>
 
@@ -242,21 +242,19 @@
             </div>
         </div> 
 
-      <div id="drawer-ebene4">
+    <div id="drawer-ebene4" style="display: none; width: 100%; flex-direction: column; align-items: center;">
     
-    <div id="jitsi-container"></div>
-    
-    <div id="master-schublade-gelb">
-        <div class="master-header" onclick="toggleMaster()">
+    <div id="jitsi-container" style="width: 98%; height: 70vh; margin-bottom: 20px;"></div>
+
+    <div id="master-schublade-gelb" style="width: 95%; border: 3px solid #ffff00; background: #111;">
+        <div class="master-header" onclick="toggleMaster()" style="padding: 15px; cursor: pointer; display: flex; justify-content: space-between; background: #222; color: #ffff00; font-weight: bold;">
             <span>📂 ZENTRALE ARCHIVIERUNG (Sektoren 1-20)</span>
             <span id="arrow-master">▼</span>
         </div>
-        
-        <div id="inneres-archiv">
+        <div id="inneres-archiv" style="display: none; width: 100%;">
             </div>
     </div>
-
-</div>
+</div> 
 
     <div class="bottom-nav">
         <button id="btn-back" class="nav-btn" onclick="showDashboard()">← Dashboard</button>
