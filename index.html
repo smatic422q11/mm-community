@@ -642,6 +642,10 @@ function toggleMaster() {
 </script>
 <script>
 console.log("Rebellion aktiv!");
+
+// HIER DIE LISTE DIREKT REINKOPIEREN
+const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht", "Menschlichkeit", "Kinderschutz", "Wahre Richtung", "LGBTQ und Kirche", "Trend and Tradition", "Religionsbekenntnis", "Gesundheitswesen", "Arbeitswelt und Du", "Mobbing", "Jugendsprecher", "Ratgeber", "Nachbarschaft", "Sozialgefallen", "Alleinerziehend", "Die Brücke"];
+
 function setEbene(n) {
     console.log("Springe auf Ebene:", n);
     document.body.className = 'ebene-' + n + '-aktiv';
@@ -649,5 +653,5 @@ function setEbene(n) {
     if(dr) dr.style.display = (n === 4) ? 'flex' : 'none';
     if(n === 4) baueSektorenArchiv();
 }
-</script></body>
+</script>
 </html>
