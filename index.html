@@ -3,100 +3,99 @@
 <head>
     <script src='https://8x8.vc/vpaas-magic-cookie-39f826359e1345d38f8304910901e855/external_api.js'></script>
     <meta charset="UTF-8">
-    <title>M&M-COMMUNITY - DAS MASSIVE FUNDAMENT</title>
+    <title>M&M - DAS MASSIVE FUNDAMENT</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <style>
-        /* BASIS & LAYOUT */
         body { background-color: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
         
-        /* HEADER & LOGO */
-        .dashboard-header { width: 100%; position: absolute; top: 3%; display: flex; justify-content: flex-start; padding: 0 2%; box-sizing: border-box; z-index: 20; }
-        .logo-ring { width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: all 0.3s; }
-        .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
-        .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
-
-        /* DASHBOARD GRID */
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 10px; width: 95%; max-width: 1450px; margin-top: 30px; border: 3px solid #00ff00; padding: 15px; border-radius: 10px; }
-        .box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; overflow: hidden; }
-        .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; }
-        .num-fertig { background-color: #00ff00 !important; color: #000; }
-        .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
-
-        /* EBENE 2 & 3 & 4 SKELETT */
-        #page-skelett { display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh; }
-        .tafel-layout { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; height: 26vh; margin-top: 1vh; flex-shrink: 0; }
-        .info-section-ebene { width: 90%; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        /* DASHBOARD KOMPLETT */
+        .dashboard-header { width: 100%; position: absolute; top: 2%; display: flex; justify-content: flex-start; padding: 0 2%; z-index: 20; }
+        .logo-ring { width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; }
         
-        .buttons-links, .buttons-rechts { position: absolute; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
-        .buttons-links { left: 1.5%; } .buttons-rechts { right: 1.5%; }
-        .oval-side { width: 45px; height: 22px; border-radius: 12px; border: 1px solid #fff; cursor: pointer; }
-        .ov-schwarz { background: #000; border: 1.5px solid #003d8f; } 
-        .ov-grun { background: #00ff00; } .ov-blau { background: #0000ff; } .ov-rot { background: #ff0000; } .ov-pink { background: #ff00ff; } .ov-gelb { background: #ffff00; }
+        .main-container { width: 95%; max-width: 1400px; margin-top: 12vh; display: flex; flex-direction: column; align-items: center; }
+        .info-section { width: 100%; height: 20vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; margin-bottom: 20px; text-align: center; }
+        
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 10px; width: 100%; border: 3px solid #00ff00; padding: 15px; box-sizing: border-box; }
+        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 50px; overflow: hidden; }
+        .num { width: 40px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; }
+        .num-fertig { background-color: #00ff00 !important; color: #000; }
+        .text { padding: 5px; text-transform: uppercase; font-size: 0.65rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; }
 
-        /* WERBE-TAFEL LOGIK */
-        .werbe-bild-bg { position: absolute; top:0; left:0; width:100%; height:100%; background-size:cover; background-position: center; opacity:0; z-index:1; transition: opacity 2s; }
-        .bild-aktiv { opacity: 0.4 !important; }
+        /* EBENEN SKELETT */
+        #page-skelett { display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh; }
+        .tafel-layout { display: flex; align-items: center; justify-content: center; width: 95%; position: relative; height: 25vh; margin-top: 2vh; }
+        .info-section-ebene { width: 90%; height: 100%; border: 2px solid #003d8f; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        
+        .buttons-links, .buttons-rechts { position: absolute; display: flex; flex-direction: column; gap: 10px; z-index: 30; }
+        .buttons-links { left: -10px; } .buttons-rechts { right: -10px; }
+        .oval-side { width: 50px; height: 25px; border-radius: 15px; border: 1.5px solid #fff; cursor: pointer; }
+        .ov-schwarz { background: #000; border-color: #003d8f; } .ov-grun { background: #00ff00; } .ov-blau { background: #0000ff; } .ov-rot { background: #ff0000; } .ov-gelb { background: #ffff00; }
 
-        #main-text { width: 85%; text-align: justify; color: #ccc; margin: 2vh auto; font-size: 1.3rem; line-height: 1.6; max-height: 40vh; overflow-y: auto; white-space: pre-wrap; }
+        #main-text { width: 85%; color: #ccc; margin: 20px auto; font-size: 1.2rem; line-height: 1.6; max-height: 35vh; overflow-y: auto; }
 
-        /* CHAT EBENE 3 */
-        #chat-area { width: 90%; height: 45vh; display: none; flex-direction: column; }
-        .chat-msgs { flex: 1; overflow-y: auto; padding: 10px; border: 1px solid #333; margin-bottom: 5px; }
-        .chat-input-row { display: flex; gap: 5px; }
-        .chat-input-row input { flex: 1; background: #111; border: 1px solid #003d8f; color: #fff; padding: 10px; }
+        /* CHAT EBENE 3 REPARATUR */
+        #chat-area { width: 90%; height: 40vh; display: none; flex-direction: column; position: relative; margin-top: 10px; }
+        .chat-msgs { flex: 1; border: 1px solid #003d8f; padding: 10px; overflow-y: auto; background: rgba(10,10,10,0.8); }
+        .chat-input-row { display: flex; height: 50px; margin-top: 5px; }
+        .chat-input-row input { flex: 1; background: #000; border: 1px solid #003d8f; color: #fff; padding: 0 10px; }
 
         /* EBENE 4 & ARCHIV */
-        #drawer-ebene4 { display: none; width: 100%; flex-direction: column; align-items: center; height: 80vh; overflow-y: auto; padding-bottom: 120px; }
-        #jitsi-container { width: 90%; height: 450px; border: 2px solid #ff0000; background: #000; flex-shrink: 0; margin-bottom: 20px; }
-        
-        #sektoren-schubladen { width: 90%; }
-        .schublade { border: 1px solid #003d8f; margin-bottom: 8px; background: #050505; }
-        .schublade-header { padding: 15px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; background: #001a3d; }
-        .schublade-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease; background: #000; }
-        .schublade.open > .schublade-content { max-height: 1200px; padding: 15px; }
-        .schublade-textarea { width: 100%; height: 250px; background: #111; border: 1px solid #333; color: #fff; padding: 10px; box-sizing: border-box; resize: none; }
-        .save-btn { background: #00ff00; color: #000; border: none; padding: 10px; margin-top: 10px; font-weight: bold; cursor: pointer; }
+        #drawer-ebene4 { display: none; width: 100%; flex-direction: column; align-items: center; height: 80vh; overflow-y: auto; padding-bottom: 150px; }
+        #jitsi-container { width: 90%; height: 400px; border: 2px solid #ff0000; flex-shrink: 0; margin-bottom: 20px; }
+        .schublade { border: 1px solid #003d8f; margin-bottom: 5px; background: #050505; width: 90%; }
+        .schublade-header { padding: 12px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; background: #001a3d; }
+        .schublade-content { max-height: 0; overflow: hidden; transition: max-height 0.4s; background: #000; }
+        .schublade.open > .schublade-content { max-height: 800px; padding: 15px; }
+        .schublade-textarea { width: 100%; height: 200px; background: #111; border: 1px solid #003d8f; color: #fff; padding: 10px; box-sizing: border-box; }
 
-        /* NAVIGATION */
+        /* NAV */
         .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; background: #000; border-top: 1px solid #333; box-sizing: border-box; z-index: 100; }
-        .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
-        .dot { width: 12px; height: 12px; background: #444; border-radius: 50%; }
-        .dot.active { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
+        .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; }
+        .dot { width: 10px; height: 10px; background: #444; border-radius: 50%; }
+        .dot.active { background: #ffd700; box-shadow: 0 0 8px #ffd700; }
+
+        .werbe-bild-bg { position: absolute; top:0; left:0; width:100%; height:100%; background-size:cover; opacity:0; transition: 2s; }
+        .bild-aktiv { opacity: 0.4; }
     </style>
 </head>
 <body>
 
-    <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+    <div id="dashboard" class="main-container">
         <div class="dashboard-header">
-            <div class="logo-ring" id="main-logo" ondblclick="adminUnlock()"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
+            <div class="logo-ring" id="logo" ondblclick="adminUnlock()"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
         </div>
-        <div style="margin-top: 15vh; text-align: center;">
-            <h1 style="font-size: 2.5rem; margin: 0;">DAS WAS & WARUM</h1>
-            <h2 style="color: #003d8f;">DIE STILLE MILLION</h2>
+        <div class="info-section">
+            <h1 style="font-size: 2.2rem; margin: 0;">DAS WAS & WARUM</h1>
+            <h2 style="color: #003d8f; margin: 0;">DIE STILLE MILLION</h2>
         </div>
         <div class="grid" id="main-grid"></div>
+        <div style="display: flex; width: 100%; gap: 10px; margin-top: 10px;">
+            <div class="fundament-box" style="flex: 1;"><div class="num">21</div><div class="text">Kapital und Verwaltung</div></div>
+            <div class="fundament-box" style="flex: 1;"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div></div>
+        </div>
+        <div style="display: flex; width: 100%; gap: 10px; margin-top: 10px; margin-bottom: 100px;">
+            <div class="fundament-box" style="flex: 1; border-color: #555;"><div class="num" style="background:#333">G</div><div class="text">Gast-Zugang</div></div>
+            <div class="fundament-box" style="flex: 1; border-color: #8b00ff;"><div class="num" style="background:#8b00ff">V</div><div class="text" style="color:#ffd700">Verifiziert</div></div>
+        </div>
     </div>
 
     <div id="page-skelett">
-        <div style="width: 100%; text-align: center;">
-            <h1 id="info-titel" style="text-transform: uppercase;"></h1>
-            <div class="tafel-layout">
-                <div class="buttons-links">
-                    <div class="oval-side ov-schwarz" onclick="showDashboard()"></div>
-                    <div class="oval-side ov-grun" onclick="setEbene(2)"></div>
-                    <div class="oval-side ov-blau" onclick="setEbene(3)"></div>
-                    <div class="oval-side ov-rot" onclick="portalZuEbene4()"></div>
-                </div>
-                <div class="info-section-ebene">
-                    <div class="werbe-bild-bg" id="werbe-bg"></div>
-                    <div style="z-index: 10; font-weight: 900; color: #fff;">STILLE MILLION: <span id="million-count">842.336</span></div>
-                </div>
-                <div class="buttons-rechts">
-                    <div class="oval-side ov-grun"></div>
-                    <div class="oval-side ov-blau"></div>
-                    <div class="oval-side ov-pink"></div>
-                    <div class="oval-side ov-gelb" onclick="setEbene(3)"></div>
-                </div>
+        <h1 id="info-titel" style="margin: 10px 0;"></h1>
+        <div class="tafel-layout">
+            <div class="buttons-links">
+                <div class="oval-side ov-schwarz" onclick="showDashboard()"></div>
+                <div class="oval-side ov-grun" onclick="setEbene(2)"></div>
+                <div class="oval-side ov-blau" onclick="setEbene(3)"></div>
+                <div class="oval-side ov-rot" onclick="portalZuEbene4()"></div>
+            </div>
+            <div class="info-section-ebene">
+                <div class="werbe-bild-bg" id="werbe-bg"></div>
+                <div style="z-index:10;">STILLE MILLION: <span id="count">842.336</span></div>
+            </div>
+            <div class="buttons-rechts">
+                <div class="oval-side ov-grun"></div>
+                <div class="oval-side ov-blau"></div>
+                <div class="oval-side ov-gelb" onclick="setEbene(3)"></div>
             </div>
         </div>
 
@@ -105,102 +104,70 @@
         <div id="chat-area">
             <div class="chat-msgs" id="chat-box"></div>
             <div class="chat-input-row">
-                <input type="text" id="chat-input" placeholder="Nachricht an Sektor-Teilnehmer...">
-                <button onclick="registriereSenden()" style="background:#003d8f; color:#fff; border:none; padding:10px 20px; cursor:pointer;">SENDEN</button>
+                <input type="text" id="chat-input" placeholder="Nachricht...">
+                <button onclick="sendMsg()" style="background:#003d8f; color:#fff; border:none; padding:0 20px;">SENDEN</button>
             </div>
         </div>
 
         <div id="drawer-ebene4">
             <div id="jitsi-container"></div>
-            <div id="sektoren-schubladen"></div>
+            <div class="schublade" id="master-drawer">
+                <div class="schublade-header" onclick="toggleDrawer('master')" style="background:#ffd700; color:#000;">
+                    <span>📂 SEKTOREN-ZENTRALE (1-20)</span><span id="arr-master">▼</span>
+                </div>
+                <div class="schublade-content" id="master-list"></div>
+            </div>
         </div>
     </div>
 
     <div class="bottom-nav">
         <button class="nav-btn" onclick="showDashboard()">← DASHBOARD</button>
-        <div style="display: flex; gap: 10px; align-items: center;" id="dot-holder"></div>
+        <div style="display: flex; gap: 8px;" id="dot-holder"></div>
         <button class="nav-btn" onclick="nextPage()">WEITER →</button>
     </div>
 
 <script>
-    let userBackstage = JSON.parse(localStorage.getItem('mm_user_data')) || { sektorNotizen: {}, besuchteSektoren: [], isVerifiziert: false };
-    
+    let user = JSON.parse(localStorage.getItem('mm_user_data')) || { sektorNotizen: {}, besuchteSektoren: [], isVerifiziert: false };
     const themen = ["Recht auf Gefühlsvorderung oder KI", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Nachbarschaft und Gemeinschaft", "Sozialgefallen und Widerkehr", "Alleinerziehend & Kind", "Die Brücke"];
-
-    const DASHBOARD_TRUTH = {
-        1: "Die digitale Welt hat eine Schicht aus Taubheit über das menschliche Erleben gelegt, die wir jetzt konsequent durchbrechen...",
-        2: "Menschlichkeit verbreiten bedeutet, die Signale des eigenen Körpers wieder als oberste Instanz zu akzeptieren...",
-        3: "Wahrer innerer Friede ist kein passiver Zustand, sondern die aktive Heilung der eigenen Geschichte...",
-        4: "Bürgerliche Rechte sind keine Geschenke des Staates, sondern die natürliche Grenze der Macht...",
-        5: "Moralische Pflicht beginnt dort, wo man aufhört, Ausreden für das eigene Handeln zu suchen...",
-        6: "Menschlichkeit Wiederherstellung: Der Akt der Rückbesinnung auf das, was uns wirklich verbindet...",
-        7: "Kinderschutz ist Elternpflicht. Wer seine Kinder der Ideologie opfert, verliert sein Recht auf Führung...",
-        8: "Wahre Kunst ist der Schrei der Seele nach Ausdruck, ungefiltert und unbestechlich...",
-        9: "Kirche und LGBTQ: Heilung findet dort statt, wo Liebe nicht mehr als Sünde definiert wird...",
-        10: "Tradition ist die Weitergabe des Feuers, nicht die Anbetung der Asche. Trends sind nur Rauch...",
-        11: "Religionsbekenntnis: Die freie Wahl des Glaubens ist der Spiegel der inneren Freiheit...",
-        12: "Gesundheit ist die Übereinstimmung von Geist, Seele und Tat. Wer lügt, wird krank...",
-        13: "Die Arbeitswelt der Zukunft dient dem Menschen, nicht umgekehrt. Wir sind keine Ressourcen...",
-        14: "Mobbing ist die Waffe der Schwachen. Wir bauen Schutzschilde aus kollektiver Aufrichtigkeit...",
-        15: "Jugendsprecher: Die Jugend ist nicht die Zukunft, sie ist die Gegenwart, die wir ernst nehmen müssen...",
-        16: "Pensionisten sind das Gedächtnis des Kollektivs. Wer sie isoliert, verliert seine Wurzeln...",
-        17: "Nachbarschaft: Die kleinste Zelle der Rebellion gegen die Einsamkeit...",
-        18: "Sozialgefallen: Was du dem Kollektiv gibst, kehrt als Sicherheit zu dir zurück...",
-        19: "Alleinerziehend: Die Helden des Alltags brauchen keine Almosen, sondern echte Struktur...",
-        20: "Die Brücke: Der finale Sektor. Hier verbinden wir Theorie und Praxis zur neuen Realität."
-    };
-
-    let ebene = 1, tId = 0, jitsiApi = null;
+    
+    let ebene = 1, tId = 0, jitsi = null;
     const ably = new Ably.Realtime('IO8wIA.C7HVjQ:SdzgpyD0_ilg8UOO-mXm94ro0VtTUSao8HUMoW7538sA');
-    let aktuellerChannel = null;
 
-    function initApp() {
-        if(userBackstage.isVerifiziert) { document.getElementById('main-logo').style.boxShadow = "0 0 20px #ffd700"; }
+    function init() {
+        if(user.isVerifiziert) document.getElementById('logo').style.boxShadow = "0 0 15px #ffd700";
         const grid = document.getElementById('main-grid');
         grid.innerHTML = "";
         themen.forEach((t, i) => {
-            const status = userBackstage.besuchteSektoren.includes(i) ? 'num-fertig' : '';
-            grid.innerHTML += `<div class="box"><div class="num ${status}">${i+1}</div><div class="text" onclick="checkAccess(${i}, '${t}')">${t}</div></div>`;
+            const status = user.besuchteSektoren.includes(i) ? 'num-fertig' : '';
+            grid.innerHTML += `<div class="box"><div class="num ${status}">${i+1}</div><div class="text" onclick="openSektor(${i}, '${t}')">${t}</div></div>`;
         });
-        buildArchive();
-        updateDots();
-    }
-
-    function buildArchive() {
-        const drawerArea = document.getElementById('sektoren-schubladen');
-        drawerArea.innerHTML = `
-            <div class="schublade" id="master-drawer">
-                <div class="schublade-header" onclick="toggleDrawer('master')" style="background:#ffd700; color:#000">
-                    <span>📂 SEKTOREN-ZENTRALE (1-20)</span><span id="arr-master">▼</span>
-                </div>
-                <div class="schublade-content" id="archive-list"></div>
-            </div>`;
-        const list = document.getElementById('archive-list');
+        
+        const list = document.getElementById('master-list');
         themen.forEach((t, i) => {
-            const note = userBackstage.sektorNotizen[i] || "";
             list.innerHTML += `
                 <div class="schublade" id="sub-${i}">
-                    <div class="schublade-header" onclick="toggleDrawer(${i})" style="font-size:0.8rem; background:#111;">
+                    <div class="schublade-header" onclick="toggleDrawer(${i})" style="font-size:0.75rem; background:#111;">
                         <span>SEKTOR ${i+1}: ${t}</span><span id="arr-${i}">▼</span>
                     </div>
                     <div class="schublade-content">
-                        <textarea id="note-${i}" class="schublade-textarea" placeholder="Sektoren-Notiz für den Buckel des Frosches...">${note}</textarea>
-                        <button class="save-btn" onclick="saveNote(${i})">DOKUMENT SICHERN</button>
+                        <textarea id="note-${i}" class="schublade-textarea">${user.sektorNotizen[i] || ""}</textarea>
+                        <button onclick="saveNote(${i})" style="background:#00ff00; border:none; padding:8px; margin-top:5px; font-weight:bold; cursor:pointer;">SICHERN</button>
                     </div>
                 </div>`;
         });
+        updateDots();
     }
 
-    function checkAccess(id, t) {
+    function openSektor(id, t) {
         tId = id;
-        if (!userBackstage.besuchteSektoren.includes(id)) { userBackstage.besuchteSektoren.push(id); }
+        if(!user.besuchteSektoren.includes(id)) user.besuchteSektoren.push(id);
         document.getElementById('dashboard').style.display = 'none';
         document.getElementById('page-skelett').style.display = 'flex';
-        document.getElementById('info-titel').innerHTML = t;
-        document.getElementById('main-text').innerText = DASHBOARD_TRUTH[id+1] || "Inhalt folgt...";
+        document.getElementById('info-titel').innerText = t;
+        document.getElementById('main-text').innerText = "Inhalt für Sektor " + (id+1) + " wird geladen... " + t;
         setEbene(2);
-        startWerbung();
-        verbindeChat(id);
+        document.getElementById('werbe-bg').style.backgroundImage = `url('https://picsum.photos/seed/${id+99}/1200/600')`;
+        document.getElementById('werbe-bg').classList.add('bild-aktiv');
     }
 
     function setEbene(n) {
@@ -212,62 +179,33 @@
     }
 
     function updateDots() {
-        const dots = document.getElementById('dot-holder');
-        dots.innerHTML = "";
-        for (let i = 1; i <= 4; i++) dots.innerHTML += `<div class="dot ${i === ebene ? 'active' : ''}"></div>`;
+        const h = document.getElementById('dot-holder'); h.innerHTML = "";
+        for (let i = 1; i <= 4; i++) h.innerHTML += `<div class="dot ${i === ebene ? 'active' : ''}"></div>`;
     }
 
     function toggleDrawer(id) {
         const el = (id === 'master') ? document.getElementById('master-drawer') : document.getElementById('sub-'+id);
-        const arr = (id === 'master') ? document.getElementById('arr-master') : document.getElementById('arr-'+id);
         el.classList.toggle('open');
-        arr.innerText = el.classList.contains('open') ? "▲" : "▼";
     }
 
     function saveNote(id) {
-        userBackstage.sektorNotizen[id] = document.getElementById('note-'+id).value;
-        localStorage.setItem('mm_user_data', JSON.stringify(userBackstage));
-        alert("Im Buckel gesichert, Schwein!");
-    }
-
-    function startWerbung() {
-        const bg = document.getElementById('werbe-bg');
-        bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + 50}/1200/600')`;
-        bg.classList.add('bild-aktiv');
-    }
-
-    function verbindeChat(id) {
-        if (aktuellerChannel) aktuellerChannel.unsubscribe();
-        aktuellerChannel = ably.channels.get('chat-' + id);
-        aktuellerChannel.subscribe('msg', (m) => {
-            document.getElementById('chat-box').innerHTML += `<div><strong>Besucher:</strong> ${m.data}</div>`;
-        });
-    }
-
-    function registriereSenden() {
-        const inp = document.getElementById('chat-input');
-        if (inp.value && aktuellerChannel) {
-            aktuellerChannel.publish('msg', inp.value);
-            document.getElementById('chat-box').innerHTML += `<div><strong>Du:</strong> ${inp.value}</div>`;
-            inp.value = "";
-        }
+        user.sektorNotizen[id] = document.getElementById('note-'+id).value;
+        localStorage.setItem('mm_user_data', JSON.stringify(user));
+        alert("Im Buckel gesichert!");
     }
 
     function portalZuEbene4() {
-        if (!userBackstage.isVerifiziert) { alert("Nur für verifizierte Schweine!"); return; }
+        if(!user.isVerifiziert) { alert("Zugang verweigert, Schwein!"); return; }
         setEbene(4);
-        if (jitsiApi) jitsiApi.dispose();
-        jitsiApi = new JitsiMeetExternalAPI("8x8.vc", {
-            roomName: "MM-Sektor-" + tId, width: "100%", height: "100%",
-            parentNode: document.querySelector('#jitsi-container')
-        });
+        if(jitsi) jitsi.dispose();
+        jitsi = new JitsiMeetExternalAPI("8x8.vc", { roomName: "MM-Sektor-"+tId, width: "100%", height: "100%", parentNode: document.getElementById('jitsi-container') });
     }
 
-    function adminUnlock() { if (prompt("Code?") === "frosch2026") { userBackstage.isVerifiziert = true; localStorage.setItem('mm_user_data', JSON.stringify(userBackstage)); location.reload(); } }
+    function adminUnlock() { if(prompt("Code?") === "frosch2026") { user.isVerifiziert = true; localStorage.setItem('mm_user_data', JSON.stringify(user)); location.reload(); } }
     function showDashboard() { location.reload(); }
-    function nextPage() { if (ebene < 4) setEbene(ebene + 1); }
+    function nextPage() { if(ebene < 4) setEbene(ebene+1); }
 
-    window.onload = initApp;
+    window.onload = init;
 </script>
 </body>
 </html>
