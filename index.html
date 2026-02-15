@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>M&M-COMMUNITY - Admin Modus</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
-    <style>
+   <style>
         /* BASIS-LAYOUT */
         body { background-color: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
 
@@ -86,17 +86,6 @@
         .chat-msgs::-webkit-scrollbar { width: 0px; background: transparent; }
         .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; flex-shrink: 0; margin-top: 5px; z-index: 10; }
 
-        /* EBENE 4: ZWISCHENRAUM */
-        #drawer-ebene4 { overflow-y: auto; scroll-behavior: smooth; padding-right: 5px; width: 90%; display: none; flex-direction: column; height: 60vh; }
-        
-        #sektoren-schubladen { width: 100%; margin-top: 10px; padding-bottom: 120px; }
-        .schublade { border: 1px solid #003d8f; margin-bottom: 10px; background: #050505; transition: all 0.3s; }
-        .schublade-header { padding: 15px; font-size: 1rem; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; background: #001a3d; border-bottom: 1px solid #003d8f; }
-        .schublade-content { padding: 0 15px; max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; font-size: 0.9rem; color: #ccc; }
-        .schublade.open .schublade-content { max-height: 1200px; padding: 20px; }
-        .schublade-textarea { width: 100%; height: 350px; background: #111; border: 1px solid #003d8f; color: #fff; padding: 15px; margin-top: 15px; font-family: inherit; resize: vertical; font-size: 1rem; line-height: 1.5; }
-        .save-btn { background: #00ff00; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; margin-top: 10px; border-radius: 3px; }
-
         /* NAVIGATION */
         .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; background: #000; z-index: 100; border-top: 1px solid #333; }
         .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
@@ -114,10 +103,8 @@
 
         .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
         .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
-/* --- DER RADIKALE AUFRÄUM-MODUS FÜR EBENE 4 --- */
 
-/* --- KORREKTES CSS FÜR SCHUBLADE-IN-SCHUBLADE --- */
-
+/* EBENE 4 BEREINIGT */
 .ebene-4-aktiv .page-title-white, 
 .ebene-4-aktiv .tafel-layout,
 .ebene-4-aktiv #werbe-bg { 
@@ -130,12 +117,12 @@
     height: 95vh;
     flex-direction: column;
     align-items: center;
-    overflow: hidden; /* Verhindert, dass die ganze Seite scrollt */
+    overflow: hidden;
 }
 
 #jitsi-container {
     width: 98%;
-    height: 80vh !important; /* Platz für genau EINE Master-Leiste unten */
+    height: 90vh !important;
     border: 3px solid #ff0000;
     background-color: #000;
     flex-shrink: 0;
@@ -145,20 +132,7 @@
     height: 100% !important;
     width: 100% !important;
 }
-
-/* Der Bereich für die Master-Schublade */
-#sektoren-schubladen {
-    width: 95%;
-    margin-top: 5px;
-    flex-grow: 1;
-    overflow-y: auto; /* Erlaubt das Scrollen NUR innerhalb der Schublade */
-}
-
-/* WICHTIG: Damit die Sektoren IN der Master-Schublade richtig aussehen */
-#inneres-archiv .schublade {
-    border: 1px solid #333;
-    margin-bottom: 5px;
-}</style>
+</style>
 </head>
 <body>
 
@@ -230,7 +204,7 @@
 
         <p id="main-text" style="width: 85%; text-align: justify; color: #ccc; margin-top: 2vh; font-size: 1.3rem; line-height: 1.8; max-height: 50vh; overflow-y: auto;"></p>
 
-  <div id="chat-area">
+        <div id="chat-area">
             <div class="chat-msgs" id="chat-box"></div>
             <div class="chat-input-row">
                 <input type="text" id="chat-input" placeholder="Nachricht schreiben..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px; outline:none;" onkeypress="if(event.key==='Enter') registriereSenden()">
@@ -238,9 +212,8 @@
             </div>
         </div> 
 
-       <div id="drawer-ebene4">
-            <div id="jitsi-container" style="width:100%; height:100%; background:#111; border:1px solid #ff0000;"></div>
-            <div id="sektoren-schubladen"></div>
+        <div id="drawer-ebene4">
+            <div id="jitsi-container"></div>
         </div> 
     </div>
 
@@ -256,8 +229,7 @@
         isVerifiziert: false 
     };
 
-    // HIER SIND DEINE NEUEN NAMEN - SAUBER UND EINZIGARTIG
-   const themen = [
+    const themen = [
         "( von M&M Community )<br>Recht auf Gefühlsvorderung oder KI", 
         "Wie werde ich Mensch", 
         "Glaube an Friede", 
@@ -279,9 +251,6 @@
         "Alleinerziehend & Kind", 
         "Die Brücke"
     ];
-   /* DAS DIPLOM GOTTES: DASHBOARD CORE V1.0 
-   Befüllt mit der Wahrheit des zahnlosen Frosches
-*/
 
 const DASHBOARD_TRUTH = {
     1: {
@@ -298,8 +267,8 @@ const DASHBOARD_TRUTH = {
     },
     4: {
         title: "Programm für Bürgerliche Rechte",
-        content: `Die politische Befreiung des Individuums ist untrennbar mit der Synchronisation von Geist und Gesetz verbunden. In diesem Sektor herrscht das Prinzip der absoluten Geheimhaltung, da wahre Freiheit niemals ein Geschenk von oben ist, sondern das Resultat einer inneren Reife. Wir erkennen an, dass bürgerliche Rechte wertlos bleiben, solange der Mensch im Inneren noch in Ketten liegt. Dieser Raum bleibt versiegelt und geschützt, bis die Masse die notwendige Bereitschaft zeigt, die volle Verantwortung für die eigene Souveränität zu tragen. Es geht nicht um Forderungen an ein System, sondern um die Vorbereitung auf einen Moment, in dem das eigene Wort schwerer wiegt als jede staatliche Verordnung. Wir bewahren das Wissen und die Struktur dieses Programms im Verborgenen, um sicherzustellen, dass die Kraft der bürgerlichen Rechte nicht durch voreiligen Lärm verwässert wird, sondern im richtigen Augenblick mit der Wucht einer unaufhaltsamen Wahrheit hervorbricht.`
-    },        
+        content: `Die politische Befreiung des Individuums ist untrennbar mit der Synchronisation von Geist und Gesetz verbunden. In diesem Sektor herrscht das Prinzip der absoluten Geheimhaltung, da wahre Freiheit niemals ein Geschenk von oben ist, sondern das Resultat einer inneren Reife. Wir erkennen an, dass bürgerliche Rechte wertlos bleiben, solange der Mensch im Inneren noch in Ketten liegt. Dieser Raum bleibt versiegelt und geschützt, bis die Masse die notwendige Bereitschaft zeigt, die volle Verantwortung für die eigene Souveränität zu tragen. Es geht nicht um Forderungen an ein System, sondern um die Vorbereitung auf einen Moment, in dem das eigene Wort schwerer wiegt als jede staatliche Verordnung. Wir bewahren das Wissen und die Struktur dieses Programms im Verborgenen, um sicherzustellen, dass die Kraft der bürgerliche Rechte nicht durch voreiligen Lärm verwässert wird, sondern im richtigen Augenblick mit der Wucht einer unaufhaltsamen Wahrheit hervorbricht.`
+    },          
    5: {
         title: "Moralische Pflicht und Verantwortung",
         content: `Wahre Verantwortung ist keine Last, die uns von außen auferlegt wird, sondern der höchste Ausdruck unserer inneren Souveränität. In diesem Sektor brechen wir mit der feigen Ausrede, man habe „nur Befehle befolgt“ oder sich den Umständen angepasst. Die moralische Pflicht verlangt von uns, dass wir die Konsequenzen unseres Handelns direkt in die Augen schauen, ohne den Blick abzuwenden. Es geht um die Erkenntnis, dass jede Handlung, jedes Wort und jedes Schweigen eine Signatur in der Welt hinterlässt. Wer diesen Raum betritt, erkennt, dass er die alleinige Verantwortung für die Reinheit seiner eigenen Resonanz trägt. Hier endet die Zeit der Ausflüchte; wir übernehmen das Mandat über unser eigenes Leben und verstehen, dass wir nur dann wahrhaft frei sind, wenn wir bereit sind, für unsere Wahrheit mit allem einzustehen, was wir sind.`
@@ -365,6 +334,7 @@ const DASHBOARD_TRUTH = {
         content: `In diesem Sektor fließen alle Ströme zusammen. Die Brücke ist der Punkt der absoluten Integration, an dem Moral, Erziehung, Arbeit und Glaube zu einer Einheit verschmelzen. Hier lassen wir die Ufer der Spaltung hinter uns. Die Brücke ist der Raum, in dem das „Diplom Gottes“ zur gelebten Realität wird. Wir blicken bereits auf Sektor 21 und 22 – die noch ungeschriebenen Kapitel unserer Freiheit. Sektor 21 als Vision der neuen Erde und 22 als die endgültige Rückkehr zur Quelle. Die Brücke ist das Versprechen: Wer hier ankommt, hat aufgehört zu funktionieren und angefangen zu sein.`
     }
 };
+
     let ebene = 1, tId = 0, aktuellesThema = "";
     let jitsiApi = null;
     const ably = new Ably.Realtime('IO8wIA.C7HVjQ:SdzgpyD0_ilg8UOO-mXm94ro0VtTUSao8HUMoW7538sA'); 
@@ -397,41 +367,6 @@ const DASHBOARD_TRUTH = {
                 grid.innerHTML += `<div class="box" id="box-${i}"><div class="num ${statusClass}" id="num-${i}">${i+1}</div><div class="text" onclick="checkAccess(${i}, '${t}')">${t}</div></div>`; 
             });
         }
-        
-   const drawerArea = document.getElementById('sektoren-schubladen');
-        if (drawerArea) {
-            drawerArea.innerHTML = "";
-            const masterSchublade = document.createElement('div');
-            masterSchublade.className = 'schublade';
-            masterSchublade.id = 'master-archiv-container';
-            masterSchublade.innerHTML = `
-                <div class="schublade-header" onclick="toggleDrawer('master')" style="background: #ffd700; color: #000; border: 2px solid #fff;">
-                    <span style="letter-spacing: 2px; font-weight: 900;">📂 SEKTOREN-ZENTRALE (1-20)</span>
-                    <span id="arrow-master">▼</span>
-                </div>
-                <div id="inneres-archiv" class="schublade-content" style="background: #000; padding: 10px;"></div>
-            `;
-            drawerArea.appendChild(masterSchublade);
-
-            const archiv = document.getElementById('inneres-archiv');
-            themen.forEach((t, i) => {
-                const gespeicherterText = userBackstage.sektorNotizen[i] || "";
-                const sektorDiv = document.createElement('div');
-                sektorDiv.className = 'schublade';
-                sektorDiv.id = `drawer-${i}`;
-                sektorDiv.innerHTML = `
-                    <div class="schublade-header" onclick="toggleDrawer(${i})" style="font-size: 0.8rem; padding: 10px; background: #111;">
-                        <span>SEKTOR ${i+1}: ${t}</span>
-                        <span id="arrow-${i}">▼</span>
-                    </div>
-                    <div class="schublade-content">
-                        <textarea id="note-${i}" class="schublade-textarea" style="height: 200px;">${gespeicherterText}</textarea>
-                        <br>
-                        <button class="save-btn" onclick="saveNote(${i})" style="font-size: 0.7rem;">DOKUMENT SICHERN</button>
-                    </div>`;
-                archiv.appendChild(sektorDiv);
-            });
-        }
 
         const dots = document.getElementById('dot-holder');
         if (dots) {
@@ -440,8 +375,7 @@ const DASHBOARD_TRUTH = {
         }
         updateCounter();
     }
-
-    function checkAccess(id, t) {
+   function checkAccess(id, t) {
         tId = id;
         aktuellesThema = t;
         const chatBox = document.getElementById('chat-box');
@@ -501,29 +435,9 @@ const DASHBOARD_TRUTH = {
 
     function saveToStorage() { localStorage.setItem('mm_user_data', JSON.stringify(userBackstage)); }
     
-    function saveNote(id) {
-        userBackstage.sektorNotizen[id] = document.getElementById(`note-${id}`).value;
-        saveToStorage();
-        alert("Im Buckel des Frosches gesichert, Schwein!");
-    }
-
     function showDashboard() { if (jitsiApi) jitsiApi.dispose(); ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; initApp(); }
     
     function nextPage() { if (ebene < 4) setEbene(ebene + 1); }
-
-    function toggleDrawer(id) {
-        if (id === 'master') {
-            const master = document.getElementById('master-archiv-container');
-            master.classList.toggle('open');
-            const arrow = document.getElementById('arrow-master');
-            arrow.innerText = master.classList.contains('open') ? "▲" : "▼";
-        } else {
-            const drawer = document.getElementById('drawer-' + id);
-            drawer.classList.toggle('open');
-            const arrow = document.getElementById('arrow-' + id);
-            arrow.innerText = drawer.classList.contains('open') ? "▲" : "▼";
-        }
-    }
 
     function startRotation() {
         const bg = document.getElementById('werbe-bg');
@@ -608,4 +522,3 @@ const DASHBOARD_TRUTH = {
 </script>
 </body>
 </html>
-
