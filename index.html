@@ -380,14 +380,33 @@ const DASHBOARD_TRUTH = {
     }
     setInterval(updateCounter, 10000);
 
-  function initApp() {
-        // ... (Dein Code für das Grid und die Punkte oben bleibt gleich) ...
+ function initApp() {
+        // 1. DASHBOARD GRID BEFÜLLEN (Damit man die Sektoren wieder sieht)
+        const grid = document.getElementById('main-grid');
+        if (grid) {
+            grid.innerHTML = "";
+            themen.forEach((thema, index) => {
+                const box = document.createElement('div');
+                box.className = 'box';
+                
+                // Status prüfen: Ist der Sektor schon im Buckel des Frosches (besucht)?
+                const istBesucht = userBackstage.besuchteSektoren.includes(index);
+                const numClass = istBesucht ? "num-fertig" : "num-neutral";
+                
+                box.innerHTML = `
+                    <div class="num ${numClass}">${index + 1}</div>
+                    <div class="text" onclick="checkAccess(${index}, '${thema}')">${thema}</div>
+                `;
+                grid.appendChild(box);
+            });
+        }
 
+        // 2. EBENE 4: ARCHIV-STRUKTUR VORBEREITEN
         const drawerArea = document.getElementById('sektoren-schubladen');
         if (drawerArea) {
             drawerArea.innerHTML = ""; 
 
-            // 1. Die gelbe Master-Schublade erstellen
+            // Die gelbe Master-Schublade (Sektoren-Zentrale)
             const masterSchublade = document.createElement('div');
             masterSchublade.className = 'schublade';
             masterSchublade.id = 'master-archiv-container';
@@ -402,7 +421,7 @@ const DASHBOARD_TRUTH = {
 
             const archiv = document.getElementById('inneres-archiv');
 
-            // 2. Jetzt die Sektoren generieren (Das ist der Teil, der bleiben muss!)
+            // Die einzelnen Sektoren-Schubladen IN das Archiv generieren
             for (let i = 1; i <= 20; i++) {
                 const daten = DASHBOARD_TRUTH[i];
                 const gespeicherterText = userBackstage.sektorNotizen[i] || "";
@@ -424,24 +443,23 @@ const DASHBOARD_TRUTH = {
                             ${daten ? daten.content : "..."}
                         </div>
                         <hr style="border: 0; border-top: 1px dashed #333;">
-                        <textarea id="note-${i}" style="width: 100%; height: 100px; background: #111; color: #fff; border: 1px solid #ffd700;">${gespeicherterText}</textarea>
-                        <button onclick="saveNote(${i})" style="background: #ffd700; color: #000; border: none; padding: 5px 10px; cursor: pointer;">SICHERN</button>
+                        <textarea id="note-${i}" style="width: 100%; height: 100px; background: #111; color: #fff; border: 1px solid #ffd700; padding: 5px;">${gespeicherterText}</textarea>
+                        <button onclick="saveNote(${i})" style="background: #ffd700; color: #000; border: none; padding: 5px 10px; cursor: pointer; margin-top: 5px; font-weight: bold;">SICHERN</button>
                     </div>`;
                 archiv.appendChild(sektorDiv);
             }
         }
         
-        // --- DER DOPPELTE BLOCK MUSS WEG! ---
-        // Alles was nach diesem Punkt die 'drawerArea' nochmal neu definiert, muss gelöscht werden.
-
+        // 3. NAVIGATIONSPUNKTE & COUNTER INITIALISIEREN
         const dots = document.getElementById('dot-holder');
         if (dots) {
             dots.innerHTML = "";
-            for (let i = 1; i <= 4; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i === 1 ? 'active' : ''}"></div>`;
+            for (let i = 1; i <= 4; i++) {
+                dots.innerHTML += `<div id="dot${i}" class="dot ${i === 1 ? 'active' : ''}"></div>`;
+            }
         }
         updateCounter();
     }
-
     function checkAccess(id, t) {
         tId = id;
         aktuellesThema = t;
