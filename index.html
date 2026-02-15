@@ -114,54 +114,50 @@
 
         .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
         .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
-/* --- FINALE EBENE 4 LOGIK --- */
+/* --- DER RADIKALE AUFRÄUM-MODUS FÜR EBENE 4 --- */
 
-/* 1. Werbung & Tafel komplett weg in Ebene 4 */
+/* --- KORREKTES CSS FÜR SCHUBLADE-IN-SCHUBLADE --- */
+
 .ebene-4-aktiv .page-title-white, 
-.ebene-4-aktiv .tafel-layout, 
-.ebene-4-aktiv .info-section,
+.ebene-4-aktiv .tafel-layout,
 .ebene-4-aktiv #werbe-bg { 
     display: none !important; 
-    height: 0 !important;
-}
-
-/* 2. Den Körper des Frosches für 20 Sektoren öffnen */
-.ebene-4-aktiv {
-    overflow-y: auto !important;
-    height: auto !important;
 }
 
 #drawer-ebene4 {
     display: none; 
     width: 100%;
-    min-height: 150vh; /* Genug Platz für die Sektoren-Reise */
+    height: 95vh;
     flex-direction: column;
     align-items: center;
-    overflow: visible !important; 
-    padding-bottom: 200px;
+    overflow: hidden; /* Verhindert, dass die ganze Seite scrollt */
 }
 
 #jitsi-container {
     width: 98%;
-    height: 75vh !important;
-    flex-shrink: 0; 
-    margin-bottom: 40px;
-    border: 2px solid #ff0000;
+    height: 80vh !important; /* Platz für genau EINE Master-Leiste unten */
+    border: 3px solid #ff0000;
+    background-color: #000;
+    flex-shrink: 0;
 }
 
-/* 3. Die gelbe Zentrale (Der Buckel) */
-#master-schublade-gelb {
+#jitsi-container iframe {
+    height: 100% !important;
+    width: 100% !important;
+}
+
+/* Der Bereich für die Master-Schublade */
+#sektoren-schubladen {
     width: 95%;
-    background: #111;
-    border: 3px solid #ffff00;
-    margin-top: 20px;
-    z-index: 100;
+    margin-top: 5px;
+    flex-grow: 1;
+    overflow-y: auto; /* Erlaubt das Scrollen NUR innerhalb der Schublade */
 }
 
-#inneres-archiv {
-    width: 100%;
-    display: none; /* Bleibt zu, bis du draufklickst */
-    height: auto;
+/* WICHTIG: Damit die Sektoren IN der Master-Schublade richtig aussehen */
+#inneres-archiv .schublade {
+    border: 1px solid #333;
+    margin-bottom: 5px;
 }</style>
 </head>
 <body>
@@ -188,11 +184,13 @@
                 <div class="num" style="background-color: #333;">G</div>
                 <div class="text">Gast-Zugang (Eingeschränkt)</div>
             </div>
-            <div class="fundament-box" style="flex: 1; border-color: #8b00ff; cursor: pointer;" onclick="setEbene(4)">
-    <div class="num" style="background-color: #8b00ff;">V</div>
-    <div class="text" style="color: #ffd700;">Verifizierter Status (Voller Zugriff 1-4)</div>
-</div>
-    
+            <div class="fundament-box" style="flex: 1; border-color: #8b00ff; cursor: pointer;" onclick="showZugangInfo('email')">
+                <div class="num" style="background-color: #8b00ff;">V</div>
+                <div class="text" style="color: #ffd700;">Verifizierter Status (Voller Zugriff 1-4)</div>
+            </div>
+        </div>
+    </div>
+
     <div id="zugang-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10000; justify-content:center; align-items:center;">
         <div style="background:#000; border:2px solid #003d8f; padding:30px; width:400px; text-align:center; border-radius:10px;">
             <h3 id="modal-titel" style="color:#fff; margin-top:0;"></h3>
@@ -240,25 +238,26 @@
             </div>
         </div> 
 
-    <div id="drawer-ebene4" style="display: none; width: 100%; flex-direction: column; align-items: center;">
-    
-    <div id="jitsi-container" style="width: 98%; height: 70vh; margin-bottom: 20px;"></div>
-
-   <div id="master-schublade-gelb">
-    <div class="master-header" onclick="toggleMaster()">
-        <span>📂 ZENTRALE ARCHIVIERUNG (Sektoren 1-20)</span>
-        <span id="arrow-master">▼</span>
+       <div id="drawer-ebene4">
+            <div id="jitsi-container" style="width:100%; height:100%; background:#111; border:1px solid #ff0000;"></div>
+            <div id="sektoren-schubladen"></div>
+        </div> 
     </div>
-   <div id="inneres-archiv" style="width: 100%;"></div>
 
     <div class="bottom-nav">
         <button id="btn-back" class="nav-btn" onclick="showDashboard()">← Dashboard</button>
         <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
         <button id="btn-next" class="nav-btn" onclick="nextPage()">Weiter →</button>
     </div>
-</script>
 <script>
-    const themen = [
+    let userBackstage = JSON.parse(localStorage.getItem('mm_user_data')) || { 
+        sektorNotizen: {}, 
+        besuchteSektoren: [],
+        isVerifiziert: false 
+    };
+
+    // HIER SIND DEINE NEUEN NAMEN - SAUBER UND EINZIGARTIG
+   const themen = [
         "( von M&M Community )<br>Recht auf Gefühlsvorderung oder KI", 
         "Wie werde ich Mensch", 
         "Glaube an Friede", 
@@ -280,36 +279,6 @@
         "Alleinerziehend & Kind", 
         "Die Brücke"
     ];
-    let userBackstage = JSON.parse(localStorage.getItem('mm_user_data')) || { 
-        sektorNotizen: {}, 
-        besuchteSektoren: [],
-        isVerifiziert: false 
-    };
-
-    // HIER SIND DEINE NEUEN NAMEN - SAUBER UND EINZIGARTIG
-   function baueSektorenArchiv() {
-    const archiv = document.getElementById('inneres-archiv');
-    if (!archiv) return; 
-
-    // Wir nutzen direkt DEINE bestehende Liste 'themen'
-    archiv.innerHTML = ""; 
-
-    themen.forEach((name, i) => {
-        const notiz = userBackstage.sektorNotizen[i] || ""; 
-
-        archiv.innerHTML += `
-            <div class="schublade" id="sektor-box-${i}" style="border: 1px solid #333; margin-bottom: 5px; background: #050505;">
-                <div class="schublade-header" onclick="toggleSubSchublade(${i})" style="padding: 15px; cursor: pointer; display: flex; justify-content: space-between; background: #001a3d;">
-                    <span>Sektor ${i + 1}: ${name}</span>
-                    <span id="pfeil-${i}">▼</span>
-                </div>
-                <div class="schublade-content" id="content-${i}" style="display:none; padding:15px;">
-                    <textarea id="text-${i}" style="width: 100%; height: 200px; background: #111; color: #fff; border: 1px solid #003d8f; padding: 10px;">${notiz}</textarea>
-                    <button class="save-btn" onclick="speichereSektor(${i})" style="background: #00ff00; color: #000; border: none; padding: 10px; cursor: pointer; font-weight: bold; margin-top: 10px;">DOKUMENT IM BUCKEL SICHERN</button>
-                </div>
-            </div>`;
-    });
-
    /* DAS DIPLOM GOTTES: DASHBOARD CORE V1.0 
    Befüllt mit der Wahrheit des zahnlosen Frosches
 */
@@ -501,27 +470,21 @@ const DASHBOARD_TRUTH = {
         verbindeMitSektorChat(id);
     }
 
-  function setEbene(n) {
-    ebene = n;
-    
-    // Zuerst ALLE Spezial-Klassen vom Body entfernen
-    document.body.classList.remove('ebene-4-aktiv');
-    // Falls du andere Ebenen-Klassen hast, hier auch entfernen (z.B. ebene-3-aktiv)
-
-    if (n === 4) {
-        document.body.classList.add('ebene-4-aktiv');
-        // initJitsi(); 
-        baueSektorenArchiv();
-    } 
-   // initJitsi(); 
-   updateUI(); // Das hier sorgt dafür...
-}
+    function setEbene(n) {
+        ebene = n;
+        if (n === 4) {
+            document.body.classList.add('ebene-4-aktiv');
+        } else {
+            document.body.classList.remove('ebene-4-aktiv');
+        }
+        updateUI();
+    }
 
     function updateUI() {
-    // ... andere Ebenen ...
-    document.getElementById('drawer-ebene4').style.display = (ebene === 4) ? 'flex' : 'none';
-    // ...
-}
+        document.getElementById('chat-area').style.display = (ebene === 3) ? 'flex' : 'none';
+        document.getElementById('drawer-ebene4').style.display = (ebene === 4) ? 'flex' : 'none';
+        document.getElementById('main-text').style.display = (ebene === 2) ? 'block' : 'none';
+
         const ebene4Titel = document.getElementById('ebene4-title-red');
         if (ebene === 4) {
             ebene4Titel.style.display = 'block';
@@ -548,18 +511,19 @@ const DASHBOARD_TRUTH = {
     
     function nextPage() { if (ebene < 4) setEbene(ebene + 1); }
 
-function toggleMaster() {
-    const archiv = document.getElementById('inneres-archiv');
-    const pfeil = document.getElementById('arrow-master');
-    
-    if (archiv.style.display === 'none' || archiv.style.display === '') {
-        archiv.style.display = 'block'; // Zeigt die 20 Sektoren (den Buckel des Frosches) [cite: 2026-02-13]
-        if (pfeil) pfeil.innerText = '▲';
-    } else {
-        archiv.style.display = 'none'; // Versteckt sie wieder
-        if (pfeil) pfeil.innerText = '▼';
+    function toggleDrawer(id) {
+        if (id === 'master') {
+            const master = document.getElementById('master-archiv-container');
+            master.classList.toggle('open');
+            const arrow = document.getElementById('arrow-master');
+            arrow.innerText = master.classList.contains('open') ? "▲" : "▼";
+        } else {
+            const drawer = document.getElementById('drawer-' + id);
+            drawer.classList.toggle('open');
+            const arrow = document.getElementById('arrow-' + id);
+            arrow.innerText = drawer.classList.contains('open') ? "▲" : "▼";
+        }
     }
-}
 
     function startRotation() {
         const bg = document.getElementById('werbe-bg');
@@ -612,6 +576,8 @@ function toggleMaster() {
         jitsiApi.executeCommand('toggleTileView');
     }
 
+    window.onload = initApp;
+
     function adminUnlock() {
         if (prompt("Code?") === "frosch2026") {
             userBackstage.isVerifiziert = true;
@@ -640,18 +606,6 @@ function toggleMaster() {
         }
     }
 </script>
-<script>
-console.log("Rebellion aktiv!");
-
-// HIER DIE LISTE DIREKT REINKOPIEREN
-const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht", "Menschlichkeit", "Kinderschutz", "Wahre Richtung", "LGBTQ und Kirche", "Trend and Tradition", "Religionsbekenntnis", "Gesundheitswesen", "Arbeitswelt und Du", "Mobbing", "Jugendsprecher", "Ratgeber", "Nachbarschaft", "Sozialgefallen", "Alleinerziehend", "Die Brücke"];
-
-function setEbene(n) {
-    console.log("Springe auf Ebene:", n);
-    document.body.className = 'ebene-' + n + '-aktiv';
-    const dr = document.getElementById('drawer-ebene4');
-    if(dr) dr.style.display = (n === 4) ? 'flex' : 'none';
-    if(n === 4) baueSektorenArchiv();
-}
-</script>
+</body>
 </html>
+
