@@ -115,9 +115,6 @@
         .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
         .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
 /* --- DER RADIKALE AUFRÄUM-MODUS FÜR EBENE 4 --- */
-
-/* --- KORREKTES CSS FÜR SCHUBLADE-IN-SCHUBLADE --- */
-
 .ebene-4-aktiv .page-title-white, 
 .ebene-4-aktiv .tafel-layout,
 .ebene-4-aktiv #werbe-bg { 
@@ -127,17 +124,23 @@
 #drawer-ebene4 {
     display: none;
     width: 100%;
-    height: 95vh; /* Nutzt fast die ganze Höhe */
+    height: 90vh; /* Etwas weniger Höhe, damit die Nav-Buttons unten frei bleiben */
     flex-direction: column;
     align-items: center;
-    overflow-y: auto; /* DAS HIER erlaubt das Scrollen nach unten zur Leiste! */
-    padding-bottom: 50px;
+    overflow-y: scroll; /* Erzwingt Scroll-Fähigkeit */
+    overflow-x: hidden;
+    padding-top: 10px;
+    padding-bottom: 150px; /* Viel Platz unten, damit die Leiste nicht von der Nav verdeckt wird */
+    position: relative;
 }
 
 #jitsi-container {
     width: 98%;
-    height: 70vh !important; /* Video bleibt groß, aber lässt Platz */
+    height: 70vh !important; /* Video-Höhe fixiert */
+    min-height: 400px;
     flex-shrink: 0; 
+    margin-bottom: 25px; /* Erzeugt den nötigen Abstand zur gelben Leiste */
+    border: 2px solid #ff0000;
 }
 
 #jitsi-container iframe {
@@ -148,12 +151,17 @@
 /* Der Bereich für die Master-Schublade */
 #sektoren-schubladen {
     width: 95%;
-    margin-top: 5px;
-    flex-grow: 1;
-    overflow-y: auto; /* Erlaubt das Scrollen NUR innerhalb der Schublade */
+    flex-shrink: 0; /* Verhindert, dass die Leiste gequetscht wird */
+    margin-top: 10px;
+    z-index: 50;
 }
 
-/* WICHTIG: Damit die Sektoren IN der Master-Schublade richtig aussehen */
+/* WICHTIG: Die Master-Leiste (Der Buckel des Frosches) */
+.schublade#master-archiv-container {
+    border: 3px solid #ffff00 !important;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+}
+
 #inneres-archiv .schublade {
     border: 1px solid #333;
     margin-bottom: 5px;
