@@ -257,6 +257,7 @@
         <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
         <button id="btn-next" class="nav-btn" onclick="nextPage()">Weiter →</button>
     </div>
+</script>
 <script>
     let userBackstage = JSON.parse(localStorage.getItem('mm_user_data')) || { 
         sektorNotizen: {}, 
@@ -639,5 +640,14 @@ function toggleMaster() {
         }
     }
 </script>
-</body>
+<script>
+console.log("Rebellion aktiv!");
+function setEbene(n) {
+    console.log("Springe auf Ebene:", n);
+    document.body.className = 'ebene-' + n + '-aktiv';
+    const dr = document.getElementById('drawer-ebene4');
+    if(dr) dr.style.display = (n === 4) ? 'flex' : 'none';
+    if(n === 4) baueSektorenArchiv();
+}
+</script></body>
 </html>
