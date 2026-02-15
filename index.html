@@ -380,58 +380,59 @@ const DASHBOARD_TRUTH = {
     }
     setInterval(updateCounter, 10000);
 
-    function initApp() {
-        if(userBackstage.isVerifiziert) {
-            const logo = document.querySelector('.logo-ring');
-            if(logo) {
-                logo.style.borderColor = "#ffd700"; 
-                logo.style.boxShadow = "0 0 20px #ffd700";
-            }
-        }
+  function initApp() {
+        // ... (Dein Code für das Grid und die Punkte oben bleibt gleich) ...
 
-        const grid = document.getElementById('main-grid');
-        if(grid) {
-            grid.innerHTML = ""; 
-            themen.forEach((t, i) => { 
-                const statusClass = userBackstage.besuchteSektoren.includes(i) ? 'num-fertig' : 'num-neutral';
-                grid.innerHTML += `<div class="box" id="box-${i}"><div class="num ${statusClass}" id="num-${i}">${i+1}</div><div class="text" onclick="checkAccess(${i}, '${t}')">${t}</div></div>`; 
-            });
-        }
-        
-   const drawerArea = document.getElementById('sektoren-schubladen');
+        const drawerArea = document.getElementById('sektoren-schubladen');
         if (drawerArea) {
-            drawerArea.innerHTML = "";
+            drawerArea.innerHTML = ""; 
+
+            // 1. Die gelbe Master-Schublade erstellen
             const masterSchublade = document.createElement('div');
             masterSchublade.className = 'schublade';
             masterSchublade.id = 'master-archiv-container';
             masterSchublade.innerHTML = `
-                <div class="schublade-header" onclick="toggleDrawer('master')" style="background: #ffd700; color: #000; border: 2px solid #fff;">
+                <div class="schublade-header" onclick="toggleDrawer('master')" style="background: #ffd700; color: #000; border: 2px solid #fff; cursor: pointer;">
                     <span style="letter-spacing: 2px; font-weight: 900;">📂 SEKTOREN-ZENTRALE (1-20)</span>
                     <span id="arrow-master">▼</span>
                 </div>
-                <div id="inneres-archiv" class="schublade-content" style="background: #000; padding: 10px;"></div>
+                <div id="inneres-archiv" class="schublade-content" style="background: #000; padding: 10px; display: none;"></div>
             `;
             drawerArea.appendChild(masterSchublade);
 
             const archiv = document.getElementById('inneres-archiv');
-            themen.forEach((t, i) => {
+
+            // 2. Jetzt die Sektoren generieren (Das ist der Teil, der bleiben muss!)
+            for (let i = 1; i <= 20; i++) {
+                const daten = DASHBOARD_TRUTH[i];
                 const gespeicherterText = userBackstage.sektorNotizen[i] || "";
+                
                 const sektorDiv = document.createElement('div');
                 sektorDiv.className = 'schublade';
                 sektorDiv.id = `drawer-${i}`;
+                sektorDiv.style.border = "1px solid #333";
+                sektorDiv.style.marginBottom = "5px";
+
                 sektorDiv.innerHTML = `
-                    <div class="schublade-header" onclick="toggleDrawer(${i})" style="font-size: 0.8rem; padding: 10px; background: #111;">
-                        <span>SEKTOR ${i+1}: ${t}</span>
+                    <div class="schublade-header" onclick="toggleDrawer(${i})" style="font-size: 0.8rem; padding: 10px; background: #111; cursor: pointer; color: #ffd700;">
+                        <span>SEKTOR ${i}: ${daten ? daten.title : "In der Forschung..."}</span>
                         <span id="arrow-${i}">▼</span>
                     </div>
-                    <div class="schublade-content">
-                        <textarea id="note-${i}" class="schublade-textarea" style="height: 200px;">${gespeicherterText}</textarea>
-                        <br>
-                        <button class="save-btn" onclick="saveNote(${i})" style="font-size: 0.7rem;">DOKUMENT SICHERN</button>
+                    <div class="schublade-content" style="display: none; padding: 10px; background: #050505;">
+                        <p style="font-size: 0.85rem; color: #aaa; font-style: italic;">Die Wahrheit:</p>
+                        <div style="color: #fff; font-size: 0.9rem; margin-bottom: 10px; text-align: justify; border-left: 2px solid #ffd700; padding-left: 10px;">
+                            ${daten ? daten.content : "..."}
+                        </div>
+                        <hr style="border: 0; border-top: 1px dashed #333;">
+                        <textarea id="note-${i}" style="width: 100%; height: 100px; background: #111; color: #fff; border: 1px solid #ffd700;">${gespeicherterText}</textarea>
+                        <button onclick="saveNote(${i})" style="background: #ffd700; color: #000; border: none; padding: 5px 10px; cursor: pointer;">SICHERN</button>
                     </div>`;
                 archiv.appendChild(sektorDiv);
-            });
+            }
         }
+        
+        // --- DER DOPPELTE BLOCK MUSS WEG! ---
+        // Alles was nach diesem Punkt die 'drawerArea' nochmal neu definiert, muss gelöscht werden.
 
         const dots = document.getElementById('dot-holder');
         if (dots) {
@@ -511,19 +512,27 @@ const DASHBOARD_TRUTH = {
     
     function nextPage() { if (ebene < 4) setEbene(ebene + 1); }
 
-    function toggleDrawer(id) {
-        if (id === 'master') {
-            const master = document.getElementById('master-archiv-container');
-            master.classList.toggle('open');
-            const arrow = document.getElementById('arrow-master');
-            arrow.innerText = master.classList.contains('open') ? "▲" : "▼";
-        } else {
-            const drawer = document.getElementById('drawer-' + id);
-            drawer.classList.toggle('open');
-            const arrow = document.getElementById('arrow-' + id);
-            arrow.innerText = drawer.classList.contains('open') ? "▲" : "▼";
-        }
+   function toggleDrawer(id) {
+    let target, arrow;
+    if (id === 'master') {
+        target = document.getElementById('master-archiv-container');
+        arrow = document.getElementById('arrow-master');
+    } else {
+        target = document.getElementById('drawer-' + id);
+        arrow = document.getElementById('arrow-' + id);
     }
+
+    if (target) {
+        target.classList.toggle('open');
+        // Den Inhaltsbereich finden
+        const content = target.querySelector('.schublade-content');
+        if (content) {
+            // Die direkte Korrektur: Wenn offen, dann anzeigen, sonst verstecken
+            content.style.display = target.classList.contains('open') ? 'block' : 'none';
+        }
+        if (arrow) arrow.innerText = target.classList.contains('open') ? "▲" : "▼";
+    }
+}
 
     function startRotation() {
         const bg = document.getElementById('werbe-bg');
