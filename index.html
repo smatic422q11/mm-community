@@ -523,10 +523,10 @@ const DASHBOARD_TRUTH = {
 }
 
     function updateUI() {
-        document.getElementById('chat-area').style.display = (ebene === 3) ? 'flex' : 'none';
-        document.getElementById('drawer-ebene4').style.display = (ebene === 4) ? 'flex' : 'none';
-        document.getElementById('main-text').style.display = (ebene === 2) ? 'block' : 'none';
-
+    // ... andere Ebenen ...
+    document.getElementById('drawer-ebene4').style.display = (ebene === 4) ? 'flex' : 'none';
+    // ...
+}
         const ebene4Titel = document.getElementById('ebene4-title-red');
         if (ebene === 4) {
             ebene4Titel.style.display = 'block';
