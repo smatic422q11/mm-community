@@ -114,50 +114,54 @@
 
         .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
         .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
-/* --- DIE TIEFEN-ERWEITERUNG FÜR EBENE 4 --- */
+/* --- FINALE EBENE 4 LOGIK --- */
 
-/* Wir erlauben dem Body in Ebene 4 das Mitatmen */
+/* 1. Werbung & Tafel komplett weg in Ebene 4 */
+.ebene-4-aktiv .page-title-white, 
+.ebene-4-aktiv .tafel-layout, 
+.ebene-4-aktiv .info-section,
+.ebene-4-aktiv #werbe-bg { 
+    display: none !important; 
+    height: 0 !important;
+}
+
+/* 2. Den Körper des Frosches für 20 Sektoren öffnen */
 .ebene-4-aktiv {
-    overflow-y: auto !important; /* Löst die Sperre des Hauptbildschirms */
+    overflow-y: auto !important;
     height: auto !important;
 }
 
 #drawer-ebene4 {
-    display: none;
+    display: none; 
     width: 100%;
-    /* Entferne feste Höhenbegrenzung, damit 20 Sektoren Platz haben */
-    min-height: 100vh; 
+    min-height: 150vh; /* Genug Platz für die Sektoren-Reise */
     flex-direction: column;
     align-items: center;
-    /* Wir lassen den Body scrollen, nicht nur den kleinen Div */
-    overflow: visible; 
-    padding-bottom: 200px; /* Puffer für die untere Navigation */
+    overflow: visible !important; 
+    padding-bottom: 200px;
 }
 
 #jitsi-container {
     width: 98%;
-    height: 75vh !important; 
-    flex-shrink: 0;
-    margin-bottom: 30px;
-    z-index: 10;
+    height: 75vh !important;
+    flex-shrink: 0; 
+    margin-bottom: 40px;
+    border: 2px solid #ff0000;
 }
 
-/* Die gelbe Master-Leiste muss flexibel bleiben */
-#sektoren-schubladen {
+/* 3. Die gelbe Zentrale (Der Buckel) */
+#master-schublade-gelb {
     width: 95%;
-    display: block;
+    background: #111;
+    border: 3px solid #ffff00;
     margin-top: 20px;
-    position: relative;
-    /* Verhindert, dass die Leiste kollabiert */
-    min-height: 100px; 
+    z-index: 100;
 }
 
-/* Damit die aufgeklappten Sektoren den Platz nach unten drücken */
 #inneres-archiv {
-    display: block;
+    width: 100%;
+    display: none; /* Bleibt zu, bis du draufklickst */
     height: auto;
-    max-height: none; /* Hebt die 5000px Grenze auf, falls nötig */
-    transition: all 0.5s ease;
 }</style>
 </head>
 <body>
@@ -238,16 +242,20 @@
             </div>
         </div> 
 
-       <div id="drawer-ebene4">
+      <div id="drawer-ebene4">
+    
     <div id="jitsi-container"></div>
     
-    <div id="master-schublade-gelb" style="width: 95%; border: 2px solid #ffff00; background: #111; margin-top: 20px;">
-        <div class="master-header" onclick="toggleMaster()" style="background: #ffff00; color: #000; padding: 15px; font-weight: 900; text-align: center; cursor: pointer;">
-            📂 ZENTRALE ARCHIVIERUNG (Sektoren 1-20)
+    <div id="master-schublade-gelb">
+        <div class="master-header" onclick="toggleMaster()">
+            <span>📂 ZENTRALE ARCHIVIERUNG (Sektoren 1-20)</span>
+            <span id="arrow-master">▼</span>
         </div>
-        <div id="inneres-archiv" style="max-height: 0; overflow: hidden; transition: max-height 0.5s;">
+        
+        <div id="inneres-archiv">
             </div>
     </div>
+
 </div>
 
     <div class="bottom-nav">
@@ -519,13 +527,14 @@ const DASHBOARD_TRUTH = {
 
 function toggleMaster() {
     const archiv = document.getElementById('inneres-archiv');
-    const master = document.getElementById('master-schublade-gelb');
-    if (archiv.style.maxHeight === "0px" || archiv.style.maxHeight === "") {
-        archiv.style.maxHeight = "5000px"; // Macht Platz für alle 20
-        master.classList.add('open');
+    const arrow = document.getElementById('arrow-master');
+    
+    if (archiv.style.display === "none" || archiv.style.display === "") {
+        archiv.style.display = "block";
+        arrow.innerText = "▲";
     } else {
-        archiv.style.maxHeight = "0px";
-        master.classList.remove('open');
+        archiv.style.display = "none";
+        arrow.innerText = "▼";
     }
 }
 
