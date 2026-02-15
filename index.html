@@ -519,27 +519,46 @@ function initApp() {
     
     function nextPage() { if (ebene < 4) setEbene(ebene + 1); }
 
-   function toggleDrawer(id) {
-    let target, arrow;
-    if (id === 'master') {
-        target = document.getElementById('master-archiv-container');
-        arrow = document.getElementById('arrow-master');
-    } else {
-        target = document.getElementById('drawer-' + id);
-        arrow = document.getElementById('arrow-' + id);
-    }
-
-    if (target) {
-        target.classList.toggle('open');
-        // Den Inhaltsbereich finden
-        const content = target.querySelector('.schublade-content');
-        if (content) {
-            // Die direkte Korrektur: Wenn offen, dann anzeigen, sonst verstecken
-            content.style.display = target.classList.contains('open') ? 'block' : 'none';
+  function toggleDrawer(id) {
+        let target, arrow;
+        
+        // Suche das Ziel basierend darauf, ob es 'master' oder ein Sektor ist
+        if (id === 'master') {
+            target = document.getElementById('master-archiv-container');
+            arrow = document.getElementById('arrow-master');
+        } else {
+            target = document.getElementById('drawer-' + id);
+            arrow = document.getElementById('arrow-' + id);
         }
-        if (arrow) arrow.innerText = target.classList.contains('open') ? "▲" : "▼";
+
+        if (target) {
+            // Die Klasse 'open' umschalten für CSS-Animationen
+            target.classList.toggle('open');
+            const istJetztOffen = target.classList.contains('open');
+
+            // Den Inhaltsbereich direkt ansprechen
+            const content = target.querySelector('.schublade-content');
+            if (content) {
+                // ERZWINGE die Anzeige: Wenn Klasse 'open' da ist -> block, sonst none
+                content.style.display = istJetztOffen ? 'block' : 'none';
+                
+                // Falls es die Master-Schublade ist, stellen wir sicher, dass sie Platz hat
+                if (id === 'master' && istJetztOffen) {
+                    content.style.maxHeight = "none"; 
+                }
+            }
+
+            // Pfeil aktualisieren
+            if (arrow) {
+                arrow.innerText = istJetztOffen ? "▲" : "▼";
+            }
+            
+            // Debug-Log für dich (kannst du später löschen)
+            console.log("Schublade " + id + " ist jetzt: " + (istJetztOffen ? "OFFEN" : "ZU"));
+        } else {
+            console.error("Schwein, ich finde das Element nicht: " + id);
+        }
     }
-}
 
     function startRotation() {
         const bg = document.getElementById('werbe-bg');
