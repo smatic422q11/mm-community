@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>M&M-COMMUNITY - Admin Modus</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
-    <style>
+   <style>
         /* BASIS-LAYOUT */
         body { background-color: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
 
@@ -13,17 +13,17 @@
             0% { opacity: 0; filter: blur(10px); transform: translateY(20px); }
             100% { opacity: 1; filter: blur(0); transform: translateY(0); }
         }
-       #main-text {
-    width: 85%;
-    text-align: justify;
-    color: #ccc;
-    margin: 2vh auto; /* Zentriert den Block */
-    font-size: 1.3rem;
-    line-height: 1.8;
-    max-height: 50vh;
-    overflow-y: auto;
-    white-space: pre-wrap; /* WICHTIG: Erhält deine Zeilenumbrüche */
-}
+        #main-text {
+            width: 85%;
+            text-align: justify;
+            color: #ccc;
+            margin: 2vh auto;
+            font-size: 1.3rem;
+            line-height: 1.8;
+            max-height: 50vh;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
         .wahrheits-text {
             animation: textErscheinung 2.5s ease-out forwards;
             color: #fff;
@@ -33,21 +33,15 @@
         @keyframes kenburns { 0% { transform: scale(1) translate(0, 0); } 50% { transform: scale(1.15) translate(-1%, -1%); } 100% { transform: scale(1) translate(0, 0); } }
         @keyframes fadeEffect { 0% { opacity: 0; } 15% { opacity: 0.4; } 85% { opacity: 0.4; } 100% { opacity: 0; } }
         @keyframes signalBlink { 0% { box-shadow: 0 0 5px #fff; opacity: 0.8; } 50% { box-shadow: 0 0 25px #fff, 0 0 35px #003d8f; opacity: 1; transform: scale(1.05); } 100% { box-shadow: 0 0 5px #fff; opacity: 0.8; } }
+        
         .elite-aktiv { background-color: #ffd700 !important; box-shadow: 0 0 10px #ffd700; border: 2px solid #fff !important; cursor: pointer; }
-        @keyframes pulsieren { 0% { opacity: 0.5; } 50% { opacity: 1; text-shadow: 0 0 10px #ffd700; } 100% { opacity: 0.5; } }
-        .pulsieren { animation: pulsieren 2s infinite ease-in-out; font-weight: bold; }
         .signal-aktiv { animation: signalBlink 1.0s infinite ease-in-out !important; border: 2px solid #fff !important; cursor: pointer; }
-
-        /* LILA BALKEN */
-        .lila-registrierung-leiste { width: 100%; height: 80px; background: #8b00ff; border-top: 2px solid #fff; border-bottom: 2px solid #fff; display: flex; align-items: center; justify-content: center; margin-top: 20px; box-shadow: 0 0 20px #8b00ff; }
-        .registrierung-text { color: #fff; font-size: 2.2rem; font-weight: 900; letter-spacing: 15px; text-transform: uppercase; }
 
         /* HEADER & TAFEL */
         .dashboard-header { width: 100%; position: absolute; top: 3%; display: flex; justify-content: flex-start; padding: 0 2%; box-sizing: border-box; z-index: 20; }
         .logo-ring { width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; }
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
-        .info-section { width: 80%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; position: relative; overflow: hidden; margin-top: 2vh; }
         
         .tafel-layout { 
             display: flex; 
@@ -60,42 +54,54 @@
             min-height: 26vh; 
             flex-shrink: 0; 
         }
-
         .info-section-ebene { width: 90% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
 
-        /* BUTTONS */
-        .buttons-links { position: absolute; left: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
-        .buttons-rechts { position: absolute; right: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
-        .oval-side { width: 45px; height: 22px; border-radius: 12px; border: 1px solid #fff; opacity: 0.8; transition: all 0.3s; }
-        .ov-schwarz { background: #000; border: 1.5px solid #003d8f; }
-        .ov-grun { background: #00ff00; }
-        .ov-blau { background: #0000ff; }
-        .ov-rot { background: #ff0000; }
-        .ov-pink { background: #ff00ff; }
-        .ov-gelb { background: #ffff00; }
-
         /* DASHBOARD GRID */
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 10px; width: 95%; max-width: 1450px; margin-top: 30px; border: 3px solid #00ff00; padding: 15px; border-radius: 10px; }
-        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; overflow: hidden; }
-        .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 95%; max-width: 1450px; margin-top: 30px; border: 3px solid #00ff00; padding: 15px; border-radius: 10px; }
+        .box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; }
+        .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; font-size: 0.85rem; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
+        .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
 
-        /* EBENE 3: Chat-Bereich */
-        #chat-area { width: 90% !important; height: 45vh; flex-grow: 1; display: none; flex-direction: column; margin: 0 auto 70px auto; position: relative; overflow: hidden; border: none !important; }
-        .chat-msgs { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px 0; color: #fff; font-size: 1.1rem; overflow-y: auto; scrollbar-width: none; }
-        .chat-msgs::-webkit-scrollbar { width: 0px; background: transparent; }
-        .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; flex-shrink: 0; margin-top: 5px; z-index: 10; }
+        /* --- EBENE 4: DIE ARCHIV-ZENTRALE --- */
+        #drawer-ebene4 { 
+            display: none; 
+            width: 90%; 
+            height: 75vh; 
+            flex-direction: column; 
+            overflow-y: auto; 
+            padding-bottom: 120px; 
+            margin-top: 10px;
+        }
 
-        /* EBENE 4: ZWISCHENRAUM */
-        #drawer-ebene4 { overflow-y: auto; scroll-behavior: smooth; padding-right: 5px; width: 90%; display: none; flex-direction: column; height: 60vh; }
+        #sektoren-schubladen { width: 100%; }
+
+        .schublade { border: 1px solid #003d8f; margin-bottom: 10px; background: #050505; }
         
-        #sektoren-schubladen { width: 100%; margin-top: 10px; padding-bottom: 120px; }
-        .schublade { border: 1px solid #003d8f; margin-bottom: 10px; background: #050505; transition: all 0.3s; }
-        .schublade-header { padding: 15px; font-size: 1rem; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; background: #001a3d; border-bottom: 1px solid #003d8f; }
-        .schublade-content { padding: 0 15px; max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; font-size: 0.9rem; color: #ccc; }
-        .schublade.open .schublade-content { max-height: 1200px; padding: 20px; }
-        .schublade-textarea { width: 100%; height: 350px; background: #111; border: 1px solid #003d8f; color: #fff; padding: 15px; margin-top: 15px; font-family: inherit; resize: vertical; font-size: 1rem; line-height: 1.5; }
-        .save-btn { background: #00ff00; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; margin-top: 10px; border-radius: 3px; }
+        .schublade-header { 
+            padding: 15px; 
+            font-size: 1rem; 
+            font-weight: bold; 
+            cursor: pointer; 
+            display: flex; 
+            justify-content: space-between; 
+            background: #001a3d; 
+            border-bottom: 1px solid #003d8f; 
+        }
+
+        .schublade-content { 
+            display: none; /* Wichtig: Standardmäßig zu */
+            padding: 20px; 
+            background: #000; 
+            color: #ccc; 
+            font-size: 0.95rem; 
+            border-top: 1px solid #003d8f;
+        }
+
+        /* DIE MAGISCHE ÖFFNUNG */
+        .schublade.open .schublade-content { 
+            display: block !important; 
+        }
 
         /* NAVIGATION */
         .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; background: #000; z-index: 100; border-top: 1px solid #333; }
@@ -103,62 +109,9 @@
         .dot { width: 10px; height: 10px; background: #444; border-radius: 50%; }
         .dot.active { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
 
-        #counter-box { position: absolute; right: 0; top: 0; width: 100px; padding: 5px; border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f; background: #000; text-align: center; display: none; z-index: 100; }
-        .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
-        .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh; flex-shrink: 0; }
-        .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
-        .ebene4-header-red { width: 90%; background: #ff0000; color: #fff; padding: 10px 0; text-align: center; font-weight: 900; font-size: 1.5rem; border-radius: 5px 5px 0 0; display: none; text-transform: uppercase; }
-
-        .num-neutral { background-color: #003d8f !important; }
-        .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
-
         .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
         .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
-/* --- DER RADIKALE AUFRÄUM-MODUS FÜR EBENE 4 --- */
-
-/* --- KORREKTES CSS FÜR SCHUBLADE-IN-SCHUBLADE --- */
-
-.ebene-4-aktiv .page-title-white, 
-.ebene-4-aktiv .tafel-layout,
-.ebene-4-aktiv #werbe-bg { 
-    display: none !important; 
-}
-
-#drawer-ebene4 {
-    display: none; 
-    width: 100%;
-    height: 95vh;
-    flex-direction: column;
-    align-items: center;
-    overflow: hidden; /* Verhindert, dass die ganze Seite scrollt */
-}
-
-#jitsi-container {
-    width: 98%;
-    height: 80vh !important; /* Platz für genau EINE Master-Leiste unten */
-    border: 3px solid #ff0000;
-    background-color: #000;
-    flex-shrink: 0;
-}
-
-#jitsi-container iframe {
-    height: 100% !important;
-    width: 100% !important;
-}
-
-/* Der Bereich für die Master-Schublade */
-#sektoren-schubladen {
-    width: 95%;
-    margin-top: 5px;
-    flex-grow: 1;
-    overflow-y: auto; /* Erlaubt das Scrollen NUR innerhalb der Schublade */
-}
-
-/* WICHTIG: Damit die Sektoren IN der Master-Schublade richtig aussehen */
-#inneres-archiv .schublade {
-    border: 1px solid #333;
-    margin-bottom: 5px;
-}</style>
+    </style> 
 </head>
 <body>
 
@@ -519,34 +472,20 @@ function initApp() {
     
     function nextPage() { if (ebene < 4) setEbene(ebene + 1); }
 
-  function toggleDrawer(id) {
-        let target, arrow;
+ function toggleDrawer(id) {
+    let target = (id === 'master') ? document.getElementById('master-archiv-container') : document.getElementById('drawer-' + id);
+    let arrow = (id === 'master') ? document.getElementById('arrow-master') : document.getElementById('arrow-' + id);
+
+    if (target) {
+        // Dieser Befehl schaltet die 'open' Klasse an/aus
+        target.classList.toggle('open');
         
-        // Suche das Ziel basierend darauf, ob es 'master' oder ein Sektor ist
-        if (id === 'master') {
-            target = document.getElementById('master-archiv-container');
-            arrow = document.getElementById('arrow-master');
-        } else {
-            target = document.getElementById('drawer-' + id);
-            arrow = document.getElementById('arrow-' + id);
+        // Das CSS kümmert sich jetzt um den Rest (display: block !important)
+        if (arrow) {
+            arrow.innerText = target.classList.contains('open') ? "▲" : "▼";
         }
-
-        if (target) {
-            // Die Klasse 'open' umschalten für CSS-Animationen
-            target.classList.toggle('open');
-            const istJetztOffen = target.classList.contains('open');
-
-            // Den Inhaltsbereich direkt ansprechen
-            const content = target.querySelector('.schublade-content');
-            if (content) {
-                // ERZWINGE die Anzeige: Wenn Klasse 'open' da ist -> block, sonst none
-                content.style.display = istJetztOffen ? 'block' : 'none';
-                
-                // Falls es die Master-Schublade ist, stellen wir sicher, dass sie Platz hat
-                if (id === 'master' && istJetztOffen) {
-                    content.style.maxHeight = "none"; 
-                }
-            }
+    }
+}
 
             // Pfeil aktualisieren
             if (arrow) {
