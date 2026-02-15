@@ -271,7 +271,29 @@
     };
 
     // HIER SIND DEINE NEUEN NAMEN - SAUBER UND EINZIGARTIG
-   const themen = [
+   function baueSektorenArchiv() {
+    const archiv = document.getElementById('inneres-archiv');
+    if (!archiv) return; 
+
+    // Wir nutzen direkt DEINE bestehende Liste 'themen'
+    archiv.innerHTML = ""; 
+
+    themen.forEach((name, i) => {
+        const notiz = userBackstage.sektorNotizen[i] || ""; 
+
+        archiv.innerHTML += `
+            <div class="schublade" id="sektor-box-${i}" style="border: 1px solid #333; margin-bottom: 5px; background: #050505;">
+                <div class="schublade-header" onclick="toggleSubSchublade(${i})" style="padding: 15px; cursor: pointer; display: flex; justify-content: space-between; background: #001a3d;">
+                    <span>Sektor ${i + 1}: ${name}</span>
+                    <span id="pfeil-${i}">▼</span>
+                </div>
+                <div class="schublade-content" id="content-${i}" style="display:none; padding:15px;">
+                    <textarea id="text-${i}" style="width: 100%; height: 200px; background: #111; color: #fff; border: 1px solid #003d8f; padding: 10px;">${notiz}</textarea>
+                    <button class="save-btn" onclick="speichereSektor(${i})" style="background: #00ff00; color: #000; border: none; padding: 10px; cursor: pointer; font-weight: bold; margin-top: 10px;">DOKUMENT IM BUCKEL SICHERN</button>
+                </div>
+            </div>`;
+    });
+}
         "( von M&M Community )<br>Recht auf Gefühlsvorderung oder KI", 
         "Wie werde ich Mensch", 
         "Glaube an Friede", 
@@ -486,9 +508,11 @@ const DASHBOARD_TRUTH = {
 
     function setEbene(n) {
         ebene = n;
-        if (n === 4) {
-            document.body.classList.add('ebene-4-aktiv');
-        } else {
+      if (n === 4) {
+        document.body.classList.add('ebene-4-aktiv');
+        initJitsi(); // Startet das Video
+        baueSektorenArchiv(); // Baut die 20 Sektoren-Boxen
+    } else {
             document.body.classList.remove('ebene-4-aktiv');
         }
         updateUI();
