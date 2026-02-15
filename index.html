@@ -506,17 +506,21 @@ const DASHBOARD_TRUTH = {
         verbindeMitSektorChat(id);
     }
 
-    function setEbene(n) {
-        ebene = n;
-      if (n === 4) {
+  function setEbene(n) {
+    ebene = n;
+    
+    // Zuerst ALLE Spezial-Klassen vom Body entfernen
+    document.body.classList.remove('ebene-4-aktiv');
+    // Falls du andere Ebenen-Klassen hast, hier auch entfernen (z.B. ebene-3-aktiv)
+
+    if (n === 4) {
         document.body.classList.add('ebene-4-aktiv');
-        initJitsi(); // Startet das Video
-        baueSektorenArchiv(); // Baut die 20 Sektoren-Boxen
-    } else {
-            document.body.classList.remove('ebene-4-aktiv');
-        }
-        updateUI();
-    }
+        initJitsi(); 
+        baueSektorenArchiv();
+    } 
+    
+   updateUI(); // Das hier sorgt dafür...
+}
 
     function updateUI() {
         document.getElementById('chat-area').style.display = (ebene === 3) ? 'flex' : 'none';
