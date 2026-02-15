@@ -403,17 +403,38 @@ const DASHBOARD_TRUTH = {
         verbindeMitSektorChat(id);
     }
 
-    function setEbene(n) { ebene = n; updateUI(); }
+   function setEbene(n) { 
+        ebene = n; 
+        
+        // DER SCHALTER FÜR DEN MAXIMALEN PLATZ
+        if(n === 4) {
+            document.body.classList.add('ebene-4-aktiv');
+        } else {
+            document.body.classList.remove('ebene-4-aktiv');
+        }
+        
+        updateUI(); 
+    }
 
     function updateUI() {
+        // Zeigt Chat nur auf Ebene 3
         document.getElementById('chat-area').style.display = (ebene === 3) ? 'flex' : 'none';
+        
+        // Zeigt Video-Bereich & Schubladen nur auf Ebene 4
         document.getElementById('drawer-ebene4').style.display = (ebene === 4) ? 'flex' : 'none';
+        
+        // Zeigt den Text aus dem Diplom Gottes nur auf Ebene 2
         document.getElementById('main-text').style.display = (ebene === 2) ? 'block' : 'none';
+        
         const ebene4Titel = document.getElementById('ebene4-title-red');
         if(ebene === 4) {
             ebene4Titel.style.display = 'block';
             ebene4Titel.innerText = "SEKTOR KONFERENZ: " + aktuellesThema;
-        } else { ebene4Titel.style.display = 'none'; }
+        } else { 
+            ebene4Titel.style.display = 'none'; 
+        }
+        
+        // Aktualisiert die Navigations-Punkte (Dots)
         for(let i=1; i<=4; i++) {
             const dot = document.getElementById('dot'+i);
             if(dot) dot.classList.toggle('active', i === ebene);
