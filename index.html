@@ -472,18 +472,25 @@ function initApp() {
     
     function nextPage() { if (ebene < 4) setEbene(ebene + 1); }
 
- function toggleDrawer(id) {
-    let target = (id === 'master') ? document.getElementById('master-archiv-container') : document.getElementById('drawer-' + id);
-    let arrow = (id === 'master') ? document.getElementById('arrow-master') : document.getElementById('arrow-' + id);
-
-    if (target) {
-        // Dieser Befehl schaltet die 'open' Klasse an/aus
-        target.classList.toggle('open');
-        
-        // Das CSS kümmert sich jetzt um den Rest (display: block !important)
-        if (arrow) {
-            arrow.innerText = target.classList.contains('open') ? "▲" : "▼";
+function toggleDrawer(id) {
+    try {
+        let target, arrow;
+        if (id === 'master') {
+            target = document.getElementById('master-archiv-container');
+            arrow = document.getElementById('arrow-master');
+        } else {
+            target = document.getElementById('drawer-' + id);
+            arrow = document.getElementById('arrow-' + id);
         }
+
+        if (target) {
+            target.classList.toggle('open');
+            if (arrow) {
+                arrow.innerText = target.classList.contains('open') ? "▲" : "▼";
+            }
+        }
+    } catch (e) {
+        console.error("Fehler in toggleDrawer, Schwein:", e);
     }
 }
 
