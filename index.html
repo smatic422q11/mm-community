@@ -115,7 +115,10 @@
         .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
         .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
     /* --- DER AUFRÄUM-MODUS FÜR EBENE 4 --- */
-
+ebene-4-aktiv #sektoren-schubladen {
+    margin-top: 5px;
+    padding-bottom: 20px; /* Reduziert den Leerraum unten auf Ebene 4 */
+}
 /* Verstecke den weißen Titel und die Werbung komplett auf Ebene 4 */
 .ebene-4-aktiv .page-title-white, 
 .ebene-4-aktiv .tafel-layout,
