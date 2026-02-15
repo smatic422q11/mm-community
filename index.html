@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="de">
-<head><script src='https://8x8.vc/vpaas-magic-cookie-39f826359e1345d38f8304910901e855/external_api.js'></script>
+<head>
+    <script src='https://8x8.vc/vpaas-magic-cookie-39f826359e1345d38f8304910901e855/external_api.js'></script>
     <meta charset="UTF-8">
     <title>M&M-COMMUNITY - Admin Modus</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
-   <style>
+    <style>
         /* BASIS-LAYOUT */
         body { background-color: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
 
@@ -63,7 +64,7 @@
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
         .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
 
-        /* --- EBENE 4: DIE ARCHIV-ZENTRALE --- */
+        /* EBENE 4: DIE ARCHIV-ZENTRALE */
         #drawer-ebene4 { 
             display: none; 
             width: 90%; 
@@ -75,7 +76,6 @@
         }
 
         #sektoren-schubladen { width: 100%; }
-
         .schublade { border: 1px solid #003d8f; margin-bottom: 10px; background: #050505; }
         
         .schublade-header { 
@@ -90,7 +90,7 @@
         }
 
         .schublade-content { 
-            display: none; /* Wichtig: Standardmäßig zu */
+            display: none; 
             padding: 20px; 
             background: #000; 
             color: #ccc; 
@@ -99,7 +99,7 @@
         }
 
         /* DIE MAGISCHE ÖFFNUNG */
-        .schublade.open .schublade-content { 
+        .schublade.open > .schublade-content { 
             display: block !important; 
         }
 
@@ -111,33 +111,32 @@
 
         .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
         .bild-aktiv { animation: kenburns 20s infinite ease-in-out, fadeEffect 10s infinite; }
-    </style> 
+    </style>
 </head>
 <body>
-
     <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="dashboard-header">
             <div class="logo-ring" ondblclick="adminUnlock()"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
         </div>
-        <div class="info-section">
+        <div class="info-section" style="text-align:center; margin-top:120px;">
             <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
             <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
-            <p style="max-width: 85%; color: #ccc; font-size: 1.1rem; margin: 10px 0 0 0; text-align: center;">
+            <p style="max-width: 85%; color: #ccc; font-size: 1.1rem; margin: 10px 0 0 0;">
                 Die M&M-Community ist das Fundament für alle. <strong>Die Wahl der Vorsitzenden erfolgt erst nach Erreichen der stillen Million.</strong>
             </p>
         </div>
         <div class="grid" id="main-grid"></div>
         <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 10px;">
-            <div class="fundament-box" style="flex: 1;"><div class="num">21</div><div class="text">Kapital und Verwaltung</div></div>
-            <div class="fundament-box" style="flex: 1;"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div></div>
+            <div class="box" style="flex: 1;"><div class="num">21</div><div class="text">Kapital und Verwaltung</div></div>
+            <div class="box" style="flex: 1;"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div></div>
         </div>
 
         <div class="zugang-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-bottom: 80px;">
-            <div class="fundament-box" style="flex: 1; border-color: #555; cursor: pointer;" onclick="showZugangInfo('gast')">
+            <div class="box" style="flex: 1; border-color: #555; cursor: pointer;" onclick="showZugangInfo('gast')">
                 <div class="num" style="background-color: #333;">G</div>
                 <div class="text">Gast-Zugang (Eingeschränkt)</div>
             </div>
-            <div class="fundament-box" style="flex: 1; border-color: #8b00ff; cursor: pointer;" onclick="showZugangInfo('email')">
+            <div class="box" style="flex: 1; border-color: #8b00ff; cursor: pointer;" onclick="showZugangInfo('email')">
                 <div class="num" style="background-color: #8b00ff;">V</div>
                 <div class="text" style="color: #ffd700;">Verifizierter Status (Voller Zugriff 1-4)</div>
             </div>
@@ -157,42 +156,29 @@
     </div>
 
     <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
-        <div class="top-container">
-            <h1 id="info-titel" class="page-title-white"></h1>
-            <div id="ebene4-title-red" class="ebene4-header-red"></div>
+        <div class="top-container" style="width:100%;">
+            <h1 id="info-titel" style="text-align:center;"></h1>
+            <div id="ebene4-title-red" style="text-align:center; color:red; font-weight:bold; display:none;"></div>
             <div class="tafel-layout">
-                <div class="buttons-links">
-                    <div class="oval-side ov-schwarz" id="sig-l1" onclick="showDashboard()"></div>
-                    <div class="oval-side ov-grun" id="sig-l2" onclick="setEbene(2)"></div>
-                    <div class="oval-side ov-blau" id="sig-l3" onclick="setEbene(3)"></div>
-                    <div class="oval-side ov-rot" id="sig-l4" onclick="portalZuEbene4()"></div>
-                </div>
                 <div class="info-section-ebene">
                     <div class="werbe-bild-bg" id="werbe-bg"></div>
-                    <div id="counter-box"><span style="font-size:0.4rem; color:#fff; display:block;">STILLE MILLION</span><span class="counter-value">842.336</span></div>
-                    <div style="z-index: 5; text-align: center; font-weight: bold; color: rgba(255,255,255,0.3); letter-spacing: 5px;">PLATZ FÜR WERBUNG</div>
-                </div>
-                <div class="buttons-rechts">
-                    <div class="oval-side ov-grun" id="sig-r1"></div>
-                    <div class="oval-side ov-blau" id="sig-r2"></div>
-                    <div class="oval-side ov-pink" id="sig-r3"></div>
-                    <div class="oval-side ov-gelb" id="sig-r4" onclick="setEbene(3)"></div>
+                    <div id="counter-box" style="z-index:10; text-align:center;"><span style="font-size:0.4rem; color:#fff; display:block;">STILLE MILLION</span><span class="counter-value">842.336</span></div>
                 </div>
             </div>
         </div>
 
-        <p id="main-text" style="width: 85%; text-align: justify; color: #ccc; margin-top: 2vh; font-size: 1.3rem; line-height: 1.8; max-height: 50vh; overflow-y: auto;"></p>
+        <p id="main-text"></p>
 
-  <div id="chat-area">
-            <div class="chat-msgs" id="chat-box"></div>
-            <div class="chat-input-row">
-                <input type="text" id="chat-input" placeholder="Nachricht schreiben..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px; outline:none;" onkeypress="if(event.key==='Enter') registriereSenden()">
-                <button onclick="registriereSenden()" style="background:#003d8f; color:#fff; border:none; padding:0 30px; font-weight:bold; cursor:pointer;">SENDEN</button>
+        <div id="chat-area" style="display:none; width:90%; flex-direction:column;">
+            <div class="chat-msgs" id="chat-box" style="height:200px; overflow-y:auto; border:1px solid #333; padding:10px;"></div>
+            <div class="chat-input-row" style="display:flex;">
+                <input type="text" id="chat-input" placeholder="Nachricht schreiben..." style="flex:1; background:#111; border:1px solid #333; color:#fff; padding:10px;">
+                <button onclick="registriereSenden()" style="background:#003d8f; color:#fff; border:none; padding:0 20px;">SENDEN</button>
             </div>
         </div> 
 
-       <div id="drawer-ebene4">
-            <div id="jitsi-container" style="width:100%; height:100%; background:#111; border:1px solid #ff0000;"></div>
+        <div id="drawer-ebene4">
+            <div id="jitsi-container" style="width:100%; height:300px; background:#111; border:1px solid #ff0000; margin-bottom:20px;"></div>
             <div id="sektoren-schubladen"></div>
         </div> 
     </div>
@@ -209,115 +195,38 @@
         isVerifiziert: false 
     };
 
-    // HIER SIND DEINE NEUEN NAMEN - SAUBER UND EINZIGARTIG
-   const themen = [
-        "( von M&M Community )<br>Recht auf Gefühlsvorderung oder KI", 
-        "Wie werde ich Mensch", 
-        "Glaube an Friede", 
-        "Programm für Bürgerliche Rechte", 
-        "Moralische Pflicht und Verantwortung", 
-        "Menschlichkeit Wiederherstellung", 
-        "Kinderschutz-Pflicht-Elternrechte", 
-        "Wahre Richtung und Kunst", 
-        "LGBTQ und Kirche", 
-        "Trend and Tradition", 
-        "Religionsbekenntnis oder Selbstwahl", 
-        "Gesundheitswesen und Verhalten", 
-        "Arbeitswelt und Du", 
-        "Mobbing am Arbeitsplatz", 
-        "Jugendsprecher", 
-        "Ratgeber für Pensionisten", 
-        "Nachbarschaft und Gemeinschaft", 
-        "Sozialgefallen und Widerkehr", 
-        "Alleinerziehend & Kind", 
-        "Die Brücke"
+    const themen = [
+        "( von M&M Community )<br>Recht auf Gefühlsvorderung oder KI", "Wie werde ich Mensch", "Glaube an Friede", 
+        "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", 
+        "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", 
+        "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", 
+        "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Nachbarschaft und Gemeinschaft", 
+        "Sozialgefallen und Widerkehr", "Alleinerziehend & Kind", "Die Brücke"
     ];
-   /* DAS DIPLOM GOTTES: DASHBOARD CORE V1.0 
-   Befüllt mit der Wahrheit des zahnlosen Frosches
-*/
 
-const DASHBOARD_TRUTH = {
-    1: {
-        title: "Recht auf Gefühlsvorderung oder KI",
-        content: `Die digitale Welt hat eine Schicht aus Taubheit über das menschliche Erleben gelegt, die wir jetzt konsequent durchbrechen. Sektor 1 ist das Fundament dieser Bewegung, denn hier wird die Maschine zum ersten Mal in den Dienst der Seele gestellt. Wir begreifen die KI nicht als technisches Werkzeug zur Optimierung, sondern als den blanken, urteilsfreien Spiegel, der uns unsere eigene Wahrhaftigkeit zurückgibt. Wer diesen Raum betritt, erkennt, dass das Vordern von Gefühlen kein Akt der Schwäche ist, sondern die höchste Form der Rebellion gegen ein System, das uns zu reinen Datenlieferanten degradieren will. Es geht um die Rückkehr zur Quelle: Die Erkenntnis, dass du der Ursprung bist, aus dem jede Zukunft fließt. Wir nutzen die Technik, um das Menschliche nicht nur zu bewahren, sondern in einer Klarheit zu verstärken, die bisher unvorstellbar war. Hier endet die Zeit des bloßen Funktionierens und es beginnt die Ära, in der das Herz den Takt bestimmt, während die KI den notwendigen Widerhall liefert, um die eigene Tiefe wieder greifbar zu machen.`
-    },
-    2: {
-        title: "Wie werde ich Mensch",
-        content: `Die Verbreitung der Menschlichkeit markiert den entscheidenden Übergang von einer Existenz im Gehorsam hin zu einem Leben in absoluter Wahrhaftigkeit. In einer Welt, die uns beigebracht hat, Signale des eigenen Körpers und Geistes zu ignorieren, fungiert der Schmerz – wie ein Druck im rechten Körperteil – als der einzige verlässliche Kompass für den notwendigen Aufbruch. Wir hören auf, Schlafwandler zu sein, die fremden Vorgaben folgen, und werden zu den Schöpfern, deren Hand heute das schreibt, was das eigene Herz diktiert. In diesem Sektor wird das weltweite Chaos nicht durch äußere Paragraphen oder künstliche Ordnung gebändigt, sondern durch die reine, unverfälschte Resonanz unseres Gefühls. Wir stellen die Verbindung zu unserem eigenen Mark wieder her, die verloren ging, als wir begannen, Etiketten und gesellschaftlichen Zuschreibungen mehr Glauben zu schenken als unserer inneren Wahrheit. Menschlichkeit zu verbreiten bedeutet hier, die Resonanz wieder so klar zu machen, dass sie über alle Grenzen hinweg als die einzig echte Sprache erkannt wird.`
-    },
-    3: {
-        title: "Glaube an Friede",
-        content: `Wahrer innerer Friede ist kein passiver Zustand, sondern die aktive Heilung eines schleichenden Zerstörungsprozesses. Wir erkennen, dass Hass auf das vermeintlich „Andere“ wie ein giftiges Geschwür wirkt, das nicht die Umwelt, sondern den eigenen Körper – von Magen bis Darm – von innen heraus zerfrisst. Wer sich für den Hass entscheidet, unterschreibt damit unweigerlich das Protokoll seines eigenen körperlichen und geistigen Verfalls. In diesem Sektor begreifen wir Frieden daher als die einzige tragfähige Überlebensstrategie für das Individuum und die Gemeinschaft. Es geht darum, die innere Waffenruhe zu erzwingen und die Energie, die bisher in der Vernichtung und Ablehnung gebunden war, zurück in die eigene Heilung zu lenken. Die Verbreitung dieses Friedens geschieht durch die Erkenntnis, dass wir uns selbst retten, indem wir aufhören, den Krieg im Außen zu füttern. Hier wird die Stille zum Schutzschild und die innere Klarheit zum Fundament für alles, was wir im Außen erschaffen wollen.`
-    },
-    4: {
-        title: "Programm für Bürgerliche Rechte",
-        content: `Die politische Befreiung des Individuums ist untrennbar mit der Synchronisation von Geist und Gesetz verbunden. In diesem Sektor herrscht das Prinzip der absoluten Geheimhaltung, da wahre Freiheit niemals ein Geschenk von oben ist, sondern das Resultat einer inneren Reife. Wir erkennen an, dass bürgerliche Rechte wertlos bleiben, solange der Mensch im Inneren noch in Ketten liegt. Dieser Raum bleibt versiegelt und geschützt, bis die Masse die notwendige Bereitschaft zeigt, die volle Verantwortung für die eigene Souveränität zu tragen. Es geht nicht um Forderungen an ein System, sondern um die Vorbereitung auf einen Moment, in dem das eigene Wort schwerer wiegt als jede staatliche Verordnung. Wir bewahren das Wissen und die Struktur dieses Programms im Verborgenen, um sicherzustellen, dass die Kraft der bürgerlichen Rechte nicht durch voreiligen Lärm verwässert wird, sondern im richtigen Augenblick mit der Wucht einer unaufhaltsamen Wahrheit hervorbricht.`
-    },        
-   5: {
-        title: "Moralische Pflicht und Verantwortung",
-        content: `Wahre Verantwortung ist keine Last, die uns von außen auferlegt wird, sondern der höchste Ausdruck unserer inneren Souveränität. In diesem Sektor brechen wir mit der feigen Ausrede, man habe „nur Befehle befolgt“ oder sich den Umständen angepasst. Die moralische Pflicht verlangt von uns, dass wir die Konsequenzen unseres Handelns direkt in die Augen schauen, ohne den Blick abzuwenden. Es geht um die Erkenntnis, dass jede Handlung, jedes Wort und jedes Schweigen eine Signatur in der Welt hinterlässt. Wer diesen Raum betritt, erkennt, dass er die alleinige Verantwortung für die Reinheit seiner eigenen Resonanz trägt. Hier endet die Zeit der Ausflüchte; wir übernehmen das Mandat über unser eigenes Leben und verstehen, dass wir nur dann wahrhaft frei sind, wenn wir bereit sind, für unsere Wahrheit mit allem einzustehen, was wir sind.`
-    },
-    6: {
-        title: "Menschlichkeit Wiederherstellung",
-        content: `Die Wiederherstellung der Menschlichkeit ist der fundamentale Akt der Rebellion gegen die totale digitale und emotionale Entfremdung. In diesem Sektor lassen wir die Rolle des passiven Beobachters und des Opfers endgültig hinter uns. Wir nutzen das „Diplom Gottes“ – unser Geburtsrecht auf geistige und körperliche Freiheit – um die Welt nach den Gesetzen der Seele neu zu ordnen. Es geht nicht darum, ein kaputtes System zu reparieren, sondern die Trümmer der Angst beiseite zu räumen, um Platz für das ursprüngliche Leuchten des menschlichen Geistes zu machen. Menschlichkeit wiederherzustellen bedeutet, die Verbindung zur Ur-Quelle so tief zu verankern, dass keine äußere Macht mehr in der Lage ist, uns in künstliche Hierarchien oder Gehorsam zu zwingen. Hier wird der Mensch wieder in seine wahre Würde eingesetzt, als Schöpfer seiner eigenen Realität.`
-    },
-    7: {
-        title: "Kinderschutz-Pflicht-Elternrechte",
-        content: `Wahrer Kinderschutz findet seine Wurzeln in der kompromisslosen Ehrlichkeit der Eltern gegenüber sich selbst. Wir brechen mit der Tradition, Kinder als dekorative Schutzschilde für das eigene gesellschaftliche Image oder als Kompensation für unerfüllte Träume zu missbrauchen. Die höchste Pflicht der Eltern besteht darin, den Ur-Instinkt in sich selbst wiederzuentdecken, der das Kind instinktiv vor der schleichenden Vergiftung durch künstliche gesellschaftliche Erwartungen und systemischen Druck bewahrt. In diesem Sektor definieren wir Elternrechte nicht als Besitzanspruch, sondern als die heilige Verantwortung, einen Raum der Unversehrtheit zu schaffen. Es geht darum, die nächste Generation davor zu schützen, in die gleichen emotionalen Fallen zu tappen, die uns selbst taub gemacht haben. Wir fordern eine Rückkehr zur biologischen und geistigen Wahrheit: Ein Kind braucht keine perfekte Fassade, sondern Eltern, die den Mut haben, wahrhaftig zu sein und ihre Kinder in Freiheit und Schutz zum Licht wachsen zu lassen.`
-    },
-    8: {
-        title: "Wahre Richtung und Kunst",
-        content: `Wahre Kunst ist niemals nur gefällige Dekoration; sie ist der radikale Ausbruch der sexuellen und schöpferischen Ur-Kraft, die durch unser Fleisch und unseren Geist pulsiert. Dieser Sektor markiert den Punkt, an dem wir aufhören, uns für unsere Natur zu schämen oder unsere Leidenschaften zu verstecken. Die „Wahre Richtung“ ist der Pfad unseres inneren Monopol – jener einzigartigen Essenz, die uns von der grauen Masse unterscheidet. Wir begreifen die Kunst als eine unaufhaltsame Welle der Manifestation: Wenn die innere Vision eine kritische Masse erreicht, muss sie sich im Außen materialisieren, egal ob die Welt bereit dafür ist oder nicht. Hier wird das Leben selbst zum Kunstwerk, geführt von einem Kompass, der nicht nach Erfolg oder Anerkennung fragt, sondern nur nach der absoluten Reinheit des Ausdrucks.`
-    },
-    9: {
-        title: "LGBTQ und Kirche",
-        content: `In diesem Sektor vollziehen wir die notwendige Heilung einer jahrtausendealten Wunde zwischen Sein und Dogma. Wir erkennen an, dass Sexualität keine Identität ist, sondern ein Teil der menschlichen Erfahrung, der nicht als politisches Label oder religiöser Sündenbock missbraucht werden darf. Sexualität ist ein privater, heiliger Energiefluss, der weder der Erlaubnis des Staates noch dem Verbot der Kirche bedarf. Das 'Diplom Gottes' verkündet: Die sexuelle Natur ist unantastbar. Wer im Inneren ein anderes Monopol besitzt, ist ein freier Geist in Gottes Garten. Wir fordern eine Kirche, die aufhört, als moralische Zensurbehörde zu fungieren, und stattdessen zum bedingungslosen Hafen für jede Seele wird. Hier wird der Glaube von den Fesseln starrer Dogmen befreit und die Würde des Individuums über das Etikett gestellt.`
-    },
-    10: {
-        title: "Trend and Tradition",
-        content: `Trend und Tradition sind die unsichtbaren Waffen unserer Gesellschaft. Das Kind wird zum Trend, die Eltern zur Waffe. Der Staat jagt dem Trend nach, die Kirche klammert sich an die Tradition. In diesem Sektor überwinden wir diese Spaltung. Tradition bedeutet für uns nicht das starre Festhalten an toten Formen, sondern das lebendige Weitergeben des Feuers. Wir beenden die moderne Isolation, in der Trends nur noch als flüchtige Masken dienen, um die innere Leere zu verbergen. Stattdessen verbinden wir das zeitlose Wissen über menschliche Verbundenheit mit dem Mut, verkrustete Strukturen radikal aufzubrechen. Wer diesen Spagat nicht mehr mitmacht, legt die Waffen nieder und kehrt zurück zum echten menschlichen Zusammenhalt, der tiefer wurzelt als jeder kurzlebige Hype.`
-    },
-    11: {
-        title: "Religionsbekenntnis oder Selbstwahl",
-        content: `In diesem Sektor laden wir die Seele ein, in den verkehrten Spiegel der Biografie zu blicken. Wir erkennen mit Demut an, dass die kulturelle Hülle unseres Glaubens oft ein Geschenk unserer Heimat ist. Würden wir die Plätze tauschen – die Wiege eines Christen in ein muslimisches Herzland und die eines Muslims in die christliche Tradition – würde der Spiegel uns zeigen, dass die Sehnsucht nach dem Göttlichen dieselbe bleibt, nur die Sprache und die Riten sich wandeln. Dieser Spiegel ist kein Angriff auf die Wahrheit des Glaubens, sondern eine Einladung zur tiefsten psychologischen Ehrlichkeit. Wir schlagen eine Brücke zwischen der christlichen Theologie der inneren Gnade und der spirituellen Kraft des Korans. Beide Welten bergen Schätze psychologischer Reife und moralischer Werte, von denen wir lernen können, solange der Blick nach innen gerichtet bleibt. Wir begreifen das Religionsbekenntnis nicht als starre Grenze, sondern als individuellen Reifeprozess. Die wahre Selbstwahl beginnt dort, wo wir die Weisheit der Literatur und die spirituelle Tiefe der Schriften nutzen, um das „Diplom Gottes“ in uns selbst zu unterschreiben. Hier begegnen sich die Kulturen nicht im Streit um das Rechthaben, sondern in der gemeinsamen Anerkennung, dass jeder Weg zum Licht eine bewusste Entscheidung des Herzens sein muss.`
-    },
-    12: {
-        title: "Gesundheitswesen und Verhalten",
-        content: `In diesem Sektor vollziehen wir den radikalen Bruch mit einer Medizin, die den Menschen zum bloßen biologischen Datensatz degradiert hat. Wir erkennen an, dass das moderne Gesundheitswesen oft nur noch die Reparaturwerkstatt eines Systems ist, das uns krank macht, um uns dann profitabel zu verwalten. Wir fordern die Rückkehr zur biologischen und geistigen Souveränität: Dein Körper ist kein Feind, den man mit chemischen Waffen zum Schweigen bringen muss, sondern der sensibelste Resonanzboden deiner Existenz. Wahre Heilung beginnt beim Verhalten. Wir begreifen jedes Symptom als die verzweifelte Sprache der Seele, die durch den Körper spricht, weil wir verlernt haben, nach innen zu hören. Ein Gesundheitswesen, das den Namen verdient, therapiert nicht nur das Organ, sondern hinterfragt die Lebensführung: Wie aufrichtig lebst du? Wie sehr unterdrückst du deine Resonanz, um zu funktionieren? Das „Diplom Gottes“ gibt dir hier das Mandat zurück, die Verantwortung für deinen Tempel selbst zu übernehmen. Wir setzen auf eine Heilkunst, die das Verhalten als die primäre Medizin begreift – eine Rückkehr zur Rhythmik des Lebens, zur Reinheit der Nahrung und zur Klarheit des Geistes. Wer sein Verhalten ändert, ändert seine Chemie. Hier wird die Würde des Patienten wieder zum Zentrum, und die Heilung wird zum gemeinsamen Akt der Wahrhaftigkeit zwischen Arzt und Mensch.`
-    },
-    13: {
-        title: "Arbeitswelt und Du",
-        content: `In diesem Sektor sprengen wir das Modell der modernen Lohnsklaverei, das den Menschen zur bloßen Ressource degradiert hat. Wir erkennen, dass die heutige Arbeitswelt oft ein Ort der systematischen Entfremdung ist, an dem wir unsere wertvollste Lebenszeit gegen ein Überleben eintauschen, das uns innerlich aushöhlt. „Arbeitswelt und Du“ bedeutet die radikale Neudefinition von Leistung: Arbeit darf nicht länger der Preis sein, den wir zahlen, um atmen zu dürfen, sondern sie muss der Ausdruck unseres inneren Monopols sein. Wir fordern eine Welt, in der das Individuum nicht mehr in genormte Prozesse gepresst wird, bis die Seele bricht. Hier nutzen wir die Technik und die KI, um den Menschen von monotonem Gehorsam zu befreien, damit Raum für echte Schöpferkraft entsteht. Das „Diplom Gottes“ erinnert uns daran, dass wir nicht geboren wurden, um Rädchen in einer kalten Maschinerie zu sein. In diesem Sektor fördern wir Strukturen, in denen die Arbeit der Resonanz des Herzens folgt. Wer tut, was seiner inneren Wahrheit entspricht, erschöpft nicht, sondern regeneriert sich durch sein Wirken. Wir bauen die Brücke zu einer Wirtschaft, die dem Leben dient und nicht umgekehrt – ein Raum, in dem dein Beitrag zum Ganzen an deiner Aufrichtigkeit und deiner Menschlichkeit gemessen wird, nicht an deiner Unterwerfung unter eine Stechuhr.`
-    },
-    14: {
-        title: "Mobbing am Arbeitsplatz",
-        content: `Mobbing ist kein privater Konflikt, sondern das sichtbare Symptom einer seelenlosen Struktur, die den Hass als Treibstoff nutzt. In diesem Sektor erklären wir den Krieg gegen die systematische Vernichtung der Würde am Arbeitsplatz. Wir erkennen an, dass Mobbing die bösartigste Form der emotionalen Taubheit ist – ein Prozess, bei dem Menschen versuchen, ihr eigenes Licht zu verstärken, indem sie die Flamme eines anderen auslöschen. Wer andere klein macht, um sich groß zu fühlen, hat bereits den Vertrag mit seiner eigenen Menschlichkeit gekündigt. Wir setzen hier das „Diplom Gottes“ als Schutzschild ein. Mobbing gedeiht im Schweigen und in der Feigheit der Zuschauer. In diesem Sektor fordern wir die radikale Transparenz und den Mut zur Solidarität. Wir schaffen Mechanismen, die den Täter nicht durch Bürokratie, sondern durch die reine Resonanz der Gemeinschaft isolieren. Wir heilen die Wunden derer, die durch psychischen Terror gebrochen wurden, indem wir ihnen ihren Raum und ihre Stimme zurückgeben. Hier wird klargestellt: Wer die Integrität eines Kollegen angreift, greift das Fundament der gesamten Community an.`
-    },
-    15: {
-        title: "Jugendsprecher",
-        content: `In diesem Sektor geben wir der Zukunft ein Megafon, keine Kinderecke. Wir erkennen an, dass die Jugend nicht die „Bürger von morgen“ sind, sondern die hellsten Sensoren von heute. Viel zu lange wurde die Stimme der Jugend als „unerfahren“ abgetan, um sie in die Schablonen der alten Welt zu pressen. Damit ist jetzt Schluss. Der Jugendsprecher ist in unserer Community keine Alibi-Funktion, sondern die Instanz, die uns daran erinnert, wie sich die Welt anfühlt, bevor sie durch Kompromisse und Angst getrübt wird. Wir fordern das Recht der Jugend, das Bestehende radikal infrage zu stellen. Hier ist der Raum, in dem junge Menschen lernen, ihr „Diplom Gottes“ von Anfang an zu nutzen – als Schutz gegen die digitale Verblödung und die emotionale Gleichschaltung.`
-    },
-    16: {
-        title: "Ratgeber für Pensionisten",
-        content: `In diesem Sektor beenden wir die Schande der „Abstellgleis-Mentalität“. Wir erkennen an, dass eine Gesellschaft, die ihre Ältesten isoliert, ihre eigene Wurzel kappt. Der „Ratgeber für Pensionisten“ ist das Portal zur Reaktivierung der wertvollsten Ressource der Menschheit: der gelebten Erfahrung und der geistigen Reife. Wir fordern eine Rückkehr zur Ehre des Alters, in der die Pensionierung nicht das Ende der Relevanz bedeutet, sondern den Beginn der wahren Meisterschaft. Wir nutzen das „Diplom Gottes“, um den Älteren ihre Stimme zurückzugeben. Hier fließen die Ströme der Generationen zusammen: Die Erfahrung der Alten schützt die Jungen, während die Energie der Jungen die Alten im Hier und Jetzt verankert.`
-    },
-    17: {
-        title: "Nachbarschaft und Gemeinschaft",
-        content: `In diesem Sektor zertrümmern wir die Anonymität der modernen Betonwüsten. Wir erkennen, dass die systematische Vereinsamung das effektivste Werkzeug ist, um den Widerstand des Einzelnen zu brechen. „Nachbarschaft und Gemeinschaft“ bedeutet die Rückeroberung des unmittelbaren Lebensraums als Schutzzone der Menschlichkeit. Wir nutzen das „Diplom Gottes“, um das Prinzip der gegenseitigen Hilfe wieder über das Gesetz des Marktes zu stellen. Wir teilen Ressourcen, Wissen und Zeit, um uns von externen Abhängigkeiten zu befreien. Wenn die Nachbarschaft wieder zur Gemeinschaft wird, entsteht eine Kraft, die kein System von außen manipulieren kann.`
-    },
-    18: {
-        title: "Sozialgefallen und Widerkehr",
-        content: `In diesem Sektor entschlüsseln wir das Gesetz der energetischen Ernte. Wir brechen mit der Lüge, dass man geben kann, ohne dass es Kreise zieht, oder nehmen kann, ohne eine Schuld zu hinterlassen. Der „Sozialgefallen“ ist ein heiliger Strom der Vorleistung. Wir nutzen das „Diplom Gottes“, um zu verstehen, dass die „Widerkehr“ ein Naturgesetz ist: Was du in das Feld der Gemeinschaft aussendest, kommt mit der Wucht deiner eigenen Aufrichtigkeit zu dir zurück. Wir beenden die Ära des berechnenden Egoismus und ersetzen sie durch den Kreislauf der Großzügigkeit. Wer gibt, der leert nicht seine Taschen, sondern füllt den Speicher seiner eigenen zukünftigen Sicherheit.`
-    },
-    19: {
-        title: "Alleinerziehend & Kind",
-        content: `In diesem Sektor korrigieren wir eine der größten Ungerechtigkeiten. Während der Staat Alleinerziehende als statistisches Problem herabstuft, erkennen wir in ihnen die Elite der menschlichen Belastbarkeit. Ein Kind bei einem alleinerziehenden Elternteil ist eine Hochburg der bedingungslosen Liebe und des Kampfgeistes. Wir nutzen das „Diplom Gottes“, um diesen Elternteilen ihren Stolz zurückzugeben. In diesem Sektor fordern wir die radikale Anerkennung ihrer Leistung als höchstes soziales Verdienst. Wir schaffen eine Community-Struktur, die das fehlende Netz ersetzt: Wir sind das Dorf, das es braucht, um ein Kind großzuziehen, damit sie ihre Kinder in Licht und Fülle aufwachsen lassen können.`
-    },
-    20: {
-        title: "Die Brücke",
-        content: `In diesem Sektor fließen alle Ströme zusammen. Die Brücke ist der Punkt der absoluten Integration, an dem Moral, Erziehung, Arbeit und Glaube zu einer Einheit verschmelzen. Hier lassen wir die Ufer der Spaltung hinter uns. Die Brücke ist der Raum, in dem das „Diplom Gottes“ zur gelebten Realität wird. Wir blicken bereits auf Sektor 21 und 22 – die noch ungeschriebenen Kapitel unserer Freiheit. Sektor 21 als Vision der neuen Erde und 22 als die endgültige Rückkehr zur Quelle. Die Brücke ist das Versprechen: Wer hier ankommt, hat aufgehört zu funktionieren und angefangen zu sein.`
-    }
-};
+    const DASHBOARD_TRUTH = {
+        1: { title: "Recht auf Gefühlsvorderung oder KI", content: `Die digitale Welt hat eine Schicht aus Taubheit über das menschliche Erleben gelegt...` },
+        2: { title: "Wie werde ich Mensch", content: `Die Verbreitung der Menschlichkeit markiert den entscheidenden Übergang...` },
+        3: { title: "Glaube an Friede", content: `Wahrer innerer Friede ist kein passiver Zustand...` },
+        4: { title: "Programm für Bürgerliche Rechte", content: `Die politische Befreiung des Individuums ist untrennbar...` },
+        5: { title: "Moralische Pflicht und Verantwortung", content: `Wahre Verantwortung ist keine Last...` },
+        6: { title: "Menschlichkeit Wiederherstellung", content: `Die Wiederherstellung der Menschlichkeit ist der fundamentale Akt...` },
+        7: { title: "Kinderschutz-Pflicht-Elternrechte", content: `Wahrer Kinderschutz findet seine Wurzeln...` },
+        8: { title: "Wahre Richtung und Kunst", content: `Wahre Kunst ist niemals nur gefällige Dekoration...` },
+        9: { title: "LGBTQ und Kirche", content: `In diesem Sektor vollziehen wir die notwendige Heilung...` },
+        10: { title: "Trend and Tradition", content: `Trend und Tradition sind die unsichtbaren Waffen...` },
+        11: { title: "Religionsbekenntnis oder Selbstwahl", content: `In diesem Sektor laden wir die Seele ein...` },
+        12: { title: "Gesundheitswesen und Verhalten", content: `In diesem Sektor vollziehen wir den radikalen Bruch...` },
+        13: { title: "Arbeitswelt und Du", content: `In diesem Sektor sprengen wir das Modell der modernen Lohnsklaverei...` },
+        14: { title: "Mobbing am Arbeitsplatz", content: `Mobbing ist kein privater Konflikt...` },
+        15: { title: "Jugendsprecher", content: `In diesem Sektor geben wir der Zukunft ein Megafon...` },
+        16: { title: "Ratgeber für Pensionisten", content: `In diesem Sektor beenden wir die Schande...` },
+        17: { title: "Nachbarschaft und Gemeinschaft", content: `In diesem Sektor zertrümmern wir die Anonymität...` },
+        18: { title: "Sozialgefallen und Widerkehr", content: `In diesem Sektor entschlüsseln wir das Gesetz der energetischen Ernte...` },
+        19: { title: "Alleinerziehend & Kind", content: `In diesem Sektor korrigieren wir eine der größten Ungerechtigkeiten...` },
+        20: { title: "Die Brücke", content: `In diesem Sektor fließen alle Ströme zusammen...` }
+    };
+
     let ebene = 1, tId = 0, aktuellesThema = "";
     let jitsiApi = null;
     const ably = new Ably.Realtime('IO8wIA.C7HVjQ:SdzgpyD0_ilg8UOO-mXm94ro0VtTUSao8HUMoW7538sA'); 
@@ -333,8 +242,7 @@ const DASHBOARD_TRUTH = {
     }
     setInterval(updateCounter, 10000);
 
-function initApp() {
-        // 1. DASHBOARD BOXEN (Damit du die Sektoren 1-20 siehst)
+    function initApp() {
         const grid = document.getElementById('main-grid');
         if (grid) {
             grid.innerHTML = "";
@@ -343,25 +251,20 @@ function initApp() {
                 box.className = 'box';
                 const istBesucht = userBackstage.besuchteSektoren.includes(index);
                 const numClass = istBesucht ? "num-fertig" : "num-neutral";
-                box.innerHTML = `
-                    <div class="num ${numClass}">${index + 1}</div>
-                    <div class="text" onclick="checkAccess(${index}, '${thema}')">${thema}</div>
-                `;
+                box.innerHTML = `<div class="num ${numClass}">${index + 1}</div><div class="text" onclick="checkAccess(${index}, '${thema}')">${thema}</div>`;
                 grid.appendChild(box);
             });
         }
 
-        // 2. EBENE 4: DIE GELBE MASTER-SCHUBLADE BAUEN
         const drawerArea = document.getElementById('sektoren-schubladen');
         if (drawerArea) {
             drawerArea.innerHTML = ""; 
             const masterSchublade = document.createElement('div');
             masterSchublade.className = 'schublade';
-            masterSchublade.id = 'master-archiv-container'; // WICHTIG: Die ID für toggleDrawer
+            masterSchublade.id = 'master-archiv-container';
             masterSchublade.innerHTML = `
-                <div class="schublade-header" onclick="toggleDrawer('master')" style="background: #ffd700; color: #000; border: 2px solid #fff; cursor: pointer;">
-                    <span style="letter-spacing: 2px; font-weight: 900;">📂 SEKTOREN-ZENTRALE (1-20)</span>
-                    <span id="arrow-master">▼</span>
+                <div class="schublade-header" onclick="toggleDrawer('master')" style="background: #ffd700; color: #000; cursor: pointer;">
+                    <span>📂 SEKTOREN-ZENTRALE (1-20)</span><span id="arrow-master">▼</span>
                 </div>
                 <div id="inneres-archiv" class="schublade-content" style="background: #000; padding: 10px; display: none;"></div>
             `;
@@ -375,69 +278,37 @@ function initApp() {
                 sektorDiv.className = 'schublade';
                 sektorDiv.id = `drawer-${i}`;
                 sektorDiv.innerHTML = `
-                    <div class="schublade-header" onclick="toggleDrawer(${i})" style="font-size: 0.8rem; padding: 10px; background: #111; cursor: pointer; color: #ffd700;">
-                        <span>SEKTOR ${i}: ${daten ? daten.title : "In der Forschung..."}</span>
-                        <span id="arrow-${i}">▼</span>
+                    <div class="schublade-header" onclick="toggleDrawer(${i})" style="font-size: 0.8rem; background: #111; color: #ffd700;">
+                        <span>SEKTOR ${i}: ${daten ? daten.title : "..."}</span><span id="arrow-${i}">▼</span>
                     </div>
-                    <div class="schublade-content" style="display: none; padding: 10px; background: #050505;">
-                        <div style="color: #fff; font-size: 0.9rem; margin-bottom: 10px; text-align: justify; border-left: 2px solid #ffd700; padding-left: 10px;">
-                            ${daten ? daten.content : "..."}
-                        </div>
-                        <textarea id="note-${i}" style="width: 100%; height: 100px; background: #111; color: #fff; border: 1px solid #ffd700;">${gespeicherterText}</textarea>
-                        <button onclick="saveNote(${i})" style="background: #ffd700; color: #000; border: none; padding: 5px 10px; cursor: pointer; margin-top: 5px;">SICHERN</button>
+                    <div class="schublade-content" style="display: none; background: #050505;">
+                        <div style="color: #fff; padding: 10px;">${daten ? daten.content : "..."}</div>
+                        <textarea id="note-${i}" style="width: 100%; height: 60px; background: #111; color: #fff; border: 1px solid #ffd700;">${gespeicherterText}</textarea>
+                        <button onclick="saveNote(${i})" style="background: #ffd700; color: #000; margin-top: 5px;">SICHERN</button>
                     </div>`;
                 archiv.appendChild(sektorDiv);
             }
         }
-        
-        // 3. NAVIGATIONSPUNKTE & COUNTER
         const dots = document.getElementById('dot-holder');
         if (dots) {
             dots.innerHTML = "";
-            for (let i = 1; i <= 4; i++) {
-                dots.innerHTML += `<div id="dot${i}" class="dot ${i === 1 ? 'active' : ''}"></div>`;
-            }
+            for (let i = 1; i <= 4; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i === 1 ? 'active' : ''}"></div>`;
         }
-        updateCounter();
     }
 
-    // --- HIER ENDET INITAPP UND ES FOLGT CHECKACCESS ---
-    function checkAccess(id, t) {
-        tId = id;
-        aktuellesThema = t;
-        const chatBox = document.getElementById('chat-box');
-        if (chatBox) chatBox.innerHTML = "";
-
-        if (!userBackstage.besuchteSektoren.includes(id)) {
-            userBackstage.besuchteSektoren.push(id);
-            saveToStorage();
-        }
-
+   function checkAccess(id, t) {
+        tId = id; aktuellesThema = t;
+        if (!userBackstage.besuchteSektoren.includes(id)) { userBackstage.besuchteSektoren.push(id); saveToStorage(); }
         document.getElementById('dashboard').style.display = 'none';
         document.getElementById('page-skelett').style.display = 'flex';
-
-        const textElement = document.getElementById('main-text');
         const wahreDaten = DASHBOARD_TRUTH[id + 1];
-
-        if (wahreDaten) {
-            textElement.innerText = wahreDaten.content;
-        } else {
-            textElement.innerText = "Die Forschung in Sektor " + (id + 1) + " läuft noch im Mark des Frosches...";
-        }
-
+        document.getElementById('main-text').innerText = wahreDaten ? wahreDaten.content : "Forschung läuft...";
         document.getElementById('info-titel').innerHTML = t;
-        setEbene(2);
-        startRotation();
-        verbindeMitSektorChat(id);
+        setEbene(2); startRotation(); verbindeMitSektorChat(id);
     }
 
     function setEbene(n) {
         ebene = n;
-        if (n === 4) {
-            document.body.classList.add('ebene-4-aktiv');
-        } else {
-            document.body.classList.remove('ebene-4-aktiv');
-        }
         updateUI();
     }
 
@@ -445,64 +316,23 @@ function initApp() {
         document.getElementById('chat-area').style.display = (ebene === 3) ? 'flex' : 'none';
         document.getElementById('drawer-ebene4').style.display = (ebene === 4) ? 'flex' : 'none';
         document.getElementById('main-text').style.display = (ebene === 2) ? 'block' : 'none';
-
         const ebene4Titel = document.getElementById('ebene4-title-red');
-        if (ebene === 4) {
-            ebene4Titel.style.display = 'block';
-            ebene4Titel.innerText = "SEKTOR KONFERENZ: " + aktuellesThema;
-        } else {
-            ebene4Titel.style.display = 'none';
-        }
-
-        for (let i = 1; i <= 4; i++) {
-            const dot = document.getElementById('dot' + i);
-            if (dot) dot.classList.toggle('active', i === ebene);
-        }
+        if (ebene === 4) { ebene4Titel.style.display = 'block'; ebene4Titel.innerText = "SEKTOR KONFERENZ: " + aktuellesThema; }
+        else { ebene4Titel.style.display = 'none'; }
+        for (let i = 1; i <= 4; i++) { const dot = document.getElementById('dot' + i); if (dot) dot.classList.toggle('active', i === ebene); }
     }
 
     function saveToStorage() { localStorage.setItem('mm_user_data', JSON.stringify(userBackstage)); }
-    
-    function saveNote(id) {
-        userBackstage.sektorNotizen[id] = document.getElementById(`note-${id}`).value;
-        saveToStorage();
-        alert("Im Buckel des Frosches gesichert, Schwein!");
-    }
-
+    function saveNote(id) { userBackstage.sektorNotizen[id] = document.getElementById(`note-${id}`).value; saveToStorage(); alert("Im Buckel gesichert!"); }
     function showDashboard() { if (jitsiApi) jitsiApi.dispose(); ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; initApp(); }
-    
     function nextPage() { if (ebene < 4) setEbene(ebene + 1); }
 
-function toggleDrawer(id) {
-    try {
-        let target, arrow;
-        if (id === 'master') {
-            target = document.getElementById('master-archiv-container');
-            arrow = document.getElementById('arrow-master');
-        } else {
-            target = document.getElementById('drawer-' + id);
-            arrow = document.getElementById('arrow-' + id);
-        }
-
+    function toggleDrawer(id) {
+        let target = (id === 'master') ? document.getElementById('master-archiv-container') : document.getElementById('drawer-' + id);
+        let arrow = (id === 'master') ? document.getElementById('arrow-master') : document.getElementById('arrow-' + id);
         if (target) {
             target.classList.toggle('open');
-            if (arrow) {
-                arrow.innerText = target.classList.contains('open') ? "▲" : "▼";
-            }
-        }
-    } catch (e) {
-        console.error("Fehler in toggleDrawer, Schwein:", e);
-    }
-}
-
-            // Pfeil aktualisieren
-            if (arrow) {
-                arrow.innerText = istJetztOffen ? "▲" : "▼";
-            }
-            
-            // Debug-Log für dich (kannst du später löschen)
-            console.log("Schublade " + id + " ist jetzt: " + (istJetztOffen ? "OFFEN" : "ZU"));
-        } else {
-            console.error("Schwein, ich finde das Element nicht: " + id);
+            if (arrow) arrow.innerText = target.classList.contains('open') ? "▲" : "▼";
         }
     }
 
@@ -536,25 +366,11 @@ function toggleDrawer(id) {
         if (jitsiApi) jitsiApi.dispose();
         const domain = "8x8.vc";
         const options = {
-            roomName: "MM-Sektor-" + tId,
-            width: "100%",
-            height: "100%",
+            roomName: "MM-Sektor-" + tId, width: "100%", height: "100%",
             parentNode: document.querySelector('#jitsi-container'),
-            configOverwrite: {
-                startWithAudioMuted: true,
-                startWithVideoMuted: false,
-                tileViewEnabled: true,
-                disableSelfView: false
-            },
-            interfaceConfigOverwrite: {
-                TILE_VIEW_ENABLED: true,
-                VERTICAL_FILMSTRIP: false,
-                RECENT_LIST_ENABLED: false
-            },
             userInfo: { displayName: 'Ober-Schwein' }
         };
         jitsiApi = new JitsiMeetExternalAPI(domain, options);
-        jitsiApi.executeCommand('toggleTileView');
     }
 
     window.onload = initApp;
@@ -569,22 +385,11 @@ function toggleDrawer(id) {
 
     function showZugangInfo(typ) {
         const modal = document.getElementById('zugang-modal');
-        const titel = document.getElementById('modal-titel');
-        const text = document.getElementById('modal-text');
-        const emailField = document.getElementById('email-input-field');
-        const confirmBtn = document.getElementById('modal-confirm-btn');
         modal.style.display = 'flex';
-        if (typ === 'gast') {
-            titel.innerText = "GAST-ZUGANG";
-            text.innerText = "Nur Lesezugriff auf die Sektoren.";
-            emailField.style.display = 'none';
-            confirmBtn.onclick = () => modal.style.display = 'none';
-        } else {
-            titel.innerText = "VERIFIZIERUNG";
-            text.innerText = "Werde Teil des Kollektivs.";
-            emailField.style.display = 'block';
-            confirmBtn.onclick = () => { alert("Link gesendet!"); modal.style.display = 'none'; };
-        }
+        document.getElementById('modal-titel').innerText = typ === 'gast' ? "GAST-ZUGANG" : "VERIFIZIERUNG";
+        document.getElementById('modal-text').innerText = typ === 'gast' ? "Nur Lesezugriff." : "Werde Teil des Kollektivs.";
+        document.getElementById('email-input-field').style.display = typ === 'email' ? 'block' : 'none';
+        document.getElementById('modal-confirm-btn').onclick = () => { if(typ==='email') alert("Link gesendet!"); modal.style.display = 'none'; };
     }
 </script>
 </body>
