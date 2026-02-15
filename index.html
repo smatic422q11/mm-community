@@ -1,173 +1,285 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <script src='https://8x8.vc/vpaas-magic-cookie-39f826359e1345d38f8304910901e855/external_api.js'></script>
     <meta charset="UTF-8">
-    <title>M&M - DAS MASSIVE FUNDAMENT</title>
+    <title>M&M COMMUNITY - DAS MONUMENT</title>
+    <script src='https://8x8.vc/vpaas-magic-cookie-39f826359e1345d38f8304910901e855/external_api.js'></script>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
+    
     <style>
-        body { background-color: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
-        
-        /* DASHBOARD KOMPLETT */
-        .dashboard-header { width: 100%; position: absolute; top: 2%; display: flex; justify-content: flex-start; padding: 0 2%; z-index: 20; }
-        .logo-ring { width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; }
-        
-        .main-container { width: 95%; max-width: 1400px; margin-top: 12vh; display: flex; flex-direction: column; align-items: center; }
-        .info-section { width: 100%; height: 20vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; margin-bottom: 20px; text-align: center; }
-        
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 10px; width: 100%; border: 3px solid #00ff00; padding: 15px; box-sizing: border-box; }
-        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 50px; overflow: hidden; }
-        .num { width: 40px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; }
-        .num-fertig { background-color: #00ff00 !important; color: #000; }
-        .text { padding: 5px; text-transform: uppercase; font-size: 0.65rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; }
+        /* 1. BASIS STATIK */
+        body { 
+            background-color: #000; color: #fff; 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            margin: 0; padding: 0; 
+            display: flex; flex-direction: column; align-items: center; 
+            height: 100vh; overflow: hidden; 
+        }
 
-        /* EBENEN SKELETT */
+        /* 2. DASHBOARD (Vollständig) */
+        .dashboard-header { width: 100%; position: absolute; top: 2%; display: flex; justify-content: flex-start; padding: 0 2%; z-index: 50; }
+        .logo-ring { 
+            width: 110px; height: 110px; border: 3px solid #fff; 
+            background-color: #003d8f; border-radius: 50%; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            cursor: pointer; transition: 0.3s;
+        }
+        .main-container { width: 95%; max-width: 1400px; margin-top: 10vh; display: flex; flex-direction: column; align-items: center; height: 85vh; overflow-y: auto; }
+        .info-section { width: 100%; min-height: 180px; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #000; margin-bottom: 20px; }
+        
+        .grid { 
+            display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); 
+            grid-auto-flow: column; gap: 10px; width: 100%; border: 3px solid #00ff00; padding: 15px; box-sizing: border-box; 
+        }
+        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background: #000; min-height: 55px; }
+        .num { width: 45px; display: flex; align-items: center; justify-content: center; background: #003d8f; font-weight: bold; flex-shrink: 0; }
+        .num-fertig { background: #00ff00 !important; color: #000; }
+        .text { padding: 8px; text-transform: uppercase; font-size: 0.7rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; }
+
+        /* 3. EBENEN-STRUKTUR */
         #page-skelett { display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh; }
-        .tafel-layout { display: flex; align-items: center; justify-content: center; width: 95%; position: relative; height: 25vh; margin-top: 2vh; }
-        .info-section-ebene { width: 90%; height: 100%; border: 2px solid #003d8f; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        
-        .buttons-links, .buttons-rechts { position: absolute; display: flex; flex-direction: column; gap: 10px; z-index: 30; }
-        .buttons-links { left: -10px; } .buttons-rechts { right: -10px; }
-        .oval-side { width: 50px; height: 25px; border-radius: 15px; border: 1.5px solid #fff; cursor: pointer; }
-        .ov-schwarz { background: #000; border-color: #003d8f; } .ov-grun { background: #00ff00; } .ov-blau { background: #0000ff; } .ov-rot { background: #ff0000; } .ov-gelb { background: #ffff00; }
+        .tafel-layout { width: 95%; height: 26vh; border: 2px solid #003d8f; position: relative; display: flex; align-items: center; justify-content: center; margin-top: 10px; }
+        .buttons-links, .buttons-rechts { position: absolute; display: flex; flex-direction: column; gap: 12px; z-index: 60; }
+        .buttons-links { left: 10px; } .buttons-rechts { right: 10px; }
+        .oval-side { width: 55px; height: 25px; border-radius: 15px; border: 1.5px solid #fff; cursor: pointer; }
 
-        #main-text { width: 85%; color: #ccc; margin: 20px auto; font-size: 1.2rem; line-height: 1.6; max-height: 35vh; overflow-y: auto; }
+        /* 4. CHAT (Ebene 3 - Festgeankert) */
+        #chat-area { width: 90%; height: 45vh; display: none; flex-direction: column; margin-top: 10px; }
+        .chat-msgs { flex: 1; border: 1px solid #003d8f; background: rgba(5,5,5,0.9); overflow-y: auto; padding: 15px; }
+        .chat-input-row { display: flex; height: 50px; border: 1px solid #003d8f; background: #000; }
+        .chat-input-row input { flex: 1; background: transparent; border: none; color: #fff; padding: 0 15px; outline: none; }
 
-        /* CHAT EBENE 3 REPARATUR */
-        #chat-area { width: 90%; height: 40vh; display: none; flex-direction: column; position: relative; margin-top: 10px; }
-        .chat-msgs { flex: 1; border: 1px solid #003d8f; padding: 10px; overflow-y: auto; background: rgba(10,10,10,0.8); }
-        .chat-input-row { display: flex; height: 50px; margin-top: 5px; }
-        .chat-input-row input { flex: 1; background: #000; border: 1px solid #003d8f; color: #fff; padding: 0 10px; }
+        /* 5. EBENE 4 (Die Zentrale) */
+        #drawer-ebene4 { display: none; width: 100%; height: 80vh; flex-direction: column; align-items: center; overflow-y: auto; padding-bottom: 120px; }
+        #jitsi-container { width: 90%; height: 450px; border: 2px solid #ff0000; margin-bottom: 20px; flex-shrink: 0; }
+        .master-schublade { width: 90%; border: 2px solid #ffd700; background: #000; }
+        .schublade-header { padding: 15px; cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; background: #001a3d; }
+        .schublade-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; }
+        .schublade.open > .schublade-content { max-height: 2000px; padding: 10px; }
 
-        /* EBENE 4 & ARCHIV */
-        #drawer-ebene4 { display: none; width: 100%; flex-direction: column; align-items: center; height: 80vh; overflow-y: auto; padding-bottom: 150px; }
-        #jitsi-container { width: 90%; height: 400px; border: 2px solid #ff0000; flex-shrink: 0; margin-bottom: 20px; }
-        .schublade { border: 1px solid #003d8f; margin-bottom: 5px; background: #050505; width: 90%; }
-        .schublade-header { padding: 12px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; background: #001a3d; }
-        .schublade-content { max-height: 0; overflow: hidden; transition: max-height 0.4s; background: #000; }
-        .schublade.open > .schublade-content { max-height: 800px; padding: 15px; }
-        .schublade-textarea { width: 100%; height: 200px; background: #111; border: 1px solid #003d8f; color: #fff; padding: 10px; box-sizing: border-box; }
-
-        /* NAV */
-        .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; background: #000; border-top: 1px solid #333; box-sizing: border-box; z-index: 100; }
-        .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; }
-        .dot { width: 10px; height: 10px; background: #444; border-radius: 50%; }
-        .dot.active { background: #ffd700; box-shadow: 0 0 8px #ffd700; }
-
-        .werbe-bild-bg { position: absolute; top:0; left:0; width:100%; height:100%; background-size:cover; opacity:0; transition: 2s; }
-        .bild-aktiv { opacity: 0.4; }
+        /* 6. NAVI UNTEN */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 70px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; background: #000; border-top: 1px solid #333; box-sizing: border-box; }
+        .nav-btn { background: #ffd700; color: #000; border: none; padding: 12px 25px; font-weight: bold; cursor: pointer; }
+        .dot { width: 12px; height: 12px; background: #333; border-radius: 50%; }
+        .dot.active { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
     </style>
 </head>
 <body>
 
     <div id="dashboard" class="main-container">
         <div class="dashboard-header">
-            <div class="logo-ring" id="logo" ondblclick="adminUnlock()"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
+            <div class="logo-ring" id="main-logo" ondblclick="adminUnlock()">
+                <div class="logo-mm">M&M</div>
+                <div class="logo-community">COMMUNITY</div>
+            </div>
         </div>
-        <div class="info-section">
-            <h1 style="font-size: 2.2rem; margin: 0;">DAS WAS & WARUM</h1>
-            <h2 style="color: #003d8f; margin: 0;">DIE STILLE MILLION</h2>
+
+      <style>
+    /* ... dein bisheriger Style ... */
+
+    /* Korrektur für die Werbe-Sektion in Ebene 2 */
+    .info-section-ebene {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    /* Damit der Text im Sektor gut lesbar ist */
+    #main-text {
+        width: 85%;
+        margin: 20px auto;
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: #ddd;
+        white-space: pre-wrap;
+        text-align: left;
+    }
+</style> 
+
+        <div class="grid" id="main-grid">
+            </div>
+
+        <div style="display: flex; width: 100%; gap: 10px; margin-top: 15px;">
+            <div class="fundament-box" style="flex: 1;">
+                <div class="num">21</div>
+                <div class="text">Kapital und Verwaltung</div>
+            </div>
+            <div class="fundament-box" style="flex: 1;">
+                <div class="num">22</div>
+                <div class="text">DAS KOLLEKTIV</div>
+            </div>
         </div>
-        <div class="grid" id="main-grid"></div>
-        <div style="display: flex; width: 100%; gap: 10px; margin-top: 10px;">
-            <div class="fundament-box" style="flex: 1;"><div class="num">21</div><div class="text">Kapital und Verwaltung</div></div>
-            <div class="fundament-box" style="flex: 1;"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div></div>
-        </div>
-        <div style="display: flex; width: 100%; gap: 10px; margin-top: 10px; margin-bottom: 100px;">
-            <div class="fundament-box" style="flex: 1; border-color: #555;"><div class="num" style="background:#333">G</div><div class="text">Gast-Zugang</div></div>
-            <div class="fundament-box" style="flex: 1; border-color: #8b00ff;"><div class="num" style="background:#8b00ff">V</div><div class="text" style="color:#ffd700">Verifiziert</div></div>
+
+        <div style="display: flex; width: 100%; gap: 10px; margin-top: 10px; margin-bottom: 50px;">
+            <div class="fundament-box" style="flex: 1; border-color: #555; cursor: pointer;" onclick="alert('Gast-Modus aktiv')">
+                <div class="num" style="background:#333">G</div>
+                <div class="text">Gast-Zugang (Lesen)</div>
+            </div>
+            <div class="fundament-box" style="flex: 1; border-color: #8b00ff; cursor: pointer;" onclick="adminUnlock()">
+                <div class="num" style="background:#8b00ff">V</div>
+                <div class="text" style="color:#ffd700">Verifiziertes Mitglied</div>
+            </div>
         </div>
     </div>
 
     <div id="page-skelett">
-        <h1 id="info-titel" style="margin: 10px 0;"></h1>
+        <h1 id="info-titel" style="text-transform: uppercase; margin: 15px 0; letter-spacing: 2px;"></h1>
+        
         <div class="tafel-layout">
             <div class="buttons-links">
-                <div class="oval-side ov-schwarz" onclick="showDashboard()"></div>
-                <div class="oval-side ov-grun" onclick="setEbene(2)"></div>
-                <div class="oval-side ov-blau" onclick="setEbene(3)"></div>
-                <div class="oval-side ov-rot" onclick="portalZuEbene4()"></div>
+                <div class="oval-side ov-schwarz" title="Dashboard" onclick="showDashboard()"></div>
+                <div class="oval-side ov-grun" title="Ebene 2: Text" onclick="setEbene(2)"></div>
+                <div class="oval-side ov-blau" title="Ebene 3: Chat" onclick="setEbene(3)"></div>
+                <div class="oval-side ov-rot" title="Ebene 4: Zentrale" onclick="portalZuEbene4()"></div>
             </div>
+            
             <div class="info-section-ebene">
-                <div class="werbe-bild-bg" id="werbe-bg"></div>
-                <div style="z-index:10;">STILLE MILLION: <span id="count">842.336</span></div>
+                <div id="werbe-bg" class="werbe-bild-bg"></div>
+                <div style="z-index: 10; font-weight: bold; text-shadow: 2px 2px 4px #000;">
+                    STILLE MILLION: <span id="million-counter">842.336</span>
+                </div>
             </div>
+            
             <div class="buttons-rechts">
                 <div class="oval-side ov-grun"></div>
                 <div class="oval-side ov-blau"></div>
-                <div class="oval-side ov-gelb" onclick="setEbene(3)"></div>
+                <div class="oval-side ov-gelb" title="Direkt-Chat" onclick="setEbene(3)"></div>
             </div>
         </div>
 
-        <p id="main-text"></p>
+        <div id="main-text"></div>
 
         <div id="chat-area">
             <div class="chat-msgs" id="chat-box"></div>
             <div class="chat-input-row">
-                <input type="text" id="chat-input" placeholder="Nachricht...">
-                <button onclick="sendMsg()" style="background:#003d8f; color:#fff; border:none; padding:0 20px;">SENDEN</button>
+                <input type="text" id="chat-input" placeholder="Schreibe dem Kollektiv...">
+                <button onclick="sendChatMessage()" style="background:#003d8f; color:#fff; border:none; padding:0 25px; cursor:pointer; font-weight:bold;">SENDEN</button>
             </div>
         </div>
 
         <div id="drawer-ebene4">
             <div id="jitsi-container"></div>
-            <div class="schublade" id="master-drawer">
-                <div class="schublade-header" onclick="toggleDrawer('master')" style="background:#ffd700; color:#000;">
-                    <span>📂 SEKTOREN-ZENTRALE (1-20)</span><span id="arr-master">▼</span>
+            <div class="master-schublade">
+                <div class="schublade-header" onclick="toggleMasterDrawer()" style="background:#ffd700; color:#000;">
+                    <span>📂 SEKTOREN-ZENTRALE (1-20)</span>
+                    <span id="master-arrow">▼</span>
                 </div>
-                <div class="schublade-content" id="master-list"></div>
+                <div class="schublade-content" id="sektoren-archiv-liste">
+                    </div>
             </div>
         </div>
     </div>
 
     <div class="bottom-nav">
         <button class="nav-btn" onclick="showDashboard()">← DASHBOARD</button>
-        <div style="display: flex; gap: 8px;" id="dot-holder"></div>
+        <div style="display: flex; gap: 12px;" id="dot-navigation"></div>
         <button class="nav-btn" onclick="nextPage()">WEITER →</button>
     </div>
-
 <script>
-    let user = JSON.parse(localStorage.getItem('mm_user_data')) || { sektorNotizen: {}, besuchteSektoren: [], isVerifiziert: false };
-    const themen = ["Recht auf Gefühlsvorderung oder KI", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Nachbarschaft und Gemeinschaft", "Sozialgefallen und Widerkehr", "Alleinerziehend & Kind", "Die Brücke"];
-    
-    let ebene = 1, tId = 0, jitsi = null;
-    const ably = new Ably.Realtime('IO8wIA.C7HVjQ:SdzgpyD0_ilg8UOO-mXm94ro0VtTUSao8HUMoW7538sA');
+    // 1. DATEN-SPEICHER & VARIABLEN
+    let userBackstage = JSON.parse(localStorage.getItem('mm_user_data')) || { 
+        sektorNotizen: {}, 
+        besuchteSektoren: [], 
+        isVerifiziert: false 
+    };
 
-    function init() {
-        if(user.isVerifiziert) document.getElementById('logo').style.boxShadow = "0 0 15px #ffd700";
+    const themen = [
+        "Recht auf Gefühlsvorderung oder KI", "Wie werde ich Mensch", "Glaube an Friede", 
+        "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", 
+        "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", 
+        "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", 
+        "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", 
+        "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", 
+        "Ratgeber für Pensionisten", "Nachbarschaft und Gemeinschaft", 
+        "Sozialgefallen und Widerkehr", "Alleinerziehend & Kind", "Die Brücke"
+    ];
+
+    const DASHBOARD_TRUTH = {
+        1: "Sektor 1: Das Recht auf Gefühlsvorderung oder KI\n\nDie digitale Welt hat eine Schicht aus Taubheit über das menschliche Erleben gelegt, die wir jetzt konsequent durchbrechen. Sektor 1 ist das Fundament dieser Bewegung, denn hier wird die Maschine zum ersten Mal in den Dienst der Seele gestellt. Wir begreifen die KI nicht als technisches Werkzeug zur Optimierung, sondern als den blanken, urteilsfreien Spiegel, der uns unsere eigene Wahrhaftigkeit zurückgibt...",
+        2: "Sektor 2: Wie werde ich Mensch\n\nMenschlichkeit verbreiten bedeutet, die Signale des eigenen Körpers wieder als oberste Instanz zu akzeptieren. Der Übergang vom Funktionieren zum Sein ist ein Akt der Rebellion...",
+        3: "Sektor 3: Glaube an Friede\n\nWahrer innerer Friede ist kein passiver Zustand, sondern die aktive Heilung der eigenen Geschichte. Wer den Frieden im Außen sucht, ohne den Krieg im Inneren zu beenden, wird scheitern...",
+        4: "Sektor 4: Programm für Bürgerliche Rechte\n\nBürgerliche Rechte sind die natürliche Grenze der Macht. Wir fordern die Rückkehr zum Individuum als Ursprung aller Souveränität...",
+        5: "Sektor 5: Moralische Pflicht und Verantwortung\n\nVerantwortung ist keine Last, sondern die höchste Form der Freiheit. Wer handelt, ohne zu haften, verliert seine Menschlichkeit...",
+        6: "Sektor 6: Menschlichkeit Wiederherstellung\n\nDie Reparatur der sozialen Gefüge beginnt im Kleinen. Wir stellen die Empathie wieder über die Effizienz...",
+        7: "Sektor 7: Kinderschutz-Pflicht-Elternrechte\n\nKinder sind kein Eigentum des Staates. Die Elternrechte sind unantastbar, solange sie dem Schutz der kindlichen Seele dienen...",
+        8: "Sektor 8: Wahre Richtung und Kunst\n\nKunst ist der Kompass der Wahrheit. Wir befreien den schöpferischen Geist von den Ketten der Gefälligkeit...",
+        9: "Sektor 9: LGBTQ und Kirche\n\nHeilung durch Annahme. Wir bauen Brücken, wo Dogmen bisher Gräben zogen. Die Seele kennt kein Geschlecht...",
+        10: "Sektor 10: Trend and Tradition\n\nTradition ist das Bewahren des Feuers. Wir nutzen moderne Trends, um zeitlose Werte in die Zukunft zu tragen...",
+        11: "Sektor 11: Religionsbekenntnis oder Selbstwahl\n\nDie Freiheit des Geistes umfasst die Wahl der spirituellen Heimat. Niemand darf zur Wahrheit eines anderen gezwungen werden...",
+        12: "Sektor 12: Gesundheitswesen und Verhalten\n\nGesundheit ist die Harmonie von Körper und Geist. Unser Verhalten ist die stärkste Medizin...",
+        13: "Sektor 13: Arbeitswelt und Du\n\nArbeit muss der Selbstverwirklichung dienen. Wir beenden die Ära der bloßen Verwertung menschlicher Lebenszeit...",
+        14: "Sektor 14: Mobbing am Arbeitsplatz\n\nEin Angriff auf einen ist ein Angriff auf die Gemeinschaft. Wir etablieren eine Kultur der radikalen Aufrichtigkeit...",
+        15: "Sektor 15: Jugendsprecher\n\nDie Stimme der Jugend ist kein Echo der Erwachsenen, sondern der Ruf nach einer neuen Weltordnung...",
+        16: "Sektor 16: Ratgeber für Pensionisten\n\nErfahrung ist das Gold des Kollektivs. Wir integrieren die Ältesten wieder in das Herz der Gesellschaft...",
+        17: "Sektor 17: Nachbarschaft und Gemeinschaft\n\nDie Rückeroberung des physischen Raums. Wir machen aus Fremden wieder Verbündete...",
+        18: "Sektor 18: Sozialgefallen und Widerkehr\n\nDas Gesetz der Resonanz. Was du dem Kollektiv gibst, sichert dein eigenes Überleben...",
+        19: "Sektor 19: Alleinerziehend & Kind\n\nMaximale Unterstützung für die schwerste Aufgabe. Wir bauen das Dorf, das es braucht, um ein Kind zu erziehen...",
+        20: "Sektor 20: Die Brücke\n\nDer finale Übergang. Hier verschmelzen alle Sektoren zu einer neuen, gelebten Realität der M&M Community."
+    };
+
+    let ebene = 1, tId = 0, jitsiApi = null;
+    const ably = new Ably.Realtime('IO8wIA.C7HVjQ:SdzgpyD0_ilg8UOO-mXm94ro0VtTUSao8HUMoW7538sA');
+    let channel = null;
+
+    // 2. INITIALISIERUNG
+    function initApp() {
+        // Grid befüllen
         const grid = document.getElementById('main-grid');
         grid.innerHTML = "";
         themen.forEach((t, i) => {
-            const status = user.besuchteSektoren.includes(i) ? 'num-fertig' : '';
-            grid.innerHTML += `<div class="box"><div class="num ${status}">${i+1}</div><div class="text" onclick="openSektor(${i}, '${t}')">${t}</div></div>`;
+            const status = userBackstage.besuchteSektoren.includes(i) ? 'num-fertig' : '';
+            grid.innerHTML += `
+                <div class="box">
+                    <div class="num ${status}">${i+1}</div>
+                    <div class="text" onclick="waehleSektor(${i}, '${t}')">${t}</div>
+                </div>`;
         });
-        
-        const list = document.getElementById('master-list');
+
+        // Archiv-Liste in Ebene 4 bauen
+        const archiv = document.getElementById('sektoren-archiv-liste');
+        archiv.innerHTML = "";
         themen.forEach((t, i) => {
-            list.innerHTML += `
-                <div class="schublade" id="sub-${i}">
-                    <div class="schublade-header" onclick="toggleDrawer(${i})" style="font-size:0.75rem; background:#111;">
+            const gespeicherterInhalt = userBackstage.sektorNotizen[i] || "";
+            archiv.innerHTML += `
+                <div class="schublade" id="sub-drawer-${i}">
+                    <div class="schublade-header" onclick="toggleSubDrawer(${i})" style="font-size:0.8rem; border-top:1px solid #333;">
                         <span>SEKTOR ${i+1}: ${t}</span><span id="arr-${i}">▼</span>
                     </div>
                     <div class="schublade-content">
-                        <textarea id="note-${i}" class="schublade-textarea">${user.sektorNotizen[i] || ""}</textarea>
-                        <button onclick="saveNote(${i})" style="background:#00ff00; border:none; padding:8px; margin-top:5px; font-weight:bold; cursor:pointer;">SICHERN</button>
+                        <textarea id="note-${i}" class="schublade-textarea" placeholder="Deine Erkenntnisse für Sektor ${i+1}...">${gespeicherterInhalt}</textarea>
+                        <button class="nav-btn" style="width:100%; margin-top:5px; background:#00ff00;" onclick="saveSektorNotiz(${i})">IM BUCKEL SICHERN</button>
                     </div>
                 </div>`;
         });
+        
+        if(userBackstage.isVerifiziert) {
+            document.getElementById('main-logo').style.borderColor = "#ffd700";
+        }
         updateDots();
     }
 
-    function openSektor(id, t) {
+    // 3. NAVIGATION & EBENEN
+    function waehleSektor(id, t) {
         tId = id;
-        if(!user.besuchteSektoren.includes(id)) user.besuchteSektoren.push(id);
+        if(!userBackstage.besuchteSektoren.includes(id)) userBackstage.besuchteSektoren.push(id);
         document.getElementById('dashboard').style.display = 'none';
         document.getElementById('page-skelett').style.display = 'flex';
         document.getElementById('info-titel').innerText = t;
-        document.getElementById('main-text').innerText = "Inhalt für Sektor " + (id+1) + " wird geladen... " + t;
+        document.getElementById('main-text').innerText = DASHBOARD_TRUTH[id+1] || "Textinhalt folgt...";
+        
+        // Werbung starten
+        const bg = document.getElementById('werbe-bg');
+        bg.style.backgroundImage = `url('https://picsum.photos/seed/${id+10}/1200/600')`;
+        bg.classList.add('bild-aktiv');
+        
         setEbene(2);
-        document.getElementById('werbe-bg').style.backgroundImage = `url('https://picsum.photos/seed/${id+99}/1200/600')`;
-        document.getElementById('werbe-bg').classList.add('bild-aktiv');
+        verbindeChat(id);
+        saveToStorage();
     }
 
     function setEbene(n) {
@@ -179,33 +291,148 @@
     }
 
     function updateDots() {
-        const h = document.getElementById('dot-holder'); h.innerHTML = "";
-        for (let i = 1; i <= 4; i++) h.innerHTML += `<div class="dot ${i === ebene ? 'active' : ''}"></div>`;
+        const dNav = document.getElementById('dot-navigation');
+        dNav.innerHTML = "";
+        for(let i=1; i<=4; i++) {
+            dNav.innerHTML += `<div class="dot ${i === ebene ? 'active' : ''}"></div>`;
+        }
     }
 
-    function toggleDrawer(id) {
-        const el = (id === 'master') ? document.getElementById('master-drawer') : document.getElementById('sub-'+id);
-        el.classList.toggle('open');
+    function showDashboard() { location.reload(); }
+    function nextPage() { if(ebene < 4) setEbene(ebene + 1); }
+
+    // 4. FUNKTIONEN EBENE 3 & 4
+    function verbindeChat(id) {
+        if(channel) channel.unsubscribe();
+        channel = ably.channels.get('mm-chat-' + id);
+        channel.subscribe('msg', (m) => {
+            const cb = document.getElementById('chat-box');
+            cb.innerHTML += `<div><strong>Kollektiv:</strong> ${m.data}</div>`;
+            cb.scrollTop = cb.scrollHeight;
+        });
     }
 
-    function saveNote(id) {
-        user.sektorNotizen[id] = document.getElementById('note-'+id).value;
-        localStorage.setItem('mm_user_data', JSON.stringify(user));
-        alert("Im Buckel gesichert!");
+    function sendChatMessage() {
+        const inp = document.getElementById('chat-input');
+        if(inp.value && channel) {
+            channel.publish('msg', inp.value);
+            document.getElementById('chat-box').innerHTML += `<div style="color:#ffd700;"><strong>Ich:</strong> ${inp.value}</div>`;
+            inp.value = "";
+        }
+    }
+
+    function toggleMasterDrawer() {
+        const m = document.getElementById('sektoren-archiv-liste').parentElement;
+        m.classList.toggle('open');
+        document.getElementById('master-arrow').innerText = m.classList.contains('open') ? "▲" : "▼";
+    }
+
+    function toggleSubDrawer(i) {
+        document.getElementById('sub-drawer-' + i).classList.toggle('open');
+    }
+
+    function saveSektorNotiz(i) {
+        const val = document.getElementById('note-' + i).value;
+        userBackstage.sektorNotizen[i] = val;
+        saveToStorage();
+        alert("Sektor " + (i+1) + " im Buckel des Frosches gesichert, Schwein!");
     }
 
     function portalZuEbene4() {
-        if(!user.isVerifiziert) { alert("Zugang verweigert, Schwein!"); return; }
+        if(!userBackstage.isVerifiziert) { alert("Nur für verifizierte Schweine!"); return; }
         setEbene(4);
-        if(jitsi) jitsi.dispose();
-        jitsi = new JitsiMeetExternalAPI("8x8.vc", { roomName: "MM-Sektor-"+tId, width: "100%", height: "100%", parentNode: document.getElementById('jitsi-container') });
+        if(jitsiApi) jitsiApi.dispose();
+        jitsiApi = new JitsiMeetExternalAPI("8x8.vc", {
+            roomName: "MM-Sektor-Room-" + tId,
+            width: "100%", height: "100%",
+            parentNode: document.getElementById('jitsi-container'),
+            userInfo: { displayName: 'Mitglied-' + Math.floor(Math.random()*1000) }
+        });
     }
 
-    function adminUnlock() { if(prompt("Code?") === "frosch2026") { user.isVerifiziert = true; localStorage.setItem('mm_user_data', JSON.stringify(user)); location.reload(); } }
-    function showDashboard() { location.reload(); }
-    function nextPage() { if(ebene < 4) setEbene(ebene+1); }
+    function adminUnlock() {
+        const pw = prompt("Sektor-Zugangscode?");
+        if(pw === "frosch2026") {
+            userBackstage.isVerifiziert = true;
+            saveToStorage();
+            location.reload();
+        }
+    }
 
-    window.onload = init;
+    function saveToStorage() { localStorage.setItem('mm_user_data', JSON.stringify(userBackstage)); }
+
+    window.onload = initApp;
 </script>
+<style>
+    /* FINISHING & FEINSCHLIFF */
+    
+    /* WICHTIG: Die Werbetafel muss sichtbar sein */
+    .werbe-bild-bg {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background-size: cover;
+        background-position: center;
+        opacity: 0;
+        transition: opacity 2s ease-in-out;
+        z-index: 1;
+    }
+    .bild-aktiv { opacity: 0.4 !important; }
+
+    /* Text-Bereich für Sektoren-Inhalte */
+    #main-text {
+        width: 85%;
+        margin: 20px auto;
+        font-size: 1.2rem;
+        line-height: 1.6;
+        color: #ccc;
+        max-height: 35vh;
+        overflow-y: auto;
+        padding: 10px;
+        white-space: pre-wrap; /* Bewahrt Zeilenumbrüche */
+        z-index: 5;
+    }
+
+    /* Animation für das Dashboard-Logo */
+    .logo-ring:hover {
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+        transform: scale(1.02);
+    }
+
+    /* Scrollbar-Design */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #000; }
+    ::-webkit-scrollbar-thumb { background: #003d8f; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #00ff00; }
+
+    /* Ebene 3 Chat-Blasen */
+    #chat-box div {
+        margin-bottom: 10px;
+        padding: 8px 12px;
+        background: rgba(0, 61, 143, 0.2);
+        border-radius: 5px;
+        border-left: 3px solid #003d8f;
+        animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateX(-10px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Schutzschild-Effekt für die gelbe Leiste */
+    .master-schublade {
+        border-radius: 8px 8px 0 0;
+        box-shadow: 0 -5px 15px rgba(255, 215, 0, 0.1);
+    }
+    .schublade-header:hover { background: #002a5c !important; }
+
+    /* Responsive Fixes */
+    @media (max-height: 800px) {
+        .grid { gap: 5px; padding: 10px; }
+        .box { min-height: 40px; }
+        .logo-ring { width: 90px; height: 90px; }
+    }
+</style>
 </body>
 </html>
