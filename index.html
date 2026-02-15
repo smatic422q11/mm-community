@@ -125,20 +125,19 @@
 }
 
 #drawer-ebene4 {
-    display: none; 
+    display: none;
     width: 100%;
-    height: 95vh;
+    height: 95vh; /* Nutzt fast die ganze Höhe */
     flex-direction: column;
     align-items: center;
-    overflow: hidden; /* Verhindert, dass die ganze Seite scrollt */
+    overflow-y: auto; /* DAS HIER erlaubt das Scrollen nach unten zur Leiste! */
+    padding-bottom: 50px;
 }
 
 #jitsi-container {
     width: 98%;
-    height: 80vh !important; /* Platz für genau EINE Master-Leiste unten */
-    border: 3px solid #ff0000;
-    background-color: #000;
-    flex-shrink: 0;
+    height: 70vh !important; /* Video bleibt groß, aber lässt Platz */
+    flex-shrink: 0; 
 }
 
 #jitsi-container iframe {
@@ -239,10 +238,16 @@
         </div> 
 
        <div id="drawer-ebene4">
-            <div id="jitsi-container" style="width:100%; height:100%; background:#111; border:1px solid #ff0000;"></div>
-            <div id="sektoren-schubladen"></div>
-        </div> 
+    <div id="jitsi-container"></div>
+    
+    <div id="master-schublade-gelb" style="width: 95%; border: 2px solid #ffff00; background: #111; margin-top: 20px;">
+        <div class="master-header" onclick="toggleMaster()" style="background: #ffff00; color: #000; padding: 15px; font-weight: 900; text-align: center; cursor: pointer;">
+            📂 ZENTRALE ARCHIVIERUNG (Sektoren 1-20)
+        </div>
+        <div id="inneres-archiv" style="max-height: 0; overflow: hidden; transition: max-height 0.5s;">
+            </div>
     </div>
+</div>
 
     <div class="bottom-nav">
         <button id="btn-back" class="nav-btn" onclick="showDashboard()">← Dashboard</button>
@@ -511,19 +516,17 @@ const DASHBOARD_TRUTH = {
     
     function nextPage() { if (ebene < 4) setEbene(ebene + 1); }
 
-    function toggleDrawer(id) {
-        if (id === 'master') {
-            const master = document.getElementById('master-archiv-container');
-            master.classList.toggle('open');
-            const arrow = document.getElementById('arrow-master');
-            arrow.innerText = master.classList.contains('open') ? "▲" : "▼";
-        } else {
-            const drawer = document.getElementById('drawer-' + id);
-            drawer.classList.toggle('open');
-            const arrow = document.getElementById('arrow-' + id);
-            arrow.innerText = drawer.classList.contains('open') ? "▲" : "▼";
-        }
+function toggleMaster() {
+    const archiv = document.getElementById('inneres-archiv');
+    const master = document.getElementById('master-schublade-gelb');
+    if (archiv.style.maxHeight === "0px" || archiv.style.maxHeight === "") {
+        archiv.style.maxHeight = "5000px"; // Macht Platz für alle 20
+        master.classList.add('open');
+    } else {
+        archiv.style.maxHeight = "0px";
+        master.classList.remove('open');
     }
+}
 
     function startRotation() {
         const bg = document.getElementById('werbe-bg');
@@ -608,5 +611,3 @@ const DASHBOARD_TRUTH = {
 </script>
 </body>
 </html>
-
-
