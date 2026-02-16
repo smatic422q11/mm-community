@@ -176,7 +176,6 @@
             <div class="fundament-box" style="flex: 1;"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div></div>
         </div>
     </div>
-
         <div class="zugang-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-bottom: 80px;">
             <div class="fundament-box" style="flex: 1; border-color: #555; cursor: pointer;" onclick="showZugangInfo('gast')">
                 <div class="num" style="background-color: #333;">G</div>
@@ -257,29 +256,20 @@
         isVerifiziert: false 
     };
 
+ <script>
+    // Deine Themenliste
     const themen = [
-        "( von M&M Community )<br>Recht auf Gefühlsvorderung oder KI", 
-        "Wie werde ich Mensch", 
-        "Glaube an Friede", 
-        "Programm für Bürgerliche Rechte", 
-        "Moralische Pflicht und Verantwortung", 
-        "Menschlichkeit Wiederherstellung", 
-        "Kinderschutz-Pflicht-Elternrechte", 
-        "Wahre Richtung und Kunst", 
-        "LGBTQ und Kirche", 
-        "Trend and Tradition", 
-        "Religionsbekenntnis oder Selbstwahl", 
-        "Gesundheitswesen und Verhalten", 
-        "Arbeitswelt und Du", 
-        "Mobbing am Arbeitsplatz", 
-        "Jugendsprecher", 
-        "Ratgeber für Pensionisten", 
-        "Nachbarschaft und Gemeinschaft", 
-        "Sozialgefallen und Widerkehr", 
-        "Alleinerziehend & Kind", 
-        "Die Brücke"
+        "Recht auf Gefühlsvorderung oder KI", "Wie werde ich Mensch", "Glaube an Friede", 
+        "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", 
+        "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", 
+        "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", 
+        "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", 
+        "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", 
+        "Ratgeber für Pensionisten", "Nachbarschaft und Gemeinschaft", 
+        "Sozialgefallen und Widerkehr", "Alleinerziehend & Kind", "Die Brücke"
     ];
-// Funktion, die die Boxen ins Dashboard zeichnet
+
+    // Funktion, die die Boxen ins Dashboard zeichnet
     function initApp() {
         const grid = document.getElementById('main-grid');
         if (grid) {
@@ -291,7 +281,13 @@
                         <div class="num num-neutral">${i + 1}</div>
                         <div class="text" onclick="alert('Sektor ${i+1}: ${t}')">${t}</div>
                     </div>`;
-         
+            });
+        }
+    }
+
+    // Startet die Box-Generierung beim Laden der Seite
+    window.onload = initApp;
+</script> 
 const DASHBOARD_TRUTH = {
     1: {
         title: "Recht auf Gefühlsvorderung oder KI",
