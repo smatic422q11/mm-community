@@ -512,14 +512,14 @@ function toggleJitsiInline() {
             configOverwrite: {
                 prejoinPageEnabled: false,
                 startWithAudioMuted: false,
-                startWithVideoMuted: false // Sorgt dafür, dass die Kamera sofort angeht
+                startWithVideoMuted: false
             }
         };
+        // 1. Hier wird Jitsi erschaffen
         jitsiApi = new JitsiMeetExternalAPI(domain, options);
-
-        // --- DIESE ZEILE IST DER SCHLÜSSEL ---
+jitsiApi.getIFrame().setAttribute("allow", "camera; microphone; display-capture; autoplay");
+        // 2. GENAU HIER drunter muss die Zeile für die Hardware-Rechte:
         jitsiApi.getIFrame().setAttribute("allow", "camera; microphone; display-capture; autoplay");
-        // -------------------------------------
     }
 }
 /* --- SYSTEM-FUNKTIONEN --- */
