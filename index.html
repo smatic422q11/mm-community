@@ -512,23 +512,27 @@ function toggleJitsiInline() {
             configOverwrite: {
                 prejoinPageEnabled: false,
                 startWithAudioMuted: false,
-                startWithVideoMuted: false
+                startWithVideoMuted: false,
+                // Erzwingt, dass Jitsi nicht nach Rechten fragt, die wir schon im Frame geben
+                iceTransportPolicy: 'all'
             }
         };
 
-        // Zündung der Schnittstelle
         jitsiApi = new JitsiMeetExternalAPI(domain, options);
 
-        // Der entscheidende Trick: Wir warten kurz, bis das Fenster existiert
+        // Der "Master-Key" für die Hardware:
+        const iframe = jitsiApi.getIFrame();
+        
+        // Wir setzen die Rechte direkt beim Erstellen
+        iframe.allow = "camera; microphone; display-capture; autoplay; clipboard-write";
+        
+        // Zusaetzlicher Force-Reload nach 300ms, falls der Browser beim ersten Mal blockt
         setTimeout(() => {
-            const iframe = jitsiApi.getIFrame();
-            if (iframe) {
-                // Wir erzwingen die Rechte für Kamera und Mikrofon direkt im Element
-                iframe.setAttribute("allow", "camera; microphone; display-capture; autoplay; clipboard-write");
-                // Wir laden das Fenster einmal intern neu, um die Rechte scharf zu schalten
-                iframe.src = iframe.src; 
+            if (iframe.contentWindow.length === 0) { 
+                // Falls das Fenster leer bleibt, schubsen wir es nochmal an
+                iframe.src = iframe.src;
             }
-        }, 500); 
+        }, 300);
     }
 }
 /* --- SYSTEM-FUNKTIONEN --- */
