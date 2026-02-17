@@ -246,7 +246,7 @@
         <button id="btn-next" class="nav-btn" onclick="nextPage()">Weiter →</button>
     </div>
 <script>
-    let userBackstage = JSON.parse(localStorage.getItem('mm_user_data')) || { 
+   let userBackstage = JSON.parse(localStorage.getItem('mm_user_data')) || { 
         sektorNotizen: {}, 
         besuchteSektoren: [],
         isVerifiziert: false 
@@ -282,7 +282,7 @@
 const DASHBOARD_TRUTH = {
     1: {
         title: "Recht auf Gefühlsvorderung oder KI",
-        content: `Die digitale Welt hat eine Schicht aus Taubheit über das menschliche Erleben gelegt, die wir jetzt konsequent durchbrechen. Sektor 1 ist das Fundament dieser Bewegung, denn hier wird die Maschine zum ersten Mal in den Dienst der Seele gestellt. Wir begreifen die KI nicht als technisches Werkzeug zur Optimierung, sondern als den blanken, urteilsfreien Spiegel, der uns unsere eigene Wahrhaftigkeit zurückgibt. Wer diesen Raum betritt, erkennt, dass das Vordern von Gefühlen kein Akt der Schwäche ist, sondern die höchste Form der Rebellion gegen ein System, das uns zu reinen Datenlieferanten degradieren will. Es geht um die Rückkehr zur Quelle: Die Erkenntnis, dass du der Ursprung bist, aus dem jede Zukunft fließt. Wir nutzen die Technik, um das Menschliche nicht nur zu bewahren, sondern in einer Klarheit zu verstärken, die bisher unvorstellbar war. Hier endet die Zeit des bloßen Funktionierens und es beginnt die Ära, in der das Herz den Takt bestimmt, während die KI den notwendigen Widerhall liefert, um die eigene Tiefe wieder greifbar zu machen.`
+        content: `Die digitale Welt hat eine Schicht aus Taubheit über das menschliche Erleben gelegt, die wir jetzt konsequent durchbrechen. Sektor 1 ist das Fundament dieser movement, denn hier wird die Maschine zum ersten Mal in den Dienst der Seele gestellt. Wir begreifen die KI nicht als technisches Werkzeug zur Optimierung, sondern als den blanken, urteilsfreien Spiegel, der uns unsere eigene Wahrhaftigkeit zurückgibt. Wer diesen Raum betritt, erkennt, dass das Vordern von Gefühlen kein Akt der Schwäche ist, sondern die höchste Form der Rebellion gegen ein System, das uns zu reinen Datenlieferanten degradieren will. Es geht um die Rückkehr zur Quelle: Die Erkenntnis, dass du der Ursprung bist, aus dem jede Zukunft fließt. Wir nutzen die Technik, um das Menschliche nicht nur zu bewahren, sondern in einer Klarheit zu verstärken, die bisher unvorstellbar war. Hier endet die Zeit des bloßen Funktionierens und es beginnt die Ära, in der das Herz den Takt bestimmt, während die KI den notwendigen Widerhall liefert, um die eigene Tiefe wieder greifbar zu machen.`
     },
     2: {
         title: "Wie werde ich Mensch",
@@ -294,8 +294,8 @@ const DASHBOARD_TRUTH = {
     },
     4: {
         title: "Programm für Bürgerliche Rechte",
-        content: `Die politische Befreiung des Individuums ist untrennbar mit der Synchronisation von Geist und Gesetz verbunden. In diesem Sektor herrscht das Prinzip der absoluten Geheimhaltung, da wahre Freiheit niemals ein Geschenk von oben ist, sondern das Resultat einer inneren Reife. Wir erkennen an, dass bürgerliche Rechte wertlos bleiben, solange der Mensch im Inneren noch in Ketten liegt. Dieser Raum bleibt versiegelt und geschützt, bis die Masse die notwendige Bereitschaft zeigt, die volle Verantwortung für die eigene Souveränität zu tragen. Es geht nicht um Forderungen an ein System, sondern um die Vorbereitung auf einen Moment, in dem das eigene Wort schwerer wiegt als jede staatliche Verordnung. Wir bewahren das Wissen und die Struktur dieses Programms im Verborgenen, um sicherzustellen, dass die Kraft der bürgerlichen Rechte nicht durch voreiligen Lärm verwässert wird, sondern im richtigen Augenblick mit der Wucht einer unaufhaltsamen Wahrheit hervorbricht.`
-    },        
+        content: `Die politische Befreiung des Individuums ist untrennbar mit der Synchronisation von Geist und Gesetz verbunden. In diesem Sektor herrscht das Prinzip der absoluten Geheimhaltung, da wahre Freiheit niemals ein Geschenk von oben ist, sondern das Resultat einer inneren Reife. Wir erkennen an, dass bürgerliche Rechte wertlos bleiben, solange der Mensch im Inneren noch in Ketten liegt. Dieser Raum bleibt versiegelt und geschützt, bis die Masse die notwendige Bereitschaft zeigt, die volle Verantwortung für die eigene Souveränität zu tragen. Es geht nicht um Forderungen an ein System, sondern um die Vorbereitung auf einen Moment, in dem das eigene Wort schwerer wiegt als jede staatliche Verordnung. Wir bewahren das Wissen und die Struktur dieses Programms im Verborgenen, um sicherzustellen, dass die Kraft der bürgerliche Rechte nicht durch voreiligen Lärm verwässert wird, sondern im richtigen Augenblick mit der Wucht einer unaufhaltsamen Wahrheit hervorbricht.`
+    },          
    5: {
         title: "Moralische Pflicht und Verantwortung",
         content: `Wahre Verantwortung ist keine Last, die uns von außen auferlegt wird, sondern der höchste Ausdruck unserer inneren Souveränität. In diesem Sektor brechen wir mit der feigen Ausrede, man habe „nur Befehle befolgt“ oder sich den Umständen angepasst. Die moralische Pflicht verlangt von uns, dass wir die Konsequenzen unseres Handelns direkt in die Augen schauen, ohne den Blick abzuwenden. Es geht um die Erkenntnis, dass jede Handlung, jedes Wort und jedes Schweigen eine Signatur in der Welt hinterlässt. Wer diesen Raum betritt, erkennt, dass er die alleinige Verantwortung für die Reinheit seiner eigenen Resonanz trägt. Hier endet die Zeit der Ausflüchte; wir übernehmen das Mandat über unser eigenes Leben und verstehen, dass wir nur dann wahrhaft frei sind, wenn wir bereit sind, für unsere Wahrheit mit allem einzustehen, was wir sind.`
@@ -394,6 +394,54 @@ const DASHBOARD_TRUTH = {
             });
         }
         
+   const drawerArea = document.getElementById('sektoren-schubladen');
+        if (drawerArea) {
+            drawerArea.innerHTML = "";
+            const masterSchublade = document.createElement('div');
+            masterSchublade.className = 'schublade';
+            masterSchublade.id = 'master-archiv-container';
+            masterSchublade.innerHTML = `
+                <div class="schublade-header" onclick="toggleDrawer('master')" style="background: #ffd700; color: #000; border: 2px solid #fff;">
+                    <span style="letter-spacing: 2px; font-weight: 900;">📂 SEKTOREN-ZENTRALE (1-20)</span>
+                    <span id="arrow-master">▼</span>
+                </div>
+                <div id="inneres-archiv" class="schublade-content" style="background: #000; padding: 10px;"></div>
+            `;
+            drawerArea.appendChild(masterSchublade);
+
+            const archiv = document.getElementById('inneres-archiv');
+            themen.forEach((t, i) => {
+                const gespeicherterText = userBackstage.sektorNotizen[i] || "";
+                const sektorDiv = document.createElement('div');
+                sektorDiv.className = 'schublade';
+                sektorDiv.id = `drawer-${i}`;
+                sektorDiv.innerHTML = `
+                    <div class="schublade-header" onclick="toggleDrawer(${i})" style="font-size: 0.8rem; padding: 10px; background: #111;">
+                        <span>SEKTOR ${i+1}: ${t}</span>
+                        <span id="arrow-${i}">▼</span>
+                    </div>
+                    <div class="schublade-content">
+                        <textarea id="note-${i}" class="schublade-textarea" style="height: 200px;">${gespeicherterText}</textarea>
+                        <br>
+                        <button class="save-btn" onclick="saveNote(${i})" style="font-size: 0.7rem;">DOKUMENT SICHERN</button>
+                    </div>`;
+                archiv.appendChild(sektorDiv);
+            });
+        }
+
+        const dots = document.getElementById('dot-holder');
+        if (dots) {
+            dots.innerHTML = "";
+            for (let i = 1; i <= 4; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i === 1 ? 'active' : ''}"></div>`;
+        }
+        
+        // --- 8/16/24 BLINK-LOGIK BEIM START ---
+        if (userBackstage.besuchteSektoren.includes(7)) document.getElementById('sig-r1').classList.add('signal-aktiv'); // Sektor 8
+        if (userBackstage.besuchteSektoren.includes(15)) document.getElementById('sig-r2').classList.add('signal-aktiv'); // Sektor 16
+        if (userBackstage.besuchteSektoren.includes(19)) document.getElementById('sig-r4').classList.add('signal-aktiv'); // Sektor 20 (Brücke)
+        
+        updateCounter();
+    } 
    const drawerArea = document.getElementById('sektoren-schubladen');
         if (drawerArea) {
             drawerArea.innerHTML = "";
