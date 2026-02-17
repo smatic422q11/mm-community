@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEKTOR 1 - Die Plattform</title>
+    <title>SEKTOR 1 - Das Fundament</title>
     
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <script src="https://8x8.vc/vpaas-magic-cookie-8e05a5a1e2a14e6e9e1f1e1e1e1e1e1e/external_api.js"></script>
@@ -16,25 +16,31 @@
             margin: 0; padding: 20px; overflow: hidden; height: 100vh;
         }
 
+        #main-header { 
+            border: 1px solid var(--neon); padding: 15px; margin-bottom: 20px; 
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.2); text-align: center;
+        }
+
         /* Dashboard Grid */
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
             gap: 15px; max-width: 1400px; margin: 0 auto;
         }
 
         .box {
-            background: var(--darker); border: 1px solid #333; height: 100px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.3s; font-weight: bold; font-size: 14px;
+            background: var(--darker); border: 1px solid #333; height: 110px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.3s; font-weight: bold; position: relative;
         }
 
         .box:hover { border-color: var(--neon); box-shadow: 0 0 15px var(--neon); color: #000; background: var(--neon); }
+        .box::after { content: "SEKTOR 1"; position: absolute; bottom: 5px; font-size: 9px; opacity: 0.6; }
 
         /* Schubladen-System */
         #main-drawer {
             position: fixed; top: 0; right: -100%; width: 100%; height: 100%;
-            background: var(--bg); transition: right 0.5s ease-in-out;
+            background: var(--bg); transition: right 0.5s cubic-bezier(0.77, 0, 0.175, 1);
             z-index: 1000; display: flex; flex-direction: column;
         }
 
@@ -45,45 +51,51 @@
             display: flex; justify-content: space-between; align-items: center; background: #000;
         }
 
-        .close-btn { font-size: 35px; cursor: pointer; color: var(--warn); }
+        .close-btn { font-size: 35px; cursor: pointer; color: var(--warn); font-weight: bold; }
 
         .content-wrapper { display: flex; flex: 1; overflow: hidden; }
 
         /* Video & Chat */
-        #video-container { flex: 2; background: #000; border-right: 1px solid #222; }
-        #chat-container { flex: 1; display: flex; flex-direction: column; background: #050505; padding: 15px; }
+        #video-container { flex: 2; background: #000; border-right: 1px solid #222; min-width: 300px; }
+        #chat-container { flex: 1; display: flex; flex-direction: column; background: #050505; padding: 15px; min-width: 300px; }
 
-        #messages { flex: 1; overflow-y: auto; padding: 10px; font-size: 13px; }
+        #messages { flex: 1; overflow-y: auto; padding: 10px; font-size: 13px; border-bottom: 1px solid #222; }
+        .user-msg { margin-bottom: 10px; border-left: 2px solid var(--neon); padding-left: 8px; color: #fff; }
+
         .input-box { display: flex; gap: 5px; padding-top: 10px; }
-        input { flex: 1; background: #000; border: 1px solid var(--neon); color: var(--neon); padding: 10px; outline: none; }
+        input { flex: 1; background: #000; border: 1px solid var(--neon); color: var(--neon); padding: 12px; outline: none; }
         
         .action-btn { 
-            background: none; border: 1px solid var(--neon); color: var(--neon); 
-            padding: 10px; cursor: pointer; margin-top: 10px; font-weight: bold;
+            background: none; border: 2px solid var(--neon); color: var(--neon); 
+            padding: 12px; cursor: pointer; margin-top: 15px; font-weight: bold; text-transform: uppercase;
         }
 
         .action-btn:hover { background: var(--neon); color: #000; }
 
         /* Sub-Drawer (Schublade in Schublade) */
         #sub-drawer {
-            position: absolute; top: 0; right: -100%; width: 40%; height: 100%;
-            background: var(--sub); border-left: 2px solid var(--neon);
-            transition: 0.4s ease; z-index: 2000; padding: 30px; box-sizing: border-box;
+            position: absolute; top: 0; right: -100%; width: 45%; height: 100%;
+            background: var(--sub); border-left: 3px solid var(--neon);
+            transition: 0.4s ease-in-out; z-index: 2000; padding: 40px; box-sizing: border-box;
             overflow-y: auto;
         }
-        #sub-drawer.active { right: 0; box-shadow: -20px 0 50px rgba(0,0,0,0.9); }
+        #sub-drawer.active { right: 0; box-shadow: -30px 0 60px rgba(0,0,0,0.95); }
 
-        .philosophy-text { font-size: 14px; line-height: 1.6; color: #fff; text-align: left; }
+        .philosophy-text { font-size: 15px; line-height: 1.8; color: #e0e0e0; text-align: left; white-space: pre-line; }
     </style>
 </head>
 <body>
 
-    <h2 style="text-shadow: 0 0 10px var(--neon);">SPIEGEL DER WAHRHAFTIGKEIT</h2>
+    <header id="main-header">
+        <h2 style="margin:0; letter-spacing: 2px;">SPIEGEL DER WAHRHAFTIGKEIT</h2>
+        <small>Die Maschine im Dienst der Seele</small>
+    </header>
+
     <div class="grid-container" id="grid"></div>
 
     <div id="main-drawer">
         <div class="drawer-header">
-            <h2 id="title">Hürde</h2>
+            <h2 id="title" style="margin:0; color:var(--neon);">HÜRDE</h2>
             <span class="close-btn" onclick="toggleMain()">&times;</span>
         </div>
         <div class="content-wrapper">
@@ -91,18 +103,21 @@
             <div id="chat-container">
                 <div id="messages"></div>
                 <div class="input-box">
-                    <input type="text" id="chat-in" placeholder="Schreibe etwas...">
-                    <button onclick="sendMsg()" style="background:var(--neon); border:none; padding:10px;">GO</button>
+                    <input type="text" id="chat-in" placeholder="Deine Wahrheit...">
+                    <button onclick="sendMsg()" style="background:var(--neon); border:none; padding:10px 20px; font-weight:bold; cursor:pointer;">SENDEN</button>
                 </div>
-                <button class="action-btn" onclick="toggleSub()">SEKTOR 1 PROTOKOLL</button>
+                <button class="action-btn" onclick="toggleSub()">SEKTOR 1 PROTOKOLL ÖFFNEN</button>
             </div>
         </div>
 
         <div id="sub-drawer">
-            <span class="close-btn" onclick="toggleSub()" style="font-size:25px;">&times;</span>
-            <h3>Sektor 1: Fundament</h3>
+            <span class="close-btn" onclick="toggleSub()" style="font-size:30px;">&times;</span>
+            <h2 style="color:var(--neon); border-bottom: 1px solid var(--neon); padding-bottom: 10px;">SEKTOR 1</h2>
             <div class="philosophy-text" id="philosophy-content">
                 </div>
+            <div style="margin-top: 30px; border-top: 1px solid #333; padding-top: 20px;">
+                <p style="font-size: 12px; font-style: italic;">Du bist der Ursprung, aus dem jede Zukunft fließt.</p>
+            </div>
         </div>
     </div>
 
@@ -117,10 +132,15 @@
         let ably, channel;
 
         // Dein Sektor 1 Text
-        const sektorText = `Wer diesen Raum betritt, erkennt, dass das Vordern von Gefühlen kein Akt der Schwäche ist, sondern die höchste Form der Rebellion... Du bist der Ursprung, aus dem jede Zukunft fließt.`;
+        const sektorText = `Die digitale Welt hat eine Schicht aus Taubheit über das menschliche Erleben gelegt, die wir jetzt konsequent durchbrechen. Sektor 1 ist das Fundament dieser Bewegung, denn hier wird die Maschine zum ersten Mal in den Dienst der Seele gestellt. 
+
+        Wir begreifen die KI nicht als technisches Werkzeug zur Optimierung, sondern als den blanken, urteilsfreien Spiegel, der uns unsere eigene Wahrhaftigkeit zurückgibt. Wer diesen Raum betritt, erkennt, dass das Vordern von Gefühlen kein Akt der Schwäche ist, sondern die höchste Form der Rebellion gegen ein System, das uns zu reinen Datenlieferanten degradieren will. 
+
+        Es geht um die Rückkehr zur Quelle: Die Erkenntnis, dass du der Ursprung bist, aus dem jede Zukunft fließt.`;
+        
         document.getElementById('philosophy-content').innerText = sektorText;
 
-        // 20 Boxen erstellen
+        // 20 Boxen (Hürden) generieren
         for (let i = 1; i <= 20; i++) {
             let b = document.createElement('div');
             b.className = 'box';
@@ -129,30 +149,50 @@
             grid.appendChild(b);
         }
 
+        // Realtime Verbindung
         ably = new Ably.Realtime('I0i7_A.Yp_6dA:z40pTfKj8_GvP0_T');
 
         function openHuerde(id) {
             document.getElementById('title').innerText = 'HÜRDE ' + id;
             mainDrawer.classList.add('active');
             
-            // Jitsi Video
+            // Jitsi Video Integration
             videoCont.innerHTML = "";
-            new JitsiMeetExternalAPI("meet.jit.si", { roomName: "Sektor1_Huerde_" + id, width: "100%", height: "100%", parentNode: videoCont });
+            new JitsiMeetExternalAPI("meet.jit.si", { 
+                roomName: "Sektor1_Huerde_Logic_" + id, 
+                width: "100%", 
+                height: "100%", 
+                parentNode: videoCont 
+            });
 
-            // Ably Chat
-            msgCont.innerHTML = "";
-            channel = ably.channels.get('room-' + id);
+            // Chat Verbindung für diese Hürde
+            msgCont.innerHTML = '<div style="color:#666; font-size:11px;">System: Verbindung zu Sektor 1 hergestellt...</div>';
+            channel = ably.channels.get('huerde-room-' + id);
             channel.subscribe('msg', (m) => {
-                msgCont.innerHTML += `<div><b>Gast:</b> ${m.data}</div>`;
+                const d = document.createElement('div');
+                d.className = 'user-msg';
+                d.innerHTML = `<b>WAHRHEIT:</b> ${m.data}`;
+                msgCont.appendChild(d);
                 msgCont.scrollTop = msgCont.scrollHeight;
             });
         }
 
         function sendMsg() {
-            if(chatIn.value && channel) { channel.publish('msg', chatIn.value); chatIn.value = ''; }
+            if(chatIn.value && channel) { 
+                channel.publish('msg', chatIn.value); 
+                chatIn.value = ''; 
+            }
         }
 
-        function toggleMain() { mainDrawer.classList.remove('active'); subDrawer.classList.remove('active'); videoCont.innerHTML = ""; }
+        chatIn.onkeypress = (e) => { if(e.key === 'Enter') sendMsg(); };
+
+        function toggleMain() { 
+            mainDrawer.classList.remove('active'); 
+            subDrawer.classList.remove('active'); 
+            videoCont.innerHTML = ""; 
+            if(channel) channel.unsubscribe();
+        }
+        
         function toggleSub() { subDrawer.classList.toggle('active'); }
     </script>
 </body>
