@@ -495,33 +495,29 @@ function portalZuEbene4() {
 }
 
 function toggleJitsiInline() {
+    // Wenn die Seite nicht sicher ist, öffnen wir Jitsi einfach groß in einem neuen Fenster
+    if (window.location.protocol !== 'https:') {
+        alert("Sicherheits-Hinweis: Deine Verbindung ist nicht verschlüsselt. Ich öffne das Schöpfergericht in einem neuen, sicheren Tab.");
+        window.open("https://meet.jit.si/MM_Sektor_Konferenz_" + (tId + 1), "_blank");
+        return;
+    }
+
+    // Wenn HTTPS da ist, versuchen wir es im Slot
     const jContainer = document.getElementById('jitsi-container-small');
     const jBtn = document.getElementById('mini-join-btn');
-    
     jBtn.style.display = 'none';
     jContainer.style.display = 'block';
 
     if (!jitsiApi) {
         const domain = "meet.jit.si"; 
         const options = {
-            roomName: "MM_Schöpfergericht_" + (tId + 1),
+            roomName: "MM_Sektor_Konferenz_" + (tId + 1),
             width: "100%",
             height: "100%",
             parentNode: jContainer
         };
-
         jitsiApi = new JitsiMeetExternalAPI(domain, options);
-
-        // Wir nutzen den offiziellen "IFrame geladen" Event von Jitsi
-        jitsiApi.addEventListener('videoConferenceJoined', () => {
-            const iframe = jitsiApi.getIFrame();
-            iframe.setAttribute("allow", "camera; microphone; display-capture; autoplay");
-            console.log("Gericht eröffnet, Hardware-Rechte vergeben.");
-        });
-        
-        // Falls der Browser den ersten Versuch blockiert, setzen wir die Attribute sofort
-        const iframe = jitsiApi.getIFrame();
-        iframe.allow = "camera; microphone; display-capture; autoplay";
+        jitsiApi.getIFrame().setAttribute("allow", "camera; microphone; display-capture; autoplay");
     }
 }
 /* --- SYSTEM-FUNKTIONEN --- */
