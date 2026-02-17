@@ -436,189 +436,198 @@ const DASHBOARD_TRUTH = {
         updateCounter();
     }
   function checkAccess(index, thema) {
-        tId = index;
-        aktuellesThema = thema;
-        if (index < 4 || userBackstage.isVerifiziert) {
-            startSektor();
-        } else {
-            showZugangInfo('email');
-        }
+    tId = index;
+    aktuellesThema = thema;
+    if (index < 4 || userBackstage.isVerifiziert) {
+        startSektor();
+    } else {
+        showZugangInfo('email');
     }
+}
 
-    function startSektor() {
-        document.getElementById('dashboard').style.display = 'none';
-        document.getElementById('page-skelett').style.display = 'flex';
-        setEbene(1);
+function startSektor() {
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('page-skelett').style.display = 'flex';
+    setEbene(1);
+}
+
+function setEbene(n) {
+    ebene = n;
+    updateUI();
+}
+
+function updateUI() {
+    const title = document.getElementById('info-titel');
+    const mainText = document.getElementById('main-text');
+    const chat = document.getElementById('chat-area');
+    const drawer4 = document.getElementById('drawer-ebene4');
+    const skelett = document.getElementById('page-skelett');
+
+    skelett.classList.remove('ebene-4-aktiv');
+    title.innerText = `SEKTOR ${tId + 1}: ${DASHBOARD_TRUTH[tId + 1].title}`;
+    mainText.style.display = 'none';
+    chat.style.display = 'none';
+    drawer4.style.display = 'none';
+
+    document.querySelectorAll('.dot').forEach((d, i) => d.className = `dot ${i + 1 === ebene ? 'active' : ''}`);
+
+    if (ebene === 1) {
+        mainText.style.display = 'block';
+        mainText.innerHTML = `<div class="wahrheits-text">${DASHBOARD_TRUTH[tId + 1].content}</div>`;
+    } else if (ebene === 2) {
+        mainText.style.display = 'block';
+        mainText.innerHTML = `<div style="text-align:center; padding-top:50px;">Hier entsteht der Raum für Vertiefung...</div>`;
+    } else if (ebene === 3) {
+        chat.style.display = 'flex';
+        verbindeChat();
     }
+}
 
-    function setEbene(n) {
-        ebene = n;
-        updateUI();
+function portalZuEbene4() {
+    ebene = 4;
+    const skelett = document.getElementById('page-skelett');
+    const drawer4 = document.getElementById('drawer-ebene4');
+    const title = document.getElementById('info-titel');
+    const mainText = document.getElementById('main-text');
+    const chat = document.getElementById('chat-area');
+
+    // UI für das Schöpfergericht vorbereiten
+    skelett.classList.add('ebene-4-aktiv');
+    title.innerText = "";
+    mainText.style.display = 'none';
+    chat.style.display = 'none';
+    drawer4.style.display = 'flex';
+    
+    // Reset Jitsi-Slot Button Sichtbarkeit
+    const jBtn = document.getElementById('mini-join-btn');
+    const jContainer = document.getElementById('jitsi-container-small');
+    if(jBtn) jBtn.style.display = 'block';
+    if(jContainer) jContainer.style.display = 'none';
+}
+
+function toggleJitsiInline() {
+    const jContainer = document.getElementById('jitsi-container-small');
+    const jBtn = document.getElementById('mini-join-btn');
+    
+    if (!jContainer) return;
+
+    jBtn.style.display = 'none';
+    jContainer.style.display = 'block';
+
+    if (!jitsiApi) {
+        const domain = "8x8.vc";
+        const options = {
+            roomName: "vpaas-magic-cookie-39f826359e1345d38f8304910901e855/MM_Sektor_" + (tId + 1),
+            width: "100%",
+            height: "100%",
+            parentNode: jContainer,
+            interfaceConfigOverwrite: {
+                TILE_VIEW_MAX_COLUMNS: 1,
+                TOOLBAR_BUTTONS: ['microphone', 'camera', 'hangup'] 
+            }
+        };
+        jitsiApi = new JitsiMeetExternalAPI(domain, options);
     }
+}
 
-    function updateUI() {
-        const title = document.getElementById('info-titel');
-        const mainText = document.getElementById('main-text');
-        const chat = document.getElementById('chat-area');
-        const drawer4 = document.getElementById('drawer-ebene4');
-        const skelett = document.getElementById('page-skelett');
+function showDashboard() {
+    if (jitsiApi) { jitsiApi.dispose(); jitsiApi = null; }
+    document.getElementById('page-skelett').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'flex';
+}
 
-        skelett.classList.remove('ebene-4-aktiv');
-        title.innerText = `SEKTOR ${tId + 1}: ${DASHBOARD_TRUTH[tId + 1].title}`;
-        mainText.style.display = 'none';
-        chat.style.display = 'none';
-        drawer4.style.display = 'none';
+function nextPage() {
+    if (ebene < 3) setEbene(ebene + 1);
+    else if (ebene === 3) portalZuEbene4();
+}
 
-        document.querySelectorAll('.dot').forEach((d, i) => d.className = `dot ${i + 1 === ebene ? 'active' : ''}`);
+function showZugangInfo(typ) {
+    const modal = document.getElementById('zugang-modal');
+    const titel = document.getElementById('modal-titel');
+    const text = document.getElementById('modal-text');
+    const emailField = document.getElementById('email-input-field');
+    const confirmBtn = document.getElementById('modal-confirm-btn');
 
-        if (ebene === 1) {
-            mainText.style.display = 'block';
-            mainText.innerHTML = `<div class="wahrheits-text">${DASHBOARD_TRUTH[tId + 1].content}</div>`;
-        } else if (ebene === 2) {
-            mainText.style.display = 'block';
-            mainText.innerHTML = `<div style="text-align:center; padding-top:50px;">Hier entsteht der Raum für Vertiefung...</div>`;
-        } else if (ebene === 3) {
-            chat.style.display = 'flex';
-            verbindeChat();
-        }
+    modal.style.display = 'flex';
+    emailField.style.display = 'none';
 
-        if (!userBackstage.besuchteSektoren.includes(tId)) {
-            userBackstage.besuchteSektoren.push(tId);
-            localStorage.setItem('mm_user_data', JSON.stringify(userBackstage));
-            const boxNum = document.getElementById(`num-${tId}`);
-            if (boxNum) { boxNum.className = 'num num-fertig'; }
-        }
+    if (typ === 'gast') {
+        titel.innerText = "GAST-ZUGANG";
+        text.innerText = "Als Gast hast du Einblick in die ersten 4 Sektoren. Um die volle Kraft der Community und alle 20 Sektoren zu nutzen, ist eine Verifizierung notwendig.";
+        confirmBtn.onclick = () => modal.style.display = 'none';
+    } else {
+        titel.innerText = "VERIFIZIERUNG";
+        text.innerText = "Gib deine E-Mail ein, um den vollen Zugriff auf alle 20 Sektoren und die Spezial-Ebenen zu erhalten.";
+        emailField.style.display = 'block';
+        confirmBtn.onclick = verifiziereUser;
     }
+}
 
-    function portalZuEbene4() {
-        ebene = 4;
-        const skelett = document.getElementById('page-skelett');
-        const drawer4 = document.getElementById('drawer-ebene4');
-        const title = document.getElementById('info-titel');
-        const mainText = document.getElementById('main-text');
-        const chat = document.getElementById('chat-area');
-
-        skelett.classList.add('ebene-4-aktiv');
-        title.innerText = "";
-        mainText.style.display = 'none';
-        chat.style.display = 'none';
-        drawer4.style.display = 'flex';
-
-        // OPERATION: Keine Einblendung der gelben Leiste oder Schubladen mehr.
-        // Nur der Jitsi-Container wird gestartet.
-
-        if (!jitsiApi) {
-            const domain = "8x8.vc";
-            const options = {
-                roomName: "vpaas-magic-cookie-39f826359e1345d38f8304910901e855/MM_Sektor_" + (tId + 1),
-                width: "100%",
-                height: "100%",
-                parentNode: document.getElementById('jitsi-container'),
-                interfaceConfigOverwrite: { TILE_VIEW_MAX_COLUMNS: 3 }
-            };
-            jitsiApi = new JitsiMeetExternalAPI(domain, options);
-        }
-    }
-
-    function showDashboard() {
-        if (jitsiApi) { jitsiApi.dispose(); jitsiApi = null; }
-        document.getElementById('page-skelett').style.display = 'none';
-        document.getElementById('dashboard').style.display = 'flex';
-    }
-
-    function nextPage() {
-        if (ebene < 3) setEbene(ebene + 1);
-        else if (ebene === 3) portalZuEbene4();
-    }
-
-    function showZugangInfo(typ) {
-        const modal = document.getElementById('zugang-modal');
-        const titel = document.getElementById('modal-titel');
-        const text = document.getElementById('modal-text');
-        const emailField = document.getElementById('email-input-field');
-        const confirmBtn = document.getElementById('modal-confirm-btn');
-
-        modal.style.display = 'flex';
-        emailField.style.display = 'none';
-
-        if (typ === 'gast') {
-            titel.innerText = "GAST-ZUGANG";
-            text.innerText = "Als Gast hast du Einblick in die ersten 4 Sektoren. Um die volle Kraft der Community und alle 20 Sektoren zu nutzen, ist eine Verifizierung notwendig.";
-            confirmBtn.onclick = () => modal.style.display = 'none';
-        } else {
-            titel.innerText = "VERIFIZIERUNG";
-            text.innerText = "Gib deine E-Mail ein, um den vollen Zugriff auf alle 20 Sektoren und die Spezial-Ebenen zu erhalten.";
-            emailField.style.display = 'block';
-            confirmBtn.onclick = verifiziereUser;
-        }
-    }
-
-    function verifiziereUser() {
-        const email = document.getElementById('user-email-input').value;
-        if (email.includes('@')) {
-            userBackstage.isVerifiziert = true;
-            localStorage.setItem('mm_user_data', JSON.stringify(userBackstage));
-            alert("Verifizierung erfolgreich! Alle Sektoren sind nun frei.");
-            location.reload();
-        }
-    }
-
-    function verbindeChat() {
-        if (aktuellerChannel) aktuellerChannel.unsubscribe();
-        const channelName = "sektor_" + (tId + 1);
-        aktuellerChannel = ably.channels.get(channelName);
-        
-        aktuellerChannel.subscribe('message', (msg) => {
-            if (msg.data.tabId !== meinTabId) anzeigeNachricht(msg.data.text, 'fremd');
-        });
-
-        const box = document.getElementById('chat-box');
-        box.innerHTML = `<div style="color:#555; font-size:0.8rem;">Verbunden mit Sektor ${tId + 1}</div>`;
-    }
-
-    function registriereSenden() {
-        const input = document.getElementById('chat-input');
-        const txt = input.value.trim();
-        if (txt && aktuellerChannel) {
-            aktuellerChannel.publish('message', { text: txt, tabId: meinTabId });
-            anzeigeNachricht(txt, 'eigen');
-            input.value = "";
-        }
-    }
-
-    function anzeigeNachricht(txt, typ) {
-        const box = document.getElementById('chat-box');
-        const mDiv = document.createElement('div');
-        mDiv.style.margin = "5px 0";
-        mDiv.style.color = typ === 'eigen' ? '#ffd700' : '#fff';
-        mDiv.innerText = (typ === 'eigen' ? "DU: " : "ANON: ") + txt;
-        box.appendChild(mDiv);
-        box.scrollTop = box.scrollHeight;
-    }
-
-    // Hilfsfunktionen für die alten Schubladen (deaktiviert)
-    function toggleDrawer(id) {
-        const d = id === 'master' ? document.getElementById('master-archiv-container') : document.getElementById(`drawer-${id}`);
-        if (d) d.classList.toggle('open');
-    }
-
-    function saveNote(id) {
-        const val = document.getElementById(`note-${id}`).value;
-        userBackstage.sektorNotizen[id] = val;
+function verifiziereUser() {
+    const email = document.getElementById('user-email-input').value;
+    if (email.includes('@')) {
+        userBackstage.isVerifiziert = true;
         localStorage.setItem('mm_user_data', JSON.stringify(userBackstage));
-        alert("Sektor-Dokument gesichert.");
+        alert("Verifizierung erfolgreich! Alle Sektoren sind nun frei.");
+        location.reload();
     }
+}
 
-    function adminUnlock() {
-        const pw = prompt("Admin-Code:");
-        if (pw === "1234") {
-            userBackstage.isVerifiziert = true;
-            localStorage.setItem('mm_user_data', JSON.stringify(userBackstage));
-            location.reload();
-        }
+function verbindeChat() {
+    if (aktuellerChannel) aktuellerChannel.unsubscribe();
+    const channelName = "sektor_" + (tId + 1);
+    aktuellerChannel = ably.channels.get(channelName);
+    
+    aktuellerChannel.subscribe('message', (msg) => {
+        if (msg.data.tabId !== meinTabId) anzeigeNachricht(msg.data.text, 'fremd');
+    });
+
+    const box = document.getElementById('chat-box');
+    box.innerHTML = `<div style="color:#555; font-size:0.8rem;">Verbunden mit Sektor ${tId + 1}</div>`;
+}
+
+function registriereSenden() {
+    const input = document.getElementById('chat-input');
+    const txt = input.value.trim();
+    if (txt && aktuellerChannel) {
+        aktuellerChannel.publish('message', { text: txt, tabId: meinTabId });
+        anzeigeNachricht(txt, 'eigen');
+        input.value = "";
     }
+}
 
-    window.onload = initApp;
+function anzeigeNachricht(txt, typ) {
+    const box = document.getElementById('chat-box');
+    const mDiv = document.createElement('div');
+    mDiv.style.margin = "5px 0";
+    mDiv.style.color = typ === 'eigen' ? '#ffd700' : '#fff';
+    mDiv.innerText = (typ === 'eigen' ? "DU: " : "ANON: ") + txt;
+    box.appendChild(mDiv);
+    box.scrollTop = box.scrollHeight;
+}
+
+function toggleDrawer(id) {
+    const d = id === 'master' ? document.getElementById('master-archiv-container') : document.getElementById(`drawer-${id}`);
+    if (d) d.classList.toggle('open');
+}
+
+function saveNote(id) {
+    const val = document.getElementById(`note-${id}`).value;
+    userBackstage.sektorNotizen[id] = val;
+    localStorage.setItem('mm_user_data', JSON.stringify(userBackstage));
+    alert("Sektor-Dokument gesichert.");
+}
+
+function adminUnlock() {
+    const pw = prompt("Admin-Code:");
+    if (pw === "1234") {
+        userBackstage.isVerifiziert = true;
+        localStorage.setItem('mm_user_data', JSON.stringify(userBackstage));
+        location.reload();
+    }
+}
+
+window.onload = initApp;
 </script>
 </body>
 </html>
