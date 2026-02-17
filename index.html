@@ -134,22 +134,26 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    gap: 5px;
-    width: 100%;
-    height: 100%; /* Füllt jetzt exakt den Raum bis zur Navi */
+    gap: 10px;
+    width: 95vw;
+    height: 80vh;
 }
 
-.geschworenen-box, #jitsi-slot {
-    border: 1px solid #003d8f;
-    background: rgba(0, 26, 61, 0.4);
+/* Sitz 1-8: Die Teilnehmer-Plätze */
+.geschworenen-box {
+    border: 2px solid #003d8f;
+    background: rgba(0, 0, 0, 0.8);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #fff;
-    font-size: 0.8rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    /* Kein fester aspect-ratio, damit es sich in den calc-Raum presst */
+    transition: all 0.5s;
+}
+
+/* Slot 9: Der Zünder */
+#jitsi-slot {
+    border: 2px solid #ff0000; /* Alarm-Rot für den Zünder */
+    grid-column: 3;
+    grid-row: 3;
 }
     </style>
 </head>
@@ -494,27 +498,34 @@ function toggleJitsiInline() {
     const jContainer = document.getElementById('jitsi-container-small');
     const jBtn = document.getElementById('mini-join-btn');
     
-    if (!jContainer) return;
     jBtn.style.display = 'none';
     jContainer.style.display = 'block';
 
     if (!jitsiApi) {
-        // Wir nutzen den freien Community-Server
         const domain = "meet.jit.si"; 
         const options = {
-            roomName: "MM_Sektor_Konferenz_" + (tId + 1),
+            roomName: "MM_Schöpfergericht_Sektor_" + (tId + 1),
             width: "100%",
             height: "100%",
             parentNode: jContainer,
             configOverwrite: {
-                prejoinPageEnabled: false, // Springt direkt ins Meeting
-                startWithAudioMuted: true
+                startWithAudioMuted: false,
+                startWithVideoMuted: false,
+                tileViewEnabled: true, // Zündet den Kachelmodus für die 8 Sitze
+                prejoinPageEnabled: false
             },
             interfaceConfigOverwrite: {
-                TOOLBAR_BUTTONS: ['microphone', 'camera', 'hangup', 'tileview']
+                TOOLBAR_BUTTONS: ['microphone', 'camera', 'tileview', 'hangup'],
+                CANVAS_EXTRA_COMPACT: true
             }
         };
         jitsiApi = new JitsiMeetExternalAPI(domain, options);
+
+        // Event: Sobald der Zünder aktiv ist, leuchten die Lämpchen auf Ebene 4
+        jitsiApi.addEventListener('videoConferenceJoined', () => {
+            document.getElementById('sig-l4').classList.add('signal-aktiv');
+            console.log("Das Gericht ist eröffnet. Zündung erfolgt.");
+        });
     }
 }
 /* --- SYSTEM-FUNKTIONEN --- */
