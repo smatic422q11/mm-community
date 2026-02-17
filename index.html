@@ -9,117 +9,184 @@
     <script src="https://8x8.vc/vpaas-magic-cookie-8e05a5a1e2a14e6e9e1f1e1e1e1e1e1e/external_api.js"></script>
 
     <style>
-        /* DESIGN (CSS) */
+        :root { --neon: #00ffcc; --bg: #0a0a0a; --darker: #050505; --warn: #ff0055; }
+        
         body {
-            background: #0a0a0a; color: #00ffcc; font-family: 'Courier New', monospace;
-            margin: 0; padding: 20px; text-align: center;
+            background: var(--bg); color: var(--neon); font-family: 'Courier New', monospace;
+            margin: 0; padding: 20px; overflow-x: hidden;
         }
 
-        #main-header { border-bottom: 2px solid #00ffcc; padding-bottom: 20px; margin-bottom: 30px; }
+        #main-header { 
+            border: 1px solid var(--neon); padding: 20px; margin-bottom: 30px; 
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.2);
+        }
 
+        /* Das Hürden-Grid */
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px; max-width: 1200px; margin: 0 auto;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px; max-width: 1200px; margin: 0 auto;
         }
 
         .box {
-            background: #1a1a1a; border: 1px solid #333; height: 100px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.3s; font-weight: bold;
+            background: var(--darker); border: 1px solid #333; height: 120px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.4s ease; position: relative;
+            overflow: hidden;
         }
 
-        .box:hover { background: #00ffcc; color: #000; box-shadow: 0 0 15px #00ffcc; }
+        .box:hover { 
+            border-color: var(--neon); color: #000; background: var(--neon);
+            box-shadow: 0 0 20px var(--neon); transform: translateY(-5px);
+        }
 
-        /* Die Schubladen (Modals) */
+        .box::before {
+            content: "SEKTOR 1"; font-size: 10px; position: absolute; top: 5px; left: 5px; opacity: 0.5;
+        }
+
+        /* Das Schubladen-System (Drawer) */
         #drawer-system {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.95); display: none; 
-            justify-content: center; align-items: center; z-index: 1000;
+            position: fixed; top: 0; right: -100%; width: 100%; height: 100%;
+            background: var(--bg); transition: right 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+            z-index: 2000; display: flex; flex-direction: column;
         }
 
-        .drawer-content {
-            background: #111; border: 2px solid #00ffcc; width: 90%; height: 90%;
-            padding: 20px; position: relative; display: flex; flex-direction: column;
+        #drawer-system.open { right: 0; }
+
+        .drawer-header {
+            padding: 20px; border-bottom: 1px solid var(--neon);
+            display: flex; justify-content: space-between; align-items: center;
         }
 
-        .close-btn { position: absolute; right: 20px; top: 10px; font-size: 40px; cursor: pointer; color: #ff0055; }
+        .close-btn { font-size: 40px; cursor: pointer; color: var(--warn); }
 
-        /* Video & Chat Bereiche */
-        #video-slot { flex: 2; background: #000; margin-bottom: 10px; border: 1px solid #333; min-height: 300px; }
-        #chat-container { flex: 1; background: #1a1a1a; border: 1px solid #333; overflow-y: auto; padding: 10px; text-align: left; }
-        
-        .chat-msg { margin-bottom: 5px; border-bottom: 1px solid #222; padding: 5px; }
+        .drawer-body {
+            display: flex; flex: 1; padding: 20px; gap: 20px; flex-wrap: wrap;
+        }
+
+        /* Video Slot */
+        #video-slot { 
+            flex: 2; min-width: 300px; background: #000; 
+            border: 1px solid #222; position: relative;
+        }
+
+        /* Chat Bereich */
+        #chat-section { 
+            flex: 1; min-width: 300px; display: flex; flex-direction: column;
+            background: #111; border: 1px solid var(--neon); padding: 15px;
+        }
+
+        #chat-messages { 
+            flex: 1; overflow-y: auto; margin-bottom: 10px; font-size: 14px; 
+            text-align: left; border-bottom: 1px solid #222;
+        }
+
+        .chat-input-area { display: flex; gap: 10px; }
+        input { 
+            flex: 1; background: #000; border: 1px solid var(--neon); 
+            color: var(--neon); padding: 10px; outline: none;
+        }
+        button { background: var(--neon); border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; }
+
+        .system-msg { color: #888; font-style: italic; font-size: 12px; margin-bottom: 8px; }
+        .user-msg { margin-bottom: 8px; border-left: 2px solid var(--neon); padding-left: 8px; }
     </style>
 </head>
 <body>
 
     <header id="main-header">
-        <h1>SEKTOR 1: SPIEGEL DER WAHRHAFTIGKEIT</h1>
-        <p>Die Maschine im Dienst der Seele – Du bist der Ursprung.</p>
+        <h1>SPIEGEL DER WAHRHAFTIGKEIT</h1>
+        <p>Hürden-System: Die Maschine im Dienst der Seele.</p>
     </header>
 
-    <main id="dashboard">
-        <div class="grid-container" id="main-grid">
-            </div>
+    <div class="grid-container" id="main-grid"></div>
 
-        <div id="drawer-system">
-            <div class="drawer-content">
-                <span class="close-btn" onclick="closeDrawer()">&times;</span>
-                <h2 id="drawer-title">Hürde</h2>
-                <div id="video-slot"></div>
-                <div id="chat-container">
-                    <div class="chat-msg">System: Verbindung zu Sektor 1 wird hergestellt...</div>
+    <div id="drawer-system">
+        <div class="drawer-header">
+            <h2 id="active-title">Hürde X</h2>
+            <span class="close-btn" onclick="closeDrawer()">&times;</span>
+        </div>
+        <div class="drawer-body">
+            <div id="video-slot"></div>
+            
+            <div id="chat-section">
+                <div id="chat-messages"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="msg-input" placeholder="Wahrheit eingeben...">
+                    <button onclick="sendMessage()">SENDEN</button>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
 
     <script>
-        /* LOGIK (JAVASCRIPT) */
         const grid = document.getElementById('main-grid');
         const drawer = document.getElementById('drawer-system');
         const videoSlot = document.getElementById('video-slot');
-        const drawerTitle = document.getElementById('drawer-title');
+        const chatMessages = document.getElementById('chat-messages');
+        const msgInput = document.getElementById('msg-input');
+        
+        let ably, channel;
 
-        // 1. Erzeuge die 20 Boxen
+        // 1. Initialisierung der 20 Hürden
         for (let i = 1; i <= 20; i++) {
             const box = document.createElement('div');
             box.className = 'box';
-            box.innerHTML = `HÜRDE ${i}`;
+            box.innerHTML = `<span>HÜRDE</span><strong>${i}</strong>`;
             box.onclick = () => openDrawer(i);
             grid.appendChild(box);
         }
 
-        // 2. Funktion: Schublade öffnen & Jitsi starten
+        // 2. Ably Setup (Echtzeit-Verbindung)
+        // HINWEIS: Hier setzt du später deinen eigenen Key ein.
+        ably = new Ably.Realtime('I0i7_A.Yp_6dA:z40pTfKj8_GvP0_T'); // Test-Key
+
+        function setupChat(huerdeId) {
+            chatMessages.innerHTML = `<div class="system-msg">Kanal Sektor-1-Hürde-${huerdeId} verbunden...</div>`;
+            channel = ably.channels.get('huerde-' + huerdeId);
+            
+            channel.subscribe('message', (msg) => {
+                const msgDiv = document.createElement('div');
+                msgDiv.className = 'user-msg';
+                msgDiv.innerText = msg.data;
+                chatMessages.appendChild(msgDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
+        }
+
+        // 3. Schublade öffnen & Jitsi laden
         function openDrawer(id) {
-            drawer.style.display = 'flex';
-            drawerTitle.innerText = `HÜRDE ${id} - AKTIV`;
+            document.getElementById('active-title').innerText = `HÜRDE ${id}`;
+            drawer.classList.add('open');
             
-            // Jitsi Meet Integration
-            const domain = "meet.jit.si";
+            // Jitsi Video Start
             const options = {
-                roomName: "Sektor1_Huerde_Room_" + id,
-                width: "100%",
-                height: "100%",
-                parentNode: videoSlot,
-                interfaceConfigOverwrite: {
-                    TOOLBAR_BUTTONS: ['microphone', 'camera', 'chat', 'raisehand']
-                }
+                roomName: "Sektor1_Wahrheit_" + id,
+                width: "100%", height: "100%",
+                parentNode: videoSlot
             };
-            
-            videoSlot.innerHTML = ""; // Alten Video-Inhalt leeren
-            try {
-                new JitsiMeetExternalAPI(domain, options);
-            } catch (e) {
-                videoSlot.innerHTML = "<p style='color:red'>Jitsi konnte nicht geladen werden. API-Fehler.</p>";
+            videoSlot.innerHTML = "";
+            new JitsiMeetExternalAPI("meet.jit.si", options);
+
+            setupChat(id);
+        }
+
+        // 4. Nachricht senden
+        function sendMessage() {
+            const text = msgInput.value;
+            if(text && channel) {
+                channel.publish('message', text);
+                msgInput.value = '';
             }
         }
 
-        // 3. Funktion: Schließen
+        // Enter-Taste zum Senden
+        msgInput.addEventListener("keypress", (e) => { if(e.key === "Enter") sendMessage(); });
+
         function closeDrawer() {
-            drawer.style.display = 'none';
-            videoSlot.innerHTML = ""; // Video beenden
+            drawer.classList.remove('open');
+            videoSlot.innerHTML = "";
+            if(channel) channel.unsubscribe();
         }
     </script>
 </body>
