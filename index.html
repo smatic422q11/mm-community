@@ -3,118 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sektor 1-20 - Die Plattform</title>
+    <title>SEKTOR 1 - Die lebende Plattform</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <script src="https://8x8.vc/vpaas-magic-cookie-8e05a5a1e2a14e6e9e1f1e1e1e1e1e1e/external_api.js"></script>
-
     <style>
-        :root { --neon: #00ffcc; --bg: #0a0a0a; --dark: #050505; --warn: #ff0055; }
-        body { background: var(--bg); color: var(--neon); font-family: 'Courier New', monospace; margin: 0; padding: 20px; overflow: hidden; height: 100vh; }
+        :root { --neon: #00ffcc; --bg: #050505; --warn: #ff0055; }
+        body { background: var(--bg); color: var(--neon); font-family: 'Courier New', monospace; margin: 0; overflow: hidden; height: 100vh; }
         
         /* Grid */
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; max-width: 1200px; margin: 0 auto; }
-        .box { background: var(--dark); border: 1px solid #333; height: 80px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; font-weight: bold; }
-        .box:hover { border-color: var(--neon); background: var(--neon); color: #000; box-shadow: 0 0 15px var(--neon); }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; padding: 20px; }
+        .box { border: 1px solid #333; height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; background: #0a0a0a; }
+        .box:hover { border-color: var(--neon); box-shadow: 0 0 15px var(--neon); color: #000; background: var(--neon); }
+        .box .occupancy { font-size: 10px; margin-top: 5px; opacity: 0.7; }
 
-        /* Schubladen */
-        #main-drawer { position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: var(--bg); transition: 0.5s ease; z-index: 1000; display: flex; flex-direction: column; }
-        #main-drawer.active { right: 0; }
+        /* Drawer System */
+        #drawer { position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: #000; transition: 0.5s cubic-bezier(0.1, 0.7, 1.0, 0.1); z-index: 1000; display: flex; }
+        #drawer.active { right: 0; }
         
-        .drawer-header { padding: 10px 20px; border-bottom: 1px solid var(--neon); display: flex; justify-content: space-between; align-items: center; background: #000; }
-        .content-wrapper { display: flex; flex: 1; overflow: hidden; }
+        /* Video Area */
+        #video-grid { flex: 3; display: grid; grid-template-columns: 1fr 1fr; background: #000; border-right: 1px solid var(--neon); }
         
-        /* Video & Chat */
-        #video-container { flex: 2; background: #000; border-right: 1px solid #222; min-height: 200px; }
-        #chat-container { flex: 1; display: flex; flex-direction: column; background: #050505; padding: 15px; min-width: 250px; }
-        #messages { flex: 1; overflow-y: auto; font-size: 12px; border-bottom: 1px solid #222; margin-bottom: 10px; text-align: left; }
+        /* Chat & Control Area */
+        #side-panel { flex: 1; display: flex; flex-direction: column; padding: 15px; background: #0a0a0a; }
+        #chat-window { flex: 1; overflow-y: auto; border-bottom: 1px solid #333; margin-bottom: 10px; font-size: 12px; }
         
-        input { width: 80%; background: #000; border: 1px solid var(--neon); color: var(--neon); padding: 8px; }
-        .action-btn { background: none; border: 1px solid var(--neon); color: var(--neon); padding: 10px; cursor: pointer; margin-top: 10px; font-weight: bold; width: 100%; }
+        .close-btn { position: absolute; top: 10px; right: 20px; font-size: 30px; cursor: pointer; color: var(--warn); z-index: 2000; }
         
-        /* Sub-Drawer */
-        #sub-drawer { position: absolute; top: 0; right: -100%; width: 40%; height: 100%; background: #111; border-left: 2px solid var(--neon); transition: 0.4s ease; z-index: 2000; padding: 20px; box-sizing: border-box; overflow-y: auto; }
-        #sub-drawer.active { right: 0; }
-        .close-btn { font-size: 30px; cursor: pointer; color: var(--warn); }
+        /* Slot-Anzeige */
+        .slot-info { font-size: 14px; margin-bottom: 10px; color: #fff; border-bottom: 1px solid var(--neon); padding-bottom: 5px; }
+        .btn-sub { background: none; border: 1px solid var(--neon); color: var(--neon); padding: 8px; cursor: pointer; margin-top: 5px; font-size: 10px; }
     </style>
 </head>
 <body>
 
-    <header style="text-align: center; margin-bottom: 20px;">
-        <h2 style="margin:0;">SPIEGEL DER WAHRHAFTIGKEIT</h2>
+    <header style="padding: 10px 20px; border-bottom: 1px solid var(--neon); display: flex; justify-content: space-between;">
+        <span>SPIEGEL DER WAHRHAFTIGKEIT</span>
+        <span id="global-status">Status: Sektor-Netzwerk bereit</span>
     </header>
 
     <div class="grid-container" id="grid"></div>
 
-    <div id="main-drawer">
-        <div class="drawer-header"><h3 id="title">Hürde</h3><span class="close-btn" onclick="toggleMain()">&times;</span></div>
-        <div class="content-wrapper">
-            <div id="video-container"></div>
-            <div id="chat-container">
-                <div id="messages"></div>
-                <div><input type="text" id="chat-in" placeholder="Antwort..."><button onclick="sendMsg()" style="background:var(--neon); border:none; padding:8px; cursor:pointer;">GO</button></div>
-                <button class="action-btn" onclick="toggleSub()">SEKTOR-TEXT</button>
+    <div id="drawer">
+        <span class="close-btn" onclick="exitSektor()">&times;</span>
+        
+        <div id="video-grid">
             </div>
-        </div>
-        <div id="sub-drawer">
-            <span class="close-btn" onclick="toggleSub()">&times;</span>
-            <h3 id="sub-title" style="color:var(--neon);">SEKTOR</h3>
-            <p id="philosophy-content" style="line-height:1.5; font-size: 14px; color: #ccc; white-space: pre-line;"></p>
+
+        <div id="side-panel">
+            <div class="slot-info" id="slot-name">Sektor X - Tisch 1</div>
+            <div id="chat-window"></div>
+            <input type="text" id="chat-in" placeholder="Wahrheit schreiben..." style="background:#000; border:1px solid var(--neon); color:var(--neon); padding:10px;">
+            <button onclick="sendMsg()" style="background:var(--neon); border:none; padding:10px; margin-top:5px; cursor:pointer; font-weight:bold;">SENDEN</button>
+            <button class="btn-sub" onclick="alert('Text 1: Sektor 1 ist das Fundament dieser Bewegung...')">SEKTOR-PROTOKOLL</button>
         </div>
     </div>
 
     <script>
         const grid = document.getElementById('grid');
-        const mainDrawer = document.getElementById('main-drawer');
-        const subDrawer = document.getElementById('sub-drawer');
-        const videoCont = document.getElementById('video-container');
-        const msgCont = document.getElementById('messages');
+        const drawer = document.getElementById('drawer');
+        const videoGrid = document.getElementById('video-grid');
+        const chatWindow = document.getElementById('chat-window');
         const chatIn = document.getElementById('chat-in');
 
-        // Die Texte
-        const sektorenDaten = {
-            1: "Sektor 1: Das Recht auf Gefühlsvorderung...\nDie digitale Welt hat eine Schicht aus Taubheit über das menschliche Erleben gelegt...",
-            // Hier kannst du die anderen Texte einfügen
-        };
+        // ABLY REALTIME SETUP (Dein Schlüssel für echtes Live-Chatten)
+        // Ersetze 'DEIN_API_KEY' mit deinem echten Ably Key!
+        let ably = new Ably.Realtime('I0i7_A.Yp_6dA:z40pTfKj8_GvP0_T'); 
+        let channel;
 
-        // Grid bauen
+        // Erstelle 20 Sektoren
         for (let i = 1; i <= 20; i++) {
-            let b = document.createElement('div');
-            b.className = 'box'; b.innerText = i;
-            b.onclick = () => openHuerde(i);
-            grid.appendChild(b);
+            let box = document.createElement('div');
+            box.className = 'box';
+            box.innerHTML = `<span>HÜRDE ${i}</span><span class="occupancy" id="occ-${i}">Live</span>`;
+            box.onclick = () => enterSektor(i);
+            grid.appendChild(box);
         }
 
-        // Ably Simulation (Falls Key nicht geht, stürzt nichts ab)
-        let ably, channel;
-        try {
-            ably = new Ably.Realtime('I0i7_A.Yp_6dA:z40pTfKj8_GvP0_T');
-        } catch(e) { console.log("Ably Fehler"); }
-
-        function openHuerde(id) {
-            document.getElementById('title').innerText = 'HÜRDE ' + id;
-            document.getElementById('sub-title').innerText = 'SEKTOR ' + id;
-            document.getElementById('philosophy-content').innerText = sektorenDaten[id] || "Sektor-Text wird geladen...";
-            mainDrawer.classList.add('active');
+        function enterSektor(id) {
+            drawer.classList.add('active');
             
-            // Jitsi Video Start
-            videoCont.innerHTML = "";
-            try {
-                new JitsiMeetExternalAPI("meet.jit.si", { roomName: "Sektor1_Test_" + id, width: "100%", height: "100%", parentNode: videoCont });
-            } catch(e) { videoCont.innerHTML = "Video-Fehler"; }
+            // AUTOMATISCHE TISCH-LOGIK:
+            // Wir erstellen einen Raumnamen, der auf der Teilnehmerzahl basiert (Simulation hier via ID)
+            // In einer echten Umgebung würde man prüfen: Ist Tisch 1 voll (>8)? Dann nimm Tisch 2.
+            let tischNummer = 1; 
+            let roomName = `Sektor_${id}_Tisch_${tischNummer}`;
+            document.getElementById('slot-name').innerText = `SEKTOR ${id} - TISCH ${tischNummer}`;
 
-            // Chat Verbindung
-            if(ably) {
-                channel = ably.channels.get('room-' + id);
-                channel.subscribe('msg', (m) => {
-                    msgCont.innerHTML += `<div><b>User:</b> ${m.data}</div>`;
-                    msgCont.scrollTop = msgCont.scrollHeight;
-                });
+            // JITSI VIDEO START (8 Personen pro Tisch)
+            videoGrid.innerHTML = "";
+            const api = new JitsiMeetExternalAPI("meet.jit.si", {
+                roomName: roomName,
+                width: "100%",
+                height: "100%",
+                parentNode: videoGrid,
+                configOverwrite: { startWithAudioMuted: true, maxFullVideoParticipants: 8 }
+            });
+
+            // ABLY CHAT START
+            chatWindow.innerHTML = `<div style="color:#666">Verbunden mit Sektor ${id}...</div>`;
+            channel = ably.channels.get('chat-sektor-' + id);
+            channel.subscribe('msg', (m) => {
+                let msg = document.createElement('div');
+                msg.style.marginBottom = "5px";
+                msg.innerHTML = `<b>Gast:</b> ${m.data}`;
+                chatWindow.appendChild(msg);
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+            });
+        }
+
+        function sendMsg() {
+            if(chatIn.value && channel) {
+                channel.publish('msg', chatIn.value);
+                chatIn.value = '';
             }
         }
 
-        function sendMsg() { if(chatIn.value && channel) { channel.publish('msg', chatIn.value); chatIn.value = ''; } }
-        function toggleMain() { mainDrawer.classList.remove('active'); subDrawer.classList.remove('active'); videoCont.innerHTML = ""; if(channel) channel.unsubscribe(); }
-        function toggleSub() { subDrawer.classList.toggle('active'); }
+        function exitSektor() {
+            drawer.classList.remove('active');
+            videoGrid.innerHTML = "";
+            if(channel) channel.unsubscribe();
+        }
+
+        chatIn.addEventListener("keypress", (e) => { if(e.key === "Enter") sendMsg(); });
     </script>
 </body>
 </html>
