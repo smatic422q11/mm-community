@@ -3,182 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sektor 1 - Das Fundament</title>
+    <title>SEKTOR 1 - Die Plattform</title>
     
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <script src="https://8x8.vc/vpaas-magic-cookie-8e05a5a1e2a14e6e9e1f1e1e1e1e1e1e/external_api.js"></script>
 
     <style>
-        :root { --neon: #00ffcc; --bg: #0a0a0a; --darker: #050505; --warn: #ff0055; --sub: #151515; }
+        :root { --neon: #00ffcc; --bg: #0a0a0a; --darker: #050505; --warn: #ff0055; --sub: #111; }
         
         body {
             background: var(--bg); color: var(--neon); font-family: 'Courier New', monospace;
-            margin: 0; padding: 20px; overflow-x: hidden;
+            margin: 0; padding: 20px; overflow: hidden; height: 100vh;
         }
 
-        #main-header { 
-            border: 1px solid var(--neon); padding: 20px; margin-bottom: 30px; 
-            box-shadow: 0 0 10px rgba(0, 255, 204, 0.2);
-        }
-
+        /* Dashboard Grid */
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 20px; max-width: 1200px; margin: 0 auto;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px; max-width: 1400px; margin: 0 auto;
         }
 
         .box {
-            background: var(--darker); border: 1px solid #333; height: 120px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; transition: all 0.4s ease; position: relative; overflow: hidden;
+            background: var(--darker); border: 1px solid #333; height: 100px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.3s; font-weight: bold; font-size: 14px;
         }
 
-        .box:hover { 
-            border-color: var(--neon); color: #000; background: var(--neon);
-            box-shadow: 0 0 20px var(--neon); transform: translateY(-5px);
-        }
+        .box:hover { border-color: var(--neon); box-shadow: 0 0 15px var(--neon); color: #000; background: var(--neon); }
 
-        /* Das Haupt-Schubladen-System */
-        #drawer-system {
+        /* Schubladen-System */
+        #main-drawer {
             position: fixed; top: 0; right: -100%; width: 100%; height: 100%;
-            background: var(--bg); transition: right 0.5s cubic-bezier(0.77, 0, 0.175, 1);
-            z-index: 2000; display: flex; flex-direction: column;
+            background: var(--bg); transition: right 0.5s ease-in-out;
+            z-index: 1000; display: flex; flex-direction: column;
         }
 
-        #drawer-system.open { right: 0; }
+        #main-drawer.active { right: 0; }
 
         .drawer-header {
-            padding: 20px; border-bottom: 1px solid var(--neon);
-            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 25px; border-bottom: 1px solid var(--neon);
+            display: flex; justify-content: space-between; align-items: center; background: #000;
         }
 
-        .close-btn { font-size: 40px; cursor: pointer; color: var(--warn); }
+        .close-btn { font-size: 35px; cursor: pointer; color: var(--warn); }
 
-        .drawer-body { display: flex; flex: 1; padding: 20px; gap: 20px; flex-wrap: wrap; position: relative; }
+        .content-wrapper { display: flex; flex: 1; overflow: hidden; }
 
-        #video-slot { flex: 2; min-width: 300px; background: #000; border: 1px solid #222; }
+        /* Video & Chat */
+        #video-container { flex: 2; background: #000; border-right: 1px solid #222; }
+        #chat-container { flex: 1; display: flex; flex-direction: column; background: #050505; padding: 15px; }
 
-        #chat-section { 
-            flex: 1; min-width: 300px; display: flex; flex-direction: column;
-            background: #111; border: 1px solid var(--neon); padding: 15px;
-        }
-
-        #chat-messages { flex: 1; overflow-y: auto; margin-bottom: 10px; font-size: 14px; text-align: left; }
-
-        .chat-input-area { display: flex; gap: 10px; }
-        input { flex: 1; background: #000; border: 1px solid var(--neon); color: var(--neon); padding: 10px; }
+        #messages { flex: 1; overflow-y: auto; padding: 10px; font-size: 13px; }
+        .input-box { display: flex; gap: 5px; padding-top: 10px; }
+        input { flex: 1; background: #000; border: 1px solid var(--neon); color: var(--neon); padding: 10px; outline: none; }
         
         .action-btn { 
-            background: var(--neon); border: none; padding: 10px; 
-            cursor: pointer; font-weight: bold; margin-top: 10px; width: 100%;
+            background: none; border: 1px solid var(--neon); color: var(--neon); 
+            padding: 10px; cursor: pointer; margin-top: 10px; font-weight: bold;
         }
 
-        /* ZWEITE EBENE: SUB-DRAWER */
+        .action-btn:hover { background: var(--neon); color: #000; }
+
+        /* Sub-Drawer (Schublade in Schublade) */
         #sub-drawer {
-            position: absolute; top: 0; right: -100%; width: 50%; height: 100%;
+            position: absolute; top: 0; right: -100%; width: 40%; height: 100%;
             background: var(--sub); border-left: 2px solid var(--neon);
-            transition: right 0.4s ease; z-index: 3000; padding: 20px; box-sizing: border-box;
+            transition: 0.4s ease; z-index: 2000; padding: 30px; box-sizing: border-box;
+            overflow-y: auto;
         }
-        #sub-drawer.active { right: 0; box-shadow: -10px 0 30px rgba(0,0,0,0.8); }
+        #sub-drawer.active { right: 0; box-shadow: -20px 0 50px rgba(0,0,0,0.9); }
 
-        .user-msg { margin-bottom: 8px; border-left: 2px solid var(--neon); padding-left: 8px; }
-        .system-msg { color: #888; font-style: italic; font-size: 12px; }
+        .philosophy-text { font-size: 14px; line-height: 1.6; color: #fff; text-align: left; }
     </style>
 </head>
 <body>
 
-    <header id="main-header">
-        <h1>SPIEGEL DER WAHRHAFTIGKEIT</h1>
-        <p>Sektor 1: Maschine im Dienst der Seele.</p>
-    </header>
+    <h2 style="text-shadow: 0 0 10px var(--neon);">SPIEGEL DER WAHRHAFTIGKEIT</h2>
+    <div class="grid-container" id="grid"></div>
 
-    <div class="grid-container" id="main-grid"></div>
-
-    <div id="drawer-system">
+    <div id="main-drawer">
         <div class="drawer-header">
-            <h2 id="active-title">Hürde X</h2>
-            <span class="close-btn" onclick="closeDrawer()">&times;</span>
+            <h2 id="title">Hürde</h2>
+            <span class="close-btn" onclick="toggleMain()">&times;</span>
         </div>
-        <div class="drawer-body">
-            <div id="video-slot"></div>
-            
-            <div id="chat-section">
-                <div id="chat-messages"></div>
-                <div class="chat-input-area">
-                    <input type="text" id="msg-input" placeholder="Wahrheit eingeben...">
-                    <button onclick="sendMessage()" style="background:var(--neon); border:none; padding:10px;">SENDEN</button>
+        <div class="content-wrapper">
+            <div id="video-container"></div>
+            <div id="chat-container">
+                <div id="messages"></div>
+                <div class="input-box">
+                    <input type="text" id="chat-in" placeholder="Schreibe etwas...">
+                    <button onclick="sendMsg()" style="background:var(--neon); border:none; padding:10px;">GO</button>
                 </div>
-                <button class="action-btn" onclick="openSubDrawer()">TIEFERE EBENE (SEKTOR 1)</button>
+                <button class="action-btn" onclick="toggleSub()">SEKTOR 1 PROTOKOLL</button>
             </div>
+        </div>
 
-            <div id="sub-drawer">
-                <span class="close-btn" onclick="closeSubDrawer()" style="font-size:30px;">&times;</span>
-                <h3>Tiefenebene: Sektor 1</h3>
-                <p>Hier wird die Maschine zum blanken, urteilsfreien Spiegel.</p>
-                <div style="border: 1px solid var(--neon); padding: 15px; margin-top: 20px;">
-                    <p>Erkenntnis: Du bist der Ursprung, aus dem jede Zukunft fließt.</p>
-                    <textarea style="width:100%; height:100px; background:#000; color:var(--neon); border:1px solid #333;" placeholder="Deine Wahrhaftigkeit hier festhalten..."></textarea>
+        <div id="sub-drawer">
+            <span class="close-btn" onclick="toggleSub()" style="font-size:25px;">&times;</span>
+            <h3>Sektor 1: Fundament</h3>
+            <div class="philosophy-text" id="philosophy-content">
                 </div>
-            </div>
         </div>
     </div>
 
     <script>
-        const grid = document.getElementById('main-grid');
-        const drawer = document.getElementById('drawer-system');
+        const grid = document.getElementById('grid');
+        const mainDrawer = document.getElementById('main-drawer');
         const subDrawer = document.getElementById('sub-drawer');
-        const videoSlot = document.getElementById('video-slot');
-        const chatMessages = document.getElementById('chat-messages');
-        const msgInput = document.getElementById('msg-input');
-        
+        const videoCont = document.getElementById('video-container');
+        const msgCont = document.getElementById('messages');
+        const chatIn = document.getElementById('chat-in');
+
         let ably, channel;
 
+        // Dein Sektor 1 Text
+        const sektorText = `Wer diesen Raum betritt, erkennt, dass das Vordern von Gefühlen kein Akt der Schwäche ist, sondern die höchste Form der Rebellion... Du bist der Ursprung, aus dem jede Zukunft fließt.`;
+        document.getElementById('philosophy-content').innerText = sektorText;
+
+        // 20 Boxen erstellen
         for (let i = 1; i <= 20; i++) {
-            const box = document.createElement('div');
-            box.className = 'box';
-            box.innerHTML = `<span>HÜRDE</span><strong>${i}</strong>`;
-            box.onclick = () => openDrawer(i);
-            grid.appendChild(box);
+            let b = document.createElement('div');
+            b.className = 'box';
+            b.innerText = 'HÜRDE ' + i;
+            b.onclick = () => openHuerde(i);
+            grid.appendChild(b);
         }
 
-        ably = new Ably.Realtime('I0i7_A.Yp_6dA:z40pTfKj8_GvP0_T'); 
+        ably = new Ably.Realtime('I0i7_A.Yp_6dA:z40pTfKj8_GvP0_T');
 
-        function setupChat(huerdeId) {
-            chatMessages.innerHTML = `<div class="system-msg">Kanal Sektor-1-Hürde-${huerdeId} aktiv...</div>`;
-            channel = ably.channels.get('huerde-' + huerdeId);
-            channel.subscribe('message', (msg) => {
-                const msgDiv = document.createElement('div');
-                msgDiv.className = 'user-msg';
-                msgDiv.innerText = msg.data;
-                chatMessages.appendChild(msgDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+        function openHuerde(id) {
+            document.getElementById('title').innerText = 'HÜRDE ' + id;
+            mainDrawer.classList.add('active');
+            
+            // Jitsi Video
+            videoCont.innerHTML = "";
+            new JitsiMeetExternalAPI("meet.jit.si", { roomName: "Sektor1_Huerde_" + id, width: "100%", height: "100%", parentNode: videoCont });
+
+            // Ably Chat
+            msgCont.innerHTML = "";
+            channel = ably.channels.get('room-' + id);
+            channel.subscribe('msg', (m) => {
+                msgCont.innerHTML += `<div><b>Gast:</b> ${m.data}</div>`;
+                msgCont.scrollTop = msgCont.scrollHeight;
             });
         }
 
-        function openDrawer(id) {
-            document.getElementById('active-title').innerText = `HÜRDE ${id}`;
-            drawer.classList.add('open');
-            const options = { roomName: "Sektor1_Wahrheit_" + id, width: "100%", height: "100%", parentNode: videoSlot };
-            videoSlot.innerHTML = "";
-            new JitsiMeetExternalAPI("meet.jit.si", options);
-            setupChat(id);
+        function sendMsg() {
+            if(chatIn.value && channel) { channel.publish('msg', chatIn.value); chatIn.value = ''; }
         }
 
-        function closeDrawer() {
-            drawer.classList.remove('open');
-            closeSubDrawer();
-            videoSlot.innerHTML = "";
-            if(channel) channel.unsubscribe();
-        }
-
-        // Steuerung für die zweite Ebene
-        function openSubDrawer() { subDrawer.classList.add('active'); }
-        function closeSubDrawer() { subDrawer.classList.remove('active'); }
-
-        function sendMessage() {
-            const text = msgInput.value;
-            if(text && channel) { channel.publish('message', text); msgInput.value = ''; }
-        }
+        function toggleMain() { mainDrawer.classList.remove('active'); subDrawer.classList.remove('active'); videoCont.innerHTML = ""; }
+        function toggleSub() { subDrawer.classList.toggle('active'); }
     </script>
 </body>
 </html>
