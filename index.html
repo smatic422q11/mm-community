@@ -126,38 +126,37 @@
   #drawer-ebene4 {
     display: none;
     width: 100vw;
-    height: 100vh; /* Fest auf Bildschirmhöhe */
+    /* Wir ziehen 60px für die untere Navi ab, damit nichts drunter rutscht */
+    height: calc(100vh - 60px); 
     background: #000;
-    padding: 10px;
+    padding: 5px;
     box-sizing: border-box;
-    overflow: hidden; /* Verhindert Scrollen absolut */
-    justify-content: center;
-    align-items: center;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 #geschworenen-gericht {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 Spalten */
-    grid-template-rows: repeat(3, 1fr);    /* 3 Zeilen - alle gleich hoch */
-    gap: 8px; /* Etwas kleinerer Gap für mehr Platz */
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 5px;
     width: 100%;
-    height: 95vh; /* Nutzt fast die volle Höhe, lässt Platz für Browser-Leisten */
+    height: 100%; /* Füllt jetzt exakt den Raum bis zur Navi */
 }
 
 .geschworenen-box, #jitsi-slot {
-    border: 2px solid #003d8f;
+    border: 1px solid #003d8f;
     background: rgba(0, 26, 61, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
     color: #fff;
+    font-size: 0.8rem;
     font-weight: bold;
     text-transform: uppercase;
-    overflow: hidden; /* Falls Inhalt zu groß wird */
-}
-
-#jitsi-slot {
-    border-color: #ff0000; /* Markierung für das Meeting-Feld */
+    /* Kein fester aspect-ratio, damit es sich in den calc-Raum presst */
 }
     </style>
 </head>
