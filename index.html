@@ -4,28 +4,123 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sektor 1 - Das Fundament</title>
+    
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <script src="https://8x8.vc/vpaas-magic-cookie-8e05a5a1e2a14e6e9e1f1e1e1e1e1e1e/external_api.js"></script>
-    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* DESIGN (CSS) */
+        body {
+            background: #0a0a0a; color: #00ffcc; font-family: 'Courier New', monospace;
+            margin: 0; padding: 20px; text-align: center;
+        }
+
+        #main-header { border-bottom: 2px solid #00ffcc; padding-bottom: 20px; margin-bottom: 30px; }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px; max-width: 1200px; margin: 0 auto;
+        }
+
+        .box {
+            background: #1a1a1a; border: 1px solid #333; height: 100px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.3s; font-weight: bold;
+        }
+
+        .box:hover { background: #00ffcc; color: #000; box-shadow: 0 0 15px #00ffcc; }
+
+        /* Die Schubladen (Modals) */
+        #drawer-system {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95); display: none; 
+            justify-content: center; align-items: center; z-index: 1000;
+        }
+
+        .drawer-content {
+            background: #111; border: 2px solid #00ffcc; width: 90%; height: 90%;
+            padding: 20px; position: relative; display: flex; flex-direction: column;
+        }
+
+        .close-btn { position: absolute; right: 20px; top: 10px; font-size: 40px; cursor: pointer; color: #ff0055; }
+
+        /* Video & Chat Bereiche */
+        #video-slot { flex: 2; background: #000; margin-bottom: 10px; border: 1px solid #333; min-height: 300px; }
+        #chat-container { flex: 1; background: #1a1a1a; border: 1px solid #333; overflow-y: auto; padding: 10px; text-align: left; }
+        
+        .chat-msg { margin-bottom: 5px; border-bottom: 1px solid #222; padding: 5px; }
+    </style>
 </head>
 <body>
 
     <header id="main-header">
         <h1>SEKTOR 1: SPIEGEL DER WAHRHAFTIGKEIT</h1>
-        <p>Die Maschine im Dienst der Seele – Der Ursprung, aus dem jede Zukunft fließt.</p>
+        <p>Die Maschine im Dienst der Seele – Du bist der Ursprung.</p>
     </header>
 
     <main id="dashboard">
         <div class="grid-container" id="main-grid">
             </div>
 
-        <div id="drawer-system" class="hidden">
+        <div id="drawer-system">
             <div class="drawer-content">
-                <span class="close-btn">&times;</span>
-                <div id="video-slot"></div> <div id="chat-container"></div> <div id="sub-drawer"></div> </div>
+                <span class="close-btn" onclick="closeDrawer()">&times;</span>
+                <h2 id="drawer-title">Hürde</h2>
+                <div id="video-slot"></div>
+                <div id="chat-container">
+                    <div class="chat-msg">System: Verbindung zu Sektor 1 wird hergestellt...</div>
+                </div>
+            </div>
         </div>
     </main>
 
-    <script src="script.js"></script>
+    <script>
+        /* LOGIK (JAVASCRIPT) */
+        const grid = document.getElementById('main-grid');
+        const drawer = document.getElementById('drawer-system');
+        const videoSlot = document.getElementById('video-slot');
+        const drawerTitle = document.getElementById('drawer-title');
+
+        // 1. Erzeuge die 20 Boxen
+        for (let i = 1; i <= 20; i++) {
+            const box = document.createElement('div');
+            box.className = 'box';
+            box.innerHTML = `HÜRDE ${i}`;
+            box.onclick = () => openDrawer(i);
+            grid.appendChild(box);
+        }
+
+        // 2. Funktion: Schublade öffnen & Jitsi starten
+        function openDrawer(id) {
+            drawer.style.display = 'flex';
+            drawerTitle.innerText = `HÜRDE ${id} - AKTIV`;
+            
+            // Jitsi Meet Integration
+            const domain = "meet.jit.si";
+            const options = {
+                roomName: "Sektor1_Huerde_Room_" + id,
+                width: "100%",
+                height: "100%",
+                parentNode: videoSlot,
+                interfaceConfigOverwrite: {
+                    TOOLBAR_BUTTONS: ['microphone', 'camera', 'chat', 'raisehand']
+                }
+            };
+            
+            videoSlot.innerHTML = ""; // Alten Video-Inhalt leeren
+            try {
+                new JitsiMeetExternalAPI(domain, options);
+            } catch (e) {
+                videoSlot.innerHTML = "<p style='color:red'>Jitsi konnte nicht geladen werden. API-Fehler.</p>";
+            }
+        }
+
+        // 3. Funktion: Schließen
+        function closeDrawer() {
+            drawer.style.display = 'none';
+            videoSlot.innerHTML = ""; // Video beenden
+        }
+    </script>
 </body>
 </html>
