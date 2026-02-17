@@ -425,7 +425,7 @@ const DASHBOARD_TRUTH = {
         
         updateCounter();
     }
-  function checkAccess(index, thema) {
+ function checkAccess(index, thema) {
     tId = index;
     aktuellesThema = thema;
     if (index < 4 || userBackstage.isVerifiziert) {
@@ -481,44 +481,53 @@ function portalZuEbene4() {
     const mainText = document.getElementById('main-text');
     const chat = document.getElementById('chat-area');
 
-    // UI für das Schöpfergericht vorbereiten
     skelett.classList.add('ebene-4-aktiv');
     title.innerText = "";
     mainText.style.display = 'none';
     chat.style.display = 'none';
     drawer4.style.display = 'flex';
     
-    // Reset Jitsi-Slot Button Sichtbarkeit
-    const jBtn = document.getElementById('mini-join-btn');
-    const jContainer = document.getElementById('jitsi-container-small');
-    if(jBtn) jBtn.style.display = 'block';
-    if(jContainer) jContainer.style.display = 'none';
+    // Starte die Chat-Verbindung direkt für den Slot 9
+    verbindeChatInline();
 }
 
-function toggleJitsiInline() {
-    const jContainer = document.getElementById('jitsi-container-small');
-    const jBtn = document.getElementById('mini-join-btn');
+/* --- INLINE CHAT LOGIK FÜR SLOT 9 --- */
+
+function verbindeChatInline() {
+    if (aktuellerChannel) aktuellerChannel.unsubscribe();
+    const channelName = "sektor_" + (tId + 1);
+    aktuellerChannel = ably.channels.get(channelName);
     
-    if (!jContainer) return;
+    const box = document.getElementById('chat-box-inline');
+    if (box) box.innerHTML = `<div style="color:#555; font-size:0.7rem;">Sektor ${tId + 1} verbunden.</div>`;
 
-    jBtn.style.display = 'none';
-    jContainer.style.display = 'block';
+    aktuellerChannel.subscribe('message', (msg) => {
+        if (msg.data.tabId !== meinTabId) anzeigeNachrichtInline(msg.data.text, 'fremd');
+    });
+}
 
-    if (!jitsiApi) {
-        const domain = "8x8.vc";
-        const options = {
-            roomName: "vpaas-magic-cookie-39f826359e1345d38f8304910901e855/MM_Sektor_" + (tId + 1),
-            width: "100%",
-            height: "100%",
-            parentNode: jContainer,
-            interfaceConfigOverwrite: {
-                TILE_VIEW_MAX_COLUMNS: 1,
-                TOOLBAR_BUTTONS: ['microphone', 'camera', 'hangup'] 
-            }
-        };
-        jitsiApi = new JitsiMeetExternalAPI(domain, options);
+function sendeChatInline() {
+    const input = document.getElementById('chat-input-inline');
+    const txt = input.value.trim();
+    if (txt && aktuellerChannel) {
+        aktuellerChannel.publish('message', { text: txt, tabId: meinTabId });
+        anzeigeNachrichtInline(txt, 'eigen');
+        input.value = "";
     }
 }
+
+function anzeigeNachrichtInline(txt, typ) {
+    const box = document.getElementById('chat-box-inline');
+    if (!box) return;
+    const mDiv = document.createElement('div');
+    mDiv.style.margin = "3px 0";
+    mDiv.style.color = typ === 'eigen' ? '#ffd700' : '#fff';
+    mDiv.innerText = (typ === 'eigen' ? "ICH: " : "ANON: ") + txt;
+    box.appendChild(mDiv);
+    box.scrollTop = box.scrollHeight;
+}
+
+/* --- STANDARD FUNKTIONEN --- */
 
 function showDashboard() {
     if (jitsiApi) { jitsiApi.dispose(); jitsiApi = null; }
@@ -543,11 +552,11 @@ function showZugangInfo(typ) {
 
     if (typ === 'gast') {
         titel.innerText = "GAST-ZUGANG";
-        text.innerText = "Als Gast hast du Einblick in die ersten 4 Sektoren. Um die volle Kraft der Community und alle 20 Sektoren zu nutzen, ist eine Verifizierung notwendig.";
+        text.innerText = "Als Gast hast du Einblick in die ersten 4 Sektoren.";
         confirmBtn.onclick = () => modal.style.display = 'none';
     } else {
         titel.innerText = "VERIFIZIERUNG";
-        text.innerText = "Gib deine E-Mail ein, um den vollen Zugriff auf alle 20 Sektoren und die Spezial-Ebenen zu erhalten.";
+        text.innerText = "Gib deine E-Mail ein für vollen Zugriff.";
         emailField.style.display = 'block';
         confirmBtn.onclick = verifiziereUser;
     }
@@ -558,7 +567,7 @@ function verifiziereUser() {
     if (email.includes('@')) {
         userBackstage.isVerifiziert = true;
         localStorage.setItem('mm_user_data', JSON.stringify(userBackstage));
-        alert("Verifizierung erfolgreich! Alle Sektoren sind nun frei.");
+        alert("Verifizierung erfolgreich!");
         location.reload();
     }
 }
@@ -573,7 +582,7 @@ function verbindeChat() {
     });
 
     const box = document.getElementById('chat-box');
-    box.innerHTML = `<div style="color:#555; font-size:0.8rem;">Verbunden mit Sektor ${tId + 1}</div>`;
+    if (box) box.innerHTML = `<div style="color:#555; font-size:0.8rem;">Verbunden mit Sektor ${tId + 1}</div>`;
 }
 
 function registriereSenden() {
@@ -588,24 +597,13 @@ function registriereSenden() {
 
 function anzeigeNachricht(txt, typ) {
     const box = document.getElementById('chat-box');
+    if (!box) return;
     const mDiv = document.createElement('div');
     mDiv.style.margin = "5px 0";
     mDiv.style.color = typ === 'eigen' ? '#ffd700' : '#fff';
     mDiv.innerText = (typ === 'eigen' ? "DU: " : "ANON: ") + txt;
     box.appendChild(mDiv);
     box.scrollTop = box.scrollHeight;
-}
-
-function toggleDrawer(id) {
-    const d = id === 'master' ? document.getElementById('master-archiv-container') : document.getElementById(`drawer-${id}`);
-    if (d) d.classList.toggle('open');
-}
-
-function saveNote(id) {
-    const val = document.getElementById(`note-${id}`).value;
-    userBackstage.sektorNotizen[id] = val;
-    localStorage.setItem('mm_user_data', JSON.stringify(userBackstage));
-    alert("Sektor-Dokument gesichert.");
 }
 
 function adminUnlock() {
