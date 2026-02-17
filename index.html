@@ -532,6 +532,55 @@ function toggleJitsi() {
         else if (ebene === 3) portalZuEbene4();
     }
 
+// Globale Variablen für die Instanz
+    let jitsiApi = null;
+
+    function portalZuEbene4() {
+        ebene = 4;
+        const skelett = document.getElementById('page-skelett');
+        const drawer4 = document.getElementById('drawer-ebene4');
+        const jBtn = document.getElementById('start-jitsi-btn');
+
+        // Layout für Ebene 4 aktivieren
+        skelett.classList.add('ebene-4-aktiv');
+        drawer4.style.display = 'flex'; 
+        
+        // Den Join-Button oben bei den Werbetafeln einblenden
+        if(jBtn) jBtn.style.display = 'block'; 
+    }
+
+    function toggleJitsi() {
+        const jContainer = document.getElementById('jitsi-container');
+        if (!jContainer) return;
+
+        if (jContainer.style.display === 'none' || jContainer.style.display === '') {
+            jContainer.style.display = 'block';
+            if (!jitsiApi) {
+                const domain = "8x8.vc";
+                const options = {
+                    roomName: "vpaas-magic-cookie-39f826359e1345d38f8304910901e855/MM_Sektor_" + (tId + 1),
+                    width: "100%",
+                    height: "100%",
+                    parentNode: jContainer
+                };
+                jitsiApi = new JitsiMeetExternalAPI(domain, options);
+            }
+        } else {
+            jContainer.style.display = 'none';
+        }
+    }
+
+    function showDashboard() {
+        if (jitsiApi) { jitsiApi.dispose(); jitsiApi = null; }
+        document.getElementById('page-skelett').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'flex';
+    }
+
+    function nextPage() {
+        if (ebene < 3) setEbene(ebene + 1);
+        else if (ebene === 3) portalZuEbene4();
+    }
+
     function showZugangInfo(typ) {
         const modal = document.getElementById('zugang-modal');
         const titel = document.getElementById('modal-titel');
@@ -597,7 +646,6 @@ function toggleJitsi() {
         box.scrollTop = box.scrollHeight;
     }
 
-    // Hilfsfunktionen für die alten Schubladen (deaktiviert)
     function toggleDrawer(id) {
         const d = id === 'master' ? document.getElementById('master-archiv-container') : document.getElementById(`drawer-${id}`);
         if (d) d.classList.toggle('open');
