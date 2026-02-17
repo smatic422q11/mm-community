@@ -513,20 +513,23 @@ function toggleJitsiInline() {
                 prejoinPageEnabled: false,
                 startWithAudioMuted: false,
                 startWithVideoMuted: false
+            },
+            interfaceConfigOverwrite: {
+                // Blendet Jitsi-interne Popups aus, die blockieren könnten
+                VIDEO_LAYOUT_FIT: 'both'
             }
         };
 
         jitsiApi = new JitsiMeetExternalAPI(domain, options);
 
-        // DAS IST DAS BRECHEISEN:
+        // DAS IST DIE DEFINITIVE KAMERA-BRÜCKE:
         const iframe = jitsiApi.getIFrame();
-        // Wir setzen die Berechtigungen direkt und hart im HTML-Tag
-        iframe.setAttribute("allow", "camera *; microphone *; autoplay; display-capture; allow-same-origin");
         
-        // Wir erzwingen einen kurzen Refresh des Frames, damit er die Rechte frisst
-        setTimeout(() => {
-            iframe.src = iframe.src;
-        }, 200);
+        // Wir erlauben ALLES explizit für die Domain von Jitsi
+        iframe.allow = "camera *; microphone *; autoplay; display-capture; allow-same-origin; fullscreen";
+        
+        // Einmaliger, harter Reload des Frames, um die 'allow' Attribute scharf zu schalten
+        iframe.src = iframe.src;
     }
 }
 /* --- SYSTEM-FUNKTIONEN --- */
