@@ -515,11 +515,20 @@ function toggleJitsiInline() {
                 startWithVideoMuted: false
             }
         };
-        // 1. Hier wird Jitsi erschaffen
+
+        // Zündung der Schnittstelle
         jitsiApi = new JitsiMeetExternalAPI(domain, options);
-jitsiApi.getIFrame().setAttribute("allow", "camera; microphone; display-capture; autoplay");
-        // 2. GENAU HIER drunter muss die Zeile für die Hardware-Rechte:
-        jitsiApi.getIFrame().setAttribute("allow", "camera; microphone; display-capture; autoplay");
+
+        // Der entscheidende Trick: Wir warten kurz, bis das Fenster existiert
+        setTimeout(() => {
+            const iframe = jitsiApi.getIFrame();
+            if (iframe) {
+                // Wir erzwingen die Rechte für Kamera und Mikrofon direkt im Element
+                iframe.setAttribute("allow", "camera; microphone; display-capture; autoplay; clipboard-write");
+                // Wir laden das Fenster einmal intern neu, um die Rechte scharf zu schalten
+                iframe.src = iframe.src; 
+            }
+        }, 500); 
     }
 }
 /* --- SYSTEM-FUNKTIONEN --- */
