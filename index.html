@@ -126,49 +126,49 @@
   /* EBENE 4: MAXIMALES SCHÖPFERGERICHT */
 #drawer-ebene4 {
     display: none; 
-    width: 100vw;
-    height: 95vh;
-    flex-direction: row; /* Skizze: Meeting links, Boxen rechts */
-    align-items: stretch;
-    gap: 5px;
-    padding: 10px;
+    width: 100%;
+    height: 90vh;
+    padding: 20px;
     box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
     background: #000;
 }
 
-#jitsi-container {
-    width: 30%; /* Kompakt links für das "Join Meeting" */
-    height: 100%;
-    border: 3px solid #ff0000;
-    flex-shrink: 0;
-}
-
 #geschworenen-gericht {
-    flex-grow: 1; /* Nimmt den gesamten restlichen Platz rechts ein */
     display: grid;
-    grid-template-columns: 1fr 1fr; /* 2 Spalten laut Skizze */
-    grid-template-rows: repeat(4, 1fr); /* 4 Zeilen für genau 8 Boxen */
-    gap: 10px;
-    height: 100%;
+    grid-template-columns: repeat(4, 1fr); /* 4 Spalten */
+    grid-template-rows: repeat(2, 1fr);    /* 2 Zeilen = 8 Boxen */
+    gap: 15px;
+    width: 95%;
+    height: 90%;
 }
 
 .geschworenen-box {
     border: 2px solid #003d8f;
-    background: rgba(0, 26, 61, 0.5);
+    background: rgba(0, 26, 61, 0.4);
+    aspect-ratio: 4 / 3; /* KLASSISCHES FORMAT */
     display: flex;
     align-items: center;
     justify-content: center;
     color: #fff;
-    font-family: 'Segoe UI', sans-serif;
     font-weight: 900;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     text-transform: uppercase;
-    transition: all 0.3s;
+    box-shadow: 0 0 15px rgba(0, 61, 143, 0.2);
 }
 
-.geschworenen-box:hover {
-    border-color: #ffd700;
-    box-shadow: inset 0 0 20px rgba(255, 215, 0, 0.2);
+/* Jitsi versteckt oder als Overlay */
+#jitsi-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60%;
+    height: 60%;
+    z-index: 1000;
+    display: none; /* Startet erst per Button */
+    border: 3px solid #ff0000;
 }
     </style>
 </head>
@@ -178,7 +178,9 @@
         <div class="dashboard-header">
             <div class="logo-ring" ondblclick="adminUnlock()"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
         </div>
-        <div class="info-section">
+       <div class="info-section-ebene">
+    <button id="start-jitsi-btn" onclick="toggleJitsi()" style="position:absolute; top:10px; right:10px; z-index:50; background:#ff0000; color:#fff; border:none; padding:5px 15px; font-weight:bold; cursor:pointer; display:none;">JOIN MEETING</button>
+</div>
             <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
             <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
             <p style="max-width: 85%; color: #ccc; font-size: 1.1rem; margin: 10px 0 0 0; text-align: center;">
@@ -490,34 +492,34 @@ const DASHBOARD_TRUTH = {
     }
 
     function portalZuEbene4() {
-        ebene = 4;
-        const skelett = document.getElementById('page-skelett');
-        const drawer4 = document.getElementById('drawer-ebene4');
-        const title = document.getElementById('info-titel');
-        const mainText = document.getElementById('main-text');
-        const chat = document.getElementById('chat-area');
+    ebene = 4;
+    const skelett = document.getElementById('page-skelett');
+    const drawer4 = document.getElementById('drawer-ebene4');
+    const jBtn = document.getElementById('start-jitsi-btn');
 
-        skelett.classList.add('ebene-4-aktiv');
-        title.innerText = "";
-        mainText.style.display = 'none';
-        chat.style.display = 'none';
-        drawer4.style.display = 'flex';
+    skelett.classList.add('ebene-4-aktiv');
+    drawer4.style.display = 'flex';
+    if(jBtn) jBtn.style.display = 'block'; // Button oben einblenden
+}
 
-        // OPERATION: Keine Einblendung der gelben Leiste oder Schubladen mehr.
-        // Nur der Jitsi-Container wird gestartet.
-
+function toggleJitsi() {
+    const jContainer = document.getElementById('jitsi-container');
+    if (jContainer.style.display === 'none' || jContainer.style.display === '') {
+        jContainer.style.display = 'block';
         if (!jitsiApi) {
             const domain = "8x8.vc";
             const options = {
                 roomName: "vpaas-magic-cookie-39f826359e1345d38f8304910901e855/MM_Sektor_" + (tId + 1),
                 width: "100%",
                 height: "100%",
-                parentNode: document.getElementById('jitsi-container'),
-                interfaceConfigOverwrite: { TILE_VIEW_MAX_COLUMNS: 3 }
+                parentNode: jContainer
             };
             jitsiApi = new JitsiMeetExternalAPI(domain, options);
         }
+    } else {
+        jContainer.style.display = 'none';
     }
+}
 
     function showDashboard() {
         if (jitsiApi) { jitsiApi.dispose(); jitsiApi = null; }
