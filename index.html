@@ -123,37 +123,40 @@
             display: none !important; 
         }
 
- #drawer-ebene4 {
-    height: calc(100vh - 160px) !important; /* Mehr Platz für die Button-Leiste unten */
-    bottom: 100px !important;
-    position: fixed;
-    top: 20px;
+  #drawer-ebene4 {
+    display: none;
+    width: 100vw;
+    /* Wir ziehen 60px für die untere Navi ab, damit nichts drunter rutscht */
+    height: calc(100vh - 60px); 
+    background: #000;
+    padding: 5px;
+    box-sizing: border-box;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 #geschworenen-gericht {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    gap: 10px;
-    width: 95vw;
-    height: 80vh;
+    gap: 5px;
+    width: 100%;
+    height: 100%; /* Füllt jetzt exakt den Raum bis zur Navi */
 }
 
-/* Sitz 1-8: Die Teilnehmer-Plätze */
-.geschworenen-box {
-    border: 2px solid #003d8f;
-    background: rgba(0, 0, 0, 0.8);
+.geschworenen-box, #jitsi-slot {
+    border: 1px solid #003d8f;
+    background: rgba(0, 26, 61, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.5s;
-}
-
-/* Slot 9: Der Zünder */
-#jitsi-slot {
-    border: 2px solid #ff0000; /* Alarm-Rot für den Zünder */
-    grid-column: 3;
-    grid-row: 3;
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    /* Kein fester aspect-ratio, damit es sich in den calc-Raum presst */
 }
     </style>
 </head>
@@ -422,11 +425,10 @@ const DASHBOARD_TRUTH = {
         
         updateCounter();
     }
-/* --- ZUGRIFF & NAVIGATION --- */
-function checkAccess(index, thema) {
+  function checkAccess(index, thema) {
     tId = index;
     aktuellesThema = thema;
-    if (index < 4 || userBackstage.isVerverified) {
+    if (index < 4 || userBackstage.isVerifiziert) {
         startSektor();
     } else {
         showZugangInfo('email');
@@ -471,7 +473,6 @@ function updateUI() {
     }
 }
 
-/* --- EBENE 4: DAS SCHÖPFERGERICHT (3x3 Raster) --- */
 function portalZuEbene4() {
     ebene = 4;
     const skelett = document.getElementById('page-skelett');
@@ -480,14 +481,14 @@ function portalZuEbene4() {
     const mainText = document.getElementById('main-text');
     const chat = document.getElementById('chat-area');
 
+    // UI für das Schöpfergericht vorbereiten
     skelett.classList.add('ebene-4-aktiv');
-    if(title) title.innerText = "";
-    if(mainText) mainText.style.display = 'none';
-    if(chat) chat.style.display = 'none';
-    
+    title.innerText = "";
+    mainText.style.display = 'none';
+    chat.style.display = 'none';
     drawer4.style.display = 'flex';
     
-    // Reset Jitsi-Button
+    // Reset Jitsi-Slot Button Sichtbarkeit
     const jBtn = document.getElementById('mini-join-btn');
     const jContainer = document.getElementById('jitsi-container-small');
     if(jBtn) jBtn.style.display = 'block';
@@ -499,40 +500,26 @@ function toggleJitsiInline() {
     const jBtn = document.getElementById('mini-join-btn');
     
     if (!jContainer) return;
+
     jBtn.style.display = 'none';
     jContainer.style.display = 'block';
 
     if (!jitsiApi) {
-        const domain = "meet.jit.si"; 
+        const domain = "8x8.vc";
         const options = {
-            roomName: "MM_Schöpfergericht_" + (tId + 1),
+            roomName: "vpaas-magic-cookie-39f826359e1345d38f8304910901e855/MM_Sektor_" + (tId + 1),
             width: "100%",
             height: "100%",
             parentNode: jContainer,
-            configOverwrite: {
-                prejoinPageEnabled: false,
-                startWithAudioMuted: false,
-                startWithVideoMuted: false
-            },
             interfaceConfigOverwrite: {
-                // Blendet Jitsi-interne Popups aus, die blockieren könnten
-                VIDEO_LAYOUT_FIT: 'both'
+                TILE_VIEW_MAX_COLUMNS: 1,
+                TOOLBAR_BUTTONS: ['microphone', 'camera', 'hangup'] 
             }
         };
-
         jitsiApi = new JitsiMeetExternalAPI(domain, options);
-
-        // DAS IST DIE DEFINITIVE KAMERA-BRÜCKE:
-        const iframe = jitsiApi.getIFrame();
-        
-        // Wir erlauben ALLES explizit für die Domain von Jitsi
-        iframe.allow = "camera *; microphone *; autoplay; display-capture; allow-same-origin; fullscreen";
-        
-        // Einmaliger, harter Reload des Frames, um die 'allow' Attribute scharf zu schalten
-        iframe.src = iframe.src;
     }
 }
-/* --- SYSTEM-FUNKTIONEN --- */
+
 function showDashboard() {
     if (jitsiApi) { jitsiApi.dispose(); jitsiApi = null; }
     document.getElementById('page-skelett').style.display = 'none';
@@ -556,11 +543,11 @@ function showZugangInfo(typ) {
 
     if (typ === 'gast') {
         titel.innerText = "GAST-ZUGANG";
-        text.innerText = "Als Gast hast du Einblick in die ersten 4 Sektoren.";
+        text.innerText = "Als Gast hast du Einblick in die ersten 4 Sektoren. Um die volle Kraft der Community und alle 20 Sektoren zu nutzen, ist eine Verifizierung notwendig.";
         confirmBtn.onclick = () => modal.style.display = 'none';
     } else {
         titel.innerText = "VERIFIZIERUNG";
-        text.innerText = "Gib deine E-Mail ein für vollen Zugriff.";
+        text.innerText = "Gib deine E-Mail ein, um den vollen Zugriff auf alle 20 Sektoren und die Spezial-Ebenen zu erhalten.";
         emailField.style.display = 'block';
         confirmBtn.onclick = verifiziereUser;
     }
@@ -569,8 +556,9 @@ function showZugangInfo(typ) {
 function verifiziereUser() {
     const email = document.getElementById('user-email-input').value;
     if (email.includes('@')) {
-        userBackstage.isVerverified = true;
+        userBackstage.isVerifiziert = true;
         localStorage.setItem('mm_user_data', JSON.stringify(userBackstage));
+        alert("Verifizierung erfolgreich! Alle Sektoren sind nun frei.");
         location.reload();
     }
 }
@@ -583,8 +571,9 @@ function verbindeChat() {
     aktuellerChannel.subscribe('message', (msg) => {
         if (msg.data.tabId !== meinTabId) anzeigeNachricht(msg.data.text, 'fremd');
     });
+
     const box = document.getElementById('chat-box');
-    if(box) box.innerHTML = `<div style="color:#555; font-size:0.8rem;">Sektor ${tId + 1} bereit.</div>`;
+    box.innerHTML = `<div style="color:#555; font-size:0.8rem;">Verbunden mit Sektor ${tId + 1}</div>`;
 }
 
 function registriereSenden() {
@@ -599,7 +588,6 @@ function registriereSenden() {
 
 function anzeigeNachricht(txt, typ) {
     const box = document.getElementById('chat-box');
-    if(!box) return;
     const mDiv = document.createElement('div');
     mDiv.style.margin = "5px 0";
     mDiv.style.color = typ === 'eigen' ? '#ffd700' : '#fff';
@@ -608,10 +596,22 @@ function anzeigeNachricht(txt, typ) {
     box.scrollTop = box.scrollHeight;
 }
 
+function toggleDrawer(id) {
+    const d = id === 'master' ? document.getElementById('master-archiv-container') : document.getElementById(`drawer-${id}`);
+    if (d) d.classList.toggle('open');
+}
+
+function saveNote(id) {
+    const val = document.getElementById(`note-${id}`).value;
+    userBackstage.sektorNotizen[id] = val;
+    localStorage.setItem('mm_user_data', JSON.stringify(userBackstage));
+    alert("Sektor-Dokument gesichert.");
+}
+
 function adminUnlock() {
     const pw = prompt("Admin-Code:");
     if (pw === "1234") {
-        userBackstage.isVerverified = true;
+        userBackstage.isVerifiziert = true;
         localStorage.setItem('mm_user_data', JSON.stringify(userBackstage));
         location.reload();
     }
