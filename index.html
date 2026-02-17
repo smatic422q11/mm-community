@@ -206,7 +206,7 @@
     <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
         <div class="top-container">
             <h1 id="info-titel" class="page-title-white"></h1>
-            <div id="drawer-ebene4">
+           <div id="drawer-ebene4">
     <div id="geschworenen-gericht">
         <div class="geschworenen-box">Sitz 1</div>
         <div class="geschworenen-box">Sitz 2</div>
@@ -217,9 +217,9 @@
         <div class="geschworenen-box">Sitz 7</div>
         <div class="geschworenen-box">Sitz 8</div>
         
-        <div id="jitsi-slot">
-            <button id="mini-join-btn" onclick="toggleJitsiInline()" style="width:100%; height:100%; background:#800; color:#fff; border:none; font-weight:bold; cursor:pointer;">JOIN MEETING</button>
-            <div id="jitsi-container-small" style="display:none;"></div>
+        <div id="chat-slot">
+            <div id="chat-box-inline">Warte auf Verbindung...</div>
+            <input type="text" id="chat-input-inline" placeholder="Nachricht an Sektor..." onkeypress="if(event.key === 'Enter') sendeChatInline()">
         </div>
     </div>
 </div>
