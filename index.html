@@ -1,12 +1,12 @@
 <!DOCTYPE html><html lang="de"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M&M Dashboard</title>
+    <title>M&M OS - Finale</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <script src='https://8x8.vc/vpaas-magic-cookie-39f826359e1345d38f8304910901e855/external_api.js'></script>
     <style>
         :root { --gold: #ffd700; --bg: #0a0a0a; --card: #1a1a1a; --text: #e0e0e0; }
-        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
         .dashboard { display: flex; flex-direction: column; align-items: center; padding: 20px; }
         .logo-ring { width: 120px; height: 120px; border: 3px solid #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 20px; transition: 0.5s; cursor: pointer; }
         .logo-ring:hover { border-color: var(--gold); box-shadow: 0 0 15px var(--gold); }
@@ -19,21 +19,22 @@
         .text { font-size: 0.9rem; flex: 1; }
         #page-skelett { display: none; position: fixed; inset: 0; background: #000; flex-direction: column; z-index: 1000; }
         .header-skelett { height: 60px; border-bottom: 1px solid #222; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
-        .content-skelett { flex: 1; padding: 20px; overflow-y: auto; }
+        .content-skelett { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
         .footer-skelett { height: 70px; border-top: 1px solid #222; display: flex; align-items: center; justify-content: center; gap: 30px; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; background: #333; cursor: pointer; }
-        .dot.active { background: var(--gold); box-shadow: 0 0 8px var(--gold); transform: scale(1.2); }
-        .wahrheits-text { line-height: 1.6; font-size: 1.1rem; color: #ccc; max-width: 800px; margin: 0 auto; white-space: pre-wrap; }
-        #chat-area { display: none; flex-direction: column; height: 100%; max-width: 600px; margin: 0 auto; }
-        #chat-box { flex: 1; overflow-y: auto; border: 1px solid #222; padding: 15px; margin-bottom: 10px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; background: #333; cursor: pointer; transition: 0.3s; }
+        .dot.active { background: var(--gold); box-shadow: 0 0 10px var(--gold); transform: scale(1.3); }
+        .wahrheits-text { line-height: 1.6; font-size: 1.2rem; color: #ccc; max-width: 800px; margin: 40px auto; white-space: pre-wrap; text-align: center; }
+        #chat-area { display: none; flex-direction: column; height: 100%; max-width: 600px; margin: 0 auto; width: 100%; }
+        #chat-box { flex: 1; overflow-y: auto; border: 1px solid #222; padding: 15px; margin-bottom: 10px; background: #050505; }
         .chat-input-row { display: flex; gap: 10px; }
-        input { background: #111; border: 1px solid #333; color: #fff; padding: 10px; flex: 1; }
-        .btn { background: var(--gold); color: #000; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; }
-        #drawer-ebene4 { display: none; flex-direction: column; height: 100%; }
-        .schublade { background: #111; border: 1px solid #222; margin-bottom: 10px; }
+        input { background: #111; border: 1px solid #333; color: #fff; padding: 12px; flex: 1; border-radius: 5px; }
+        .btn { background: var(--gold); color: #000; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; border-radius: 5px; }
+        #drawer-ebene4 { display: none; flex-direction: column; height: 100%; gap: 10px; }
+        .schublade { background: #111; border: 1px solid #222; border-radius: 5px; }
         .schublade-header { padding: 15px; cursor: pointer; background: #1a1a1a; color: var(--gold); font-weight: bold; display: flex; justify-content: space-between; }
         .schublade-content { padding: 15px; display: none; }
         .schublade.open .schublade-content { display: block; }
+        #jitsi-container-small { flex: 1; min-height: 400px; background: #000; border: 1px solid #222; border-radius: 8px; margin-top: 10px; }
     </style></head><body>
 
 <div id="dashboard" class="dashboard">
@@ -44,28 +45,28 @@
 
 <div id="page-skelett">
     <div class="header-skelett">
-        <div onclick="showDashboard()" style="cursor:pointer; color:var(--gold);"> Zurück</div>
-        <div id="info-titel" style="font-weight:bold;"></div>
-        <div onclick="nextPage()" style="cursor:pointer; color:var(--gold);">Weiter </div>
+        <div onclick="showDashboard()" style="cursor:pointer; color:var(--gold); font-weight: bold;">✕ SCHLIESSEN</div>
+        <div id="info-titel" style="font-weight:bold; color: var(--gold);"></div>
+        <div onclick="nextPage()" style="cursor:pointer; color:var(--gold); font-weight: bold;">WEITER ➔</div>
     </div>
     <div class="content-skelett">
         <div id="main-text"></div>
         <div id="chat-area">
             <div id="chat-box"></div>
             <div class="chat-input-row">
-                <input type="text" id="chat-input" placeholder="Nachricht...">
-                <button onclick="registriereSenden()" class="btn">Senden</button>
+                <input type="text" id="chat-input" placeholder="Schreibe etwas...">
+                <button onclick="registriereSenden()" class="btn">SENDEN</button>
             </div>
         </div>
         <div id="drawer-ebene4">
             <div class="schublade" id="drawer-notiz">
-                <div class="schublade-header" onclick="toggleDrawer('notiz')"><span>DOKUMENTATION</span><span>+</span></div>
+                <div class="schublade-header" onclick="toggleDrawer('notiz')"><span>DEINE DOKUMENTATION</span><span>▼</span></div>
                 <div class="schublade-content">
-                    <textarea id="note-current" style="width:100%; height:100px; background:#000; color:#fff;"></textarea>
-                    <button class="btn" style="margin-top:10px;" onclick="saveNote()">Sichern</button>
+                    <textarea id="note-current" style="width:100%; height:120px; background:#000; color:#fff; border: 1px solid #333; padding: 10px; font-family: inherit;"></textarea>
+                    <button class="btn" style="margin-top:10px; width: 100%;" onclick="saveNote()">SICHERN</button>
                 </div>
             </div>
-            <div id="jitsi-container-small" style="height: 400px; background: #000; border: 1px solid #333;"></div>
+            <div id="jitsi-container-small"></div>
         </div>
     </div>
     <div class="footer-skelett" id="dot-holder"></div>
@@ -76,10 +77,9 @@
     const themen = ["Recht auf Gefühlsvorderung oder KI", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Nachbarschaft und Gemeinschaft", "Sozialgefallen und Widerkehr", "Alleinerziehend & Kind", "Die Brücke"];
 
     const DASHBOARD_TRUTH = {
-        1: { title: "Gefühlsvorderung", content: "Inhalt Sektor 1..." },
-        2: { title: "Mensch sein", content: "Inhalt Sektor 2..." },
-        // ... (weitere Texte nach Bedarf)
-        20: { title: "Die Brücke", content: "Inhalt Sektor 20..." }
+        1: { title: "GEFÜHLSVORDERUNG", content: "Die erste Stufe der Befreiung..." },
+        2: { title: "MENSCHWERDUNG", content: "Der Weg zurück zum Kern..." },
+        20: { title: "DIE BRÜCKE", content: "Das Ziel der Stillen Million..." }
     };
 
     let ebene = 1, tId = 0, aktuellesThema = "", jitsiApi = null;
@@ -102,12 +102,8 @@
         aktuellesThema = thema;
         if (index < 4 || userBackstage.isVerifiziert) startSektor();
         else {
-            const pw = prompt("Code für Sektor 5-20:");
-            if(pw === "1234") {
-                userBackstage.isVerifiziert = true;
-                saveData();
-                startSektor();
-            }
+            const pw = prompt("Sektor gesperrt. Community-Code:");
+            if(pw === "1234") { userBackstage.isVerverified = true; saveData(); startSektor(); }
         }
     }
 
@@ -127,15 +123,18 @@
         document.getElementById('chat-area').style.display = (n === 3) ? 'flex' : 'none';
         document.getElementById('drawer-ebene4').style.display = (n === 4) ? 'flex' : 'none';
         
-        document.getElementById('info-titel').innerText = `SEKTOR ${tId + 1}: ${DASHBOARD_TRUTH[tId+1]?.title || aktuellesThema}`;
+        document.getElementById('info-titel').innerText = (DASHBOARD_TRUTH[tId+1]?.title || "SEKTOR " + (tId+1)).toUpperCase();
         
-        if(n === 1) document.getElementById('main-text').innerHTML = `<div class="wahrheits-text">${DASHBOARD_TRUTH[tId+1]?.content || 'Text folgt...'}</div>`;
-        if(n === 3) verbindeChat();
+        if(n === 1) document.getElementById('main-text').innerHTML = `<div class="wahrheits-text">${DASHBOARD_TRUTH[tId+1]?.content || 'Inhalt folgt für: ' + aktuellesThema}</div>`;
+        if(n === 3) {
+             const box = document.getElementById('chat-box');
+             box.innerHTML = "<em>System: Verbindung zum Sektor-Chat hergestellt...</em>";
+             verbindeChat();
+        }
         if(n === 4) {
-            setTimeout(() => { starteJitsi(); }, 200);
+            setTimeout(() => { starteJitsi(); }, 300);
             document.getElementById('note-current').value = userBackstage.sektorNotizen[tId] || "";
         }
-        
         document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === n-1));
     }
 
@@ -149,15 +148,21 @@
         });
     }
 
-    function nextPage() { if(ebene < 4) setEbene(ebene + 1); }
-    function showDashboard() { document.getElementById('dashboard').style.display = 'flex'; document.getElementById('page-skelett').style.display = 'none'; initApp(); }
+    function nextPage() { if(ebene < 4) setEbene(ebene + 1); else showDashboard(); }
+    function showDashboard() { 
+        if(jitsiApi) { jitsiApi.dispose(); jitsiApi = null; }
+        document.getElementById('dashboard').style.display = 'flex'; 
+        document.getElementById('page-skelett').style.display = 'none'; 
+        initApp(); 
+    }
     function toggleDrawer(id) { document.getElementById('drawer-' + id).classList.toggle('open'); }
 
     function verbindeChat() {
         const chan = ably.channels.get("sektor_" + (tId + 1));
         chan.subscribe('message', (msg) => {
             const box = document.getElementById('chat-box');
-            box.innerHTML += `<div><strong>Gast:</strong> ${msg.data.text}</div>`;
+            box.innerHTML += `<div><span style="color:var(--gold)">Gast:</span> ${msg.data.text}</div>`;
+            box.scrollTop = box.scrollHeight;
         });
     }
 
@@ -171,7 +176,7 @@
     function saveNote() {
         userBackstage.sektorNotizen[tId] = document.getElementById('note-current').value;
         saveData();
-        alert("Notiz gespeichert!");
+        alert("Dokumentation gesichert.");
     }
 
     function saveData() { localStorage.setItem('mm_user_data', JSON.stringify(userBackstage)); }
