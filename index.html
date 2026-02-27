@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="de"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M&M OS - REPARIERT</title>
+    <title>M&M OS - Finaler Fix</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <script src='https://8x8.vc/vpaas-magic-cookie-39f826359e1345d38f8304910901e855/external_api.js'></script>
     <style>
@@ -19,7 +19,7 @@
         .dot { width: 15px; height: 15px; border-radius: 50%; background: #333; cursor: pointer; }
         .dot.active { background: var(--gold); box-shadow: 0 0 15px var(--gold); }
         #chat-area { display: none; flex-direction: column; height: 100%; }
-        #chat-box { flex: 1; border: 1px solid #222; padding: 15px; overflow-y: auto; background: #050505; margin-bottom: 10px; color: #fff; }
+        #chat-box { flex: 1; border: 1px solid #222; padding: 15px; overflow-y: auto; background: #050505; margin-bottom: 10px; color: #fff; border-radius: 5px; }
         #jitsi-container { display: none; flex: 1; background: #000; border: 1px solid var(--gold); }
         .btn-gold { background: var(--gold); color: #000; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; border-radius: 5px; }
     </style>
@@ -42,7 +42,7 @@
         <div id="chat-area">
             <div id="chat-box"></div>
             <div style="display:flex; gap:10px;">
-                <input type="text" id="chat-input" style="flex:1; padding:15px; background:#111; color:#fff; border:1px solid #333;" placeholder="Schreibe etwas...">
+                <input type="text" id="chat-input" style="flex:1; padding:15px; background:#111; color:#fff; border:1px solid #333;" placeholder="Nachricht...">
                 <button onclick="registriereSenden()" class="btn-gold">SENDEN</button>
             </div>
         </div>
@@ -84,9 +84,16 @@
         document.getElementById('jitsi-container').style.display = (n === 3) ? 'block' : 'none';
         document.getElementById('info-titel').innerText = themen[tId].toUpperCase();
         
-        if(n === 1) document.getElementById('main-text').innerText = "Vollständiger Text für Sektor " + (tId+1) + ": " + themen[tId];
-        if(n === 2) { startChat(); }
-        if(n === 3) { setTimeout(starteVideo, 300); }
+        if(n === 1) document.getElementById('main-text').innerText = "Inhalt für " + themen[tId] + " wird hier angezeigt.";
+        if(n === 2) { 
+            const chan = ably.channels.get('chat_' + tId);
+            chan.subscribe('msg', (m) => {
+                const box = document.getElementById('chat-box');
+                box.innerHTML += `<div><b style="color:var(--gold)">User:</b> ${m.data}</div>`;
+                box.scrollTop = box.scrollHeight;
+            });
+        }
+        if(n === 3) { setTimeout(starteVideo, 200); }
 
         document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === n-1));
     }
@@ -95,19 +102,10 @@
         if(ebene < 3) setEbene(ebene + 1); else location.reload();
     }
 
-    function startChat() {
-        const chan = ably.channels.get('chat_sektor_' + tId);
-        chan.subscribe('msg', (m) => {
-            const box = document.getElementById('chat-box');
-            box.innerHTML += `<div><b style="color:var(--gold)">Gast:</b> ${m.data}</div>`;
-            box.scrollTop = box.scrollHeight;
-        });
-    }
-
     function registriereSenden() {
         const input = document.getElementById('chat-input');
         if(!input.value) return;
-        ably.channels.get('chat_sektor_' + tId).publish('msg', input.value);
+        ably.channels.get('chat_' + tId).publish('msg', input.value);
         input.value = "";
     }
 
@@ -120,14 +118,9 @@
             width: "100%", height: "100%",
             configOverwrite: { prejoinPageEnabled: false }
         });
-        // FORCE PERMISSIONS
-        setTimeout(() => {
-            const iframe = container.querySelector('iframe');
-            if(iframe) iframe.setAttribute("allow", "camera; microphone; autoplay; display-capture");
-        }, 500);
     }
 
-    function adminUnlock() { userBackstage.isVerifiziert = true; localStorage.setItem('mm_user_data', JSON.stringify(userBackstage)); alert("Admin ok"); }
+    function adminUnlock() { userBackstage.isVerifiziert = true; localStorage.setItem('mm_user_data', JSON.stringify(userBackstage)); alert("Admin aktiv."); }
 
     initApp();
 </script>
