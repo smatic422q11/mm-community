@@ -1,13 +1,13 @@
 <!DOCTYPE html><html lang="de"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M&M OS - Final</title>
+    <title>M&M OS - REPARIERT</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <script src='https://8x8.vc/vpaas-magic-cookie-39f826359e1345d38f8304910901e855/external_api.js'></script>
     <style>
         :root { --gold: #ffd700; --bg: #0a0a0a; --card: #1a1a1a; --text: #e0e0e0; }
-        body { margin: 0; background: var(--bg); color: var(--text); font-family: sans-serif; overflow: hidden; }
-        .dashboard { display: flex; flex-direction: column; align-items: center; padding: 20px; height: 100vh; overflow-y: auto; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: sans-serif; height: 100vh; display: flex; flex-direction: column; }
+        .dashboard { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 20px; overflow-y: auto; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; width: 100%; max-width: 1200px; }
         .box { background: var(--card); border-radius: 10px; padding: 15px; border: 1px solid #333; cursor: pointer; display: flex; align-items: center; gap: 15px; }
         .num { width: 35px; height: 35px; background: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
@@ -18,12 +18,10 @@
         .footer-skelett { height: 70px; border-top: 1px solid #222; display: flex; align-items: center; justify-content: center; gap: 40px; }
         .dot { width: 15px; height: 15px; border-radius: 50%; background: #333; cursor: pointer; }
         .dot.active { background: var(--gold); box-shadow: 0 0 15px var(--gold); }
-        .wahrheits-text { font-size: 1.3rem; line-height: 1.6; text-align: center; max-width: 800px; margin: auto; }
-        #chat-area { display: none; flex-direction: column; height: 100%; width: 100%; max-width: 800px; margin: 0 auto; }
-        #chat-box { flex: 1; border: 1px solid #222; padding: 15px; overflow-y: auto; background: #050505; margin-bottom: 10px; }
+        #chat-area { display: none; flex-direction: column; height: 100%; }
+        #chat-box { flex: 1; border: 1px solid #222; padding: 15px; overflow-y: auto; background: #050505; margin-bottom: 10px; color: #fff; }
         #jitsi-container { display: none; flex: 1; background: #000; border: 1px solid var(--gold); }
         .btn-gold { background: var(--gold); color: #000; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; border-radius: 5px; }
-        input { padding: 15px; background: #111; color: #fff; border: 1px solid #333; border-radius: 5px; }
     </style>
 </head>
 <body>
@@ -40,11 +38,11 @@
         <button id="next-btn" onclick="nextPage()" class="btn-gold">WEITER ➔</button>
     </div>
     <div class="content-skelett">
-        <div id="main-text" class="wahrheits-text"></div>
+        <div id="main-text" style="font-size: 1.3rem; line-height: 1.6; text-align: center;"></div>
         <div id="chat-area">
             <div id="chat-box"></div>
             <div style="display:flex; gap:10px;">
-                <input type="text" id="chat-input" style="flex:1;" placeholder="Nachricht...">
+                <input type="text" id="chat-input" style="flex:1; padding:15px; background:#111; color:#fff; border:1px solid #333;" placeholder="Schreibe etwas...">
                 <button onclick="registriereSenden()" class="btn-gold">SENDEN</button>
             </div>
         </div>
@@ -57,8 +55,6 @@
     let userBackstage = JSON.parse(localStorage.getItem('mm_user_data')) || { sektorNotizen: {}, besuchteSektoren: [], isVerifiziert: false };
     const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Bürgerrechte", "Moralische Pflicht", "Menschlichkeit", "Kinderschutz", "Kunst", "LGBTQ und Kirche", "Tradition", "Religion", "Gesundheit", "Arbeitswelt", "Mobbing", "Jugend", "Pensionisten", "Nachbarschaft", "Soziales", "Alleinerziehend", "Die Brücke"];
     
-    const TEXTE = Array(20).fill("Hier steht der vollständige Text für diesen Sektor. Er erklärt die Tiefe und die Vision der Stillen Million.");
-
     let ebene = 1, tId = 0, jitsiApi = null;
     const ably = new Ably.Realtime('IO8wIA.C7HVjQ:SdzgpyD0_ilg8UOO-mXm94ro0VtTUSao8HUMoW7538sA');
 
@@ -83,30 +79,26 @@
 
     function setEbene(n) {
         ebene = n;
-        // Sichtbarkeit steuern
         document.getElementById('main-text').style.display = (n === 1) ? 'block' : 'none';
         document.getElementById('chat-area').style.display = (n === 2) ? 'flex' : 'none';
         document.getElementById('jitsi-container').style.display = (n === 3) ? 'block' : 'none';
-        
         document.getElementById('info-titel').innerText = themen[tId].toUpperCase();
         
-        if(n === 1) document.getElementById('main-text').innerText = TEXTE[tId];
-        if(n === 2) startChat();
-        if(n === 3) setTimeout(starteVideo, 300);
+        if(n === 1) document.getElementById('main-text').innerText = "Vollständiger Text für Sektor " + (tId+1) + ": " + themen[tId];
+        if(n === 2) { startChat(); }
+        if(n === 3) { setTimeout(starteVideo, 300); }
 
         document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === n-1));
-        document.getElementById('next-btn').innerText = (n === 3) ? "FERTIG" : "WEITER ➔";
     }
 
     function nextPage() {
-        if(ebene < 3) setEbene(ebene + 1);
-        else location.reload();
+        if(ebene < 3) setEbene(ebene + 1); else location.reload();
     }
 
     function startChat() {
-        const chan = ably.channels.get('sektor_live_' + tId);
-        const box = document.getElementById('chat-box');
+        const chan = ably.channels.get('chat_sektor_' + tId);
         chan.subscribe('msg', (m) => {
+            const box = document.getElementById('chat-box');
             box.innerHTML += `<div><b style="color:var(--gold)">Gast:</b> ${m.data}</div>`;
             box.scrollTop = box.scrollHeight;
         });
@@ -115,41 +107,27 @@
     function registriereSenden() {
         const input = document.getElementById('chat-input');
         if(!input.value) return;
-        ably.channels.get('sektor_live_' + tId).publish('msg', input.value);
+        ably.channels.get('chat_sektor_' + tId).publish('msg', input.value);
         input.value = "";
     }
 
     function starteVideo() {
         const container = document.getElementById('jitsi-container');
         container.innerHTML = ""; 
-        
         jitsiApi = new JitsiMeetExternalAPI("8x8.vc", {
-            roomName: "vpaas-magic-cookie-39f826359e1345d38f8304910901e855/MM_Sektor_Room_" + tId,
+            roomName: "vpaas-magic-cookie-39f826359e1345d38f8304910901e855/MM_Sektor_" + tId,
             parentNode: container,
-            width: "100%", 
-            height: "100%",
-            configOverwrite: { 
-                startWithAudioMuted: false, 
-                startWithVideoMuted: false,
-                prejoinPageEnabled: false 
-            },
-            interfaceConfigOverwrite: {
-                // Blendet unnötige Jitsi-Menüs aus für mehr Stabilität
-                TOOLBAR_BUTTONS: ['microphone', 'camera', 'hangup', 'chat', 'settings']
-            }
+            width: "100%", height: "100%",
+            configOverwrite: { prejoinPageEnabled: false }
         });
+        // FORCE PERMISSIONS
+        setTimeout(() => {
+            const iframe = container.querySelector('iframe');
+            if(iframe) iframe.setAttribute("allow", "camera; microphone; autoplay; display-capture");
+        }, 500);
+    }
 
-        // ERZWINGE HARDWARE ZUGRIFF IM IFRAME
-        const iframe = container.querySelector('iframe');
-        if (iframe) {
-            iframe.setAttribute("allow", "camera; microphone; display-capture; autoplay");
-        }
-    }
-    function adminUnlock() {
-        userBackstage.isVerifiziert = true;
-        localStorage.setItem('mm_user_data', JSON.stringify(userBackstage));
-        alert("Modus aktiviert.");
-    }
+    function adminUnlock() { userBackstage.isVerifiziert = true; localStorage.setItem('mm_user_data', JSON.stringify(userBackstage)); alert("Admin ok"); }
 
     initApp();
 </script>
