@@ -542,19 +542,19 @@ async function toggleJitsiInline() {
     jBtn.style.display = 'none';
     jContainer.style.display = 'block';
     
-    // Wir erzwingen, dass das Video ganz oben liegt (z-index)
-    jContainer.innerHTML = `<video id="lokaler-spiegel" autoplay playsinline style="width:100%; height:100%; object-fit:cover; background:black; position:relative; z-index:9999;"></video>`;
+    jContainer.innerHTML = `<video id="lokaler-spiegel" autoplay playsinline style="width:100%; height:100%; object-fit:cover; background:#222;"></video>`;
     const videoElement = document.getElementById('lokaler-spiegel');
 
     try {
+        // Wir versuchen nur Video, ohne Audio (Audio blockiert oft zuerst)
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
         videoElement.srcObject = stream;
-        // Wir spielen es explizit ab
         videoElement.play();
-        console.log("Sektor 1: Spiegel aktiviert, Schwein.");
+        console.log("Wahrheit fließt: Kamera aktiv.");
     } catch (err) {
-        console.error("Blockade: ", err);
-        jContainer.innerHTML = `<div style="color:white; font-size:10px; padding:5px;">${err.name}: Zugriff verweigert.</div>`;
+        // Das schreibt uns den ECHTEN Grund ins Feld:
+        jContainer.innerHTML = `<div style="color:#ff4444; font-size:11px; padding:10px;">FEHLER: ${err.name}<br>Grund: ${err.message}</div>`;
+        console.error("Kamera-Blockade:", err);
     }
 }
 function showDashboard() {
