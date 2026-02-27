@@ -546,31 +546,32 @@ async function toggleJitsiInline() {
     jBtn.style.display = 'none';
     jContainer.style.display = 'block';
     
-    // Wir leeren den Container komplett für einen Neustart
-    jContainer.innerHTML = `<video id="lokaler-spiegel" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover; background:#000;"></video>`;
+    // Kleiner Trick: Wir zwingen den Browser zur absoluten Stille
+    jContainer.innerHTML = `<video id="lokaler-spiegel" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover; background:#000;"></video>
+    <div id="cam-status" style="color:white; font-size:9px; position:absolute; bottom:0;">Initialisiere...</div>`;
+    
     const videoElement = document.getElementById('lokaler-spiegel');
+    const statusText = document.getElementById('cam-status');
 
     try {
-        // Wir erzwingen einen sauberen Stop aller laufenden Kamera-Streams
-        if (window.currentStream) {
-            window.currentStream.getTracks().forEach(track => track.stop());
-        }
+        // SCHRITT 1: Bestehende Geister-Streams stoppen
+        const existingStreams = await navigator.mediaDevices.enumerateDevices();
+        console.log("Sektor 1: Suche nach blockierenden Geräten...");
 
-        // Wir fordern NUR Video an (kein Audio), um Timeouts zu vermeiden
+        // SCHRITT 2: Kamera mit Minimal-Anforderung erzwingen
         const stream = await navigator.mediaDevices.getUserMedia({ 
-            video: { width: 1280, height: 720 }, 
+            video: { width: 640, height: 480 }, // Niedrigere Auflösung bricht Blockaden leichter
             audio: false 
         });
         
-        window.currentStream = stream; // Stream speichern zum späteren Stoppen
         videoElement.srcObject = stream;
-        
-        // Explizites Play-Versprechen
         await videoElement.play();
-        console.log("Sektor 1: Wahrhaftigkeit im Spiegel erkannt.");
+        statusText.innerHTML = "WAHRHAFTIGKEIT AKTIV";
+        statusText.style.color = "#0f0";
     } catch (err) {
-        console.error("Kamera-Blockade:", err);
-        jContainer.innerHTML = `<div style="color:#ff4444; font-size:10px; padding:5px;">${err.name}: Kamera wird von einer anderen App blockiert.</div>`;
+        statusText.innerHTML = "BLOCKADE: " + err.name;
+        statusText.style.color = "#f00";
+        console.error("Spiegel-Fehler:", err);
     }
 }
 function showDashboard() {
