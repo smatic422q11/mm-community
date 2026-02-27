@@ -473,6 +473,8 @@ function updateUI() {
     }
 }
 
+let meinSitzPlatz = null; // Speichert, auf welchem Stuhl du sitzt
+
 function portalZuEbene4() {
     ebene = 4;
     const skelett = document.getElementById('page-skelett');
@@ -483,16 +485,49 @@ function portalZuEbene4() {
 
     // UI für das Schöpfergericht vorbereiten
     skelett.classList.add('ebene-4-aktiv');
-    title.innerText = "";
+    title.innerText = "SCHÖPFERGERICHT - SEKTOR " + (tId + 1);
     mainText.style.display = 'none';
     chat.style.display = 'none';
     drawer4.style.display = 'flex';
+
+    // Sitze initialisieren
+    updateSitzplaetze();
+}
+
+function updateSitzplaetze() {
+    const gericht = document.getElementById('geschworenen-gericht');
+    if (!gericht) return;
     
-    // Reset Jitsi-Slot Button Sichtbarkeit
-    const jBtn = document.getElementById('mini-join-btn');
-    const jContainer = document.getElementById('jitsi-container-small');
-    if(jBtn) jBtn.style.display = 'block';
-    if(jContainer) jContainer.style.display = 'none';
+    gericht.innerHTML = ""; // Altes Layout leeren
+
+    for (let i = 1; i <= 8; i++) {
+        const box = document.createElement('div');
+        box.className = 'geschworenen-box';
+        
+        if (meinSitzPlatz === i) {
+            box.innerHTML = `<span class="pulsieren" style="color:#ffd700;">BESETZT (ICH)</span>`;
+            box.style.border = "2px solid #ffd700";
+            box.style.boxShadow = "0 0 15px #ffd700";
+        } else {
+            box.innerHTML = `SITZ ${i}`;
+            box.style.cursor = "pointer";
+            box.onclick = () => {
+                meinSitzPlatz = i;
+                updateSitzplaetze();
+            };
+        }
+        gericht.appendChild(box);
+    }
+
+    // Den 9. Slot für Jitsi (Video) hinzufügen
+    const jitsiSlot = document.createElement('div');
+    jitsiSlot.id = "jitsi-slot";
+    jitsiSlot.style.border = "1px solid #800";
+    jitsiSlot.innerHTML = `
+        <button id="mini-join-btn" onclick="toggleJitsiInline()" style="width:100%; height:100%; background:#800; color:#fff; border:none; font-weight:bold; cursor:pointer;">JOIN VIDEO</button>
+        <div id="jitsi-container-small" style="display:none; width:100%; height:100%;"></div>
+    `;
+    gericht.appendChild(jitsiSlot);
 }
 
 function toggleJitsiInline() {
@@ -511,6 +546,10 @@ function toggleJitsiInline() {
             width: "100%",
             height: "100%",
             parentNode: jContainer,
+            configOverwrite: {
+                startWithAudioMuted: true,
+                disableDeepLinking: true
+            },
             interfaceConfigOverwrite: {
                 TILE_VIEW_MAX_COLUMNS: 1,
                 TOOLBAR_BUTTONS: ['microphone', 'camera', 'hangup'] 
@@ -519,7 +558,6 @@ function toggleJitsiInline() {
         jitsiApi = new JitsiMeetExternalAPI(domain, options);
     }
 }
-
 function showDashboard() {
     if (jitsiApi) { jitsiApi.dispose(); jitsiApi = null; }
     document.getElementById('page-skelett').style.display = 'none';
