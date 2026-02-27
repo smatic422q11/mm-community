@@ -1,72 +1,63 @@
 <!DOCTYPE html><html lang="de"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M&M OS - Finale</title>
+    <title>M&M Dashboard - Final Fix</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <script src='https://8x8.vc/vpaas-magic-cookie-39f826359e1345d38f8304910901e855/external_api.js'></script>
     <style>
         :root { --gold: #ffd700; --bg: #0a0a0a; --card: #1a1a1a; --text: #e0e0e0; }
-        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: sans-serif; }
         .dashboard { display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        .logo-ring { width: 120px; height: 120px; border: 3px solid #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 20px; transition: 0.5s; cursor: pointer; }
-        .logo-ring:hover { border-color: var(--gold); box-shadow: 0 0 15px var(--gold); }
-        .counter { font-size: 1.1rem; color: var(--gold); margin-bottom: 30px; letter-spacing: 1px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; width: 100%; max-width: 1200px; }
-        .box { background: var(--card); border-radius: 10px; padding: 15px; display: flex; align-items: center; gap: 15px; border: 1px solid #333; transition: 0.3s; cursor: pointer; }
-        .box:hover { border-color: var(--gold); transform: translateY(-2px); }
-        .num { width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; background: #333; color: #888; }
-        .num-fertig { background: var(--gold); color: #000; box-shadow: 0 0 8px var(--gold); }
-        .text { font-size: 0.9rem; flex: 1; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; width: 100%; max-width: 1200px; }
+        .box { background: var(--card); border-radius: 10px; padding: 15px; border: 1px solid #333; cursor: pointer; display: flex; align-items: center; gap: 15px; }
+        .num { width: 30px; height: 30px; background: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .num-fertig { background: var(--gold); color: #000; }
+        
         #page-skelett { display: none; position: fixed; inset: 0; background: #000; flex-direction: column; z-index: 1000; }
-        .header-skelett { height: 60px; border-bottom: 1px solid #222; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
-        .content-skelett { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
-        .footer-skelett { height: 70px; border-top: 1px solid #222; display: flex; align-items: center; justify-content: center; gap: 30px; }
-        .dot { width: 12px; height: 12px; border-radius: 50%; background: #333; cursor: pointer; transition: 0.3s; }
-        .dot.active { background: var(--gold); box-shadow: 0 0 10px var(--gold); transform: scale(1.3); }
-        .wahrheits-text { line-height: 1.6; font-size: 1.2rem; color: #ccc; max-width: 800px; margin: 40px auto; white-space: pre-wrap; text-align: center; }
-        #chat-area { display: none; flex-direction: column; height: 100%; max-width: 600px; margin: 0 auto; width: 100%; }
-        #chat-box { flex: 1; overflow-y: auto; border: 1px solid #222; padding: 15px; margin-bottom: 10px; background: #050505; }
-        .chat-input-row { display: flex; gap: 10px; }
-        input { background: #111; border: 1px solid #333; color: #fff; padding: 12px; flex: 1; border-radius: 5px; }
-        .btn { background: var(--gold); color: #000; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; border-radius: 5px; }
-        #drawer-ebene4 { display: none; flex-direction: column; height: 100%; gap: 10px; }
-        .schublade { background: #111; border: 1px solid #222; border-radius: 5px; }
-        .schublade-header { padding: 15px; cursor: pointer; background: #1a1a1a; color: var(--gold); font-weight: bold; display: flex; justify-content: space-between; }
-        .schublade-content { padding: 15px; display: none; }
-        .schublade.open .schublade-content { display: block; }
-        #jitsi-container-small { flex: 1; min-height: 400px; background: #000; border: 1px solid #222; border-radius: 8px; margin-top: 10px; }
-    </style></head><body>
+        .header-skelett { height: 60px; border-bottom: 1px solid #222; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; background: #111; }
+        .content-skelett { flex: 1; padding: 20px; overflow-y: auto; color: #fff; }
+        .footer-skelett { height: 60px; border-top: 1px solid #222; display: flex; align-items: center; justify-content: center; gap: 20px; }
+        
+        .dot { width: 12px; height: 12px; border-radius: 50%; background: #333; cursor: pointer; }
+        .dot.active { background: var(--gold); box-shadow: 0 0 10px var(--gold); }
+        
+        #chat-area { display: none; flex-direction: column; height: 100%; }
+        #chat-box { flex: 1; border: 1px solid #222; padding: 10px; overflow-y: auto; background: #050505; margin-bottom: 10px; min-height: 200px; }
+        
+        #jitsi-container-small { display: none; height: 500px; width: 100%; border: 1px solid #gold; background: #000; }
+        textarea { width: 100%; background: #111; color: #fff; border: 1px solid #333; padding: 10px; }
+    </style>
+</head>
+<body>
 
 <div id="dashboard" class="dashboard">
-    <div class="logo-ring" ondblclick="adminUnlock()"><img src="https://i.ibb.co/m9H8GzK/mm-logo.png" width="80" alt="Logo"></div>
-    <div class="counter">STILLE MILLION: <span class="counter-value">842.336</span></div>
+    <h1 style="color:var(--gold)">M&M DASHBOARD</h1>
     <div id="main-grid" class="grid"></div>
 </div>
 
 <div id="page-skelett">
     <div class="header-skelett">
-        <div onclick="showDashboard()" style="cursor:pointer; color:var(--gold); font-weight: bold;">✕ SCHLIESSEN</div>
-        <div id="info-titel" style="font-weight:bold; color: var(--gold);"></div>
-        <div onclick="nextPage()" style="cursor:pointer; color:var(--gold); font-weight: bold;">WEITER ➔</div>
+        <button onclick="location.reload()" class="btn" style="background:none; color:var(--gold); border:1px solid var(--gold); cursor:pointer;">Zurück</button>
+        <div id="info-titel">Sektor</div>
+        <button onclick="nextPage()" style="background:var(--gold); border:none; padding: 10px; cursor:pointer; font-weight:bold;">WEITER</button>
     </div>
     <div class="content-skelett">
-        <div id="main-text"></div>
+        <div id="main-text" style="font-size: 1.2rem; line-height: 1.5;"></div>
+        
         <div id="chat-area">
             <div id="chat-box"></div>
-            <div class="chat-input-row">
-                <input type="text" id="chat-input" placeholder="Schreibe etwas...">
-                <button onclick="registriereSenden()" class="btn">SENDEN</button>
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="chat-input" style="flex:1; padding:10px; background:#111; color:#fff; border:1px solid #333;">
+                <button onclick="registriereSenden()" style="padding:10px; background:var(--gold); border:none; cursor:pointer;">Senden</button>
             </div>
         </div>
-        <div id="drawer-ebene4">
-            <div class="schublade" id="drawer-notiz">
-                <div class="schublade-header" onclick="toggleDrawer('notiz')"><span>DEINE DOKUMENTATION</span><span>▼</span></div>
-                <div class="schublade-content">
-                    <textarea id="note-current" style="width:100%; height:120px; background:#000; color:#fff; border: 1px solid #333; padding: 10px; font-family: inherit;"></textarea>
-                    <button class="btn" style="margin-top:10px; width: 100%;" onclick="saveNote()">SICHERN</button>
-                </div>
-            </div>
-            <div id="jitsi-container-small"></div>
+
+        <div id="jitsi-container-small"></div>
+        
+        <div id="notiz-area" style="display:none; margin-top:20px;">
+            <h3 style="color:var(--gold)">DOKUMENTATION</h3>
+            <textarea id="note-current" rows="5"></textarea>
+            <button onclick="saveNote()" style="margin-top:10px; padding:10px; background:var(--gold); border:none; cursor:pointer;">Sichern</button>
         </div>
     </div>
     <div class="footer-skelett" id="dot-holder"></div>
@@ -74,94 +65,69 @@
 
 <script>
     let userBackstage = JSON.parse(localStorage.getItem('mm_user_data')) || { sektorNotizen: {}, besuchteSektoren: [], isVerifiziert: false };
-    const themen = ["Recht auf Gefühlsvorderung oder KI", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Nachbarschaft und Gemeinschaft", "Sozialgefallen und Widerkehr", "Alleinerziehend & Kind", "Die Brücke"];
+    const themen = ["Gefühlsvorderung", "Mensch werden", "Friede", "Bürgerrechte", "Moral", "Wiederherstellung", "Kinderschutz", "Kunst", "Kirche", "Tradition", "Religion", "Gesundheit", "Arbeit", "Mobbing", "Jugend", "Pensionisten", "Gemeinschaft", "Soziales", "Alleinerziehend", "Die Brücke"];
 
-    const DASHBOARD_TRUTH = {
-        1: { title: "GEFÜHLSVORDERUNG", content: "Die erste Stufe der Befreiung..." },
-        2: { title: "MENSCHWERDUNG", content: "Der Weg zurück zum Kern..." },
-        20: { title: "DIE BRÜCKE", content: "Das Ziel der Stillen Million..." }
-    };
-
-    let ebene = 1, tId = 0, aktuellesThema = "", jitsiApi = null;
+    let ebene = 1, tId = 0, jitsiApi = null;
     const ably = new Ably.Realtime('IO8wIA.C7HVjQ:SdzgpyD0_ilg8UOO-mXm94ro0VtTUSao8HUMoW7538sA');
 
     function initApp() {
         const grid = document.getElementById('main-grid');
         grid.innerHTML = "";
         themen.forEach((t, i) => {
-            const statusClass = userBackstage.besuchteSektoren.includes(i) ? 'num-fertig' : '';
-            grid.innerHTML += `<div class="box" onclick="checkAccess(${i}, '${t}')"><div class="num ${statusClass}">${i+1}</div><div class="text">${t}</div></div>`;
+            const fertig = userBackstage.besuchteSektoren.includes(i) ? 'num-fertig' : '';
+            grid.innerHTML += `<div class="box" onclick="startSektor(${i})"><div class="num ${fertig}">${i+1}</div><div>${t}</div></div>`;
         });
         const dots = document.getElementById('dot-holder');
         dots.innerHTML = "";
-        for(let i=1; i<=4; i++) dots.innerHTML += `<div id="dot${i}" class="dot" onclick="setEbene(${i})"></div>`;
+        for(let i=1; i<=4; i++) dots.innerHTML += `<div id="dot${i}" class="dot"></div>`;
     }
 
-    function checkAccess(index, thema) {
-        tId = index;
-        aktuellesThema = thema;
-        if (index < 4 || userBackstage.isVerifiziert) startSektor();
-        else {
-            const pw = prompt("Sektor gesperrt. Community-Code:");
-            if(pw === "1234") { userBackstage.isVerverified = true; saveData(); startSektor(); }
-        }
-    }
-
-    function startSektor() {
+    function startSektor(id) {
+        tId = id;
         document.getElementById('dashboard').style.display = 'none';
         document.getElementById('page-skelett').style.display = 'flex';
-        if(!userBackstage.besuchteSektoren.includes(tId)) {
-            userBackstage.besuchteSektoren.push(tId);
-            saveData();
-        }
         setEbene(1);
     }
 
     function setEbene(n) {
         ebene = n;
-        document.getElementById('main-text').style.display = (n === 1) ? 'block' : 'none';
-        document.getElementById('chat-area').style.display = (n === 3) ? 'flex' : 'none';
-        document.getElementById('drawer-ebene4').style.display = (n === 4) ? 'flex' : 'none';
-        
-        document.getElementById('info-titel').innerText = (DASHBOARD_TRUTH[tId+1]?.title || "SEKTOR " + (tId+1)).toUpperCase();
-        
-        if(n === 1) document.getElementById('main-text').innerHTML = `<div class="wahrheits-text">${DASHBOARD_TRUTH[tId+1]?.content || 'Inhalt folgt für: ' + aktuellesThema}</div>`;
-        if(n === 3) {
-             const box = document.getElementById('chat-box');
-             box.innerHTML = "<em>System: Verbindung zum Sektor-Chat hergestellt...</em>";
-             verbindeChat();
-        }
-        if(n === 4) {
-            setTimeout(() => { starteJitsi(); }, 300);
+        // Reset Sichtbarkeit
+        document.getElementById('main-text').style.display = 'none';
+        document.getElementById('chat-area').style.display = 'none';
+        document.getElementById('jitsi-container-small').style.display = 'none';
+        document.getElementById('notiz-area').style.display = 'none';
+
+        document.getElementById('info-titel').innerText = "Sektor " + (tId + 1) + " - Ebene " + n;
+
+        if(n === 1) {
+            document.getElementById('main-text').style.display = 'block';
+            document.getElementById('main-text').innerText = "Willkommen in Sektor " + (tId+1) + ". Hier beginnt die Analyse der Themengebiete...";
+        } else if(n === 2) {
+            document.getElementById('main-text').style.display = 'block';
+            document.getElementById('main-text').innerText = "Ebene 2: Vertiefung und Struktur. Hier werden die Fakten gesammelt.";
+        } else if(n === 3) {
+            document.getElementById('chat-area').style.display = 'flex';
+            verbindeChat();
+        } else if(n === 4) {
+            document.getElementById('jitsi-container-small').style.display = 'block';
+            document.getElementById('notiz-area').style.display = 'block';
             document.getElementById('note-current').value = userBackstage.sektorNotizen[tId] || "";
+            setTimeout(starteVideo, 200);
         }
+
         document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === n-1));
     }
 
-    function starteJitsi() {
-        const container = document.getElementById('jitsi-container-small');
-        container.innerHTML = ""; 
-        jitsiApi = new JitsiMeetExternalAPI("8x8.vc", {
-            roomName: "vpaas-magic-cookie-39f826359e1345d38f8304910901e855/MM_Sektor_" + (tId + 1),
-            parentNode: container,
-            width: "100%", height: "100%"
-        });
+    function nextPage() {
+        if(ebene < 4) setEbene(ebene + 1);
+        else location.reload();
     }
-
-    function nextPage() { if(ebene < 4) setEbene(ebene + 1); else showDashboard(); }
-    function showDashboard() { 
-        if(jitsiApi) { jitsiApi.dispose(); jitsiApi = null; }
-        document.getElementById('dashboard').style.display = 'flex'; 
-        document.getElementById('page-skelett').style.display = 'none'; 
-        initApp(); 
-    }
-    function toggleDrawer(id) { document.getElementById('drawer-' + id).classList.toggle('open'); }
 
     function verbindeChat() {
-        const chan = ably.channels.get("sektor_" + (tId + 1));
-        chan.subscribe('message', (msg) => {
+        const channel = ably.channels.get('chat_sektor_' + tId);
+        channel.subscribe('msg', (m) => {
             const box = document.getElementById('chat-box');
-            box.innerHTML += `<div><span style="color:var(--gold)">Gast:</span> ${msg.data.text}</div>`;
+            box.innerHTML += `<div><b>Nutzer:</b> ${m.data}</div>`;
             box.scrollTop = box.scrollHeight;
         });
     }
@@ -169,18 +135,28 @@
     function registriereSenden() {
         const input = document.getElementById('chat-input');
         if(!input.value) return;
-        ably.channels.get("sektor_" + (tId+1)).publish('message', { text: input.value });
+        ably.channels.get('chat_sektor_' + tId).publish('msg', input.value);
         input.value = "";
+    }
+
+    function starteVideo() {
+        if(jitsiApi) jitsiApi.dispose();
+        const domain = "8x8.vc";
+        const options = {
+            roomName: "vpaas-magic-cookie-39f826359e1345d38f8304910901e855/MM_Sektor_Room_" + tId,
+            parentNode: document.getElementById('jitsi-container-small'),
+            height: 500
+        };
+        jitsiApi = new JitsiMeetExternalAPI(domain, options);
     }
 
     function saveNote() {
         userBackstage.sektorNotizen[tId] = document.getElementById('note-current').value;
-        saveData();
-        alert("Dokumentation gesichert.");
+        if(!userBackstage.besuchteSektoren.includes(tId)) userBackstage.besuchteSektoren.push(tId);
+        localStorage.setItem('mm_user_data', JSON.stringify(userBackstage));
+        alert("Gespeichert!");
     }
 
-    function saveData() { localStorage.setItem('mm_user_data', JSON.stringify(userBackstage)); }
-    function adminUnlock() { const pw = prompt("Admin?"); if(pw==="1234") { userBackstage.isVerifiziert=true; saveData(); location.reload(); }}
-
-    window.onload = initApp;
-</script></body></html>
+    initApp();
+</script>
+</body></html>
