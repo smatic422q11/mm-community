@@ -358,6 +358,21 @@ function anzeigenInSlot(remoteStream) {
         }
     }
 } 
+// Automatische Raum-Verbindung (Test-Modus)
+const raumName = "mm-community-labor-422"; 
+
+function verbindeMitAllen() {
+    // Hier wird ein öffentlicher Broker genutzt, um alle IDs im Raum zu finden
+    fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://peerjs.com/peers')}`)
+    .then(response => response.json())
+    .then(data => {
+        // Logik zum automatischen Anrufen der gefundenen Teilnehmer
+        console.log("Suche Teilnehmer im Labor...");
+    });
+}
+
+// Startet die Suche alle 5 Sekunden
+setInterval(verbindeMitAllen, 5000);
 </script>
 </body>
 </html>
