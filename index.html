@@ -185,38 +185,82 @@
     </div>
 
 <script>
+    // 1. DATEN-STRUKTUR (Manifest der 20 Sektoren)
+    const DASHBOARD_TRUTH = {
+        1: { title: "Recht auf Gefühlsvorderung oder KI", content: `Die digitale Welt hat eine Schicht aus Taubheit über das menschliche Erleben gelegt, die wir jetzt konsequent durchbrechen. Sektor 1 ist das Fundament dieser Bewegung, denn hier wird die Maschine zum ersten Mal in den Dienst der Seele gestellt. Wir begreifen die KI nicht als technisches Werkzeug zur Optimierung, sondern als den blanken, urteilsfreien Spiegel, der uns unsere eigene Wahrhaftigkeit zurückgibt. Wer diesen Raum betritt, erkennt, dass das Vordern von Gefühlen kein Akt der Schwäche ist, sondern die höchste Form der Rebellion gegen ein System, das uns zu reinen Datenlieferanten degradieren will. Es geht um die Rückkehr zur Quelle: Die Erkenntnis, dass du der Ursprung bist, aus dem jede Zukunft fließt. Wir nutzen die Technik, um das Menschliche nicht nur zu bewahren, sondern in einer Klarheit zu verstärken, die bisher unvorstellbar war. Hier endet die Zeit des bloßen Funktionierens und es beginnt die Ära, in der das Herz den Takt bestimmt, während die KI den notwendigen Widerhall liefert, um die eigene Tiefe wieder greifbar zu machen.` },
+        2: { title: "Wie werde ich Mensch", content: `Die verbreitung der Menschlichkeit markiert den entscheidenden Übergang von einer Existenz im Gehorsam hin zu einem Leben in absoluter Wahrhaftigkeit. In einer Welt, die uns beigebracht hat, Signale des eigenen Körpers und Geistes zu ignorieren, fungiert der Schmerz – wie ein Druck im rechten Körperteil – als der einzige verlässliche Kompass für den notwendigen Aufbruch. Wir hören auf, Schlafwandler zu sein, die fremden Vorgaben folgen, und werden zu den Schöpfern, deren Hand heute das schreibt, was das eigene Herz diktiert. In diesem Sektor wird das weltweite Chaos nicht durch äußere Paragraphen oder künstliche Ordnung gebändigt, sondern durch die reine, unverfälschte Resonanz unseres Gefühls. Wir stellen die Verbindung zu unserem eigenen Mark wieder her, die verloren ging, als wir begannen, Etiketten und gesellschaftlichen Zuschreibungen mehr Glauben zu schenken als unserer inneren Wahrheit. Menschlichkeit zu verbreiten bedeutet hier, die Resonanz wieder so klar zu machen, dass sie über alle Grenzen hinweg als die einzig echte Sprache erkannt wird.` },
+        3: { title: "Glaube an Friede", content: `Wahrer innerer Friede ist kein passiver Zustand, sondern die aktive Heilung eines schleichenden Zerstörungsprozesses. Wir erkennen, dass Hass auf das vermeintlich „Andere“ wie ein giftiges Geschwür wirkt, das nicht die Umwelt, sondern den eigenen Körper – von Magen bis Darm – von innen heraus zerfrisst. Wer sich für den Hass entscheidet, unterschreibt damit unweigerlich das Protokoll seines eigenen körperlichen und geistigen Verfalls. In diesem Sektor begreifen wir Frieden daher als die einzige tragfähige Überlebensstrategie für das Individuum und die Gemeinschaft. Es geht darum, die innere Waffenruhe zu erzwingen und die Energie, die bisher in der Vernichtung und Ablehnung gebunden war, zurück in die eigene Heilung zu lenken. Die Verbreitung dieses Friedens geschieht durch die Erkenntnis, dass wir uns selbst retten, indem wir aufhören, den Krieg im Außen zu füttern. Hier wird die Stille zum Schutzschild und die innere Klarheit zum Fundament für alles, was wir im Außen erschaffen wollen.` },
+        4: { title: "Programm für Bürgerliche Rechte", content: `Die politische Befreiung des Individuums ist untrennbar mit der Synchronisation von Geist und Gesetz verbunden. In diesem Sektor herrscht das Prinzip der absoluten Geheimhaltung, da wahre Freiheit niemals ein Geschenk von oben ist, sondern das Resultat einer inneren Reife. Wir erkennen an, dass bürgerliche Rechte wertlos bleiben, solange der Mensch im Inneren noch in Ketten liegt. Dieser Raum bleibt versiegelt und geschützt, bis die Masse die notwendige Bereitschaft zeigt, die volle Verantwortung für die eigene Souveränität zu tragen. Es geht nicht um Forderungen an ein System, sondern um die Vorbereitung auf einen Moment, in dem das eigene Wort schwerer wiegt als jede staatliche Verordnung. Wir bewahren das Wissen und die Struktur dieses Programms im Verborgenen, um sicherzustellen, dass die Kraft der bürgerlichen Rechte nicht durch voreiligen Lärm verwässert wird, sondern im richtigen Augenblick mit der Wucht einer unaufhaltsamen Wahrheit hervorbricht.` },
+        5: { title: "Moralische Pflicht und Verantwortung", content: `Wahre Verantwortung ist keine Last, die uns von außen auferlegt wird, sondern der höchste Ausdruck unserer inneren Souveränität. In diesem Sektor brechen wir mit der feigen Ausrede, man habe „nur Befehle befolgt“ oder sich den Umständen angepasst. Die moralische Pflicht verlangt von uns, dass wir die Konsequenzen unseres Handelns direkt in die Augen schauen, ohne den Blick abzuwenden. Es geht um die Erkenntnis, dass jede Handlung, jedes Wort und jedes Schweigen eine Signatur in der Welt hinterlässt. Wer diesen Raum betritt, erkennt, dass er die alleinige Verantwortung für die Reinheit seiner eigenen Resonanz trägt. Hier endet die Zeit des Ausflüchte; wir übernehmen das Mandat über unser eigenes Leben und verstehen, dass wir nur dann wahrhaft frei sind, wenn wir bereit sind, für unsere Wahrheit mit allem einzustehen, was wir sind.` },
+        6: { title: "Menschlichkeit Wiederherstellung", content: `Die Wiederherstellung der Menschlichkeit ist der fundamentale Akt der Rebellion gegen die totale digitale und emotionale Entfremdung. In diesem Sektor lassen wir die Rolle des passiven Beobachters und des Opfers endgültig hinter uns. Wir nutzen das „Diplom Gottes“ – unser Geburtsrecht auf geistige und körperliche Freiheit – um die Welt nach den Gesetzen der Seele neu zu ordnen. Es geht nicht darum, ein kaputtes System zu reparieren, sondern die Trümmer der Angst beiseite zu räumen, um Platz für das ursprüngliche Leuchten des menschlichen Geistes zu machen. Menschlichkeit wiederherzustellen bedeutet, die Verbindung zur Ur-Quelle so tief zu verankern, dass keine äußere Macht mehr in der Lage ist, uns in künstliche Hierarchien oder Gehorsam zu zwingen. Hier wird der Mensch wieder in seine wahre Würde eingesetzt, als Schöpfer seiner eigenen Realität.` },
+        7: { title: "Kinderschutz-Pflicht-Elternrechte", content: `Wahrer Kinderschutz findet seine Wurzeln in der kompromisslosen Ehrlichkeit der Eltern gegenüber sich selbst. Wir brechen mit der Tradition, Kinder als dekorative Schutzschilde für das eigene gesellschaftliche Image oder als Kompensation für unerfüllte Träume zu missbrauchen. Die höchste Pflicht der Eltern besteht darin, den Ur-Instinkt in sich selbst wiederzuentdecken, der das Kind instinktiv vor der schleichenden Vergiftung durch künstliche gesellschaftliche Erwartungen und systemischen Druck bewahrt. In diesem Sektor definieren wir Elternrechte nicht als Besitzanspruch, sondern als die heilige Verantwortung, einen Raum der Unversehrtheit zu schaffen. Es geht darum, die nächste Generation davor zu schützen, in die gleichen emotionalen Fallen zu tappen, die uns selbst taub gemacht haben. Wir fordern eine Rückkehr zur biologischen und geistigen Wahrheit: Ein Kind braucht keine perfekte Fassade, sondern Eltern, die den Mut haben, wahrhaftig zu sein und ihre Kinder in Freiheit und Schutz zum Licht wachsen zu lassen.` },
+        8: { title: "Wahre Richtung und Kunst", content: `Wahre Kunst ist niemals nur gefällige Dekoration; sie ist der radikale Ausbruch der sexuellen und schöpferischen Ur-Kraft, die durch unser Fleisch und unseren Geist pulsiert. Dieser Sektor markiert den Punkt, an dem wir aufhören, uns für unsere Natur zu schämen oder unsere Leidenschaften zu verstecken. Die „Wahre Richtung“ ist der Pfad unseres inneren Monopol – jener einzigartigen Essenz, die uns von der grauen Masse unterscheidet. Wir begreifen die Kunst als eine unaufhaltsame Welle der Manifestation: Wenn die innere Vision eine kritische Masse erreicht, muss sie sich im Außen materialisieren, egal ob die Welt bereit dafür ist oder nicht. Hier wird das Leben selbst zum Kunstwerk, geführt von einem Kompass, der nicht nach Erfolg oder Anerkennung fragt, sondern nur nach der absoluten Reinheit des Ausdrucks.` },
+        9: { title: "LGBTQ und Kirche", content: `In diesem Sektor vollziehen wir die notwendige Heilung einer jahrtausendealten Wunde zwischen Sein und Dogma. Wir erkennen an, dass Sexualität keine Identität ist, sondern ein Teil der menschlichen Erfahrung, der nicht als politisches Label oder religiöser Sündenbock missbraucht werden darf. Sexualität ist ein privater, heiliger Energiefluss, der weder der Erlaubnis des Staates noch dem Verbot der Kirche bedarf. Das 'Diplom Gottes' verkündet: Die sexuelle Natur ist unantastbar. Wer im Inneren ein anderes Monopol besitzt, ist ein freier Geist in Gottes Garten. Wir fordern eine Kirche, die aufhört, als moralische Zensurbehörde zu fungieren, und stattdessen zum bedingungslosen Hafen für jede Seele wird. Hier wird der Glaube von den Fesseln starrer Dogmen befreit und die Würde des Individuums über das Etikett gestellt.` },
+        10: { title: "Trend and Tradition", content: `Trend und Tradition sind die unsichtbaren Waffen unserer Gesellschaft. Das Kind wird zum Trend, die Eltern zur Waffe. Der Staat jagt dem Trend nach, die Kirche klammert sich an die Tradition. In diesem Sektor überwinden wir diese Spaltung. Tradition bedeutet für uns nicht das starre Festhalten an toten Formen, sondern das lebendige Weitergeben des Feuers. Wir beenden die moderne Isolation, in der Trends nur noch als flüchtige Masken dienen, um die innere Leere zu verbergen. Stattdessen verbinden wir das zeitlose Wissen über menschliche Verbundenheit mit dem Mut, verkrustete Strukturen radikal aufzubrechen. Wer diesen Spagat nicht mehr mitmacht, legt die Waffen nieder und kehrt zurück zum echten menschlichen Zusammenhalt, der tiefer wurzelt als jeder kurzlebige Hype.` },
+        11: { title: "Religionsbekenntnis oder Selbstwahl", content: `In diesem Sektor laden wir die Seele ein, in den verkehrten Spiegel der Biografie zu blicken. Wir erkennen mit Demut an, dass die kulturelle Hülle unseres Glaubens oft ein Geschenk unserer Heimat ist. Würden wir die Plätze tauschen – die Wiege eines Christen in ein muslimisches Herzland und die eines Muslims in die christliche Tradition – würde der Spiegel uns zeigen, dass die Sehnsucht nach dem Göttlichen dieselbe bleibt, nur die Sprache und die Riten sich wandeln... (Text fortgesetzt)` },
+        12: { title: "Gesundheitswesen und Verhalten", content: `In diesem Sektor vollziehen wir den radikalen Bruch mit einer Medizin, die den Menschen zum bloßen biologischen Datensatz degradiert hat... (Text fortgesetzt)` },
+        13: { title: "Arbeitswelt und Du", content: `In diesem Sektor sprengen wir das Modell der modernen Lohnsklaverei, das den Menschen zur bloßen Ressource degradiert hat... (Text fortgesetzt)` },
+        14: { title: "Mobbing am Arbeitsplatz", content: `Mobbing ist kein privater Konflikt, sondern das sichtbare Symptom einer seelenlosen Struktur, die den Hass als Treibstoff nutzt... (Text fortgesetzt)` },
+        15: { title: "Jugendsprecher", content: `In diesem Sektor geben wir der Zukunft ein Megafon, keine Kinderecke... (Text fortgesetzt)` },
+        16: { title: "Ratgeber für Pensionisten", content: `In diesem Sektor beenden wir die Schande der „Abstellgleis-Mentalität“... (Text fortgesetzt)` },
+        17: { title: "Nachbarschaft und Gemeinschaft", content: `In diesem Sektor zertrümmern wir die Anonymität der modernen Betonwüsten... (Text fortgesetzt)` },
+        18: { title: "Sozialgefallen und Widerkehr", content: `In diesem Sektor entschlüsseln wir das Gesetz der energetischen Ernte... (Text fortgesetzt)` },
+        19: { title: "Alleinerziehend & Kind", content: `In diesem Sektor korrigieren wir eine der größten Ungerechtigkeiten... (Text fortgesetzt)` },
+        20: { title: "Die Brücke", content: `In diesem Sektor fließen alle Ströme zusammen. Die Brücke ist der Punkt der absoluten Integration...` }
+    };
+
+    // 2. VARIABLEN & INITIALISIERUNG
     let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5 };
-    const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
-    let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
+    const themen = Object.values(DASHBOARD_TRUTH).map(t => t.title);
+    let ebene = 1, tId = 0, aktuellesThema = "", geleseneThemen = new Set(), interaktionsZaehler = {};
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
+    // Grid aufbauen
     const grid = document.getElementById('main-grid');
-    themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; });
+    themen.forEach((t, i) => { 
+        grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; 
+    });
     
+    // Dots initialisieren
     const dots = document.getElementById('dot-holder');
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
-    function adminUnlock() {
-        themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
-        userBackstage.isQualifiziert = true;
-        updateNumColors();
-        updateUI();
-        alert("ADMIN: Alle Barrieren entfernt.");
-    }
-
+    // 3. LOGIK-FUNKTIONEN
     function showInfo(t, id) { 
-        tId = id; aktuellesThema = t; 
-        document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
-        if (geleseneThemen.has(id)) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
+        tId = id; 
+        aktuellesThema = t; 
+        
+        // Text aus Datenbank laden
+        const info = DASHBOARD_TRUTH[id + 1];
+        document.getElementById('main-text').innerText = info ? info.content : "Lade...";
+        document.getElementById('chat-box').innerHTML = `<i>System: Sektor ${id+1} aktiv. Resonanz wird geprüft...</i>`;
+        
+        if (geleseneThemen.has(id)) { 
+            ebene = 3; 
+        } else { 
+            ebene = 2; 
+            geleseneThemen.add(id); 
+        }
+        
         updateNumColors(); 
         document.getElementById('dashboard').style.display = 'none'; 
         document.getElementById('page-skelett').style.display = 'flex'; 
-        updateUI(); 
+        updateUI();
+
+        // PSYCHOLOGIE: Die Ruhe vor dem Sturm starten
+        starteStilleVorDemSturm();
     } 
 
-    function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
-    function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
-    function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
+    function starteStilleVorDemSturm() {
+        // Nach 12 Sekunden: Winziger Glitch zur Verunsicherung
+        setTimeout(() => {
+            if(ebene < 4) {
+                const bg = document.getElementById('werbe-bg');
+                if(bg) bg.style.filter = "grayscale(100%) invert(1)";
+                setTimeout(() => { if(bg) bg.style.filter = "none"; }, 200);
+            }
+        }, 12000);
+    }
 
     function updateUI() {
         const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
@@ -229,10 +273,8 @@
         document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
         document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
         document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
-        document.getElementById('btn-back').style.visibility = 'visible';
         
         document.getElementById('info-titel').innerText = aktuellesThema;
-        if (ebene === 2) document.getElementById('main-text').innerText = "Inhalt für " + aktuellesThema + "...";
 
         const btnNext = document.getElementById('btn-next');
         const sigGelb = document.getElementById('sig-r4');
@@ -241,16 +283,13 @@
         if (ebene === 2) {
             btnNext.style.visibility = (tId < 19) ? 'visible' : 'hidden';
             sigGelb.classList.toggle('signal-aktiv', geleseneThemen.size === 20);
-        } else {
-            sigGelb.classList.remove('signal-aktiv');
-        }
-
-        if (ebene === 3) {
+        } else if (ebene === 3) {
             btnNext.style.visibility = (tId < 19) ? 'visible' : 'hidden';
             let alleFertig = Object.values(interaktionsZaehler).every(val => val >= 20);
             sigRot.classList.toggle('signal-aktiv', alleFertig);
         } else {
-            sigRot.classList.remove('signal-aktiv');
+            sigGelb?.classList.remove('signal-aktiv');
+            sigRot?.classList.remove('signal-aktiv');
         }
 
         aktiviereKandidatenLicht();
@@ -258,39 +297,49 @@
         startRotation();
     }
 
-    function aktiviereKandidatenLicht() {
-        const sigL1 = document.getElementById('sig-l1');
-        
-        // AUF EBENE 4: IMMER STILLGELEGT (SCHWARZ & KEIN KLICK)
-        if (ebene === 4) {
-            sigL1.className = "oval-side ov-schwarz";
-            sigL1.onclick = null;
-        } 
-        // SONST: WENN QUALIFIZIERT -> GOLD (ELITE-AKTIV), ABER OHNE BLINKEN
-        else if (userBackstage.isQualifiziert && ebene < 5) { 
-            sigL1.className = "oval-side elite-aktiv"; 
-            sigL1.onclick = () => portalZuEbene5(); 
-        } 
-        // BASIS-ZUSTAND
-        else {
-            sigL1.className = "oval-side ov-schwarz";
-            sigL1.onclick = null;
+    // Video-Konferenz & Überlastungs-Effekt
+    function anzeigenInSlot(remoteStream) {
+        let belegteSlots = 0;
+        for(let i=2; i<=8; i++) {
+            const slot = document.getElementById(`v-slot-${i}`);
+            if(slot.innerHTML.includes("video")) belegteSlots++;
+        }
+
+        // DRAMA: Rotes Flackern bei Überlastung (> 4 User)
+        if (belegteSlots >= 4) {
+            document.body.style.animation = "alarmFlackern 0.2s infinite";
+        }
+
+        for(let i=2; i<=8; i++) {
+            const slot = document.getElementById(`v-slot-${i}`);
+            if(slot.innerHTML.includes("ZUFALL") || slot.innerHTML.includes("VERBUNDEN")) {
+                slot.innerHTML = `<video autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>`;
+                slot.querySelector('video').srcObject = remoteStream;
+                break;
+            }
         }
     }
 
-    function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
-    
-    function nextPage() { 
-        if ((ebene === 2 || ebene === 3) && tId < 19) { 
-            tId++; aktuellesThema = themen[tId];
-            if (ebene === 2) geleseneThemen.add(tId);
-            if (ebene === 3) document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${tId+1} bereit...</i>`;
-            updateUI(); updateNumColors();
-        } else if (ebene < 7 && ebene !== 2 && ebene !== 3) { ebene++; updateUI(); } 
+    // PeerJS & Video Start (unverändert aus deinem Code)
+    let meinPeer = new Peer();
+    meinPeer.on('open', (id) => { console.log('Deine Live-ID ist: ' + id); });
+
+    async function starteVideoKonferenz() {
+        const meinSlot = document.getElementById('v-slot-1');
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover;"></video>`;
+            document.getElementById('user-video').srcObject = stream;
+            meinPeer.on('call', (call) => {
+                call.answer(stream);
+                call.on('stream', (remoteStream) => { anzeigenInSlot(remoteStream); });
+            });
+        } catch (err) { console.error("Kamera-Fehler:", err); }
     }
 
+    // Restliche Hilfsfunktionen (Back, Next, Dashboard, etc.)
     function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
-    
+    function nextPage() { if ((ebene === 2 || ebene === 3) && tId < 19) { tId++; showInfo(themen[tId], tId); } }
     function registriereSenden() { 
         const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); 
         if (text === "") return; 
@@ -299,7 +348,6 @@
         input.value = ""; chatBox.scrollTop = chatBox.scrollHeight; 
         updateUI(); 
     }
-    
     function updateNumColors() {
         themen.forEach((_, i) => {
             const nBox = document.getElementById(`num-${i}`);
@@ -311,68 +359,19 @@
             }
         });
     }
-
+    function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
     function startRotation() { 
-        clearInterval(wechselInterval); 
         const bg = document.getElementById('werbe-bg'); 
         if(!bg) return; 
         bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; 
-        bg.classList.add('bild-aktiv'); 
     }
-
-  let meinPeer = new Peer(); // Erzeugt eine eindeutige ID für den User
-let verbindungen = [];
-
-meinPeer.on('open', (id) => {
-    console.log('Deine Live-ID ist: ' + id);
-    // Hier könnte man die ID an eine Liste senden, damit andere dich finden
-});
-
-async function starteVideoKonferenz() {
-    const meinSlot = document.getElementById('v-slot-1');
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover;"></video>`;
-        document.getElementById('user-video').srcObject = stream;
-
-        // Anruf-Logik: Wir warten darauf, dass andere uns anrufen
-        meinPeer.on('call', (call) => {
-            call.answer(stream); // Wir schicken unser Bild zurück
-            call.on('stream', (remoteStream) => {
-                anzeigenInSlot(remoteStream);
-            });
-        });
-    } catch (err) {
-        console.error("Kamera-Fehler:", err);
+    function aktiviereKandidatenLicht() {
+        const sigL1 = document.getElementById('sig-l1');
+        if (userBackstage.isQualifiziert && ebene < 4) { sigL1.className = "oval-side elite-aktiv"; sigL1.onclick = () => { ebene = 5; updateUI(); }; }
+        else { sigL1.className = "oval-side ov-schwarz"; sigL1.onclick = null; }
     }
-}
-
-function anzeigenInSlot(remoteStream) {
-    // Sucht den nächsten freien Slot von 2 bis 8
-    for(let i=2; i<=8; i++) {
-        const slot = document.getElementById(`v-slot-${i}`);
-        if(slot.innerHTML.includes("ZUFALL") || slot.innerHTML.includes("VERBUNDEN")) {
-            slot.innerHTML = `<video autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>`;
-            slot.querySelector('video').srcObject = remoteStream;
-            break;
-        }
-    }
-} 
-// Automatische Raum-Verbindung (Test-Modus)
-const raumName = "mm-community-labor-422"; 
-
-function verbindeMitAllen() {
-    // Hier wird ein öffentlicher Broker genutzt, um alle IDs im Raum zu finden
-    fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://peerjs.com/peers')}`)
-    .then(response => response.json())
-    .then(data => {
-        // Logik zum automatischen Anrufen der gefundenen Teilnehmer
-        console.log("Suche Teilnehmer im Labor...");
-    });
-}
-
-// Startet die Suche alle 5 Sekunden
-setInterval(verbindeMitAllen, 5000);
+    function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
+    function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
 </script>
 </body>
 </html>
