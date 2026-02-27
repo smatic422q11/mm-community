@@ -18,7 +18,6 @@
             100% { box-shadow: 0 0 5px #fff; opacity: 0.8; }
         }
 
-        /* KEIN BLINKEN MEHR FÜR ELITE */
         .elite-aktiv { 
             background-color: #ffd700 !important; 
             box-shadow: 0 0 10px #ffd700; 
@@ -35,20 +34,17 @@
 
         .signal-aktiv { animation: signalBlink 1.0s infinite ease-in-out !important; border: 2px solid #fff !important; cursor: pointer; }
 
-        /* LILA BALKEN */
         .lila-registrierung-leiste {
             width: 100%; height: 80px; background: #8b00ff; border-top: 2px solid #fff; border-bottom: 2px solid #fff;
             display: flex; align-items: center; justify-content: center; margin-top: 20px; box-shadow: 0 0 20px #8b00ff;
         }
         .registrierung-text { color: #fff; font-size: 2.2rem; font-weight: 900; letter-spacing: 15px; text-transform: uppercase; }
 
-        /* HEADER & LOGO */
         .dashboard-header { width: 100%; position: absolute; top: 3%; display: flex; justify-content: flex-start; padding: 0 2%; box-sizing: border-box; z-index: 20; }
         .logo-ring { width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; }
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
 
-        /* TAFEL DESIGNS */
         .info-section { width: 80%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; position: relative; overflow: hidden; margin-top: 2vh; }
         .tafel-layout { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; margin-top: 1vh; height: 26vh; flex-shrink: 0; }
         .info-section-ebene { width: 90% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
@@ -63,24 +59,20 @@
         .ov-pink { background: #ff00ff; }
         .ov-gelb { background: #ffff00; }
 
-        /* GRID DASHBOARD */
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 10px; width: 95%; max-width: 1450px; margin-top: 30px; border: 3px solid #00ff00; padding: 15px; border-radius: 10px; }
         .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; overflow: hidden; }
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
-        /* BEREICHE */
         #chat-area, #drawer-ebene4, #ebene5-bereich { width: 90% !important; flex-grow: 1; display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; overflow: hidden; position: relative; }
         .chat-msgs { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px 0; color: #fff; font-size: 1.1rem; overflow-y: auto; }
         .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; }
         
-        /* NAVIGATION */
         .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; background: #000; z-index: 100; }
         .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
         .dot { width: 10px; height: 10px; background: #444; border-radius: 50%; }
         .dot.active { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
 
-        /* VIDEO EBENE 4 */
         .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; }
         .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; position: relative; overflow: hidden; }
         .slot-1-user { border-color: #00ff00; color: #00ff00; }
@@ -187,6 +179,31 @@
 <script>
     let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5 };
     const themen = ["Recht auf Gefühls Forderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Mensch und Technik", "Die Brücke"];
+    
+    // TEXTE FÜR DIE SEKTOREN
+    const sektorTexte = [
+        "Jeder Mensch hat das Recht, seine Gefühle frei zu äußern, ohne dafür verurteilt zu werden. Gefühle sind die Basis unserer Existenz.",
+        "Menschwerdung ist ein lebenslanger Prozess. Es bedeutet, Empathie zu lernen und Verantwortung für das eigene Handeln zu übernehmen.",
+        "Der Glaube an den Frieden beginnt im Kleinen. Nur wer inneren Frieden findet, kann ihn nach außen tragen.",
+        "Ein Programm für bürgerliche Rechte schützt die Freiheit des Einzelnen vor Willkür und sichert die Gleichheit vor dem Gesetz.",
+        "Moralische Pflicht bedeutet, das Richtige zu tun, auch wenn niemand zusieht. Verantwortung ist das Rückgrat der Gesellschaft.",
+        "Die Wiederherstellung der Menschlichkeit erfordert den Mut, Schwäche zuzulassen und anderen mit Offenheit zu begegnen.",
+        "Kinderschutz ist eine absolute Pflicht. Elternrechte enden dort, wo das Wohl des Kindes gefährdet wird.",
+        "Die wahre Richtung im Leben findet man durch Authentizität. Kunst ist der Spiegel, der uns unsere innere Wahrheit zeigt.",
+        "LGBTQ und Kirche müssen kein Widerspruch sein. Wahre Nächstenliebe schließt jeden Menschen bedingungslos ein.",
+        "Trend und Tradition bilden das Spannungsfeld unserer Zeit. Fortschritt braucht Wurzeln, um stabil zu bleiben.",
+        "Religionsbekenntnis sollte eine bewusste Selbstwahl sein. Niemand darf in einen Glauben gezwungen werden.",
+        "Gesundheitswesen muss menschlich bleiben. Verhalten und Prävention sind ebenso wichtig wie die medizinische Behandlung.",
+        "Die Arbeitswelt verändert sich. Du bist nicht nur eine Ressource, sondern ein Individuum mit Talenten und Bedürfnissen.",
+        "Mobbing am Arbeitsplatz zerstört Existenzen. Wir brauchen eine Kultur des Hinsehens und der gegenseitigen Unterstützung.",
+        "Jugendsprecher sind die Stimme der Zukunft. Wir müssen ihnen zuhören, um die Welt von morgen zu gestalten.",
+        "Ein Ratgeber für Pensionisten hilft, den neuen Lebensabschnitt mit Würde, Aktivität und Freude zu füllen.",
+        "Sozialgefallen bedeutet, Gutes zu tun. Die Widerkehr dieses Handelns stärkt das gesamte soziale Gefüge.",
+        "Nachbarschaft und Gemeinschaft sind der Kleber unserer Gesellschaft. Kleine Gesten bewirken oft große Veränderungen.",
+        "Mensch und Technik müssen im Einklang stehen. Die Technik sollte dem Menschen dienen, nicht umgekehrt.",
+        "Die Brücke symbolisiert die Verbindung zwischen den Menschen. Wir müssen sie bauen, um Gräben zu überwinden."
+    ];
+
     let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
@@ -232,7 +249,11 @@
         document.getElementById('btn-back').style.visibility = 'visible';
         
         document.getElementById('info-titel').innerText = aktuellesThema;
-        if (ebene === 2) document.getElementById('main-text').innerText = "Inhalt für " + aktuellesThema + "...";
+        
+        // HIER WIRD DER TEXT AUS DEM ARRAY GELADEN
+        if (ebene === 2) {
+            document.getElementById('main-text').innerText = sektorTexte[tId];
+        }
 
         const btnNext = document.getElementById('btn-next');
         const sigGelb = document.getElementById('sig-r4');
@@ -260,18 +281,14 @@
 
     function aktiviereKandidatenLicht() {
         const sigL1 = document.getElementById('sig-l1');
-        
-        // AUF EBENE 4: IMMER STILLGELEGT (SCHWARZ & KEIN KLICK)
         if (ebene === 4) {
             sigL1.className = "oval-side ov-schwarz";
             sigL1.onclick = null;
         } 
-        // SONST: WENN QUALIFIZIERT -> GOLD (ELITE-AKTIV), ABER OHNE BLINKEN
         else if (userBackstage.isQualifiziert && ebene < 5) { 
             sigL1.className = "oval-side elite-aktiv"; 
             sigL1.onclick = () => portalZuEbene5(); 
         } 
-        // BASIS-ZUSTAND
         else {
             sigL1.className = "oval-side ov-schwarz";
             sigL1.onclick = null;
@@ -320,12 +337,11 @@
         bg.classList.add('bild-aktiv'); 
     }
 
-  let meinPeer = new Peer(); // Erzeugt eine eindeutige ID für den User
+  let meinPeer = new Peer(); 
 let verbindungen = [];
 
 meinPeer.on('open', (id) => {
     console.log('Deine Live-ID ist: ' + id);
-    // Hier könnte man die ID an eine Liste senden, damit andere dich finden
 });
 
 async function starteVideoKonferenz() {
@@ -335,9 +351,8 @@ async function starteVideoKonferenz() {
         meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover;"></video>`;
         document.getElementById('user-video').srcObject = stream;
 
-        // Anruf-Logik: Wir warten darauf, dass andere uns anrufen
         meinPeer.on('call', (call) => {
-            call.answer(stream); // Wir schicken unser Bild zurück
+            call.answer(stream); 
             call.on('stream', (remoteStream) => {
                 anzeigenInSlot(remoteStream);
             });
@@ -348,7 +363,6 @@ async function starteVideoKonferenz() {
 }
 
 function anzeigenInSlot(remoteStream) {
-    // Sucht den nächsten freien Slot von 2 bis 8
     for(let i=2; i<=8; i++) {
         const slot = document.getElementById(`v-slot-${i}`);
         if(slot.innerHTML.includes("ZUFALL") || slot.innerHTML.includes("VERBUNDEN")) {
@@ -358,20 +372,17 @@ function anzeigenInSlot(remoteStream) {
         }
     }
 } 
-// Automatische Raum-Verbindung (Test-Modus)
+
 const raumName = "mm-community-labor-422"; 
 
 function verbindeMitAllen() {
-    // Hier wird ein öffentlicher Broker genutzt, um alle IDs im Raum zu finden
     fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://peerjs.com/peers')}`)
     .then(response => response.json())
     .then(data => {
-        // Logik zum automatischen Anrufen der gefundenen Teilnehmer
         console.log("Suche Teilnehmer im Labor...");
     });
 }
 
-// Startet die Suche alle 5 Sekunden
 setInterval(verbindeMitAllen, 5000);
 </script>
 </body>
