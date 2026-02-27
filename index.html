@@ -1,48 +1,65 @@
 <!DOCTYPE html><html lang="de"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M&M OS - Finaler Fix</title>
+    <title>M&M OS - PREMIUM</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <script src='https://8x8.vc/vpaas-magic-cookie-39f826359e1345d38f8304910901e855/external_api.js'></script>
     <style>
-        :root { --gold: #ffd700; --bg: #0a0a0a; --card: #1a1a1a; --text: #e0e0e0; }
-        body { margin: 0; background: var(--bg); color: var(--text); font-family: sans-serif; height: 100vh; display: flex; flex-direction: column; }
-        .dashboard { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 20px; overflow-y: auto; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; width: 100%; max-width: 1200px; }
-        .box { background: var(--card); border-radius: 10px; padding: 15px; border: 1px solid #333; cursor: pointer; display: flex; align-items: center; gap: 15px; }
-        .num { width: 35px; height: 35px; background: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-        .num-fertig { background: var(--gold); color: #000; }
+        :root { --gold: #ffd700; --bg: #0a0a0a; --card: #141414; --text: #ffffff; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; }
+        
+        /* Dashboard Design */
+        .dashboard { padding: 40px 20px; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow-y: auto; background: radial-gradient(circle at top, #1a1a1a 0%, #0a0a0a 100%); }
+        .logo-header { margin-bottom: 40px; filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3)); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; width: 100%; max-width: 1200px; }
+        
+        .box { background: var(--card); border-radius: 12px; padding: 20px; border: 1px solid #222; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .box:hover { border-color: var(--gold); transform: translateY(-3px); box-shadow: 0 6px 20px rgba(255, 215, 0, 0.1); }
+        
+        .num { width: 40px; height: 40px; background: #222; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 1px solid #444; color: var(--gold); }
+        .num-fertig { background: var(--gold); color: #000; border-color: var(--gold); }
+
+        /* Sektor Ansicht */
         #page-skelett { display: none; position: fixed; inset: 0; background: #000; flex-direction: column; z-index: 1000; }
-        .header-skelett { height: 60px; border-bottom: 1px solid #222; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
-        .content-skelett { flex: 1; padding: 20px; display: flex; flex-direction: column; overflow: hidden; }
-        .footer-skelett { height: 70px; border-top: 1px solid #222; display: flex; align-items: center; justify-content: center; gap: 40px; }
-        .dot { width: 15px; height: 15px; border-radius: 50%; background: #333; cursor: pointer; }
-        .dot.active { background: var(--gold); box-shadow: 0 0 15px var(--gold); }
-        #chat-area { display: none; flex-direction: column; height: 100%; }
-        #chat-box { flex: 1; border: 1px solid #222; padding: 15px; overflow-y: auto; background: #050505; margin-bottom: 10px; color: #fff; border-radius: 5px; }
-        #jitsi-container { display: none; flex: 1; background: #000; border: 1px solid var(--gold); }
-        .btn-gold { background: var(--gold); color: #000; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; border-radius: 5px; }
+        .header-skelett { height: 70px; border-bottom: 1px solid #222; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; background: #050505; }
+        .content-skelett { flex: 1; padding: 30px; display: flex; flex-direction: column; overflow: hidden; align-items: center; }
+        .footer-skelett { height: 80px; border-top: 1px solid #222; display: flex; align-items: center; justify-content: center; gap: 30px; background: #050505; }
+        
+        .dot { width: 12px; height: 12px; border-radius: 50%; background: #222; cursor: pointer; border: 1px solid #444; }
+        .dot.active { background: var(--gold); box-shadow: 0 0 15px var(--gold); border-color: var(--gold); }
+        
+        /* Chat & Video */
+        #chat-area { display: none; flex-direction: column; height: 100%; width: 100%; max-width: 900px; }
+        #chat-box { flex: 1; border: 1px solid #222; padding: 20px; overflow-y: auto; background: #080808; border-radius: 10px; margin-bottom: 15px; font-size: 1.1rem; }
+        #jitsi-container { display: none; flex: 1; width: 100%; border-radius: 15px; overflow: hidden; border: 1px solid #333; }
+        
+        .btn-gold { background: var(--gold); color: #000; border: none; padding: 12px 25px; cursor: pointer; font-weight: bold; border-radius: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-back { background: transparent; color: #666; border: 1px solid #333; padding: 10px 20px; cursor: pointer; border-radius: 8px; }
+        .btn-back:hover { color: #fff; border-color: #fff; }
+        
+        input { padding: 15px; background: #111; color: #fff; border: 1px solid #333; border-radius: 8px; outline: none; }
+        input:focus { border-color: var(--gold); }
     </style>
 </head>
 <body>
 
 <div id="dashboard" class="dashboard">
-    <div style="margin: 20px;"><img src="https://i.ibb.co/m9H8GzK/mm-logo.png" width="80" ondblclick="adminUnlock()"></div>
+    <div class="logo-header"><img src="https://i.ibb.co/m9H8GzK/mm-logo.png" width="100"></div>
     <div class="grid" id="main-grid"></div>
 </div>
 
 <div id="page-skelett">
     <div class="header-skelett">
-        <button onclick="location.reload()" class="btn-gold" style="background:none; color:var(--gold); border:1px solid var(--gold);">✕ ZURÜCK</button>
-        <div id="info-titel" style="color:var(--gold); font-weight:bold;"></div>
+        <button onclick="location.reload()" class="btn-back">✕ SCHLIESSEN</button>
+        <div id="info-titel" style="color:var(--gold); font-weight:bold; font-size: 1.2rem;"></div>
         <button id="next-btn" onclick="nextPage()" class="btn-gold">WEITER ➔</button>
     </div>
     <div class="content-skelett">
-        <div id="main-text" style="font-size: 1.3rem; line-height: 1.6; text-align: center;"></div>
+        <div id="main-text" style="font-size: 1.5rem; line-height: 1.8; text-align: center; max-width: 800px; margin-top: 50px; color: #ccc;"></div>
         <div id="chat-area">
             <div id="chat-box"></div>
             <div style="display:flex; gap:10px;">
-                <input type="text" id="chat-input" style="flex:1; padding:15px; background:#111; color:#fff; border:1px solid #333;" placeholder="Nachricht...">
+                <input type="text" id="chat-input" style="flex:1;" placeholder="Nachricht schreiben...">
                 <button onclick="registriereSenden()" class="btn-gold">SENDEN</button>
             </div>
         </div>
@@ -52,18 +69,15 @@
 </div>
 
 <script>
-    let userBackstage = JSON.parse(localStorage.getItem('mm_user_data')) || { sektorNotizen: {}, besuchteSektoren: [], isVerifiziert: false };
     const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Bürgerrechte", "Moralische Pflicht", "Menschlichkeit", "Kinderschutz", "Kunst", "LGBTQ und Kirche", "Tradition", "Religion", "Gesundheit", "Arbeitswelt", "Mobbing", "Jugend", "Pensionisten", "Nachbarschaft", "Soziales", "Alleinerziehend", "Die Brücke"];
-    
-    let ebene = 1, tId = 0, jitsiApi = null;
+    let ebene = 1, tId = 0;
     const ably = new Ably.Realtime('IO8wIA.C7HVjQ:SdzgpyD0_ilg8UOO-mXm94ro0VtTUSao8HUMoW7538sA');
 
     function initApp() {
         const grid = document.getElementById('main-grid');
         grid.innerHTML = "";
         themen.forEach((t, i) => {
-            const fertig = userBackstage.besuchteSektoren.includes(i) ? 'num-fertig' : '';
-            grid.innerHTML += `<div class="box" onclick="startSektor(${i})"><div class="num ${fertig}">${i+1}</div><div>${t}</div></div>`;
+            grid.innerHTML += `<div class="box" onclick="startSektor(${i})"><div class="num">${i+1}</div><div>${t}</div></div>`;
         });
         const dots = document.getElementById('dot-holder');
         dots.innerHTML = "";
@@ -84,16 +98,9 @@
         document.getElementById('jitsi-container').style.display = (n === 3) ? 'block' : 'none';
         document.getElementById('info-titel').innerText = themen[tId].toUpperCase();
         
-        if(n === 1) document.getElementById('main-text').innerText = "Inhalt für " + themen[tId] + " wird hier angezeigt.";
-        if(n === 2) { 
-            const chan = ably.channels.get('chat_' + tId);
-            chan.subscribe('msg', (m) => {
-                const box = document.getElementById('chat-box');
-                box.innerHTML += `<div><b style="color:var(--gold)">User:</b> ${m.data}</div>`;
-                box.scrollTop = box.scrollHeight;
-            });
-        }
-        if(n === 3) { setTimeout(starteVideo, 200); }
+        if(n === 1) document.getElementById('main-text').innerText = "Willkommen im Sektor: " + themen[tId] + ". Hier beginnt der Dialog über unsere gemeinsame Zukunft.";
+        if(n === 2) startChat();
+        if(n === 3) starteVideo();
 
         document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === n-1));
     }
@@ -102,30 +109,36 @@
         if(ebene < 3) setEbene(ebene + 1); else location.reload();
     }
 
+    function startChat() {
+        const chan = ably.channels.get('chat_v3_' + tId);
+        chan.subscribe('msg', (m) => {
+            const box = document.getElementById('chat-box');
+            box.innerHTML += `<div><span style="color:var(--gold); font-weight:bold;">GAST:</span> ${m.data}</div>`;
+            box.scrollTop = box.scrollHeight;
+        });
+    }
+
     function registriereSenden() {
         const input = document.getElementById('chat-input');
         if(!input.value) return;
-        ably.channels.get('chat_' + tId).publish('msg', input.value);
+        ably.channels.get('chat_v3_' + tId).publish('msg', input.value);
         input.value = "";
     }
 
-   function starteVideo() {
+    function starteVideo() {
         const container = document.getElementById('jitsi-container');
         container.innerHTML = ""; 
-        jitsiApi = new JitsiMeetExternalAPI("8x8.vc", {
-            roomName: "vpaas-magic-cookie-39f826359e1345d38f8304910901e855/MM_Sektor_" + tId,
+        new JitsiMeetExternalAPI("8x8.vc", {
+            roomName: "vpaas-magic-cookie-39f826359e1345d38f8304910901e855/MM_Sektor_HD_" + tId,
             parentNode: container,
             width: "100%", height: "100%",
             configOverwrite: { 
                 prejoinPageEnabled: false,
-                // HIER WIRD DIE QUALITÄT ERZWUNGEN:
-                resolution: 1080, 
-                constraints: { video: { height: { ideal: 1080, max: 1080, min: 720 } } }
+                resolution: 720,
+                constraints: { video: { height: { ideal: 720 } } }
             }
         });
     }
-
-    function adminUnlock() { userBackstage.isVerifiziert = true; localStorage.setItem('mm_user_data', JSON.stringify(userBackstage)); alert("Admin aktiv."); }
 
     initApp();
 </script>
