@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
+<!DOCTYPE html><html lang="de"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>M&M Dashboard</title>
@@ -19,7 +17,6 @@
         .num { width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; background: #333; color: #888; }
         .num-fertig { background: var(--gold); color: #000; box-shadow: 0 0 8px var(--gold); }
         .text { font-size: 0.9rem; flex: 1; }
-
         #page-skelett { display: none; position: fixed; inset: 0; background: #000; flex-direction: column; z-index: 1000; }
         .header-skelett { height: 60px; border-bottom: 1px solid #222; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
         .content-skelett { flex: 1; padding: 20px; overflow-y: auto; }
@@ -27,21 +24,17 @@
         .dot { width: 10px; height: 10px; border-radius: 50%; background: #333; cursor: pointer; }
         .dot.active { background: var(--gold); box-shadow: 0 0 8px var(--gold); transform: scale(1.2); }
         .wahrheits-text { line-height: 1.6; font-size: 1.1rem; color: #ccc; max-width: 800px; margin: 0 auto; white-space: pre-wrap; }
-        
         #chat-area { display: none; flex-direction: column; height: 100%; max-width: 600px; margin: 0 auto; }
         #chat-box { flex: 1; overflow-y: auto; border: 1px solid #222; padding: 15px; margin-bottom: 10px; }
         .chat-input-row { display: flex; gap: 10px; }
         input { background: #111; border: 1px solid #333; color: #fff; padding: 10px; flex: 1; }
         .btn { background: var(--gold); color: #000; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; }
-
         #drawer-ebene4 { display: none; flex-direction: column; height: 100%; }
         .schublade { background: #111; border: 1px solid #222; margin-bottom: 10px; }
         .schublade-header { padding: 15px; cursor: pointer; background: #1a1a1a; color: var(--gold); font-weight: bold; display: flex; justify-content: space-between; }
         .schublade-content { padding: 15px; display: none; }
         .schublade.open .schublade-content { display: block; }
-    </style>
-</head>
-<body>
+    </style></head><body>
 
 <div id="dashboard" class="dashboard">
     <div class="logo-ring" ondblclick="adminUnlock()"><img src="https://i.ibb.co/m9H8GzK/mm-logo.png" width="80" alt="Logo"></div>
@@ -69,10 +62,10 @@
                 <div class="schublade-header" onclick="toggleDrawer('notiz')"><span>DOKUMENTATION</span><span>+</span></div>
                 <div class="schublade-content">
                     <textarea id="note-current" style="width:100%; height:100px; background:#000; color:#fff;"></textarea>
-                    <button class="btn" style="margin-top:10px;" onclick="saveNote('current')">Sichern</button>
+                    <button class="btn" style="margin-top:10px;" onclick="saveNote()">Sichern</button>
                 </div>
             </div>
-            <div id="jitsi-container-small" style="height: 300px; background: #000;"></div>
+            <div id="jitsi-container-small" style="height: 400px; background: #000; border: 1px solid #333;"></div>
         </div>
     </div>
     <div class="footer-skelett" id="dot-holder"></div>
@@ -80,18 +73,17 @@
 
 <script>
     let userBackstage = JSON.parse(localStorage.getItem('mm_user_data')) || { sektorNotizen: {}, besuchteSektoren: [], isVerifiziert: false };
-    const themen = ["( von M&M Community )<br>Recht auf Gefühlsvorderung oder KI", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Nachbarschaft und Gemeinschaft", "Sozialgefallen und Widerkehr", "Alleinerziehend & Kind", "Die Brücke"];
+    const themen = ["Recht auf Gefühlsvorderung oder KI", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend and Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Nachbarschaft und Gemeinschaft", "Sozialgefallen und Widerkehr", "Alleinerziehend & Kind", "Die Brücke"];
 
     const DASHBOARD_TRUTH = {
-        1: { title: "Recht auf Gefühlsvorderung oder KI", content: "Die digitale Welt hat eine Schicht aus Taubheit über das menschliche Erleben gelegt... [Vollständiger Text 1]" },
-        2: { title: "Wie werde ich Mensch", content: "Die Verbreitung der Menschlichkeit markiert den entscheidenden Übergang... [Vollständiger Text 2]" },
-        // ... hier folgen die restlichen Texte identisch wie oben ...
-        20: { title: "Die Brücke", content: "In diesem Sektor fließen alle Ströme zusammen. Die Brücke ist der Punkt der Integration..." }
+        1: { title: "Gefühlsvorderung", content: "Inhalt Sektor 1..." },
+        2: { title: "Mensch sein", content: "Inhalt Sektor 2..." },
+        // ... (weitere Texte nach Bedarf)
+        20: { title: "Die Brücke", content: "Inhalt Sektor 20..." }
     };
 
     let ebene = 1, tId = 0, aktuellesThema = "", jitsiApi = null;
     const ably = new Ably.Realtime('IO8wIA.C7HVjQ:SdzgpyD0_ilg8UOO-mXm94ro0VtTUSao8HUMoW7538sA');
-    const meinTabId = Math.random().toString(36).substring(7);
 
     function initApp() {
         const grid = document.getElementById('main-grid');
@@ -102,19 +94,30 @@
         });
         const dots = document.getElementById('dot-holder');
         dots.innerHTML = "";
-        for(let i=1; i<=4; i++) dots.innerHTML += `<div id="dot${i}" class="dot"></div>`;
+        for(let i=1; i<=4; i++) dots.innerHTML += `<div id="dot${i}" class="dot" onclick="setEbene(${i})"></div>`;
     }
 
     function checkAccess(index, thema) {
         tId = index;
         aktuellesThema = thema;
         if (index < 4 || userBackstage.isVerifiziert) startSektor();
-        else alert("Bitte erst verifizieren.");
+        else {
+            const pw = prompt("Code für Sektor 5-20:");
+            if(pw === "1234") {
+                userBackstage.isVerifiziert = true;
+                saveData();
+                startSektor();
+            }
+        }
     }
 
     function startSektor() {
         document.getElementById('dashboard').style.display = 'none';
         document.getElementById('page-skelett').style.display = 'flex';
+        if(!userBackstage.besuchteSektoren.includes(tId)) {
+            userBackstage.besuchteSektoren.push(tId);
+            saveData();
+        }
         setEbene(1);
     }
 
@@ -123,42 +126,56 @@
         document.getElementById('main-text').style.display = (n === 1) ? 'block' : 'none';
         document.getElementById('chat-area').style.display = (n === 3) ? 'flex' : 'none';
         document.getElementById('drawer-ebene4').style.display = (n === 4) ? 'flex' : 'none';
+        
         document.getElementById('info-titel').innerText = `SEKTOR ${tId + 1}: ${DASHBOARD_TRUTH[tId+1]?.title || aktuellesThema}`;
+        
         if(n === 1) document.getElementById('main-text').innerHTML = `<div class="wahrheits-text">${DASHBOARD_TRUTH[tId+1]?.content || 'Text folgt...'}</div>`;
         if(n === 3) verbindeChat();
-        if(n === 4) starteJitsi();
+        if(n === 4) {
+            setTimeout(() => { starteJitsi(); }, 200);
+            document.getElementById('note-current').value = userBackstage.sektorNotizen[tId] || "";
+        }
+        
         document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === n-1));
     }
 
+    function starteJitsi() {
+        const container = document.getElementById('jitsi-container-small');
+        container.innerHTML = ""; 
+        jitsiApi = new JitsiMeetExternalAPI("8x8.vc", {
+            roomName: "vpaas-magic-cookie-39f826359e1345d38f8304910901e855/MM_Sektor_" + (tId + 1),
+            parentNode: container,
+            width: "100%", height: "100%"
+        });
+    }
+
     function nextPage() { if(ebene < 4) setEbene(ebene + 1); }
-    function showDashboard() { location.reload(); }
+    function showDashboard() { document.getElementById('dashboard').style.display = 'flex'; document.getElementById('page-skelett').style.display = 'none'; initApp(); }
     function toggleDrawer(id) { document.getElementById('drawer-' + id).classList.toggle('open'); }
 
     function verbindeChat() {
         const chan = ably.channels.get("sektor_" + (tId + 1));
         chan.subscribe('message', (msg) => {
             const box = document.getElementById('chat-box');
-            box.innerHTML += `<div>${msg.data.text}</div>`;
+            box.innerHTML += `<div><strong>Gast:</strong> ${msg.data.text}</div>`;
         });
     }
 
     function registriereSenden() {
         const input = document.getElementById('chat-input');
+        if(!input.value) return;
         ably.channels.get("sektor_" + (tId+1)).publish('message', { text: input.value });
         input.value = "";
     }
 
-    function starteJitsi() {
-        if(!jitsiApi) {
-            jitsiApi = new JitsiMeetExternalAPI("8x8.vc", {
-                roomName: "vpaas-magic-cookie-39f826359e1345d38f8304910901e855/MM_Sektor_" + (tId+1),
-                parentNode: document.getElementById('jitsi-container-small'),
-                width: "100%", height: "100%"
-            });
-        }
+    function saveNote() {
+        userBackstage.sektorNotizen[tId] = document.getElementById('note-current').value;
+        saveData();
+        alert("Notiz gespeichert!");
     }
 
-    initApp();
-</script>
-</body>
-</html>
+    function saveData() { localStorage.setItem('mm_user_data', JSON.stringify(userBackstage)); }
+    function adminUnlock() { const pw = prompt("Admin?"); if(pw==="1234") { userBackstage.isVerifiziert=true; saveData(); location.reload(); }}
+
+    window.onload = initApp;
+</script></body></html>
