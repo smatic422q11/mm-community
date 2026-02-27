@@ -203,7 +203,7 @@
         </div>
     </div>
 
-  <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; min-height: 100vh;">
+  <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; min-height: 100vh; position: relative;">
     <div class="top-container">
         <h1 id="info-titel" class="page-title-white"></h1>
         
@@ -443,15 +443,13 @@ function updateUI() {
     document.querySelectorAll('.dot').forEach((d, i) => d.className = `dot ${i + 1 === ebene ? 'active' : ''}`);
 
     if (ebene === 1) {
-        // Die Rückkehr zur Quelle: Sektor 1 Text
         mainText.style.display = 'block';
-        mainText.innerHTML = `<div class="wahrheits-text">${DASHBOARD_TRUTH[tId + 1].content}</div>`;
+        mainText.style.maxHeight = "none"; 
+        mainText.innerHTML = `<div class="wahrheits-text" style="padding:20px;">${DASHBOARD_TRUTH[tId + 1].content}</div>`;
     } else if (ebene === 2) {
-        // Raum für Vertiefung
         mainText.style.display = 'block';
         mainText.innerHTML = `<div style="text-align:center; padding-top:50px; color:#888;">Hier vertiefen wir die Wahrhaftigkeit von Sektor ${tId + 1}...</div>`;
     } else if (ebene === 3) {
-        // Kollektiv-Chat
         chat.style.display = 'flex';
         verbindeChat();
     }
@@ -562,6 +560,48 @@ function showDashboard() {
 function nextPage() {
     if (ebene < 3) setEbene(ebene + 1);
     else if (ebene === 3) portalZuEbene4();
+}
+
+function verfiziereUser() {
+    const email = document.getElementById('user-email-input').value;
+    if (email.includes('@')) {
+        userBackstage.isVerifiziert = true;
+        localStorage.setItem('mm_user_data', JSON.stringify(userBackstage));
+        location.reload();
+    }
+}
+
+function verbindeChat() {
+    if (aktuellerChannel) aktuellerChannel.unsubscribe();
+    const channelName = "sektor_" + (tId + 1);
+    aktuellerChannel = ably.channels.get(channelName);
+    
+    aktuellerChannel.subscribe('message', (msg) => {
+        if (msg.data.tabId !== meinTabId) anzeigeNachricht(msg.data.text, 'fremd');
+    });
+
+    const box = document.getElementById('chat-box');
+    box.innerHTML = `<div style="color:#555; font-size:0.8rem;">Kollektiv-Resonanz aktiv (Sektor ${tId + 1})</div>`;
+}
+
+function registriereSenden() {
+    const input = document.getElementById('chat-input');
+    const txt = input.value.trim();
+    if (txt && aktuellerChannel) {
+        aktuellerChannel.publish('message', { text: txt, tabId: meinTabId });
+        anzeigeNachricht(txt, 'eigen');
+        input.value = "";
+    }
+}
+
+function anzeigeNachricht(txt, typ) {
+    const box = document.getElementById('chat-box');
+    const mDiv = document.createElement('div');
+    mDiv.style.color = typ === 'eigen' ? '#ffd700' : '#fff';
+    mDiv.style.margin = "5px 0";
+    mDiv.innerText = (typ === 'eigen' ? "DU: " : "ANON: ") + txt;
+    box.appendChild(mDiv);
+    box.scrollTop = box.scrollHeight;
 }
 
 window.onload = initApp;
