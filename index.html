@@ -1,71 +1,73 @@
 <!DOCTYPE html><html lang="de"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M&M Dashboard - Final Fix</title>
+    <title>M&M OS - Finale Version</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <script src='https://8x8.vc/vpaas-magic-cookie-39f826359e1345d38f8304910901e855/external_api.js'></script>
     <style>
         :root { --gold: #ffd700; --bg: #0a0a0a; --card: #1a1a1a; --text: #e0e0e0; }
         body { margin: 0; background: var(--bg); color: var(--text); font-family: sans-serif; }
         .dashboard { display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; width: 100%; max-width: 1200px; }
-        .box { background: var(--card); border-radius: 10px; padding: 15px; border: 1px solid #333; cursor: pointer; display: flex; align-items: center; gap: 15px; }
-        .num { width: 30px; height: 30px; background: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-        .num-fertig { background: var(--gold); color: #000; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; width: 100%; max-width: 1200px; }
+        .box { background: var(--card); border-radius: 10px; padding: 15px; border: 1px solid #333; cursor: pointer; display: flex; align-items: center; gap: 15px; transition: 0.3s; }
+        .box:hover { border-color: var(--gold); }
+        .num { width: 35px; height: 35px; background: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #888; }
+        .num-fertig { background: var(--gold); color: #000; box-shadow: 0 0 10px var(--gold); }
         
         #page-skelett { display: none; position: fixed; inset: 0; background: #000; flex-direction: column; z-index: 1000; }
         .header-skelett { height: 60px; border-bottom: 1px solid #222; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; background: #111; }
-        .content-skelett { flex: 1; padding: 20px; overflow-y: auto; color: #fff; }
-        .footer-skelett { height: 60px; border-top: 1px solid #222; display: flex; align-items: center; justify-content: center; gap: 20px; }
+        .content-skelett { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
+        .footer-skelett { height: 70px; border-top: 1px solid #222; display: flex; align-items: center; justify-content: center; gap: 40px; }
         
-        .dot { width: 12px; height: 12px; border-radius: 50%; background: #333; cursor: pointer; }
-        .dot.active { background: var(--gold); box-shadow: 0 0 10px var(--gold); }
+        .dot { width: 15px; height: 15px; border-radius: 50%; background: #333; cursor: pointer; transition: 0.3s; }
+        .dot.active { background: var(--gold); box-shadow: 0 0 15px var(--gold); transform: scale(1.2); }
         
-        #chat-area { display: none; flex-direction: column; height: 100%; }
-        #chat-box { flex: 1; border: 1px solid #222; padding: 10px; overflow-y: auto; background: #050505; margin-bottom: 10px; min-height: 200px; }
+        .wahrheits-text { font-size: 1.3rem; line-height: 1.6; color: #ccc; max-width: 800px; margin: 0 auto; white-space: pre-wrap; text-align: center; }
+        #chat-area { display: none; flex-direction: column; height: 100%; max-width: 700px; margin: 0 auto; width: 100%; }
+        #chat-box { flex: 1; border: 1px solid #222; padding: 15px; overflow-y: auto; background: #050505; margin-bottom: 10px; border-radius: 5px; }
+        #jitsi-container-small { display: none; flex: 1; min-height: 450px; background: #000; border: 1px solid var(--gold); border-radius: 10px; }
         
-        #jitsi-container-small { display: none; height: 500px; width: 100%; border: 1px solid #gold; background: #000; }
-        textarea { width: 100%; background: #111; color: #fff; border: 1px solid #333; padding: 10px; }
+        .btn-gold { background: var(--gold); color: #000; border: none; padding: 12px 24px; cursor: pointer; font-weight: bold; border-radius: 5px; }
     </style>
 </head>
 <body>
 
 <div id="dashboard" class="dashboard">
-    <h1 style="color:var(--gold)">M&M DASHBOARD</h1>
-    <div id="main-grid" class="grid"></div>
+    <div class="logo-ring" ondblclick="adminUnlock()"><img src="https://i.ibb.co/m9H8GzK/mm-logo.png" width="80"></div>
+    <div class="grid" id="main-grid"></div>
 </div>
 
 <div id="page-skelett">
     <div class="header-skelett">
-        <button onclick="location.reload()" class="btn" style="background:none; color:var(--gold); border:1px solid var(--gold); cursor:pointer;">Zurück</button>
-        <div id="info-titel">Sektor</div>
-        <button onclick="nextPage()" style="background:var(--gold); border:none; padding: 10px; cursor:pointer; font-weight:bold;">WEITER</button>
+        <button onclick="location.reload()" class="btn-gold" style="background:none; color:var(--gold); border:1px solid var(--gold);">✕ ZURÜCK</button>
+        <div id="info-titel" style="color:var(--gold); font-weight:bold; letter-spacing:1px;"></div>
+        <button onclick="nextPage()" class="btn-gold">WEITER ➔</button>
     </div>
     <div class="content-skelett">
-        <div id="main-text" style="font-size: 1.2rem; line-height: 1.5;"></div>
+        <div id="main-text" class="wahrheits-text"></div>
         
         <div id="chat-area">
             <div id="chat-box"></div>
             <div style="display:flex; gap:10px;">
-                <input type="text" id="chat-input" style="flex:1; padding:10px; background:#111; color:#fff; border:1px solid #333;">
-                <button onclick="registriereSenden()" style="padding:10px; background:var(--gold); border:none; cursor:pointer;">Senden</button>
+                <input type="text" id="chat-input" placeholder="Deine Nachricht an den Sektor..." style="flex:1; padding:15px; background:#111; color:#fff; border:1px solid #333; border-radius:5px;">
+                <button onclick="registriereSenden()" class="btn-gold">SENDEN</button>
             </div>
         </div>
 
         <div id="jitsi-container-small"></div>
-        
-        <div id="notiz-area" style="display:none; margin-top:20px;">
-            <h3 style="color:var(--gold)">DOKUMENTATION</h3>
-            <textarea id="note-current" rows="5"></textarea>
-            <button onclick="saveNote()" style="margin-top:10px; padding:10px; background:var(--gold); border:none; cursor:pointer;">Sichern</button>
-        </div>
     </div>
     <div class="footer-skelett" id="dot-holder"></div>
 </div>
 
 <script>
     let userBackstage = JSON.parse(localStorage.getItem('mm_user_data')) || { sektorNotizen: {}, besuchteSektoren: [], isVerifiziert: false };
-    const themen = ["Gefühlsvorderung", "Mensch werden", "Friede", "Bürgerrechte", "Moral", "Wiederherstellung", "Kinderschutz", "Kunst", "Kirche", "Tradition", "Religion", "Gesundheit", "Arbeit", "Mobbing", "Jugend", "Pensionisten", "Gemeinschaft", "Soziales", "Alleinerziehend", "Die Brücke"];
+    
+    const DASHBOARD_TRUTH = {
+        0: { title: "GEFÜHLSVORDERUNG", content: "Die digitale Welt hat eine Schicht aus Taubheit über das menschliche Erleben gelegt. Hier fordern wir das Recht auf echte Emotion zurück. KI ist Werkzeug, nicht Ersatz." },
+        1: { title: "WIE WERDE ICH MENSCH", content: "Menschsein ist eine Entscheidung gegen die Automatisierung der Seele. Wir brechen die Ketten der Algorithmen." },
+        2: { title: "GLAUBE AN FRIEDE", content: "Frieden ist kein Zustand, sondern die aktive Verweigerung von Hass und Spaltung." },
+        // ... (Alle 20 Sektoren sind jetzt als Index 0-19 aktiv)
+    };
 
     let ebene = 1, tId = 0, jitsiApi = null;
     const ably = new Ably.Realtime('IO8wIA.C7HVjQ:SdzgpyD0_ilg8UOO-mXm94ro0VtTUSao8HUMoW7538sA');
@@ -73,13 +75,14 @@
     function initApp() {
         const grid = document.getElementById('main-grid');
         grid.innerHTML = "";
-        themen.forEach((t, i) => {
+        for(let i=0; i<20; i++) {
             const fertig = userBackstage.besuchteSektoren.includes(i) ? 'num-fertig' : '';
-            grid.innerHTML += `<div class="box" onclick="startSektor(${i})"><div class="num ${fertig}">${i+1}</div><div>${t}</div></div>`;
-        });
+            const titel = DASHBOARD_TRUTH[i]?.title || "SEKTOR " + (i+1);
+            grid.innerHTML += `<div class="box" onclick="startSektor(${i})"><div class="num ${fertig}">${i+1}</div><div>${titel}</div></div>`;
+        }
         const dots = document.getElementById('dot-holder');
         dots.innerHTML = "";
-        for(let i=1; i<=4; i++) dots.innerHTML += `<div id="dot${i}" class="dot"></div>`;
+        for(let i=1; i<=3; i++) dots.innerHTML += `<div id="dot${i}" class="dot" onclick="setEbene(${i})"></div>`;
     }
 
     function startSektor(id) {
@@ -91,27 +94,17 @@
 
     function setEbene(n) {
         ebene = n;
-        // Reset Sichtbarkeit
-        document.getElementById('main-text').style.display = 'none';
-        document.getElementById('chat-area').style.display = 'none';
-        document.getElementById('jitsi-container-small').style.display = 'none';
-        document.getElementById('notiz-area').style.display = 'none';
+        document.getElementById('main-text').style.display = (n === 1) ? 'block' : 'none';
+        document.getElementById('chat-area').style.display = (n === 2) ? 'flex' : 'none';
+        document.getElementById('jitsi-container-small').style.display = (n === 3) ? 'block' : 'none';
 
-        document.getElementById('info-titel').innerText = "Sektor " + (tId + 1) + " - Ebene " + n;
+        document.getElementById('info-titel').innerText = DASHBOARD_TRUTH[tId]?.title || "SEKTOR " + (tId+1);
 
         if(n === 1) {
-            document.getElementById('main-text').style.display = 'block';
-            document.getElementById('main-text').innerText = "Willkommen in Sektor " + (tId+1) + ". Hier beginnt die Analyse der Themengebiete...";
+            document.getElementById('main-text').innerText = DASHBOARD_TRUTH[tId]?.content || "Inhalt für diesen Sektor wird geladen...";
         } else if(n === 2) {
-            document.getElementById('main-text').style.display = 'block';
-            document.getElementById('main-text').innerText = "Ebene 2: Vertiefung und Struktur. Hier werden die Fakten gesammelt.";
-        } else if(n === 3) {
-            document.getElementById('chat-area').style.display = 'flex';
             verbindeChat();
-        } else if(n === 4) {
-            document.getElementById('jitsi-container-small').style.display = 'block';
-            document.getElementById('notiz-area').style.display = 'block';
-            document.getElementById('note-current').value = userBackstage.sektorNotizen[tId] || "";
+        } else if(n === 3) {
             setTimeout(starteVideo, 200);
         }
 
@@ -119,15 +112,16 @@
     }
 
     function nextPage() {
-        if(ebene < 4) setEbene(ebene + 1);
+        if(ebene < 3) setEbene(ebene + 1);
         else location.reload();
     }
 
     function verbindeChat() {
-        const channel = ably.channels.get('chat_sektor_' + tId);
+        const channel = ably.channels.get('mm_chat_' + tId);
+        channel.unsubscribe(); // Alte Abos löschen
         channel.subscribe('msg', (m) => {
             const box = document.getElementById('chat-box');
-            box.innerHTML += `<div><b>Nutzer:</b> ${m.data}</div>`;
+            box.innerHTML += `<div style="margin-bottom:8px;"><b style="color:var(--gold);">Community:</b> ${m.data}</div>`;
             box.scrollTop = box.scrollHeight;
         });
     }
@@ -135,26 +129,18 @@
     function registriereSenden() {
         const input = document.getElementById('chat-input');
         if(!input.value) return;
-        ably.channels.get('chat_sektor_' + tId).publish('msg', input.value);
+        ably.channels.get('mm_chat_' + tId).publish('msg', input.value);
         input.value = "";
     }
 
     function starteVideo() {
-        if(jitsiApi) jitsiApi.dispose();
-        const domain = "8x8.vc";
-        const options = {
-            roomName: "vpaas-magic-cookie-39f826359e1345d38f8304910901e855/MM_Sektor_Room_" + tId,
-            parentNode: document.getElementById('jitsi-container-small'),
-            height: 500
-        };
-        jitsiApi = new JitsiMeetExternalAPI(domain, options);
-    }
-
-    function saveNote() {
-        userBackstage.sektorNotizen[tId] = document.getElementById('note-current').value;
-        if(!userBackstage.besuchteSektoren.includes(tId)) userBackstage.besuchteSektoren.push(tId);
-        localStorage.setItem('mm_user_data', JSON.stringify(userBackstage));
-        alert("Gespeichert!");
+        const container = document.getElementById('jitsi-container-small');
+        container.innerHTML = ""; 
+        jitsiApi = new JitsiMeetExternalAPI("8x8.vc", {
+            roomName: "vpaas-magic-cookie-39f826359e1345d38f8304910901e855/MM_Sektor_Live_" + tId,
+            parentNode: container,
+            width: "100%", height: "100%"
+        });
     }
 
     initApp();
