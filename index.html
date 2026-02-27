@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>M&M-COMMUNITY - Admin Modus</title>
+   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script> 
     <style>
         /* BASIS-LAYOUT */
         body { background-color: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
@@ -319,27 +320,44 @@
         bg.classList.add('bild-aktiv'); 
     }
 
-    async function starteVideoKonferenz() {
-        const meinSlot = document.getElementById('v-slot-1');
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            meinSlot.innerHTML = `<video id="user-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>`;
-            document.getElementById('user-video').srcObject = stream;
-            simuliereAndereTeilnehmer();
-        } catch (err) {
-            meinSlot.innerHTML = `<div style="color:#ff4d4d; padding:10px;">KEINE KAMERA GEFUNDEN<br><small>Audio-Modus aktiv</small></div>`;
-            meinSlot.style.borderColor = "#ff4d4d";
-            simuliereAndereTeilnehmer();
-        }
-    }
+  let meinPeer = new Peer(); // Erzeugt eine eindeutige ID für den User
+let verbindungen = [];
 
-    function simuliereAndereTeilnehmer() {
-        for(let i=2; i<=8; i++) {
-            const slot = document.getElementById(`v-slot-${i}`);
-            slot.innerHTML = `<div class="pulsieren" style="color:#ffd700;">VERBUNDEN</div>`;
-            slot.style.borderColor = "#003d8f";
+meinPeer.on('open', (id) => {
+    console.log('Deine Live-ID ist: ' + id);
+    // Hier könnte man die ID an eine Liste senden, damit andere dich finden
+});
+
+async function starteVideoKonferenz() {
+    const meinSlot = document.getElementById('v-slot-1');
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover;"></video>`;
+        document.getElementById('user-video').srcObject = stream;
+
+        // Anruf-Logik: Wir warten darauf, dass andere uns anrufen
+        meinPeer.on('call', (call) => {
+            call.answer(stream); // Wir schicken unser Bild zurück
+            call.on('stream', (remoteStream) => {
+                anzeigenInSlot(remoteStream);
+            });
+        });
+    } catch (err) {
+        console.error("Kamera-Fehler:", err);
+    }
+}
+
+function anzeigenInSlot(remoteStream) {
+    // Sucht den nächsten freien Slot von 2 bis 8
+    for(let i=2; i<=8; i++) {
+        const slot = document.getElementById(`v-slot-${i}`);
+        if(slot.innerHTML.includes("ZUFALL") || slot.innerHTML.includes("VERBUNDEN")) {
+            slot.innerHTML = `<video autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>`;
+            slot.querySelector('video').srcObject = remoteStream;
+            break;
         }
     }
+} 
 </script>
 </body>
 </html>
