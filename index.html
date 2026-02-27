@@ -473,7 +473,7 @@ function updateUI() {
     }
 }
 
-let sitzBelegung = {};
+let meinSitzPlatz = null;
 
 function portalZuEbene4() {
     ebene = 4;
@@ -510,17 +510,18 @@ function updateSitzplaetze() {
     if (!gericht) return;
     gericht.innerHTML = ""; 
 
-    // Sicherstellen, dass sitzBelegung existiert, falls Teil 3 vergessen wurde
+    // NOTFALL-CHECK: Falls Variablen fehlen, hier erzeugen statt abstürzen
     if (typeof sitzBelegung === 'undefined') window.sitzBelegung = {};
+    if (typeof meinSitzPlatz === 'undefined') window.meinSitzPlatz = null;
 
     for (let i = 1; i <= 8; i++) {
         const box = document.createElement('div');
         box.className = 'geschworenen-box';
         
-        if (meinSitzPlatz === i) {
+        if (window.meinSitzPlatz === i) {
             box.innerHTML = `<span class="pulsieren" style="color:#ffd700;">DU (ICH)</span>`;
             box.style.border = "2px solid #ffd700";
-        } else if (sitzBelegung && sitzBelegung[i]) {
+        } else if (window.sitzBelegung && window.sitzBelegung[i]) {
             box.innerHTML = `<span style="color:#ff0000;">BESETZT</span>`;
             box.style.border = "1px solid #ff0000";
         } else {
