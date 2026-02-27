@@ -546,19 +546,31 @@ async function toggleJitsiInline() {
     jBtn.style.display = 'none';
     jContainer.style.display = 'block';
     
-    jContainer.innerHTML = `<video id="lokaler-spiegel" autoplay playsinline style="width:100%; height:100%; object-fit:cover; background:#222;"></video>`;
+    // Wir leeren den Container komplett für einen Neustart
+    jContainer.innerHTML = `<video id="lokaler-spiegel" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover; background:#000;"></video>`;
     const videoElement = document.getElementById('lokaler-spiegel');
 
     try {
-        // Wir versuchen nur Video, ohne Audio (Audio blockiert oft zuerst)
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        // Wir erzwingen einen sauberen Stop aller laufenden Kamera-Streams
+        if (window.currentStream) {
+            window.currentStream.getTracks().forEach(track => track.stop());
+        }
+
+        // Wir fordern NUR Video an (kein Audio), um Timeouts zu vermeiden
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+            video: { width: 1280, height: 720 }, 
+            audio: false 
+        });
+        
+        window.currentStream = stream; // Stream speichern zum späteren Stoppen
         videoElement.srcObject = stream;
-        videoElement.play();
-        console.log("Wahrheit fließt: Kamera aktiv.");
+        
+        // Explizites Play-Versprechen
+        await videoElement.play();
+        console.log("Sektor 1: Wahrhaftigkeit im Spiegel erkannt.");
     } catch (err) {
-        // Das schreibt uns den ECHTEN Grund ins Feld:
-        jContainer.innerHTML = `<div style="color:#ff4444; font-size:11px; padding:10px;">FEHLER: ${err.name}<br>Grund: ${err.message}</div>`;
         console.error("Kamera-Blockade:", err);
+        jContainer.innerHTML = `<div style="color:#ff4444; font-size:10px; padding:5px;">${err.name}: Kamera wird von einer anderen App blockiert.</div>`;
     }
 }
 function showDashboard() {
