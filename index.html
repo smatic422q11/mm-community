@@ -302,24 +302,59 @@ function showInfo(t, id) {
 } 
 
 function nextPage() { 
-    if ((ebene === 2 || ebene === 3) && tId < 19) { 
-        tId++; aktuellesThema = themen[tId];
-        if (ebene === 2) { geleseneThemen.add(tId); spieleDramaturgie(tId); }
-        if (ebene === 3) document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${tId+1} bereit...</i>`;
-        updateUI(); updateNumColors();
-    } else if (ebene < 7 && ebene !== 2 && ebene !== 3) { ebene++; updateUI(); } 
+    // Wenn wir in der Sektor-Ansicht sind (Ebene 2 oder 3)
+    if ((ebene === 2 || ebene === 3)) {
+        if (tId < 19) {
+            tId++; 
+            aktuellesThema = themen[tId];
+            // Wenn es ein neuer Sektor ist, wird er als gelesen markiert
+            if (ebene === 2) { 
+                geleseneThemen.add(tId); 
+                spieleDramaturgie(tId); // Gefühlsvorderung aktivieren
+            }
+            if (ebene === 3) {
+                document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${tId+1} bereit...</i>`;
+            }
+            updateUI(); 
+            updateNumColors();
+        } else {
+            // Wenn Sektor 20 erreicht wurde, springen wir in die nächste globale Ebene
+            ebene = 4;
+            updateUI();
+        }
+    } 
+    // Für alle anderen Ebenen (1, 4, 5, 6, 7)
+    else if (ebene < 7) { 
+        ebene++; 
+        updateUI(); 
+    } 
 }
 
-function updateNumColors() {
-    themen.forEach((_, i) => {
-        const nBox = document.getElementById(`num-${i}`);
-        if (nBox) {
-            if (interaktionsZaehler[i] >= 20) nBox.className = "num num-fertig";
-            else if (interaktionsZaehler[i] > 0) nBox.className = "num num-offen";
-            else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen";
-            else nBox.className = "num num-neutral";
-        }
-    });
+function updateUI() {
+    // Sichtbarkeit der Hauptbereiche
+    const skelett = document.getElementById('page-skelett');
+    const dash = document.getElementById('dashboard');
+    
+    if (ebene === 1) {
+        skelett.style.display = 'none';
+        dash.style.display = 'flex';
+    } else {
+        skelett.style.display = 'flex';
+        dash.style.display = 'none';
+    }
+
+    // Dots aktualisieren
+    for (let i = 1; i <= 7; i++) {
+        const dot = document.getElementById(`dot${i}`);
+        if (dot) dot.className = `dot ${i === ebene ? 'active' : ''}`;
+    }
+
+    // Titel und Content-Logik
+    const title = document.getElementById('main-title');
+    if (title) title.innerText = ebene === 2 || ebene === 3 ? aktuellesThema : `Ebene ${ebene}`;
+
+    // Hintergrund/Rotation starten
+    startRotation();
 }
 
 function showDashboard() { 
