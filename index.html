@@ -203,241 +203,141 @@
         "In diesem Sektor korrigieren wir eine der größten Ungerechtigkeiten. Während der Staat Alleinerziehende als statistisches Problem herabstuft, erkennen wir in ihnen die Elite der menschlichen Belastbarkeit. Ein Kind bei einem alleinerziehenden Elternteil ist eine Hochburg der bedingungslosen Liebe und des Kampfgeistes. Wir nutzen das „Diplom Gottes“, um diesen Elternteilen ihren Stolz zurückzugeben. In diesem Sektor fordern wir die radikale Anerkennung ihrer Leistung als höchstes soziales Verdienst. Wir schaffen eine Community-Struktur, die das fehlende Netz ersetzt: Wir sind das Dorf, das es braucht, um ein Kind großzuziehen, damit sie ihre Kinder in Licht und Fülle aufwachsen lassen können.",
         "In diesem Sektor fließen alle Ströme zusammen. Die Brücke ist der punkt der absoluten Integration, an dem Moral, Erziehung, Arbeit und Glaube zu einer Einheit verschmelzen. Hier lassen wir die Ufer der Spaltung hinter uns. Die Brücke ist der Raum, in dem das „Diplom Gottes“ zur gelebten Realität wird. Wir blicken bereits auf Sektor 21 und 22 – die noch ungeschriebenen Kapitel unserer Freiheit. Sektor 21 als Vision der neuen Erde und 22 als die endgültige Rückkehr zur Quelle. Die Brücke ist das Versprechen: Wer hier ankommt, hat aufgehört zu funktionieren und angefangen zu sein."
     ];
-// --- 1. GLOBALE VARIABLEN ---
-let ebene = 1, tId = 0, aktuellesThema = "", geleseneThemen = new Set(), interaktionsZaehler = {};
-// Wir gehen davon aus, dass 'themen' bereits definiert ist!
-themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-let oscillator, noiseNode, noiseGainNode, wechselInterval;
+    let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
+    themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
-// --- 2. FUNKTIONEN (Müssen ZUERST da sein) ---
-
-function stoppeAlles() { 
-    if(oscillator) { try { oscillator.stop(); } catch(e){} oscillator = null; }
-    if(noiseNode) { try { noiseNode.stop(); } catch(e){} noiseNode = null; }
-    const sig = document.getElementById('sig-r4');
-    if(sig) sig.style.animation = "";
-}
-
-function spieleDramaturgie(sektorIndex) {
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    stoppeAlles(); 
-    if (sektorIndex === 8) starteRauschen();
-    else if (sektorIndex === 10) starteFalscheGeige(false);
-    else if (sektorIndex === 19) {
-        starteFalscheGeige(true);
-        const sig = document.getElementById('sig-r4');
-        if(sig) sig.style.animation = "alarm-blink 0.5s infinite";
-    }
-}
-
-// ... (starteRauschen und starteFalscheGeige hier lassen wie sie sind) ...
-
-function showInfo(t, id) { 
-    tId = id; aktuellesThema = t; 
-    const cb = document.getElementById('chat-box');
-    if(cb) cb.innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
-    if (geleseneThemen.has(id)) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
-    spieleDramaturgie(id); // Gefühlsvorderung
-    updateNumColors(); 
-    document.getElementById('dashboard').style.display = 'none'; 
-    document.getElementById('page-skelett').style.display = 'flex'; 
-    updateUI(); 
-}
-
-// ... (nextPage, updateUI, updateNumColors, showDashboard, startRotation hier lassen) ...
-
-// --- 3. INITIALISIERUNG (Ganz am Ende!) ---
-
-function initLabor() {
     const grid = document.getElementById('main-grid');
-    if (grid) {
-        grid.innerHTML = ""; 
-        themen.forEach((t, i) => { 
-            // WICHTIG: Die Anführungszeichen um ${t} müssen stimmen!
-            grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; 
+    themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; });
+    
+    const dots = document.getElementById('dot-holder');
+    for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
+
+    function adminUnlock() {
+        themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
+        userBackstage.isQualifiziert = true;
+        updateNumColors();
+        updateUI();
+        alert("ADMIN: Alle Barrieren entfernt.");
+    }
+
+    function showInfo(t, id) { 
+        tId = id; aktuellesThema = t; 
+        document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
+        if (geleseneThemen.has(id)) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
+        updateNumColors(); 
+        document.getElementById('dashboard').style.display = 'none'; 
+        document.getElementById('page-skelett').style.display = 'flex'; 
+        updateUI(); 
+    } 
+
+    function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
+    function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
+    function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
+
+    function updateUI() {
+        const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
+        
+        document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
+        document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
+        document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
+        document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
+        document.getElementById('main-text').style.display = (ebene < 3) ? 'block' : 'none';
+        document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
+        document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
+        document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
+        document.getElementById('btn-back').style.visibility = 'visible';
+        
+        document.getElementById('info-titel').innerText = aktuellesThema;
+        
+        // HIER WIRD DER TEXT AUS DEM ARRAY GELADEN
+        if (ebene === 2) {
+            document.getElementById('main-text').innerText = sektorTexte[tId];
+        }
+
+        const btnNext = document.getElementById('btn-next');
+        const sigGelb = document.getElementById('sig-r4');
+        const sigRot = document.getElementById('sig-l4');
+
+        if (ebene === 2) {
+            btnNext.style.visibility = (tId < 19) ? 'visible' : 'hidden';
+            sigGelb.classList.toggle('signal-aktiv', geleseneThemen.size === 20);
+        } else {
+            sigGelb.classList.remove('signal-aktiv');
+        }
+
+        if (ebene === 3) {
+            btnNext.style.visibility = (tId < 19) ? 'visible' : 'hidden';
+            let alleFertig = Object.values(interaktionsZaehler).every(val => val >= 20);
+            sigRot.classList.toggle('signal-aktiv', alleFertig);
+        } else {
+            sigRot.classList.remove('signal-aktiv');
+        }
+
+        aktiviereKandidatenLicht();
+        updateDots(); 
+        startRotation();
+    }
+
+    function aktiviereKandidatenLicht() {
+        const sigL1 = document.getElementById('sig-l1');
+        if (ebene === 4) {
+            sigL1.className = "oval-side ov-schwarz";
+            sigL1.onclick = null;
+        } 
+        else if (userBackstage.isQualifiziert && ebene < 5) { 
+            sigL1.className = "oval-side elite-aktiv"; 
+            sigL1.onclick = () => portalZuEbene5(); 
+        } 
+        else {
+            sigL1.className = "oval-side ov-schwarz";
+            sigL1.onclick = null;
+        }
+    }
+
+    function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
+    
+    function nextPage() { 
+        if ((ebene === 2 || ebene === 3) && tId < 19) { 
+            tId++; aktuellesThema = themen[tId];
+            if (ebene === 2) geleseneThemen.add(tId);
+            if (ebene === 3) document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${tId+1} bereit...</i>`;
+            updateUI(); updateNumColors();
+        } else if (ebene < 7 && ebene !== 2 && ebene !== 3) { ebene++; updateUI(); } 
+    }
+
+    function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
+    
+    function registriereSenden() { 
+        const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); 
+        if (text === "") return; 
+        chatBox.innerHTML += `<div><strong>Du:</strong> ${text}</div>`; 
+        if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++; 
+        input.value = ""; chatBox.scrollTop = chatBox.scrollHeight; 
+        updateUI(); 
+    }
+    
+    function updateNumColors() {
+        themen.forEach((_, i) => {
+            const nBox = document.getElementById(`num-${i}`);
+            if (nBox) {
+                if (interaktionsZaehler[i] >= 20) nBox.className = "num num-fertig";
+                else if (interaktionsZaehler[i] > 0) nBox.className = "num num-offen";
+                else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen";
+                else nBox.className = "num num-neutral";
+            }
         });
     }
 
-    const dots = document.getElementById('dot-holder');
-    if (dots) {
-        dots.innerHTML = "";
-        for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
-    }
-    updateUI();
-}
-
-// Startschuss
-initLabor();
-// --- 3. SOUND-MASCHINEN & DRAMATURGIE ---
-function spieleDramaturgie(sektorIndex) {
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    stoppeAlles(); 
-
-    if (sektorIndex === 8) starteRauschen(); // Sektor 9
-    else if (sektorIndex === 10) starteFalscheGeige(false); // Sektor 11
-    else if (sektorIndex === 19) {
-        starteFalscheGeige(true); // Sektor 20 (Sirene)
-        const sig = document.getElementById('sig-r4');
-        if(sig) sig.style.animation = "alarm-blink 0.5s infinite";
-    }
-}
-
-function starteRauschen() {
-    const bufferSize = 2 * audioCtx.sampleRate;
-    const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-    const output = noiseBuffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) { output[i] = Math.random() * 2 - 1; }
-    noiseNode = audioCtx.createBufferSource();
-    noiseNode.buffer = noiseBuffer;
-    noiseNode.loop = true;
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.value = 1000;
-    noiseGainNode = audioCtx.createGain();
-    noiseGainNode.gain.setValueAtTime(0.6, audioCtx.currentTime); 
-    noiseGainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 4);
-    noiseNode.connect(filter);
-    filter.connect(noiseGainNode);
-    noiseGainNode.connect(audioCtx.destination);
-    noiseNode.start();
-}
-
-function starteFalscheGeige(istAlarm) {
-    oscillator = audioCtx.createOscillator();
-    const g = audioCtx.createGain();
-    oscillator.type = 'sawtooth';
-    oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
-    const lfo = audioCtx.createOscillator();
-    lfo.frequency.value = istAlarm ? 4 : 2; 
-    const lfoG = audioCtx.createGain();
-    lfoG.gain.value = istAlarm ? 60 : 30;
-    lfo.connect(lfoG);
-    lfoG.connect(oscillator.frequency);
-    oscillator.connect(g);
-    g.connect(audioCtx.destination);
-    if (istAlarm) {
-        g.gain.setValueAtTime(0.5, audioCtx.currentTime);
-    } else {
-        g.gain.setValueAtTime(0.6, audioCtx.currentTime);
-        g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 3);
-    }
-    lfo.start();
-    oscillator.start();
-}
-
-function stoppeAlles() { 
-    if(oscillator) { try { oscillator.stop(); } catch(e){} oscillator = null; }
-    if(noiseNode) { try { noiseNode.stop(); } catch(e){} noiseNode = null; }
-    const sig = document.getElementById('sig-r4');
-    if(sig) sig.style.animation = "";
-}
-
-// --- 4. NAVIGATION & UI ---
-function showInfo(t, id) { 
-    tId = id; aktuellesThema = t; 
-    document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
-    if (geleseneThemen.has(id)) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
-    spieleDramaturgie(id);
-    updateNumColors(); 
-    document.getElementById('dashboard').style.display = 'none'; 
-    document.getElementById('page-skelett').style.display = 'flex'; 
-    updateUI(); 
-} 
-
-function nextPage() { 
-    // Wenn wir in der Sektor-Ansicht sind (Ebene 2 oder 3)
-    if ((ebene === 2 || ebene === 3)) {
-        if (tId < 19) {
-            tId++; 
-            aktuellesThema = themen[tId];
-            // Wenn es ein neuer Sektor ist, wird er als gelesen markiert
-            if (ebene === 2) { 
-                geleseneThemen.add(tId); 
-                spieleDramaturgie(tId); // Gefühlsvorderung aktivieren
-            }
-            if (ebene === 3) {
-                document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${tId+1} bereit...</i>`;
-            }
-            updateUI(); 
-            updateNumColors();
-        } else {
-            // Wenn Sektor 20 erreicht wurde, springen wir in die nächste globale Ebene
-            ebene = 4;
-            updateUI();
-        }
-    } 
-    // Für alle anderen Ebenen (1, 4, 5, 6, 7)
-    else if (ebene < 7) { 
-        ebene++; 
-        updateUI(); 
-    } 
-}
-
-function updateUI() {
-    // Sichtbarkeit der Hauptbereiche
-    const skelett = document.getElementById('page-skelett');
-    const dash = document.getElementById('dashboard');
-    
-    if (ebene === 1) {
-        skelett.style.display = 'none';
-        dash.style.display = 'flex';
-    } else {
-        skelett.style.display = 'flex';
-        dash.style.display = 'none';
-    }
-
-    // Dots aktualisieren
-    for (let i = 1; i <= 7; i++) {
-        const dot = document.getElementById(`dot${i}`);
-        if (dot) dot.className = `dot ${i === ebene ? 'active' : ''}`;
-    }
-
-    // Titel und Content-Logik
-    const title = document.getElementById('main-title');
-    if (title) title.innerText = ebene === 2 || ebene === 3 ? aktuellesThema : `Ebene ${ebene}`;
-
-    // Hintergrund/Rotation starten
-    startRotation();
-}
-
-function showDashboard() { 
-    stoppeAlles();
-    ebene = 1; 
-    document.getElementById('page-skelett').style.display = 'none'; 
-    document.getElementById('dashboard').style.display = 'flex'; 
-    updateNumColors(); 
-    updateUI();
-}
-
-function startRotation() { 
-    clearInterval(wechselInterval); 
-    const bg = document.getElementById('werbe-bg'); 
-    if(!bg) return; 
-
-    // Visuelle Entsprechung zur Gefühlsvorderung
-    if (tId === 8) { // Sektor 9: Rauschen
-        bg.style.backgroundImage = "url('https://images.unsplash.com/photo-1516939884455-1445c8652f83?q=80&w=1200')"; 
-        bg.style.filter = "grayscale(100%) contrast(200%) brightness(80%)";
-    } 
-    else if (tId === 10) { // Sektor 11: Falsche Geige (Index 10)
-        bg.style.backgroundImage = "url('https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=1200')"; 
-        bg.style.filter = "sepia(100%) hue-rotate(280deg) saturate(300%) blur(1px)";
-    } 
-    else if (tId === 19) { // Sektor 20: Erlösung/Alarm
-        bg.style.backgroundImage = "url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1200')"; 
-        bg.style.filter = "none";
-    } 
-    else {
+    function startRotation() { 
+        clearInterval(wechselInterval); 
+        const bg = document.getElementById('werbe-bg'); 
+        if(!bg) return; 
         bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; 
-        bg.style.filter = "none";
+        bg.classList.add('bild-aktiv'); 
     }
-    bg.classList.add('bild-aktiv'); 
-}
 
-// --- 5. PEER & VIDEO ---
-let meinPeer = new Peer(); 
+  let meinPeer = new Peer(); 
 let verbindungen = [];
 
 meinPeer.on('open', (id) => {
@@ -465,7 +365,7 @@ async function starteVideoKonferenz() {
 function anzeigenInSlot(remoteStream) {
     for(let i=2; i<=8; i++) {
         const slot = document.getElementById(`v-slot-${i}`);
-        if(slot && (slot.innerHTML.includes("ZUFALL") || slot.innerHTML.includes("VERBUNDEN"))) {
+        if(slot.innerHTML.includes("ZUFALL") || slot.innerHTML.includes("VERBUNDEN")) {
             slot.innerHTML = `<video autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>`;
             slot.querySelector('video').srcObject = remoteStream;
             break;
@@ -473,8 +373,14 @@ function anzeigenInSlot(remoteStream) {
     }
 } 
 
+const raumName = "mm-community-labor-422"; 
+
 function verbindeMitAllen() {
-    console.log("Suche Teilnehmer im Labor...");
+    fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://peerjs.com/peers')}`)
+    .then(response => response.json())
+    .then(data => {
+        console.log("Suche Teilnehmer im Labor...");
+    });
 }
 
 setInterval(verbindeMitAllen, 5000);
