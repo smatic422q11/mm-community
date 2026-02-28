@@ -239,24 +239,18 @@ function starteRauschen() {
     source.buffer = noiseBuffer;
     source.loop = true;
 
-    const filterNode = audioCtx.createBiquadFilter();
-    filterNode.type = 'lowpass';
-    filterNode.frequency.value = 1000;
-
     const gainNode = audioCtx.createGain();
-    
-    // START: Laut -> ENDE: Stumm (0.0) nach 4 Sekunden
     const jetzt = audioCtx.currentTime;
+
+    // SEKTOR 9: Nach exakt 9 Sekunden komplett stumm
     gainNode.gain.setValueAtTime(0.6, jetzt);
-    gainNode.gain.exponentialRampToValueAtTime(0.001, jetzt + 4); // Fast Null
-    
-    source.connect(filterNode);
-    filterNode.connect(gainNode);
+    gainNode.gain.exponentialRampToValueAtTime(0.0001, jetzt + 9); 
+
+    source.connect(gainNode);
     gainNode.connect(audioCtx.destination);
     
     source.start();
-    // Automatischer Stopp nach 4.1 Sekunden, um den Knoten zu löschen
-    source.stop(jetzt + 4.1);
+    source.stop(jetzt + 9.1); // Harter Cut nach dem Fade
     noiseNode = source; 
 }
 
@@ -267,7 +261,6 @@ function starteFalscheGeige(istAlarm = false) {
     oscillator = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
     oscillator.type = 'sawtooth';
-    oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
 
     const lfo = audioCtx.createOscillator();
     lfo.frequency.value = 4; 
@@ -280,14 +273,15 @@ function starteFalscheGeige(istAlarm = false) {
     gainNode.connect(audioCtx.destination);
 
     const jetzt = audioCtx.currentTime;
+
     if (istAlarm) {
         gainNode.gain.setValueAtTime(0.8, jetzt);
     } else {
-        // RELIGION: Von 0.7 auf 0.0 (stumm) in 4 Sekunden
+        // SEKTOR 11: Nach exakt 11 Sekunden komplett stumm
         gainNode.gain.setValueAtTime(0.7, jetzt);
-        gainNode.gain.exponentialRampToValueAtTime(0.001, jetzt + 4);
-        oscillator.stop(jetzt + 4.1);
-        lfo.stop(jetzt + 4.1);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, jetzt + 11);
+        oscillator.stop(jetzt + 11.1);
+        lfo.stop(jetzt + 11.1);
     }
 
     lfo.start();
@@ -334,65 +328,63 @@ function starteFalscheGeige(istAlarm = false) {
     function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
     function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
 
-    function updateUI() {
-        const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
-        
-        document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
-        document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
-        document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
-        document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
-        document.getElementById('main-text').style.display = (ebene < 3) ? 'block' : 'none';
-        document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
-        document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
-        document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
-        document.getElementById('btn-back').style.visibility = 'visible';
-        
-        document.getElementById('info-titel').innerText = aktuellesThema;
-        
-        // HIER WIRD DER TEXT AUS DEM ARRAY GELADEN
-        if (ebene === 2) {
-            document.getElementById('main-text').innerText = sektorTexte[tId];
-        }
-
-        const btnNext = document.getElementById('btn-next');
-        const sigGelb = document.getElementById('sig-r4');
-        const sigRot = document.getElementById('sig-l4');
-
-        if (ebene === 2) {
-            btnNext.style.visibility = (tId < 19) ? 'visible' : 'hidden';
-            sigGelb.classList.toggle('signal-aktiv', geleseneThemen.size === 20);
-        } else {
-            sigGelb.classList.remove('signal-aktiv');
-        }
-
-        if (ebene === 3) {
-            btnNext.style.visibility = (tId < 19) ? 'visible' : 'hidden';
-            let alleFertig = Object.values(interaktionsZaehler).every(val => val >= 20);
-            sigRot.classList.toggle('signal-aktiv', alleFertig);
-        } else {
-            sigRot.classList.remove('signal-aktiv');
-        }
-
-        aktiviereKandidatenLicht();
-        updateDots(); 
-        startRotation();
+  function updateUI() {
+    // Definitionen für die Sichtbarkeit
+    const isChat = (ebene === 3);
+    const isVideo = (ebene === 4);
+    const isAdmin = (ebene === 5);
+    
+    // SICHERHEIT: Sobald wir Ebene 3 betreten, wird jeder Sektor-Sound (Ebene 2) gekillt
+    if (isChat) {
+        stoppeAlles(); 
+        console.log("System: Ebene 3 aktiv - Sektor-Audio deaktiviert.");
     }
 
-    function aktiviereKandidatenLicht() {
-        const sigL1 = document.getElementById('sig-l1');
-        if (ebene === 4) {
-            sigL1.className = "oval-side ov-schwarz";
-            sigL1.onclick = null;
-        } 
-        else if (userBackstage.isQualifiziert && ebene < 5) { 
-            sigL1.className = "oval-side elite-aktiv"; 
-            sigL1.onclick = () => portalZuEbene5(); 
-        } 
-        else {
-            sigL1.className = "oval-side ov-schwarz";
-            sigL1.onclick = null;
-        }
+    // Display-Steuerung
+    document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
+    document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
+    document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
+    document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
+    
+    // Haupttext nur in Ebene 2 (Sektor-Info) anzeigen
+    document.getElementById('main-text').style.display = (ebene === 2) ? 'block' : 'none';
+    
+    document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
+    document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
+    document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
+    document.getElementById('btn-back').style.visibility = 'visible';
+    
+    document.getElementById('info-titel').innerText = aktuellesThema;
+    
+    // Text laden für Ebene 2
+    if (ebene === 2) {
+        document.getElementById('main-text').innerText = sektorTexte[tId];
     }
+
+    // Signal-Logik (Gelbe/Rote Lichter)
+    const btnNext = document.getElementById('btn-next');
+    const sigGelb = document.getElementById('sig-r4');
+    const sigRot = document.getElementById('sig-l4');
+
+    if (ebene === 2) {
+        btnNext.style.visibility = (tId < 19) ? 'visible' : 'hidden';
+        sigGelb.classList.toggle('signal-aktiv', geleseneThemen.size === 20);
+    } else {
+        sigGelb.classList.remove('signal-aktiv');
+    }
+
+    if (ebene === 3) {
+        btnNext.style.visibility = (tId < 19) ? 'visible' : 'hidden';
+        let alleFertig = Object.values(interaktionsZaehler).every(val => val >= 20);
+        sigRot.classList.toggle('signal-aktiv', alleFertig);
+    } else {
+        sigRot.classList.remove('signal-aktiv');
+    }
+
+    aktiviereKandidatenLicht();
+    updateDots(); 
+    startRotation();
+}
 
     function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
     
