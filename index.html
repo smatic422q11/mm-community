@@ -251,28 +251,34 @@ function starteRauschen() {
 }
 
 function starteFalscheGeige() {
+    // 1. Der Haupt-Oszillator (Die Geige)
     oscillator = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
     
-    oscillator.type = 'sawtooth'; 
+    oscillator.type = 'sawtooth'; // Scharfer Sägezahn-Klang
     oscillator.frequency.setValueAtTime(440, audioCtx.currentTime); 
     
+    // 2. Die "Falschheit" (LFO / Zittern)
     const lfo = audioCtx.createOscillator();
-    lfo.frequency.value = 2; 
+    lfo.frequency.value = 2; // 2 Hertz Zittern
     const lfoGain = audioCtx.createGain();
-    lfoGain.gain.value = 30; // Wir verdoppeln auch das Zittern für maximale Unruhe
+    lfoGain.gain.value = 20; // Wie stark die Frequenz schwankt
     
     lfo.connect(lfoGain);
     lfoGain.connect(oscillator.frequency);
     
+    // 3. Verbindung zum Ausgang
     oscillator.connect(gainNode);
     gainNode.connect(audioCtx.destination);
 
-    // --- HIER DIE LAUTSTÄRKE AUF MAXIMUM ---
-    gainNode.gain.value = 0.8; 
+    // --- LAUTSTÄRKE-KORREKTUR ---
+    // Wir gehen auf 0.4 für einen deutlichen Sound
+    gainNode.gain.setValueAtTime(0.4, audioCtx.currentTime); 
     
     lfo.start();
     oscillator.start();
+    
+    console.log("Geige wurde gestartet auf Sektor " + tId);
 }
 
 function stoppeRauschen() { if(noiseNode) noiseNode.stop(); }
@@ -416,13 +422,31 @@ function spieleErlösung() {
         });
     }
 
-    function startRotation() { 
-        clearInterval(wechselInterval); 
-        const bg = document.getElementById('werbe-bg'); 
-        if(!bg) return; 
+  function startRotation() { 
+    clearInterval(wechselInterval); 
+    const bg = document.getElementById('werbe-bg'); 
+    if(!bg) return; 
+
+    // Visuelle Entsprechung zum Sound-Drama
+    if (tId === 8) { // Sektor 9: Rauschen
+        bg.style.backgroundImage = "url('https://images.unsplash.com/photo-1516939884455-1445c8652f83?q=80&w=1200')"; 
+        bg.style.filter = "grayscale(100%) contrast(200%) brightness(80%)"; // Hart und düster
+    } 
+    else if (tId === 9) { // Sektor 10: Falsche Geige
+        bg.style.backgroundImage = "url('https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=1200')"; 
+        bg.style.filter = "sepia(100%) hue-rotate(280deg) saturate(300%) blur(1px)"; // Giftig und verzerrt
+    } 
+    else if (tId === 19) { // Sektor 20: Erlösung
+        bg.style.backgroundImage = "url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1200')"; 
+        bg.style.filter = "none"; // Klarheit
+    } 
+    else {
         bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; 
-        bg.classList.add('bild-aktiv'); 
+        bg.style.filter = "none";
     }
+
+    bg.classList.add('bild-aktiv'); 
+}
 
   let meinPeer = new Peer(); 
 let verbindungen = [];
