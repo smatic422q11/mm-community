@@ -203,7 +203,93 @@
         "In diesem Sektor korrigieren wir eine der größten Ungerechtigkeiten. Während der Staat Alleinerziehende als statistisches Problem herabstuft, erkennen wir in ihnen die Elite der menschlichen Belastbarkeit. Ein Kind bei einem alleinerziehenden Elternteil ist eine Hochburg der bedingungslosen Liebe und des Kampfgeistes. Wir nutzen das „Diplom Gottes“, um diesen Elternteilen ihren Stolz zurückzugeben. In diesem Sektor fordern wir die radikale Anerkennung ihrer Leistung als höchstes soziales Verdienst. Wir schaffen eine Community-Struktur, die das fehlende Netz ersetzt: Wir sind das Dorf, das es braucht, um ein Kind großzuziehen, damit sie ihre Kinder in Licht und Fülle aufwachsen lassen können.",
         "In diesem Sektor fließen alle Ströme zusammen. Die Brücke ist der punkt der absoluten Integration, an dem Moral, Erziehung, Arbeit und Glaube zu einer Einheit verschmelzen. Hier lassen wir die Ufer der Spaltung hinter uns. Die Brücke ist der Raum, in dem das „Diplom Gottes“ zur gelebten Realität wird. Wir blicken bereits auf Sektor 21 und 22 – die noch ungeschriebenen Kapitel unserer Freiheit. Sektor 21 als Vision der neuen Erde und 22 als die endgültige Rückkehr zur Quelle. Die Brücke ist das Versprechen: Wer hier ankommt, hat aufgehört zu funktionieren und angefangen zu sein."
     ];
+// Audio-Kontext initialisieren
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+let oscillator, noiseNode, filter;
 
+function spieleDramaturgie(sektorIndex) {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+
+    // Sektor 9 (Index 8): LGBTQ & Kirche -> METALLISCHES RAUSCHEN
+    if (sektorIndex === 8) {
+        starteRauschen();
+    } 
+
+    // Sektor 10 (Index 9): Religionsbekenntnis -> RAUSCHEN AUS, FALSCHE GEIGE AN
+    if (sektorIndex === 9) {
+        stoppeRauschen();
+        starteFalscheGeige();
+    }
+
+    // Sektor 20 (Index 19): DIE BRÜCKE -> ALLES STOPP, REINER KLANG
+    if (sektorIndex === 19) {
+        stoppeAlles();
+        spieleErlösung();
+    }
+}
+
+function starteRauschen() {
+    const bufferSize = 2 * audioCtx.sampleRate,
+    noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate),
+    output = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+        output[i] = Math.random() * 2 - 1; // Weißes Rauschen
+    }
+    noiseNode = audioCtx.createBufferSource();
+    noiseNode.buffer = noiseBuffer;
+    noiseNode.loop = true;
+    
+    // Filter für den "metallischen" Klang
+    filter = audioCtx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = 1000;
+    filter.Q.value = 10;
+
+    noiseNode.connect(filter);
+    filter.connect(audioCtx.destination);
+    noiseNode.start();
+}
+
+function starteFalscheGeige() {
+    oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    oscillator.type = 'sawtooth'; // Scharfer Klang wie eine Saite
+    oscillator.frequency.setValueAtTime(440, audioCtx.currentTime); 
+    
+    // Die "Falschheit" (LFO für Frequenz-Zittern)
+    const lfo = audioCtx.createOscillator();
+    lfo.frequency.value = 2; // 2 Hz Zittern
+    const lfoGain = audioCtx.createGain();
+    lfoGain.gain.value = 15; // Wie stark sie "falsch" klingt
+    
+    lfo.connect(lfoGain);
+    lfoGain.connect(oscillator.frequency);
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    gainNode.gain.value = 0.05; // Leise im Hintergrund
+    
+    lfo.start();
+    oscillator.start();
+}
+
+function stoppeRauschen() { if(noiseNode) noiseNode.stop(); }
+function stoppeAlles() { 
+    if(oscillator) oscillator.stop(); 
+    if(noiseNode) noiseNode.stop(); 
+}
+
+function spieleErlösung() {
+    // Ein warmer, tiefer Sinus-Ton für das Ende
+    const sinus = audioCtx.createOscillator();
+    sinus.type = 'sine';
+    sinus.frequency.value = 220; // Tiefer, beruhigender Ton
+    const gain = audioCtx.createGain();
+    sinus.connect(gain);
+    gain.connect(audioCtx.destination);
+    sinus.start();
+}
     let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
@@ -223,6 +309,7 @@
 
     function showInfo(t, id) { 
         tId = id; aktuellesThema = t; 
+       spieleDramaturgie(id);
         document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
         if (geleseneThemen.has(id)) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
         updateNumColors(); 
@@ -300,6 +387,7 @@
     function nextPage() { 
         if ((ebene === 2 || ebene === 3) && tId < 19) { 
             tId++; aktuellesThema = themen[tId];
+           spieleDramaturgie(tId);
             if (ebene === 2) geleseneThemen.add(tId);
             if (ebene === 3) document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${tId+1} bereit...</i>`;
             updateUI(); updateNumColors();
