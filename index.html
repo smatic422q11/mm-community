@@ -204,7 +204,7 @@
         "In diesem Sektor fließen alle Ströme zusammen. Die Brücke ist der punkt der absoluten Integration, an dem Moral, Erziehung, Arbeit und Glaube zu einer Einheit verschmelzen. Hier lassen wir die Ufer der Spaltung hinter uns. Die Brücke ist der Raum, in dem das „Diplom Gottes“ zur gelebten Realität wird. Wir blicken bereits auf Sektor 21 und 22 – die noch ungeschriebenen Kapitel unserer Freiheit. Sektor 21 als Vision der neuen Erde und 22 als die endgültige Rückkehr zur Quelle. Die Brücke ist das Versprechen: Wer hier ankommt, hat aufgehört zu funktionieren und angefangen zu sein."
     ];
 
-   let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
+  let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
     const grid = document.getElementById('main-grid');
@@ -213,31 +213,31 @@
     const dots = document.getElementById('dot-holder');
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
-    // NEU: Audio-Variablen für die Brise Salz
     let aktuellerSound = null;
     let fingerHinweis = null;
 
     function stoppeAlles() {
         if (aktuellerSound) { aktuellerSound.pause(); aktuellerSound = null; }
         if (fingerHinweis) { fingerHinweis.remove(); fingerHinweis = null; }
-        document.querySelectorAll('.box').forEach(b => b.classList.remove('alarm-vibration'));
+        // Reset Signal-Blinken
+        const sig = document.getElementById('sig-r4');
+        if(sig) sig.style.animation = "";
     }
 
-  // Ersetze die alte starteSektorAkustik durch diese hier:
     function starteSektorAkustik(id) {
         stoppeAlles();
-        if (ebene !== 2) return;
+        if (ebene !== 2) return; 
 
-        // Sound-Links (Standard-Sounds zur Sicherheit)
+        // Sound-Quellen
         const sounds = {
-            9: "https://actions.google.com/sounds/v1/ambiences/white_noise.ogg",
-            11: "https://actions.google.com/sounds/v1/water/creek_flowing.ogg", // Test-Ersatz für Geige
-            20: "https://actions.google.com/sounds/v1/alarms/emergency_it_alarm.ogg"
+            8: "https://actions.google.com/sounds/v1/ambiences/white_noise.ogg",
+            10: "https://actions.google.com/sounds/v1/foley/metal_creak.ogg", 
+            19: "https://actions.google.com/sounds/v1/alarms/emergency_it_alarm.ogg"
         };
 
         if (id === 8) { // Sektor 9
-            aktuellerSound = new Audio(sounds[9]);
-            aktuellerSound.play().catch(e => console.log("Browser blockt Sound. Bitte einmal klicken!"));
+            aktuellerSound = new Audio(sounds[8]);
+            aktuellerSound.play().catch(() => {});
             let vol = 1.0;
             let intervall = setInterval(() => {
                 vol -= 0.1;
@@ -246,20 +246,18 @@
             }, 900);
         } 
         else if (id === 10) { // Sektor 11
-            aktuellerSound = new Audio(sounds[11]);
-            aktuellerSound.play().catch(e => console.log("Sound-Fehler"));
+            aktuellerSound = new Audio(sounds[10]);
+            aktuellerSound.play().catch(() => {});
             setTimeout(() => { stoppeAlles(); }, 11000);
         } 
         else if (id === 19) { // Sektor 20
-            aktuellerSound = new Audio(sounds[20]);
+            aktuellerSound = new Audio(sounds[19]);
             aktuellerSound.loop = true;
-            aktuellerSound.play().catch(e => console.log("Sound-Fehler"));
+            aktuellerSound.play().catch(() => {});
             
-            // Gelbes Signal zum Blinken bringen
             const sig = document.getElementById('sig-r4');
             sig.style.animation = "alarm-blink 0.5s infinite";
             
-            // Finger exakt positionieren
             fingerHinweis = document.createElement('div');
             fingerHinweis.innerHTML = "☝️";
             fingerHinweis.style = "position:fixed; bottom:120px; right:35px; font-size:60px; z-index:9999; animation: bounce 1s infinite; pointer-events:none;";
@@ -267,14 +265,6 @@
         }
     }
 
-    // Füge dieses CSS ganz oben in deinen <style> Bereich ein:
-    /*
-    @keyframes alarm-blink {
-        0% { background: #ff0; box-shadow: 0 0 10px #ff0; }
-        50% { background: #f00; box-shadow: 0 0 30px #f00; }
-        100% { background: #ff0; box-shadow: 0 0 10px #ff0; }
-    }
-    */ 
     function adminUnlock() {
         themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
         userBackstage.isQualifiziert = true;
@@ -291,12 +281,12 @@
         document.getElementById('dashboard').style.display = 'none'; 
         document.getElementById('page-skelett').style.display = 'flex'; 
         updateUI(); 
-        starteSektorAkustik(id);
+        starteSektorAkustik(id); // WICHTIG: Hier startet die Akustik
     } 
 
     function portalZuEbene3() { 
         if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { 
-            stoppeAlles(); // Beendet Alarm und Finger
+            stoppeAlles(); 
             ebene = 3; 
             updateUI(); 
         } 
@@ -328,15 +318,20 @@
         const sigGelb = document.getElementById('sig-r4');
         const sigRot = document.getElementById('sig-l4');
 
-        if (ebene === 2) {
+        // SCHUMMEL-SCHUTZ: Button nur in Ebene 2 & 3 sichtbar
+        if (ebene === 2 || ebene === 3) {
             btnNext.style.visibility = (tId < 19) ? 'visible' : 'hidden';
+        } else {
+            btnNext.style.visibility = 'hidden';
+        }
+
+        if (ebene === 2) {
             sigGelb.classList.toggle('signal-aktiv', geleseneThemen.size === 20);
         } else {
             sigGelb.classList.remove('signal-aktiv');
         }
 
         if (ebene === 3) {
-            btnNext.style.visibility = (tId < 19) ? 'visible' : 'hidden';
             let alleFertig = Object.values(interaktionsZaehler).every(val => val >= 20);
             sigRot.classList.toggle('signal-aktiv', alleFertig);
         } else {
@@ -369,11 +364,13 @@
     function nextPage() { 
         if ((ebene === 2 || ebene === 3) && tId < 19) { 
             tId++; aktuellesThema = themen[tId];
-            if (ebene === 2) geleseneThemen.add(tId);
+            if (ebene === 2) {
+                geleseneThemen.add(tId);
+                starteSektorAkustik(tId); // Trigger beim Blättern
+            }
             if (ebene === 3) document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${tId+1} bereit...</i>`;
             updateUI(); updateNumColors();
-            starteSektorAkustik(tId); // Triggert Akustik auch beim Blättern
-        } else if (ebene < 7 && ebene !== 2 && ebene !== 3) { ebene++; updateUI(); } 
+        } 
     }
 
     function showDashboard() { 
@@ -382,6 +379,7 @@
         document.getElementById('page-skelett').style.display = 'none'; 
         document.getElementById('dashboard').style.display = 'flex'; 
         updateNumColors(); 
+        updateUI(); 
     }
     
     function registriereSenden() { 
@@ -412,52 +410,6 @@
         bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; 
         bg.classList.add('bild-aktiv'); 
     }
-
-  let meinPeer = new Peer(); 
-let verbindungen = [];
-
-meinPeer.on('open', (id) => {
-    console.log('Deine Live-ID ist: ' + id);
-});
-
-async function starteVideoKonferenz() {
-    const meinSlot = document.getElementById('v-slot-1');
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover;"></video>`;
-        document.getElementById('user-video').srcObject = stream;
-
-        meinPeer.on('call', (call) => {
-            call.answer(stream); 
-            call.on('stream', (remoteStream) => {
-                anzeigenInSlot(remoteStream);
-            });
-        });
-    } catch (err) {
-        console.error("Kamera-Fehler:", err);
-    }
-}
-
-function anzeigenInSlot(remoteStream) {
-    for(let i=2; i<=8; i++) {
-        const slot = document.getElementById(`v-slot-${i}`);
-        if(slot.innerHTML.includes("ZUFALL") || slot.innerHTML.includes("VERBUNDEN")) {
-            slot.innerHTML = `<video autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>`;
-            slot.querySelector('video').srcObject = remoteStream;
-            break;
-        }
-    }
-} 
-
-const raumName = "mm-community-labor-422"; 
-
-function verbindeMitAllen() {
-    fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://peerjs.com/peers')}`)
-    .then(response => response.json())
-    .then(data => {
-        console.log("Suche Teilnehmer im Labor...");
-    });
-}
 
 setInterval(verbindeMitAllen, 5000);
 </script>
