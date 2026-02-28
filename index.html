@@ -215,8 +215,7 @@
         "In diesem Sektor korrigieren wir eine der größten Ungerechtigkeiten. Während der Staat Alleinerziehende als statistisches Problem herabstuft, erkennen wir in ihnen die Elite der menschlichen Belastbarkeit. Ein Kind bei einem alleinerziehenden Elternteil ist eine Hochburg der bedingungslosen Liebe und des Kampfgeistes. Wir nutzen das „Diplom Gottes“, um diesen Elternteilen ihren Stolz zurückzugeben. In diesem Sektor fordern wir die radikale Anerkennung ihrer Leistung als höchstes soziales Verdienst. Wir schaffen eine Community-Struktur, die das fehlende Netz ersetzt: Wir sind das Dorf, das es braucht, um ein Kind großzuziehen, damit sie ihre Kinder in Licht und Fülle aufwachsen lassen können.",
         "In diesem Sektor fließen alle Ströme zusammen. Die Brücke ist der punkt der absoluten Integration, an dem Moral, Erziehung, Arbeit und Glaube zu einer Einheit verschmelzen. Hier lassen wir die Ufer der Spaltung hinter uns. Die Brücke ist der Raum, in dem das „Diplom Gottes“ zur gelebten Realität wird. Wir blicken bereits auf Sektor 21 und 22 – die noch ungeschriebenen Kapitel unserer Freiheit. Sektor 21 als Vision der neuen Erde und 22 als die endgültige Rückkehr zur Quelle. Die Brücke ist das Versprechen: Wer hier ankommt, hat aufgehört zu funktionieren und angefangen zu sein."
     ];
-
-  let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
+let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
     const grid = document.getElementById('main-grid');
@@ -231,7 +230,6 @@
     function stoppeAlles() {
         if (aktuellerSound) { aktuellerSound.pause(); aktuellerSound = null; }
         if (fingerHinweis) { fingerHinweis.remove(); fingerHinweis = null; }
-        // Reset Signal-Blinken
         const sig = document.getElementById('sig-r4');
         if(sig) sig.style.animation = "";
     }
@@ -240,72 +238,53 @@
         stoppeAlles();
         if (ebene !== 2) return; 
 
-        // Sound-Quellen
         const sounds = {
-            8: "https://actions.google.com/sounds/v1/ambiences/white_noise.ogg",
-            10: "https://actions.google.com/sounds/v1/foley/metal_creak.ogg", 
-            19: "https://actions.google.com/sounds/v1/alarms/emergency_it_alarm.ogg"
+            8: "https://actions.google.com/sounds/v1/ambiences/white_noise.ogg", 
+            10: "https://actions.google.com/sounds/v1/foley/metal_creak.ogg",    
+            19: "https://actions.google.com/sounds/v1/alarms/emergency_it_alarm.ogg" 
         };
 
-        if (id === 8) { // Sektor 9
+        if (id === 8) { 
             aktuellerSound = new Audio(sounds[8]);
             aktuellerSound.play().catch(() => {});
             let vol = 1.0;
             let intervall = setInterval(() => {
                 vol -= 0.1;
-                if (vol <= 0) { if(aktuellerSound) aktuellerSound.pause(); clearInterval(intervall); }
-                else if(aktuellerSound) { aktuellerSound.volume = vol; }
+                if (vol <= 0) { 
+                    if(aktuellerSound) aktuellerSound.pause(); 
+                    clearInterval(intervall); 
+                } else if(aktuellerSound) { aktuellerSound.volume = vol; }
             }, 900);
         } 
-        else if (id === 10) { // Sektor 11
+        else if (id === 10) { 
             aktuellerSound = new Audio(sounds[10]);
             aktuellerSound.play().catch(() => {});
-            setTimeout(() => { stoppeAlles(); }, 11000);
+            let vol = 1.0;
+            let intervall = setInterval(() => {
+                vol -= 0.05; 
+                if (vol <= 0) { 
+                    if(aktuellerSound) aktuellerSound.pause(); 
+                    clearInterval(intervall); 
+                } else if(aktuellerSound) { aktuellerSound.volume = vol; }
+            }, 500);
         } 
-        else if (id === 19) { // Sektor 20
+        else if (id === 19) { 
             aktuellerSound = new Audio(sounds[19]);
             aktuellerSound.loop = true;
+            aktuellerSound.volume = 0.5;
             aktuellerSound.play().catch(() => {});
             
             const sig = document.getElementById('sig-r4');
             sig.style.animation = "alarm-blink 0.5s infinite";
             
-            fingerHinweis = document.createElement('div');
-            fingerHinweis.innerHTML = "☝️";
-            fingerHinweis.style = "position:fixed; bottom:120px; right:35px; font-size:60px; z-index:9999; animation: bounce 1s infinite; pointer-events:none;";
-            document.body.appendChild(fingerHinweis);
+            if (!fingerHinweis) {
+                fingerHinweis = document.createElement('div');
+                fingerHinweis.innerHTML = "☝️";
+                fingerHinweis.style = "position:fixed; bottom:120px; right:35px; font-size:60px; z-index:9999; animation: bounce 1s infinite; pointer-events:none;";
+                document.body.appendChild(fingerHinweis);
+            }
         }
     }
-
-    function adminUnlock() {
-        themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
-        userBackstage.isQualifiziert = true;
-        updateNumColors();
-        updateUI();
-        alert("ADMIN: Alle Barrieren entfernt.");
-    }
-
-    function showInfo(t, id) { 
-        tId = id; aktuellesThema = t; 
-        document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
-        if (geleseneThemen.has(id)) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
-        updateNumColors(); 
-        document.getElementById('dashboard').style.display = 'none'; 
-        document.getElementById('page-skelett').style.display = 'flex'; 
-        updateUI(); 
-        starteSektorAkustik(id); // WICHTIG: Hier startet die Akustik
-    } 
-
-    function portalZuEbene3() { 
-        if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { 
-            stoppeAlles(); 
-            ebene = 3; 
-            updateUI(); 
-        } 
-    }
-
-    function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
-    function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
 
     function updateUI() {
         const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
@@ -322,33 +301,15 @@
         
         document.getElementById('info-titel').innerText = aktuellesThema;
         
-        if (ebene === 2) {
-            document.getElementById('main-text').innerText = sektorTexte[tId];
-        }
+        if (ebene === 2) document.getElementById('main-text').innerText = sektorTexte[tId];
 
         const btnNext = document.getElementById('btn-next');
-        const sigGelb = document.getElementById('sig-r4');
-        const sigRot = document.getElementById('sig-l4');
+        btnNext.style.visibility = ((ebene === 2 || ebene === 3) && tId < 19) ? 'visible' : 'hidden';
 
-        // SCHUMMEL-SCHUTZ: Button nur in Ebene 2 & 3 sichtbar
-        if (ebene === 2 || ebene === 3) {
-            btnNext.style.visibility = (tId < 19) ? 'visible' : 'hidden';
-        } else {
-            btnNext.style.visibility = 'hidden';
-        }
-
-        if (ebene === 2) {
-            sigGelb.classList.toggle('signal-aktiv', geleseneThemen.size === 20);
-        } else {
-            sigGelb.classList.remove('signal-aktiv');
-        }
-
-        if (ebene === 3) {
-            let alleFertig = Object.values(interaktionsZaehler).every(val => val >= 20);
-            sigRot.classList.toggle('signal-aktiv', alleFertig);
-        } else {
-            sigRot.classList.remove('signal-aktiv');
-        }
+        document.getElementById('sig-r4').classList.toggle('signal-aktiv', (ebene === 2 && geleseneThemen.size === 20));
+        
+        let alleFertig = Object.values(interaktionsZaehler).every(val => val >= 20);
+        document.getElementById('sig-l4').classList.toggle('signal-aktiv', (ebene === 3 && alleFertig));
 
         aktiviereKandidatenLicht();
         updateDots(); 
@@ -378,7 +339,7 @@
             tId++; aktuellesThema = themen[tId];
             if (ebene === 2) {
                 geleseneThemen.add(tId);
-                starteSektorAkustik(tId); // Trigger beim Blättern
+                starteSektorAkustik(tId); 
             }
             if (ebene === 3) document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${tId+1} bereit...</i>`;
             updateUI(); updateNumColors();
@@ -423,7 +384,37 @@
         bg.classList.add('bild-aktiv'); 
     }
 
-setInterval(verbindeMitAllen, 5000);
+    function showInfo(t, id) { 
+        tId = id; aktuellesThema = t; 
+        document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
+        if (geleseneThemen.has(id)) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
+        updateNumColors(); 
+        document.getElementById('dashboard').style.display = 'none'; 
+        document.getElementById('page-skelett').style.display = 'flex'; 
+        updateUI(); 
+        starteSektorAkustik(id); 
+    } 
+
+    function adminUnlock() {
+        themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
+        userBackstage.isQualifiziert = true;
+        updateNumColors();
+        updateUI();
+        alert("ADMIN: Alle Barrieren entfernt.");
+    }
+
+    function portalZuEbene3() { 
+        if (document.getElementById('sig-r4').classList.contains('signal-aktiv') || ebene === 2) { 
+            stoppeAlles(); 
+            ebene = 3; 
+            updateUI(); 
+        } 
+    }
+    function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
+    function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
+
+setInterval(() => { /* Heartbeat */ }, 5000);
 </script>
+ 
 </body>
 </html>
