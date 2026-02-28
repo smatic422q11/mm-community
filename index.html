@@ -205,21 +205,22 @@
     ];
 // Audio-Kontext initialisieren
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-let oscillator, noiseNode, filter;
+let oscillator, noiseNode, currentGainNode; // currentGainNode hinzugefügt, um Zugriff zu behalten
 
 function spieleDramaturgie(id) {
     stoppeAlles(); 
 
     if (id === 8) { 
-        // Sektor 9: LGBTQ+ -> Rauschen
+        // Sektor 9: LGBTQ+ -> Rauschen (bleibt leise im Hintergrund)
         starteRauschen(); 
     } 
     else if (id === 10) { 
-        // Sektor 11: Religion -> Geige (wird leise)
+        // Sektor 11: Religion -> Geige (bleibt leise im Hintergrund)
         starteFalscheGeige(false); 
     }
     else if (id === 19) {
-        // Sektor 20: Die Brücke -> Erlösung
+        // Sektor 20: Die Brücke -> Erlösung (Alles aus, Sinus an)
+        stoppeAlles();
         spieleErlösung();
     }
 }
@@ -238,15 +239,16 @@ function starteRauschen() {
 
     const filterNode = audioCtx.createBiquadFilter();
     filterNode.type = 'lowpass';
-    filterNode.frequency.value = 1000;
+    filterNode.frequency.value = 800; // Etwas dumpfer für mehr Beklemmung
 
-    const noiseGain = audioCtx.createGain();
-    noiseGain.gain.setValueAtTime(0.6, audioCtx.currentTime); 
-    noiseGain.gain.exponentialRampToValueAtTime(0.05, audioCtx.currentTime + 3);
+    currentGainNode = audioCtx.createGain();
+    // Erst Schock (0.6), dann konstant leise (0.02) bis zum Ende
+    currentGainNode.gain.setValueAtTime(0.6, audioCtx.currentTime); 
+    currentGainNode.gain.exponentialRampToValueAtTime(0.02, audioCtx.currentTime + 3);
 
     noiseNode.connect(filterNode);
-    filterNode.connect(noiseGain);
-    noiseGain.connect(audioCtx.destination);
+    filterNode.connect(currentGainNode);
+    currentGainNode.connect(audioCtx.destination);
     noiseNode.start();
 }
 
@@ -255,7 +257,7 @@ function starteFalscheGeige(istAlarm = false) {
     if(oscillator) { try { oscillator.stop(); } catch(e){} }
 
     oscillator = audioCtx.createOscillator();
-    const gainNode = audioCtx.createGain();
+    currentGainNode = audioCtx.createGain();
     oscillator.type = 'sawtooth';
     oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
 
@@ -266,35 +268,43 @@ function starteFalscheGeige(istAlarm = false) {
     lfo.connect(lfoGain);
     lfoGain.connect(oscillator.frequency);
 
-    oscillator.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
+    oscillator.connect(currentGainNode);
+    currentGainNode.connect(audioCtx.destination);
 
     if (istAlarm) {
-        gainNode.gain.setValueAtTime(0.8, audioCtx.currentTime);
+        currentGainNode.gain.setValueAtTime(0.8, audioCtx.currentTime);
     } else {
-        gainNode.gain.setValueAtTime(0.7, audioCtx.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.03, audioCtx.currentTime + 3);
+        // RELIGION: Schock (0.7), dann bleibt es unheimlich leise (0.02)
+        currentGainNode.gain.setValueAtTime(0.7, audioCtx.currentTime);
+        currentGainNode.gain.exponentialRampToValueAtTime(0.02, audioCtx.currentTime + 3);
     }
 
     lfo.start();
     oscillator.start();
 }
 
-function stoppeRauschen() { if(noiseNode) { try { noiseNode.stop(); } catch(e){} } }
 function stoppeAlles() { 
     if(oscillator) { try { oscillator.stop(); } catch(e){} }
-    stoppeRauschen(); 
+    if(noiseNode) { try { noiseNode.stop(); } catch(e){} }
+    oscillator = null;
+    noiseNode = null;
 }
 
 function spieleErlösung() {
-    // Ein warmer, tiefer Sinus-Ton für das Ende
     const sinus = audioCtx.createOscillator();
     sinus.type = 'sine';
-    sinus.frequency.value = 220; // Tiefer, beruhigender Ton
+    sinus.frequency.value = 220; 
     const gain = audioCtx.createGain();
     sinus.connect(gain);
     gain.connect(audioCtx.destination);
+    
+    // Sanftes Einblenden der Erlösung
+    gain.gain.setValueAtTime(0, audioCtx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 2);
+    
     sinus.start();
+    // Speichern, damit auch dieser Ton bei Bedarf gestoppt werden kann
+    oscillator = sinus; 
 }
     let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
