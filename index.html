@@ -223,38 +223,58 @@
         document.querySelectorAll('.box').forEach(b => b.classList.remove('alarm-vibration'));
     }
 
+  // Ersetze die alte starteSektorAkustik durch diese hier:
     function starteSektorAkustik(id) {
         stoppeAlles();
         if (ebene !== 2) return;
 
-        if (id === 8) { // Sektor 9: Rauschen
-            aktuellerSound = new Audio('https://www.soundjay.com/communication/static-noise-01.mp3');
-            aktuellerSound.volume = 1.0;
-            aktuellerSound.play();
+        // Sound-Links (Standard-Sounds zur Sicherheit)
+        const sounds = {
+            9: "https://actions.google.com/sounds/v1/ambiences/white_noise.ogg",
+            11: "https://actions.google.com/sounds/v1/water/creek_flowing.ogg", // Test-Ersatz für Geige
+            20: "https://actions.google.com/sounds/v1/alarms/emergency_it_alarm.ogg"
+        };
+
+        if (id === 8) { // Sektor 9
+            aktuellerSound = new Audio(sounds[9]);
+            aktuellerSound.play().catch(e => console.log("Browser blockt Sound. Bitte einmal klicken!"));
             let vol = 1.0;
             let intervall = setInterval(() => {
                 vol -= 0.1;
-                if (vol <= 0) { aktuellerSound.pause(); clearInterval(intervall); }
-                else { aktuellerSound.volume = vol; }
+                if (vol <= 0) { if(aktuellerSound) aktuellerSound.pause(); clearInterval(intervall); }
+                else if(aktuellerSound) { aktuellerSound.volume = vol; }
             }, 900);
         } 
-        else if (id === 10) { // Sektor 11: Falsche Geige
-            aktuellerSound = new Audio('https://www.soundjay.com/mechanical/mechanical-clutter-1.mp3'); // Platzhalter für schräge Töne
-            aktuellerSound.play();
+        else if (id === 10) { // Sektor 11
+            aktuellerSound = new Audio(sounds[11]);
+            aktuellerSound.play().catch(e => console.log("Sound-Fehler"));
             setTimeout(() => { stoppeAlles(); }, 11000);
         } 
-        else if (id === 19) { // Sektor 20: Sirene & Finger
-            aktuellerSound = new Audio('https://www.soundjay.com/mechanical/siren-1.mp3');
+        else if (id === 19) { // Sektor 20
+            aktuellerSound = new Audio(sounds[20]);
             aktuellerSound.loop = true;
-            aktuellerSound.play();
+            aktuellerSound.play().catch(e => console.log("Sound-Fehler"));
             
+            // Gelbes Signal zum Blinken bringen
+            const sig = document.getElementById('sig-r4');
+            sig.style.animation = "alarm-blink 0.5s infinite";
+            
+            // Finger exakt positionieren
             fingerHinweis = document.createElement('div');
             fingerHinweis.innerHTML = "☝️";
-            fingerHinweis.style = "position:fixed; bottom:80px; right:50px; font-size:50px; z-index:9999; animation: bounce 1s infinite;";
+            fingerHinweis.style = "position:fixed; bottom:120px; right:35px; font-size:60px; z-index:9999; animation: bounce 1s infinite; pointer-events:none;";
             document.body.appendChild(fingerHinweis);
         }
     }
 
+    // Füge dieses CSS ganz oben in deinen <style> Bereich ein:
+    /*
+    @keyframes alarm-blink {
+        0% { background: #ff0; box-shadow: 0 0 10px #ff0; }
+        50% { background: #f00; box-shadow: 0 0 30px #f00; }
+        100% { background: #ff0; box-shadow: 0 0 10px #ff0; }
+    }
+    */ 
     function adminUnlock() {
         themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
         userBackstage.isQualifiziert = true;
