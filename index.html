@@ -203,11 +203,10 @@
         "In diesem Sektor korrigieren wir eine der größten Ungerechtigkeiten. Während der Staat Alleinerziehende als statistisches Problem herabstuft, erkennen wir in ihnen die Elite der menschlichen Belastbarkeit. Ein Kind bei einem alleinerziehenden Elternteil ist eine Hochburg der bedingungslosen Liebe und des Kampfgeistes. Wir nutzen das „Diplom Gottes“, um diesen Elternteilen ihren Stolz zurückzugeben. In diesem Sektor fordern wir die radikale Anerkennung ihrer Leistung als höchstes soziales Verdienst. Wir schaffen eine Community-Struktur, die das fehlende Netz ersetzt: Wir sind das Dorf, das es braucht, um ein Kind großzuziehen, damit sie ihre Kinder in Licht und Fülle aufwachsen lassen können.",
         "In diesem Sektor fließen alle Ströme zusammen. Die Brücke ist der punkt der absoluten Integration, an dem Moral, Erziehung, Arbeit und Glaube zu einer Einheit verschmelzen. Hier lassen wir die Ufer der Spaltung hinter uns. Die Brücke ist der Raum, in dem das „Diplom Gottes“ zur gelebten Realität wird. Wir blicken bereits auf Sektor 21 und 22 – die noch ungeschriebenen Kapitel unserer Freiheit. Sektor 21 als Vision der neuen Erde und 22 als die endgültige Rückkehr zur Quelle. Die Brücke ist das Versprechen: Wer hier ankommt, hat aufgehört zu funktionieren und angefangen zu sein."
     ];
-// 1. AUDIO INITIALISIEREN
+// 1. AUDIO & INITIALISIERUNG
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 let oscillator, noiseNode;
 
-// 2. THEMEN DEFINIEREN (Wichtig: Das muss vorhanden sein, sonst ist das Grid leer!)
 const themen = [
     "Identität", "Klima", "KI & Ethik", "Zukunft", "Migration", 
     "Bildung", "Arbeit", "Gesundheit", "LGBTQ+", "Raumfahrt", 
@@ -217,7 +216,23 @@ const themen = [
 
 const sektorTexte = Array(20).fill("Systemnachricht: Inhalt wird geladen... GEFÜHLSVORDERUNG aktiv.");
 
-// 3. AUDIO FUNKTIONEN
+let ebene = 1, tId = 0, aktuellesThema = "", geleseneThemen = new Set(), interaktionsZaehler = {};
+themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
+
+// 2. DAS GRID BAUEN (BOXEN GENERIEREN)
+const grid = document.getElementById('main-grid');
+if(grid) {
+    grid.innerHTML = ""; 
+    themen.forEach((t, i) => { 
+        grid.innerHTML += `
+            <div class="box" id="box-${i}">
+                <div class="num num-neutral" id="num-${i}">${i+1}</div>
+                <div class="text" onclick="showInfo('${t}', ${i})">${t}</div>
+            </div>`; 
+    });
+}
+
+// 3. AUDIO LOGIK
 function stoppeAlles() { 
     if(oscillator) { try { oscillator.stop(); } catch(e){} oscillator = null; }
     if(noiseNode) { try { noiseNode.stop(); } catch(e){} noiseNode = null; }
@@ -250,6 +265,7 @@ function starteRauschen() {
 
 function starteFalscheGeige(istAlarm = false) {
     if (audioCtx.state === 'suspended') audioCtx.resume();
+    if (oscillator) stoppeAlles();
     oscillator = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
     oscillator.type = 'sawtooth';
@@ -285,22 +301,14 @@ function spieleErlösung() {
     oscillator = sinus;
 }
 
-// 4. INITIALISIERUNG & GRID BAUEN
-let ebene = 1, tId = 0, aktuellesThema = "", geleseneThemen = new Set(), interaktionsZaehler = {};
-themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
-
-const grid = document.getElementById('main-grid');
-if(grid) {
-    grid.innerHTML = ""; // Vorher leeren
-    themen.forEach((t, i) => { 
-        grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; 
-    });
-}
-
-// 5. NAVIGATION
+// 4. NAVIGATION & UI
 function showDashboard() { 
     stoppeAlles(); 
     ebene = 1; 
+    // Alarm-Overlay entfernen falls vorhanden
+    const al = document.getElementById('alarm-overlay');
+    if(al) al.remove();
+    
     document.getElementById('page-skelett').style.display = 'none'; 
     document.getElementById('dashboard').style.display = 'flex'; 
     updateNumColors(); 
@@ -323,6 +331,23 @@ function showInfo(t, id) {
     updateUI(); 
 }
 
+function updateUI() {
+    const isChat = (ebene === 3);
+    const isVideo = (ebene === 4);
+    
+    document.getElementById('info-titel').innerText = aktuellesThema;
+    document.getElementById('main-text').innerText = sektorTexte[tId];
+    document.getElementById('main-text').style.display = (ebene === 2) ? 'block' : 'none';
+    document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
+    
+    // Werbeboard-Rotation
+    const bg = document.getElementById('werbe-bg');
+    if(bg) {
+        bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`;
+    }
+    updateDots();
+}
+
 function registriereSenden() { 
     const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); 
     if (text === "") return; 
@@ -330,7 +355,17 @@ function registriereSenden() {
     if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++; 
     input.value = ""; 
     chatBox.scrollTop = chatBox.scrollHeight; 
-    if (chatBox.children.length > 10) starteFalscheGeige(true);
+    
+    // SYSTEM CRASH EFFEKT (ROTES FLACKERN)
+    if (chatBox.children.length > 10) {
+        starteFalscheGeige(true);
+        if(!document.getElementById('alarm-overlay')) {
+            const al = document.createElement('div');
+            al.id = 'alarm-overlay';
+            al.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,0,0,0.3);z-index:1000;pointer-events:none;animation:flicker 0.1s infinite;";
+            document.body.appendChild(al);
+        }
+    }
     updateUI(); 
 }
 
@@ -346,12 +381,17 @@ function updateNumColors() {
     });
 }
 
-// WICHTIG: updateUI() muss definiert sein (hier nur als Rumpf, falls es fehlt)
-function updateUI() {
-    document.getElementById('info-titel').innerText = aktuellesThema;
-    if (ebene === 2) document.getElementById('main-text').innerText = sektorTexte[tId];
-    // ... restliche updateUI Logik hier einfügen
+function updateDots() { 
+    for(let i=1; i<=7; i++) { 
+        const d = document.getElementById('dot'+i); 
+        if(d) d.classList.toggle('active', i === ebene); 
+    } 
 }
+
+// PeerJS & Video (Rumpf zur Stabilität)
+let meinPeer = new Peer();
+meinPeer.on('open', (id) => { console.log('Live-ID: ' + id); });
+function verbindeMitAllen() { console.log("Suche Teilnehmer..."); }
 setInterval(verbindeMitAllen, 5000);
 </script>
 </body>
