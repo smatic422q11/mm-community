@@ -203,26 +203,80 @@
         "In diesem Sektor korrigieren wir eine der größten Ungerechtigkeiten. Während der Staat Alleinerziehende als statistisches Problem herabstuft, erkennen wir in ihnen die Elite der menschlichen Belastbarkeit. Ein Kind bei einem alleinerziehenden Elternteil ist eine Hochburg der bedingungslosen Liebe und des Kampfgeistes. Wir nutzen das „Diplom Gottes“, um diesen Elternteilen ihren Stolz zurückzugeben. In diesem Sektor fordern wir die radikale Anerkennung ihrer Leistung als höchstes soziales Verdienst. Wir schaffen eine Community-Struktur, die das fehlende Netz ersetzt: Wir sind das Dorf, das es braucht, um ein Kind großzuziehen, damit sie ihre Kinder in Licht und Fülle aufwachsen lassen können.",
         "In diesem Sektor fließen alle Ströme zusammen. Die Brücke ist der punkt der absoluten Integration, an dem Moral, Erziehung, Arbeit und Glaube zu einer Einheit verschmelzen. Hier lassen wir die Ufer der Spaltung hinter uns. Die Brücke ist der Raum, in dem das „Diplom Gottes“ zur gelebten Realität wird. Wir blicken bereits auf Sektor 21 und 22 – die noch ungeschriebenen Kapitel unserer Freiheit. Sektor 21 als Vision der neuen Erde und 22 als die endgültige Rückkehr zur Quelle. Die Brücke ist das Versprechen: Wer hier ankommt, hat aufgehört zu funktionieren und angefangen zu sein."
     ];
-// --- GLOBALE DEFINITIONEN ---
+// 1. AUDIO INITIALISIEREN
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+let oscillator, noiseNode;
+
+// 2. THEMEN DEFINIEREN (Wichtig: Das muss vorhanden sein, sonst ist das Grid leer!)
+const themen = [
+    "Identität", "Klima", "KI & Ethik", "Zukunft", "Migration", 
+    "Bildung", "Arbeit", "Gesundheit", "LGBTQ+", "Raumfahrt", 
+    "Religion", "Wirtschaft", "Medien", "Demokratie", "Kunst", 
+    "Sicherheit", "Energie", "Sport", "Justiz", "Die Brücke"
+];
+
 const sektorTexte = Array(20).fill("Systemnachricht: Inhalt wird geladen... GEFÜHLSVORDERUNG aktiv.");
 
+// 3. AUDIO FUNKTIONEN
 function stoppeAlles() { 
-    if(oscillator) { 
-        try { oscillator.stop(); } catch(e){} 
-        oscillator = null; 
+    if(oscillator) { try { oscillator.stop(); } catch(e){} oscillator = null; }
+    if(noiseNode) { try { noiseNode.stop(); } catch(e){} noiseNode = null; }
+}
+
+function spieleDramaturgie(id) {
+    stoppeAlles();
+    if (id === 8) starteRauschen(); 
+    else if (id === 10) starteFalscheGeige(false);
+    else if (id === 19) spieleErlösung();
+}
+
+function starteRauschen() {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const bufferSize = 2 * audioCtx.sampleRate;
+    const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
+    const source = audioCtx.createBufferSource();
+    source.buffer = noiseBuffer;
+    source.loop = true;
+    const gainNode = audioCtx.createGain();
+    gainNode.gain.setValueAtTime(0.6, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 9);
+    source.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    source.start();
+    noiseNode = source;
+}
+
+function starteFalscheGeige(istAlarm = false) {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    oscillator.type = 'sawtooth';
+    const lfo = audioCtx.createOscillator();
+    lfo.frequency.value = 4;
+    const lfoGain = audioCtx.createGain();
+    lfoGain.gain.value = 40;
+    lfo.connect(lfoGain);
+    lfoGain.connect(oscillator.frequency);
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    if (!istAlarm) {
+        gainNode.gain.setValueAtTime(0.7, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 11);
+        oscillator.stop(audioCtx.currentTime + 11.1);
+    } else {
+        gainNode.gain.value = 0.8;
     }
-    if(noiseNode) { 
-        try { noiseNode.stop(); } catch(e){} 
-        noiseNode = null; 
-    }
-    console.log("Audio: Alle Quellen gestoppt.");
+    lfo.start();
+    oscillator.start();
 }
 
 function spieleErlösung() {
     const sinus = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     sinus.type = 'sine';
-    sinus.frequency.value = 220; 
+    sinus.frequency.value = 220;
     sinus.connect(gain);
     gain.connect(audioCtx.destination);
     gain.gain.setValueAtTime(0, audioCtx.currentTime);
@@ -231,19 +285,19 @@ function spieleErlösung() {
     oscillator = sinus;
 }
 
-// --- INITIALISIERUNG ---
-let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
+// 4. INITIALISIERUNG & GRID BAUEN
+let ebene = 1, tId = 0, aktuellesThema = "", geleseneThemen = new Set(), interaktionsZaehler = {};
 themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
 const grid = document.getElementById('main-grid');
-themen.forEach((t, i) => { 
-    grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; 
-});
+if(grid) {
+    grid.innerHTML = ""; // Vorher leeren
+    themen.forEach((t, i) => { 
+        grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; 
+    });
+}
 
-const dots = document.getElementById('dot-holder');
-for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
-
-// --- NAVIGATION ---
+// 5. NAVIGATION
 function showDashboard() { 
     stoppeAlles(); 
     ebene = 1; 
@@ -268,93 +322,36 @@ function showInfo(t, id) {
     document.getElementById('page-skelett').style.display = 'flex'; 
     updateUI(); 
 }
-    
-   function registriereSenden() { 
-    const input = document.getElementById('chat-input'), 
-          chatBox = document.getElementById('chat-box'), 
-          text = input.value.trim(); 
-    if (text === "") return; 
 
+function registriereSenden() { 
+    const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); 
+    if (text === "") return; 
     chatBox.innerHTML += `<div><strong>Du:</strong> ${text}</div>`; 
     if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId]++; 
     input.value = ""; 
     chatBox.scrollTop = chatBox.scrollHeight; 
-
-    // PRÜFUNG: Wenn mehr als z.B. 10 Nachrichten da sind -> ALARM
-    if (chatBox.children.length > 10) {
-        starteFalscheGeige(true); // Die laute Kriegssirene!
-        // Hier könntest du später das gelbe Leuchten/Finger aktivieren
-    }
-
+    if (chatBox.children.length > 10) starteFalscheGeige(true);
     updateUI(); 
 }
-    
-    function updateNumColors() {
-        themen.forEach((_, i) => {
-            const nBox = document.getElementById(`num-${i}`);
-            if (nBox) {
-                if (interaktionsZaehler[i] >= 20) nBox.className = "num num-fertig";
-                else if (interaktionsZaehler[i] > 0) nBox.className = "num num-offen";
-                else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen";
-                else nBox.className = "num num-neutral";
-            }
-        });
-    }
 
-    function startRotation() { 
-        clearInterval(wechselInterval); 
-        const bg = document.getElementById('werbe-bg'); 
-        if(!bg) return; 
-        bg.style.backgroundImage = `url('https://picsum.photos/seed/${tId + ebene}/1200/600')`; 
-        bg.classList.add('bild-aktiv'); 
-    }
-
-  let meinPeer = new Peer(); 
-let verbindungen = [];
-
-meinPeer.on('open', (id) => {
-    console.log('Deine Live-ID ist: ' + id);
-});
-
-async function starteVideoKonferenz() {
-    const meinSlot = document.getElementById('v-slot-1');
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover;"></video>`;
-        document.getElementById('user-video').srcObject = stream;
-
-        meinPeer.on('call', (call) => {
-            call.answer(stream); 
-            call.on('stream', (remoteStream) => {
-                anzeigenInSlot(remoteStream);
-            });
-        });
-    } catch (err) {
-        console.error("Kamera-Fehler:", err);
-    }
-}
-
-function anzeigenInSlot(remoteStream) {
-    for(let i=2; i<=8; i++) {
-        const slot = document.getElementById(`v-slot-${i}`);
-        if(slot.innerHTML.includes("ZUFALL") || slot.innerHTML.includes("VERBUNDEN")) {
-            slot.innerHTML = `<video autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>`;
-            slot.querySelector('video').srcObject = remoteStream;
-            break;
+function updateNumColors() {
+    themen.forEach((_, i) => {
+        const nBox = document.getElementById(`num-${i}`);
+        if (nBox) {
+            if (interaktionsZaehler[i] >= 20) nBox.className = "num num-fertig";
+            else if (interaktionsZaehler[i] > 0) nBox.className = "num num-offen";
+            else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen";
+            else nBox.className = "num num-neutral";
         }
-    }
-} 
-
-const raumName = "mm-community-labor-422"; 
-
-function verbindeMitAllen() {
-    fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://peerjs.com/peers')}`)
-    .then(response => response.json())
-    .then(data => {
-        console.log("Suche Teilnehmer im Labor...");
     });
 }
 
+// WICHTIG: updateUI() muss definiert sein (hier nur als Rumpf, falls es fehlt)
+function updateUI() {
+    document.getElementById('info-titel').innerText = aktuellesThema;
+    if (ebene === 2) document.getElementById('main-text').innerText = sektorTexte[tId];
+    // ... restliche updateUI Logik hier einfügen
+}
 setInterval(verbindeMitAllen, 5000);
 </script>
 </body>
