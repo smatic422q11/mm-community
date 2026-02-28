@@ -244,49 +244,38 @@ let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = n
     }
 
 function starteSektorAkustik(id) {
-        stoppeAlles();
-        if (ebene !== 2) return; 
+    stoppeAlles();
+    if (ebene !== 2) return; 
 
-        // Die IDs im Code sind immer (Sektor-Nummer minus 1)
-        const sounds = {
-            8: "https://actions.google.com/sounds/v1/ambiences/tv_static.ogg", // SEKTOR 9: TV-Rauschen
-            10: "https://actions.google.com/sounds/v1/foley/metal_creak.ogg",   // SEKTOR 11: "Falsche Geige" (Metall-Kratzen)
-            19: "https://actions.google.com/sounds/v1/alarms/industrial_alarm.ogg" // SEKTOR 20: Echte Stadt-Sirene
-        };
+    // Der Audio-Kontext muss für Browser-Sicherheit gestartet werden
+    if (typeof audioCtx !== 'undefined' && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
 
-        if (sounds[id]) {
-            aktuellerSound = new Audio(sounds[id]);
-            
-            if (id === 8) { // Sektor 9: Das TV-Rauschen wird langsam leiser (Antenne gezogen)
-                aktuellerSound.volume = 1.0;
-                aktuellerSound.play().catch(e => {});
-                let vol = 1.0;
-                soundIntervall = setInterval(() => {
-                    vol -= 0.05; // Etwas langsamer ausblenden für mehr Effekt
-                    if (vol <= 0) { stoppeAlles(); } 
-                    else if(aktuellerSound) { aktuellerSound.volume = vol; }
-                }, 400);
-            } 
-            else if (id === 10) { // Sektor 11: Die falsche Geige (unangenehmes Kratzen)
-                aktuellerSound.volume = 0.8;
-                aktuellerSound.play().catch(e => {});
-                let vol = 0.8;
-                soundIntervall = setInterval(() => {
-                    vol -= 0.02; 
-                    if (vol <= 0) { stoppeAlles(); } 
-                    else if(aktuellerSound) { aktuellerSound.volume = vol; }
-                }, 300);
-            } 
-            else if (id === 19) { // Sektor 20: Die Stadt-Sirene (Daueralarm)
-                aktuellerSound.loop = true;
-                aktuellerSound.volume = 0.6;
-                aktuellerSound.play().catch(e => {});
-                const sig = document.getElementById('sig-r4');
-                if(sig) sig.style.animation = "alarm-blink 0.5s infinite";
-                // Finger-Hinweis bleibt für die Orientierung im Chaos
-            }
+    if (id === 8) { 
+        // SEKTOR 9: TV-Rauschen (Antenne weg)
+        starteRauschen(); 
+    } 
+    else if (id === 10) { 
+        // SEKTOR 11: Falsche Geige (Religion/Schock)
+        starteFalscheGeige(false); 
+    } 
+    else if (id === 19) { 
+        // SEKTOR 20: Der Große Alarm (Dauersirene)
+        starteFalscheGeige(true); 
+        
+        // Optisches Feedback dazu
+        const sig = document.getElementById('sig-r4');
+        if(sig) sig.style.animation = "alarm-blink 0.5s infinite";
+        
+        if (!fingerHinweis) {
+            fingerHinweis = document.createElement('div');
+            fingerHinweis.innerHTML = "☝️";
+            fingerHinweis.style = "position:fixed; bottom:120px; right:35px; font-size:60px; z-index:9999; animation: bounce 1s infinite; pointer-events:none;";
+            document.body.appendChild(fingerHinweis);
         }
     }
+}
     function updateUI() {
         const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
         
