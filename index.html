@@ -204,7 +204,7 @@
         "In diesem Sektor fließen alle Ströme zusammen. Die Brücke ist der punkt der absoluten Integration, an dem Moral, Erziehung, Arbeit und Glaube zu einer Einheit verschmelzen. Hier lassen wir die Ufer der Spaltung hinter uns. Die Brücke ist der Raum, in dem das „Diplom Gottes“ zur gelebten Realität wird. Wir blicken bereits auf Sektor 21 und 22 – die noch ungeschriebenen Kapitel unserer Freiheit. Sektor 21 als Vision der neuen Erde und 22 als die endgültige Rückkehr zur Quelle. Die Brücke ist das Versprechen: Wer hier ankommt, hat aufgehört zu funktionieren und angefangen zu sein."
     ];
 
-    let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
+   let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
     const grid = document.getElementById('main-grid');
@@ -212,6 +212,48 @@
     
     const dots = document.getElementById('dot-holder');
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
+
+    // NEU: Audio-Variablen für die Brise Salz
+    let aktuellerSound = null;
+    let fingerHinweis = null;
+
+    function stoppeAlles() {
+        if (aktuellerSound) { aktuellerSound.pause(); aktuellerSound = null; }
+        if (fingerHinweis) { fingerHinweis.remove(); fingerHinweis = null; }
+        document.querySelectorAll('.box').forEach(b => b.classList.remove('alarm-vibration'));
+    }
+
+    function starteSektorAkustik(id) {
+        stoppeAlles();
+        if (ebene !== 2) return;
+
+        if (id === 8) { // Sektor 9: Rauschen
+            aktuellerSound = new Audio('https://www.soundjay.com/communication/static-noise-01.mp3');
+            aktuellerSound.volume = 1.0;
+            aktuellerSound.play();
+            let vol = 1.0;
+            let intervall = setInterval(() => {
+                vol -= 0.1;
+                if (vol <= 0) { aktuellerSound.pause(); clearInterval(intervall); }
+                else { aktuellerSound.volume = vol; }
+            }, 900);
+        } 
+        else if (id === 10) { // Sektor 11: Falsche Geige
+            aktuellerSound = new Audio('https://www.soundjay.com/mechanical/mechanical-clutter-1.mp3'); // Platzhalter für schräge Töne
+            aktuellerSound.play();
+            setTimeout(() => { stoppeAlles(); }, 11000);
+        } 
+        else if (id === 19) { // Sektor 20: Sirene & Finger
+            aktuellerSound = new Audio('https://www.soundjay.com/mechanical/siren-1.mp3');
+            aktuellerSound.loop = true;
+            aktuellerSound.play();
+            
+            fingerHinweis = document.createElement('div');
+            fingerHinweis.innerHTML = "☝️";
+            fingerHinweis.style = "position:fixed; bottom:80px; right:50px; font-size:50px; z-index:9999; animation: bounce 1s infinite;";
+            document.body.appendChild(fingerHinweis);
+        }
+    }
 
     function adminUnlock() {
         themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
@@ -229,9 +271,17 @@
         document.getElementById('dashboard').style.display = 'none'; 
         document.getElementById('page-skelett').style.display = 'flex'; 
         updateUI(); 
+        starteSektorAkustik(id);
     } 
 
-    function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
+    function portalZuEbene3() { 
+        if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { 
+            stoppeAlles(); // Beendet Alarm und Finger
+            ebene = 3; 
+            updateUI(); 
+        } 
+    }
+
     function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
     function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
 
@@ -250,7 +300,6 @@
         
         document.getElementById('info-titel').innerText = aktuellesThema;
         
-        // HIER WIRD DER TEXT AUS DEM ARRAY GELADEN
         if (ebene === 2) {
             document.getElementById('main-text').innerText = sektorTexte[tId];
         }
@@ -303,10 +352,17 @@
             if (ebene === 2) geleseneThemen.add(tId);
             if (ebene === 3) document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${tId+1} bereit...</i>`;
             updateUI(); updateNumColors();
+            starteSektorAkustik(tId); // Triggert Akustik auch beim Blättern
         } else if (ebene < 7 && ebene !== 2 && ebene !== 3) { ebene++; updateUI(); } 
     }
 
-    function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
+    function showDashboard() { 
+        stoppeAlles(); 
+        ebene = 1; 
+        document.getElementById('page-skelett').style.display = 'none'; 
+        document.getElementById('dashboard').style.display = 'flex'; 
+        updateNumColors(); 
+    }
     
     function registriereSenden() { 
         const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); 
