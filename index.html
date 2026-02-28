@@ -226,9 +226,18 @@ let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = n
 
     let aktuellerSound = null;
     let fingerHinweis = null;
+    let soundIntervall = null; 
 
     function stoppeAlles() {
-        if (aktuellerSound) { aktuellerSound.pause(); aktuellerSound = null; }
+        if (aktuellerSound) { 
+            aktuellerSound.pause(); 
+            aktuellerSound.currentTime = 0;
+            aktuellerSound = null; 
+        }
+        if (soundIntervall) {
+            clearInterval(soundIntervall);
+            soundIntervall = null;
+        }
         if (fingerHinweis) { fingerHinweis.remove(); fingerHinweis = null; }
         const sig = document.getElementById('sig-r4');
         if(sig) sig.style.animation = "";
@@ -244,44 +253,41 @@ let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = n
             19: "https://actions.google.com/sounds/v1/alarms/emergency_it_alarm.ogg" 
         };
 
-        if (id === 8) { 
-            aktuellerSound = new Audio(sounds[8]);
-            aktuellerSound.play().catch(() => {});
-            let vol = 1.0;
-            let intervall = setInterval(() => {
-                vol -= 0.1;
-                if (vol <= 0) { 
-                    if(aktuellerSound) aktuellerSound.pause(); 
-                    clearInterval(intervall); 
-                } else if(aktuellerSound) { aktuellerSound.volume = vol; }
-            }, 900);
-        } 
-        else if (id === 10) { 
-            aktuellerSound = new Audio(sounds[10]);
-            aktuellerSound.play().catch(() => {});
-            let vol = 1.0;
-            let intervall = setInterval(() => {
-                vol -= 0.05; 
-                if (vol <= 0) { 
-                    if(aktuellerSound) aktuellerSound.pause(); 
-                    clearInterval(intervall); 
-                } else if(aktuellerSound) { aktuellerSound.volume = vol; }
-            }, 500);
-        } 
-        else if (id === 19) { 
-            aktuellerSound = new Audio(sounds[19]);
-            aktuellerSound.loop = true;
-            aktuellerSound.volume = 0.5;
-            aktuellerSound.play().catch(() => {});
+        if (sounds[id]) {
+            aktuellerSound = new Audio(sounds[id]);
             
-            const sig = document.getElementById('sig-r4');
-            sig.style.animation = "alarm-blink 0.5s infinite";
-            
-            if (!fingerHinweis) {
-                fingerHinweis = document.createElement('div');
-                fingerHinweis.innerHTML = "☝️";
-                fingerHinweis.style = "position:fixed; bottom:120px; right:35px; font-size:60px; z-index:9999; animation: bounce 1s infinite; pointer-events:none;";
-                document.body.appendChild(fingerHinweis);
+            if (id === 8) { // SEKTOR 9
+                aktuellerSound.volume = 1.0;
+                aktuellerSound.play().catch(e => console.log("Sound-Kickoff"));
+                let vol = 1.0;
+                soundIntervall = setInterval(() => {
+                    vol -= 0.1;
+                    if (vol <= 0) { stoppeAlles(); } 
+                    else if(aktuellerSound) { aktuellerSound.volume = vol; }
+                }, 900);
+            } 
+            else if (id === 10) { // SEKTOR 11
+                aktuellerSound.volume = 1.0;
+                aktuellerSound.play().catch(e => console.log("Sound-Kickoff"));
+                let vol = 1.0;
+                soundIntervall = setInterval(() => {
+                    vol -= 0.05; 
+                    if (vol <= 0) { stoppeAlles(); } 
+                    else if(aktuellerSound) { aktuellerSound.volume = vol; }
+                }, 500);
+            } 
+            else if (id === 19) { // SEKTOR 20
+                aktuellerSound.loop = true;
+                aktuellerSound.volume = 0.5;
+                aktuellerSound.play().catch(e => console.log("Sound-Kickoff"));
+                const sig = document.getElementById('sig-r4');
+                if(sig) sig.style.animation = "alarm-blink 0.5s infinite";
+                if (!fingerHinweis) {
+                    fingerHinweis = document.createElement('div');
+                    fingerHinweis.innerHTML = "☝️";
+                    fingerHinweis.style = "position:fixed; bottom:120px; right:35px; font-size:60px; z-index:9999; animation: bounce 1s infinite; pointer-events:none;";
+                    document.body.appendChild(fingerHinweis);
+                }
             }
         }
     }
@@ -304,34 +310,21 @@ let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = n
         if (ebene === 2) document.getElementById('main-text').innerText = sektorTexte[tId];
 
         const btnNext = document.getElementById('btn-next');
-        btnNext.style.visibility = ((ebene === 2 || ebene === 3) && tId < 19) ? 'visible' : 'hidden';
+        if(btnNext) btnNext.style.visibility = ((ebene === 2 || ebene === 3) && tId < 19) ? 'visible' : 'hidden';
 
-        document.getElementById('sig-r4').classList.toggle('signal-aktiv', (ebene === 2 && geleseneThemen.size === 20));
+        const sigR4 = document.getElementById('sig-r4');
+        if(sigR4) sigR4.classList.toggle('signal-aktiv', (ebene === 2 && geleseneThemen.size === 20));
         
         let alleFertig = Object.values(interaktionsZaehler).every(val => val >= 20);
-        document.getElementById('sig-l4').classList.toggle('signal-aktiv', (ebene === 3 && alleFertig));
+        const sigL4 = document.getElementById('sig-l4');
+        if(sigL4) sigL4.classList.toggle('signal-aktiv', (ebene === 3 && alleFertig));
 
         aktiviereKandidatenLicht();
         updateDots(); 
         startRotation();
     }
 
-    function aktiviereKandidatenLicht() {
-        const sigL1 = document.getElementById('sig-l1');
-        if (ebene === 4) {
-            sigL1.className = "oval-side ov-schwarz";
-            sigL1.onclick = null;
-        } 
-        else if (userBackstage.isQualifiziert && ebene < 5) { 
-            sigL1.className = "oval-side elite-aktiv"; 
-            sigL1.onclick = () => portalZuEbene5(); 
-        } 
-        else {
-            sigL1.className = "oval-side ov-schwarz";
-            sigL1.onclick = null;
-        }
-    }
-
+    // ... Restliche Funktionen (nextPage, showDashboard, etc.) bleiben gleich ...
     function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
     
     function nextPage() { 
