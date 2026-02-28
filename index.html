@@ -254,21 +254,22 @@ function starteFalscheGeige() {
     oscillator = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
     
-    oscillator.type = 'sawtooth'; // Scharfer Klang wie eine Saite
+    oscillator.type = 'sawtooth'; 
     oscillator.frequency.setValueAtTime(440, audioCtx.currentTime); 
     
-    // Die "Falschheit" (LFO für Frequenz-Zittern)
     const lfo = audioCtx.createOscillator();
-    lfo.frequency.value = 2; // 2 Hz Zittern
+    lfo.frequency.value = 2; 
     const lfoGain = audioCtx.createGain();
-    lfoGain.gain.value = 15; // Wie stark sie "falsch" klingt
+    lfoGain.gain.value = 30; // Wir verdoppeln auch das Zittern für maximale Unruhe
     
     lfo.connect(lfoGain);
     lfoGain.connect(oscillator.frequency);
     
     oscillator.connect(gainNode);
     gainNode.connect(audioCtx.destination);
-    gainNode.gain.value = 0.05; // Leise im Hintergrund
+
+    // --- HIER DIE LAUTSTÄRKE AUF MAXIMUM ---
+    gainNode.gain.value = 0.8; 
     
     lfo.start();
     oscillator.start();
