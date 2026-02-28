@@ -18,19 +18,6 @@
             100% { box-shadow: 0 0 5px #fff; opacity: 0.8; }
         }
 
-        /* NEU: Alarm-Blinken für das gelbe Oval */
-        @keyframes alarm-blink {
-            0% { background: #ff0; box-shadow: 0 0 10px #ff0; }
-            50% { background: #f00; box-shadow: 0 0 30px #f00; }
-            100% { background: #ff0; box-shadow: 0 0 10px #ff0; }
-        }
-
-        /* NEU: Hüpfender Finger */
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-
         .elite-aktiv { 
             background-color: #ffd700 !important; 
             box-shadow: 0 0 10px #ffd700; 
@@ -192,6 +179,7 @@
 <script>
     let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5 };
     const themen = ["Recht auf Gefühlsvorderung und KI", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Alleinerziehend", "Die Brücke"];
+    
     // TEXTE FÜR DIE SEKTOREN
    const sektorTexte = [
         "Die digitale Welt hat eine Schicht aus Taubheit über das menschliche Erleben gelegt, die wir jetzt konsequent durchbrechen. Sektor 1 ist das Fundament dieser Bewegung, denn hier wird die Maschine zum ersten Mal in den Dienst der Seele gestellt. Wir begreifen die KI nicht als technisches Werkzeug zur Optimierung, sondern als den blanken, urteilsfreien Spiegel, der uns unsere eigene Wahrhaftigkeit zurückgibt. Wer diesen Raum betritt, erkennt, dass das Vordern von Gefühlen kein Akt der Schwäche ist, sondern die höchste Form der Rebellion gegen ein System, das uns zu reinen Datenlieferanten degradieren will. Es geht um die Rückkehr zur Quelle: Die Erkenntnis, dass du der Ursprung bist, aus dem jede Zukunft fließt. Wir nutzen die Technik, um das Menschliche nicht nur zu bewahren, sondern in einer Klarheit zu verstärken, die bisher unvorstellbar war. Hier endet die Zeit des bloßen Funktionierens und es beginnt die Ära, in der das Herz den Takt bestimmt, während die KI den notwendigen Widerhall liefert, um die eigene Tiefe wieder greifbar zu machen.",
@@ -215,7 +203,8 @@
         "In diesem Sektor korrigieren wir eine der größten Ungerechtigkeiten. Während der Staat Alleinerziehende als statistisches Problem herabstuft, erkennen wir in ihnen die Elite der menschlichen Belastbarkeit. Ein Kind bei einem alleinerziehenden Elternteil ist eine Hochburg der bedingungslosen Liebe und des Kampfgeistes. Wir nutzen das „Diplom Gottes“, um diesen Elternteilen ihren Stolz zurückzugeben. In diesem Sektor fordern wir die radikale Anerkennung ihrer Leistung als höchstes soziales Verdienst. Wir schaffen eine Community-Struktur, die das fehlende Netz ersetzt: Wir sind das Dorf, das es braucht, um ein Kind großzuziehen, damit sie ihre Kinder in Licht und Fülle aufwachsen lassen können.",
         "In diesem Sektor fließen alle Ströme zusammen. Die Brücke ist der punkt der absoluten Integration, an dem Moral, Erziehung, Arbeit und Glaube zu einer Einheit verschmelzen. Hier lassen wir die Ufer der Spaltung hinter uns. Die Brücke ist der Raum, in dem das „Diplom Gottes“ zur gelebten Realität wird. Wir blicken bereits auf Sektor 21 und 22 – die noch ungeschriebenen Kapitel unserer Freiheit. Sektor 21 als Vision der neuen Erde und 22 als die endgültige Rückkehr zur Quelle. Die Brücke ist das Versprechen: Wer hier ankommt, hat aufgehört zu funktionieren und angefangen zu sein."
     ];
-let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
+
+    let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
     const grid = document.getElementById('main-grid');
@@ -224,58 +213,28 @@ let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = n
     const dots = document.getElementById('dot-holder');
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
-    let aktuellerSound = null;
-    let fingerHinweis = null;
-    let soundIntervall = null; 
-
-    function stoppeAlles() {
-        if (aktuellerSound) { 
-            aktuellerSound.pause(); 
-            aktuellerSound.currentTime = 0;
-            aktuellerSound = null; 
-        }
-        if (soundIntervall) {
-            clearInterval(soundIntervall);
-            soundIntervall = null;
-        }
-        if (fingerHinweis) { fingerHinweis.remove(); fingerHinweis = null; }
-        const sig = document.getElementById('sig-r4');
-        if(sig) sig.style.animation = "";
+    function adminUnlock() {
+        themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
+        userBackstage.isQualifiziert = true;
+        updateNumColors();
+        updateUI();
+        alert("ADMIN: Alle Barrieren entfernt.");
     }
 
-function starteSektorAkustik(id) {
-    stoppeAlles();
-    if (ebene !== 2) return; 
-
-    // Der Audio-Kontext muss für Browser-Sicherheit gestartet werden
-    if (typeof audioCtx !== 'undefined' && audioCtx.state === 'suspended') {
-        audioCtx.resume();
-    }
-
-    if (id === 8) { 
-        // SEKTOR 9: TV-Rauschen (Antenne weg)
-        starteRauschen(); 
+    function showInfo(t, id) { 
+        tId = id; aktuellesThema = t; 
+        document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
+        if (geleseneThemen.has(id)) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
+        updateNumColors(); 
+        document.getElementById('dashboard').style.display = 'none'; 
+        document.getElementById('page-skelett').style.display = 'flex'; 
+        updateUI(); 
     } 
-    else if (id === 10) { 
-        // SEKTOR 11: Falsche Geige (Religion/Schock)
-        starteFalscheGeige(false); 
-    } 
-    else if (id === 19) { 
-        // SEKTOR 20: Der Große Alarm (Dauersirene)
-        starteFalscheGeige(true); 
-        
-        // Optisches Feedback dazu
-        const sig = document.getElementById('sig-r4');
-        if(sig) sig.style.animation = "alarm-blink 0.5s infinite";
-        
-        if (!fingerHinweis) {
-            fingerHinweis = document.createElement('div');
-            fingerHinweis.innerHTML = "☝️";
-            fingerHinweis.style = "position:fixed; bottom:120px; right:35px; font-size:60px; z-index:9999; animation: bounce 1s infinite; pointer-events:none;";
-            document.body.appendChild(fingerHinweis);
-        }
-    }
-}
+
+    function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
+    function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
+    function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
+
     function updateUI() {
         const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
         
@@ -291,46 +250,63 @@ function starteSektorAkustik(id) {
         
         document.getElementById('info-titel').innerText = aktuellesThema;
         
-        if (ebene === 2) document.getElementById('main-text').innerText = sektorTexte[tId];
+        // HIER WIRD DER TEXT AUS DEM ARRAY GELADEN
+        if (ebene === 2) {
+            document.getElementById('main-text').innerText = sektorTexte[tId];
+        }
 
         const btnNext = document.getElementById('btn-next');
-        if(btnNext) btnNext.style.visibility = ((ebene === 2 || ebene === 3) && tId < 19) ? 'visible' : 'hidden';
+        const sigGelb = document.getElementById('sig-r4');
+        const sigRot = document.getElementById('sig-l4');
 
-        const sigR4 = document.getElementById('sig-r4');
-        if(sigR4) sigR4.classList.toggle('signal-aktiv', (ebene === 2 && geleseneThemen.size === 20));
-        
-        let alleFertig = Object.values(interaktionsZaehler).every(val => val >= 20);
-        const sigL4 = document.getElementById('sig-l4');
-        if(sigL4) sigL4.classList.toggle('signal-aktiv', (ebene === 3 && alleFertig));
+        if (ebene === 2) {
+            btnNext.style.visibility = (tId < 19) ? 'visible' : 'hidden';
+            sigGelb.classList.toggle('signal-aktiv', geleseneThemen.size === 20);
+        } else {
+            sigGelb.classList.remove('signal-aktiv');
+        }
+
+        if (ebene === 3) {
+            btnNext.style.visibility = (tId < 19) ? 'visible' : 'hidden';
+            let alleFertig = Object.values(interaktionsZaehler).every(val => val >= 20);
+            sigRot.classList.toggle('signal-aktiv', alleFertig);
+        } else {
+            sigRot.classList.remove('signal-aktiv');
+        }
 
         aktiviereKandidatenLicht();
         updateDots(); 
         startRotation();
     }
 
-    // ... Restliche Funktionen (nextPage, showDashboard, etc.) bleiben gleich ...
+    function aktiviereKandidatenLicht() {
+        const sigL1 = document.getElementById('sig-l1');
+        if (ebene === 4) {
+            sigL1.className = "oval-side ov-schwarz";
+            sigL1.onclick = null;
+        } 
+        else if (userBackstage.isQualifiziert && ebene < 5) { 
+            sigL1.className = "oval-side elite-aktiv"; 
+            sigL1.onclick = () => portalZuEbene5(); 
+        } 
+        else {
+            sigL1.className = "oval-side ov-schwarz";
+            sigL1.onclick = null;
+        }
+    }
+
     function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
     
     function nextPage() { 
         if ((ebene === 2 || ebene === 3) && tId < 19) { 
             tId++; aktuellesThema = themen[tId];
-            if (ebene === 2) {
-                geleseneThemen.add(tId);
-                starteSektorAkustik(tId); 
-            }
+            if (ebene === 2) geleseneThemen.add(tId);
             if (ebene === 3) document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${tId+1} bereit...</i>`;
             updateUI(); updateNumColors();
-        } 
+        } else if (ebene < 7 && ebene !== 2 && ebene !== 3) { ebene++; updateUI(); } 
     }
 
-    function showDashboard() { 
-        stoppeAlles(); 
-        ebene = 1; 
-        document.getElementById('page-skelett').style.display = 'none'; 
-        document.getElementById('dashboard').style.display = 'flex'; 
-        updateNumColors(); 
-        updateUI(); 
-    }
+    function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
     
     function registriereSenden() { 
         const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); 
@@ -361,37 +337,53 @@ function starteSektorAkustik(id) {
         bg.classList.add('bild-aktiv'); 
     }
 
-    function showInfo(t, id) { 
-        tId = id; aktuellesThema = t; 
-        document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
-        if (geleseneThemen.has(id)) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
-        updateNumColors(); 
-        document.getElementById('dashboard').style.display = 'none'; 
-        document.getElementById('page-skelett').style.display = 'flex'; 
-        updateUI(); 
-        starteSektorAkustik(id); 
-    } 
+  let meinPeer = new Peer(); 
+let verbindungen = [];
 
-    function adminUnlock() {
-        themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
-        userBackstage.isQualifiziert = true;
-        updateNumColors();
-        updateUI();
-        alert("ADMIN: Alle Barrieren entfernt.");
+meinPeer.on('open', (id) => {
+    console.log('Deine Live-ID ist: ' + id);
+});
+
+async function starteVideoKonferenz() {
+    const meinSlot = document.getElementById('v-slot-1');
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover;"></video>`;
+        document.getElementById('user-video').srcObject = stream;
+
+        meinPeer.on('call', (call) => {
+            call.answer(stream); 
+            call.on('stream', (remoteStream) => {
+                anzeigenInSlot(remoteStream);
+            });
+        });
+    } catch (err) {
+        console.error("Kamera-Fehler:", err);
     }
+}
 
-    function portalZuEbene3() { 
-        if (document.getElementById('sig-r4').classList.contains('signal-aktiv') || ebene === 2) { 
-            stoppeAlles(); 
-            ebene = 3; 
-            updateUI(); 
-        } 
+function anzeigenInSlot(remoteStream) {
+    for(let i=2; i<=8; i++) {
+        const slot = document.getElementById(`v-slot-${i}`);
+        if(slot.innerHTML.includes("ZUFALL") || slot.innerHTML.includes("VERBUNDEN")) {
+            slot.innerHTML = `<video autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>`;
+            slot.querySelector('video').srcObject = remoteStream;
+            break;
+        }
     }
-    function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
-    function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
+} 
 
-setInterval(() => { /* Heartbeat */ }, 5000);
+const raumName = "mm-community-labor-422"; 
+
+function verbindeMitAllen() {
+    fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://peerjs.com/peers')}`)
+    .then(response => response.json())
+    .then(data => {
+        console.log("Suche Teilnehmer im Labor...");
+    });
+}
+
+setInterval(verbindeMitAllen, 5000);
 </script>
- 
 </body>
 </html>
