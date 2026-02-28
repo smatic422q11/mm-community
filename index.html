@@ -226,6 +226,8 @@ function spieleDramaturgie(id) {
 }
 
 function starteRauschen() {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    
     const bufferSize = 2 * audioCtx.sampleRate;
     const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
     const output = noiseBuffer.getChannelData(0);
@@ -233,23 +235,29 @@ function starteRauschen() {
         output[i] = Math.random() * 2 - 1;
     }
 
-    noiseNode = audioCtx.createBufferSource();
-    noiseNode.buffer = noiseBuffer;
-    noiseNode.loop = true;
+    const source = audioCtx.createBufferSource();
+    source.buffer = noiseBuffer;
+    source.loop = true;
 
     const filterNode = audioCtx.createBiquadFilter();
     filterNode.type = 'lowpass';
-    filterNode.frequency.value = 800; // Etwas dumpfer für mehr Beklemmung
+    filterNode.frequency.value = 1000;
 
-    currentGainNode = audioCtx.createGain();
-    // Erst Schock (0.6), dann konstant leise (0.02) bis zum Ende
-    currentGainNode.gain.setValueAtTime(0.6, audioCtx.currentTime); 
-    currentGainNode.gain.exponentialRampToValueAtTime(0.02, audioCtx.currentTime + 3);
-
-    noiseNode.connect(filterNode);
-    filterNode.connect(currentGainNode);
-    currentGainNode.connect(audioCtx.destination);
-    noiseNode.start();
+    const gainNode = audioCtx.createGain();
+    
+    // START: Laut -> ENDE: Stumm (0.0) nach 4 Sekunden
+    const jetzt = audioCtx.currentTime;
+    gainNode.gain.setValueAtTime(0.6, jetzt);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, jetzt + 4); // Fast Null
+    
+    source.connect(filterNode);
+    filterNode.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    source.start();
+    // Automatischer Stopp nach 4.1 Sekunden, um den Knoten zu löschen
+    source.stop(jetzt + 4.1);
+    noiseNode = source; 
 }
 
 function starteFalscheGeige(istAlarm = false) {
@@ -257,7 +265,7 @@ function starteFalscheGeige(istAlarm = false) {
     if(oscillator) { try { oscillator.stop(); } catch(e){} }
 
     oscillator = audioCtx.createOscillator();
-    currentGainNode = audioCtx.createGain();
+    const gainNode = audioCtx.createGain();
     oscillator.type = 'sawtooth';
     oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
 
@@ -268,43 +276,22 @@ function starteFalscheGeige(istAlarm = false) {
     lfo.connect(lfoGain);
     lfoGain.connect(oscillator.frequency);
 
-    oscillator.connect(currentGainNode);
-    currentGainNode.connect(audioCtx.destination);
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
 
+    const jetzt = audioCtx.currentTime;
     if (istAlarm) {
-        currentGainNode.gain.setValueAtTime(0.8, audioCtx.currentTime);
+        gainNode.gain.setValueAtTime(0.8, jetzt);
     } else {
-        // RELIGION: Schock (0.7), dann bleibt es unheimlich leise (0.02)
-        currentGainNode.gain.setValueAtTime(0.7, audioCtx.currentTime);
-        currentGainNode.gain.exponentialRampToValueAtTime(0.02, audioCtx.currentTime + 3);
+        // RELIGION: Von 0.7 auf 0.0 (stumm) in 4 Sekunden
+        gainNode.gain.setValueAtTime(0.7, jetzt);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, jetzt + 4);
+        oscillator.stop(jetzt + 4.1);
+        lfo.stop(jetzt + 4.1);
     }
 
     lfo.start();
     oscillator.start();
-}
-
-function stoppeAlles() { 
-    if(oscillator) { try { oscillator.stop(); } catch(e){} }
-    if(noiseNode) { try { noiseNode.stop(); } catch(e){} }
-    oscillator = null;
-    noiseNode = null;
-}
-
-function spieleErlösung() {
-    const sinus = audioCtx.createOscillator();
-    sinus.type = 'sine';
-    sinus.frequency.value = 220; 
-    const gain = audioCtx.createGain();
-    sinus.connect(gain);
-    gain.connect(audioCtx.destination);
-    
-    // Sanftes Einblenden der Erlösung
-    gain.gain.setValueAtTime(0, audioCtx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 2);
-    
-    sinus.start();
-    // Speichern, damit auch dieser Ton bei Bedarf gestoppt werden kann
-    oscillator = sinus; 
 }
     let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
@@ -323,16 +310,25 @@ function spieleErlösung() {
         alert("ADMIN: Alle Barrieren entfernt.");
     }
 
-    function showInfo(t, id) { 
-        tId = id; aktuellesThema = t; 
-       spieleDramaturgie(id);
-        document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
-        if (geleseneThemen.has(id)) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
-        updateNumColors(); 
-        document.getElementById('dashboard').style.display = 'none'; 
-        document.getElementById('page-skelett').style.display = 'flex'; 
-        updateUI(); 
-    } 
+ function showInfo(t, id) { 
+    tId = id; 
+    aktuellesThema = t; 
+    
+    // Audio nur in Ebene 2 triggern
+    if (!geleseneThemen.has(id)) {
+        ebene = 2;
+        spieleDramaturgie(id); // Hier startet der Sound-Fade
+    } else {
+        ebene = 3; 
+        stoppeAlles(); // SICHERHEIT: In Ebene 3 ist absolute Stille für deine Pläne
+    }
+
+    geleseneThemen.add(id);
+    updateNumColors(); 
+    document.getElementById('dashboard').style.display = 'none'; 
+    document.getElementById('page-skelett').style.display = 'flex'; 
+    updateUI(); 
+}
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
     function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
