@@ -229,58 +229,64 @@ function spieleDramaturgie(sektorIndex) {
 }
 
 function starteRauschen() {
-    const bufferSize = 2 * audioCtx.sampleRate,
-    noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate),
-    output = noiseBuffer.getChannelData(0);
+    const bufferSize = 2 * audioCtx.sampleRate;
+    const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
     for (let i = 0; i < bufferSize; i++) {
-        output[i] = Math.random() * 2 - 1; // Weißes Rauschen
+        output[i] = Math.random() * 2 - 1;
     }
-    noiseNode = audioCtx.createBufferSource();
-    noiseNode.buffer = noiseBuffer;
-    noiseNode.loop = true;
-    
-    // Filter für den "metallischen" Klang
-    filter = audioCtx.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.frequency.value = 1000;
-    filter.Q.value = 10;
 
-    noiseNode.connect(filter);
-    filter.connect(audioCtx.destination);
-    noiseNode.start();
+    const noise = audioCtx.createBufferSource();
+    noise.buffer = noiseBuffer;
+    noise.loop = true;
+
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 1000;
+
+    const noiseGain = audioCtx.createGain();
+    
+    // DER EFFEKT: Erst laut (0.6), dann nach 3 Sek leise (0.05)
+    noiseGain.gain.setValueAtTime(0.6, audioCtx.currentTime); 
+    noiseGain.gain.exponentialRampToValueAtTime(0.05, audioCtx.currentTime + 3);
+
+    noise.connect(filter);
+    filter.connect(noiseGain);
+    noiseGain.connect(audioCtx.destination);
+    noise.start();
 }
 
-function starteFalscheGeige() {
-    // 1. Der Haupt-Oszillator (Die Geige)
+function starteFalscheGeige(istAlarm = false) {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    
     oscillator = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
-    
-    oscillator.type = 'sawtooth'; // Scharfer Sägezahn-Klang
-    oscillator.frequency.setValueAtTime(440, audioCtx.currentTime); 
-    
-    // 2. Die "Falschheit" (LFO / Zittern)
+    oscillator.type = 'sawtooth';
+    oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
+
+    // Der Sireneneffekt
     const lfo = audioCtx.createOscillator();
-    lfo.frequency.value = 2; // 2 Hertz Zittern
+    lfo.frequency.value = 4; 
     const lfoGain = audioCtx.createGain();
-    lfoGain.gain.value = 20; // Wie stark die Frequenz schwankt
-    
+    lfoGain.gain.value = 40;
     lfo.connect(lfoGain);
     lfoGain.connect(oscillator.frequency);
-    
-    // 3. Verbindung zum Ausgang
+
     oscillator.connect(gainNode);
     gainNode.connect(audioCtx.destination);
 
-    // --- LAUTSTÄRKE-KORREKTUR ---
-    // Wir gehen auf 0.4 für einen deutlichen Sound
-    gainNode.gain.setValueAtTime(0.4, audioCtx.currentTime); 
-    
+    if (istAlarm) {
+        // DAUERALARM für den Chat-Überlauf (bleibt laut auf 0.8)
+        gainNode.gain.setValueAtTime(0.8, audioCtx.currentTime);
+    } else {
+        // EFFEKT für Religion: Kurz laut, dann Fade-out auf 0.03
+        gainNode.gain.setValueAtTime(0.7, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.03, audioCtx.currentTime + 3);
+    }
+
     lfo.start();
     oscillator.start();
-    
-    console.log("Geige wurde gestartet auf Sektor " + tId);
 }
-
 function stoppeRauschen() { if(noiseNode) noiseNode.stop(); }
 function stoppeAlles() { 
     if(oscillator) oscillator.stop(); 
