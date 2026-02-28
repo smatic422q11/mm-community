@@ -251,27 +251,34 @@ function starteRauschen() {
 }
 
 function starteFalscheGeige() {
+    // 1. Der Haupt-Oszillator (Die Geige)
     oscillator = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
     
-    oscillator.type = 'sawtooth'; // Scharfer Klang wie eine Saite
+    oscillator.type = 'sawtooth'; // Scharfer Sägezahn-Klang
     oscillator.frequency.setValueAtTime(440, audioCtx.currentTime); 
     
-    // Die "Falschheit" (LFO für Frequenz-Zittern)
+    // 2. Die "Falschheit" (LFO / Zittern)
     const lfo = audioCtx.createOscillator();
-    lfo.frequency.value = 2; // 2 Hz Zittern
+    lfo.frequency.value = 2; // 2 Hertz Zittern
     const lfoGain = audioCtx.createGain();
-    lfoGain.gain.value = 15; // Wie stark sie "falsch" klingt
+    lfoGain.gain.value = 20; // Wie stark die Frequenz schwankt
     
     lfo.connect(lfoGain);
     lfoGain.connect(oscillator.frequency);
     
+    // 3. Verbindung zum Ausgang
     oscillator.connect(gainNode);
     gainNode.connect(audioCtx.destination);
-    gainNode.gain.value = 0.03; // Leise im Hintergrund
+
+    // --- LAUTSTÄRKE-KORREKTUR ---
+    // Wir gehen auf 0.4 für einen deutlichen Sound
+    gainNode.gain.setValueAtTime(0.4, audioCtx.currentTime); 
     
     lfo.start();
     oscillator.start();
+    
+    console.log("Geige wurde gestartet auf Sektor " + tId);
 }
 
 function stoppeRauschen() { if(noiseNode) noiseNode.stop(); }
