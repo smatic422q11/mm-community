@@ -224,24 +224,6 @@ function spieleDramaturgie(id) {
     }
 }
 
-    // HIER EINE NEUE ZEILE EINFÜGEN:
-    else if (id === 10) { // Sektor 11: Religion
-        starteFalscheGeige(); // Die Version, die nach 3 Sek. leise wird
-    }
-
-    // Sektor 10 (Index 9): Religionsbekenntnis -> RAUSCHEN AUS, FALSCHE GEIGE AN
-    if (sektorIndex === 9) {
-        stoppeRauschen();
-        starteFalscheGeige();
-    }
-
-    // Sektor 20 (Index 19): DIE BRÜCKE -> ALLES STOPP, REINER KLANG
-    if (sektorIndex === 19) {
-        stoppeAlles();
-        spieleErlösung();
-    }
-}
-
 function starteRauschen() {
     const bufferSize = 2 * audioCtx.sampleRate;
     const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
@@ -250,43 +232,37 @@ function starteRauschen() {
         output[i] = Math.random() * 2 - 1;
     }
 
-    const noise = audioCtx.createBufferSource();
-    noise.buffer = noiseBuffer;
-    noise.loop = true;
+    noiseNode = audioCtx.createBufferSource();
+    noiseNode.buffer = noiseBuffer;
+    noiseNode.loop = true;
 
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.value = 1000;
+    const filterNode = audioCtx.createBiquadFilter();
+    filterNode.type = 'lowpass';
+    filterNode.frequency.value = 1000;
 
     const noiseGain = audioCtx.createGain();
-    
-    // DER EFFEKT: Erst laut (0.6), dann nach 3 Sek leise (0.05)
     noiseGain.gain.setValueAtTime(0.6, audioCtx.currentTime); 
     noiseGain.gain.exponentialRampToValueAtTime(0.05, audioCtx.currentTime + 3);
 
-    noise.connect(filter);
-    filter.connect(noiseGain);
+    noiseNode.connect(filterNode);
+    filterNode.connect(noiseGain);
     noiseGain.connect(audioCtx.destination);
-    noise.start();
+    noiseNode.start();
 }
 
 function starteFalscheGeige(istAlarm = false) {
     if (audioCtx.state === 'suspended') audioCtx.resume();
-    
-    // Falls schon ein Oscillator läuft, stoppen wir ihn kurz für den Neustart
     if(oscillator) { try { oscillator.stop(); } catch(e){} }
 
     oscillator = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
-    oscillator.type = 'sawtooth'; // Der schrille "Geigen"-Sound
+    oscillator.type = 'sawtooth';
     oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
 
-    // Der LFO erzeugt das Zittern/die Sirene
     const lfo = audioCtx.createOscillator();
     lfo.frequency.value = 4; 
     const lfoGain = audioCtx.createGain();
     lfoGain.gain.value = 40;
-    
     lfo.connect(lfoGain);
     lfoGain.connect(oscillator.frequency);
 
@@ -294,23 +270,20 @@ function starteFalscheGeige(istAlarm = false) {
     gainNode.connect(audioCtx.destination);
 
     if (istAlarm) {
-        // DAUERALARM für den Chat-Überlauf (bleibt laut auf 0.8)
         gainNode.gain.setValueAtTime(0.8, audioCtx.currentTime);
     } else {
-        // GEFÜHLSVORDERUNG für Religion: Kurz laut, dann Fade-out auf 0.03
         gainNode.gain.setValueAtTime(0.7, audioCtx.currentTime);
         gainNode.gain.exponentialRampToValueAtTime(0.03, audioCtx.currentTime + 3);
     }
 
     lfo.start();
     oscillator.start();
-    console.log("Falsche Geige gestartet. Alarm-Modus: " + istAlarm);
 }
 
-function stoppeRauschen() { if(noiseNode) noiseNode.stop(); }
+function stoppeRauschen() { if(noiseNode) { try { noiseNode.stop(); } catch(e){} } }
 function stoppeAlles() { 
-    if(oscillator) oscillator.stop(); 
-    if(noiseNode) noiseNode.stop(); 
+    if(oscillator) { try { oscillator.stop(); } catch(e){} }
+    stoppeRauschen(); 
 }
 
 function spieleErlösung() {
