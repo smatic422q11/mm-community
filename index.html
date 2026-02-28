@@ -268,7 +268,7 @@ function starteFalscheGeige() {
     
     oscillator.connect(gainNode);
     gainNode.connect(audioCtx.destination);
-    gainNode.gain.value = 0.05; // Leise im Hintergrund
+    gainNode.gain.value = 0.08; // Leise im Hintergrund
     
     lfo.start();
     oscillator.start();
