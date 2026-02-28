@@ -203,207 +203,112 @@
         "In diesem Sektor korrigieren wir eine der größten Ungerechtigkeiten. Während der Staat Alleinerziehende als statistisches Problem herabstuft, erkennen wir in ihnen die Elite der menschlichen Belastbarkeit. Ein Kind bei einem alleinerziehenden Elternteil ist eine Hochburg der bedingungslosen Liebe und des Kampfgeistes. Wir nutzen das „Diplom Gottes“, um diesen Elternteilen ihren Stolz zurückzugeben. In diesem Sektor fordern wir die radikale Anerkennung ihrer Leistung als höchstes soziales Verdienst. Wir schaffen eine Community-Struktur, die das fehlende Netz ersetzt: Wir sind das Dorf, das es braucht, um ein Kind großzuziehen, damit sie ihre Kinder in Licht und Fülle aufwachsen lassen können.",
         "In diesem Sektor fließen alle Ströme zusammen. Die Brücke ist der punkt der absoluten Integration, an dem Moral, Erziehung, Arbeit und Glaube zu einer Einheit verschmelzen. Hier lassen wir die Ufer der Spaltung hinter uns. Die Brücke ist der Raum, in dem das „Diplom Gottes“ zur gelebten Realität wird. Wir blicken bereits auf Sektor 21 und 22 – die noch ungeschriebenen Kapitel unserer Freiheit. Sektor 21 als Vision der neuen Erde und 22 als die endgültige Rückkehr zur Quelle. Die Brücke ist das Versprechen: Wer hier ankommt, hat aufgehört zu funktionieren und angefangen zu sein."
     ];
-// Audio-Kontext initialisieren
+// 1. Audio-Kontext fixieren (Muss global sein)
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-let oscillator, noiseNode, filter;
+let oscillator, noiseNode, noiseGainNode; // noiseNode global machen zum Stoppen!
 
+// 2. Die zentrale Steuerung (Hier lag der Fehler - jetzt wird sie aufgerufen!)
 function spieleDramaturgie(sektorIndex) {
     if (audioCtx.state === 'suspended') audioCtx.resume();
+    stoppeAlles(); // Erstmal Ruhe schaffen
 
-    // Sektor 9 (Index 8): LGBTQ & Kirche -> METALLISCHES RAUSCHEN
-    if (sektorIndex === 8) {
+    if (sektorIndex === 8) { // SEKTOR 9
         starteRauschen();
     } 
-
-    // Sektor 10 (Index 9): Religionsbekenntnis -> RAUSCHEN AUS, FALSCHE GEIGE AN
-    if (sektorIndex === 9) {
-        stoppeRauschen();
-        starteFalscheGeige();
-    }
-
-    // Sektor 20 (Index 19): DIE BRÜCKE -> ALLES STOPP, REINER KLANG
-    if (sektorIndex === 19) {
-        stoppeAlles();
-        spieleErlösung();
+    else if (sektorIndex === 10) { // SEKTOR 11 (Achtung: Index 10 ist Sektor 11!)
+        starteFalscheGeige(false);
+    } 
+    else if (sektorIndex === 19) { // SEKTOR 20
+        starteFalscheGeige(true); // Echte Sirene / Alarm
+        const sig = document.getElementById('sig-r4');
+        if(sig) sig.style.animation = "alarm-blink 0.5s infinite";
     }
 }
 
+// 3. Die Sound-Maschinen
 function starteRauschen() {
     const bufferSize = 2 * audioCtx.sampleRate;
     const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
     const output = noiseBuffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) {
-        output[i] = Math.random() * 2 - 1;
-    }
+    for (let i = 0; i < bufferSize; i++) { output[i] = Math.random() * 2 - 1; }
 
-    const noise = audioCtx.createBufferSource();
-    noise.buffer = noiseBuffer;
-    noise.loop = true;
+    noiseNode = audioCtx.createBufferSource();
+    noiseNode.buffer = noiseBuffer;
+    noiseNode.loop = true;
 
     const filter = audioCtx.createBiquadFilter();
     filter.type = 'lowpass';
     filter.frequency.value = 1000;
 
-    const noiseGain = audioCtx.createGain();
-    
-    // DER EFFEKT: Erst laut (0.6), dann nach 3 Sek leise (0.05)
-    noiseGain.gain.setValueAtTime(0.6, audioCtx.currentTime); 
-    noiseGain.gain.exponentialRampToValueAtTime(0.05, audioCtx.currentTime + 3);
+    noiseGainNode = audioCtx.createGain();
+    noiseGainNode.gain.setValueAtTime(0.6, audioCtx.currentTime); 
+    noiseGainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 4);
 
-    noise.connect(filter);
-    filter.connect(noiseGain);
-    noiseGain.connect(audioCtx.destination);
-    noise.start();
+    noiseNode.connect(filter);
+    filter.connect(noiseGainNode);
+    noiseGainNode.connect(audioCtx.destination);
+    noiseNode.start();
 }
 
-function starteFalscheGeige(istAlarm = false) {
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    
+function starteFalscheGeige(istAlarm) {
     oscillator = audioCtx.createOscillator();
-    const gainNode = audioCtx.createGain();
+    const g = audioCtx.createGain();
     oscillator.type = 'sawtooth';
     oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
 
-    // Der Sireneneffekt
     const lfo = audioCtx.createOscillator();
-    lfo.frequency.value = 4; 
-    const lfoGain = audioCtx.createGain();
-    lfoGain.gain.value = 40;
-    lfo.connect(lfoGain);
-    lfoGain.connect(oscillator.frequency);
+    lfo.frequency.value = istAlarm ? 4 : 2; 
+    const lfoG = audioCtx.createGain();
+    lfoG.gain.value = istAlarm ? 60 : 30;
+    lfo.connect(lfoG);
+    lfoG.connect(oscillator.frequency);
 
-    oscillator.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
+    oscillator.connect(g);
+    g.connect(audioCtx.destination);
 
     if (istAlarm) {
-        // DAUERALARM für den Chat-Überlauf (bleibt laut auf 0.8)
-        gainNode.gain.setValueAtTime(0.8, audioCtx.currentTime);
+        g.gain.setValueAtTime(0.5, audioCtx.currentTime);
     } else {
-        // EFFEKT für Religion: Kurz laut, dann Fade-out auf 0.03
-        gainNode.gain.setValueAtTime(0.7, audioCtx.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.03, audioCtx.currentTime + 3);
+        g.gain.setValueAtTime(0.6, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 3);
     }
 
     lfo.start();
     oscillator.start();
 }
-function stoppeRauschen() { if(noiseNode) noiseNode.stop(); }
+
 function stoppeAlles() { 
-    if(oscillator) oscillator.stop(); 
-    if(noiseNode) noiseNode.stop(); 
+    if(oscillator) { try { oscillator.stop(); } catch(e){} oscillator = null; }
+    if(noiseNode) { try { noiseNode.stop(); } catch(e){} noiseNode = null; }
+    const sig = document.getElementById('sig-r4');
+    if(sig) sig.style.animation = "";
 }
 
-function spieleErlösung() {
-    // Ein warmer, tiefer Sinus-Ton für das Ende
-    const sinus = audioCtx.createOscillator();
-    sinus.type = 'sine';
-    sinus.frequency.value = 220; // Tiefer, beruhigender Ton
-    const gain = audioCtx.createGain();
-    sinus.connect(gain);
-    gain.connect(audioCtx.destination);
-    sinus.start();
+// 4. INTEGRATION (WICHTIG!)
+function showInfo(t, id) { 
+    tId = id; aktuellesThema = t; 
+    document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
+    if (geleseneThemen.has(id)) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
+    
+    spieleDramaturgie(id); // <--- ZUNGE REIN: Hier wird der Sound gestartet!
+    
+    updateNumColors(); 
+    document.getElementById('dashboard').style.display = 'none'; 
+    document.getElementById('page-skelett').style.display = 'flex'; 
+    updateUI(); 
+} 
+
+function nextPage() { 
+    if ((ebene === 2 || ebene === 3) && tId < 19) { 
+        tId++; aktuellesThema = themen[tId];
+        if (ebene === 2) {
+            geleseneThemen.add(tId);
+            spieleDramaturgie(tId); // <--- ZUNGE REIN: Auch beim Weiterklicken!
+        }
+        if (ebene === 3) document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${tId+1} bereit...</i>`;
+        updateUI(); updateNumColors();
+    } else if (ebene < 7 && ebene !== 2 && ebene !== 3) { ebene++; updateUI(); } 
 }
-    let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
-    themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
-
-    const grid = document.getElementById('main-grid');
-    themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; });
-    
-    const dots = document.getElementById('dot-holder');
-    for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
-
-    function adminUnlock() {
-        themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
-        userBackstage.isQualifiziert = true;
-        updateNumColors();
-        updateUI();
-        alert("ADMIN: Alle Barrieren entfernt.");
-    }
-
-    function showInfo(t, id) { 
-        tId = id; aktuellesThema = t; 
-        document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
-        if (geleseneThemen.has(id)) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
-        updateNumColors(); 
-        document.getElementById('dashboard').style.display = 'none'; 
-        document.getElementById('page-skelett').style.display = 'flex'; 
-        updateUI(); 
-    } 
-
-    function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
-    function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
-    function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
-
-    function updateUI() {
-        const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
-        
-        document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
-        document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
-        document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
-        document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
-        document.getElementById('main-text').style.display = (ebene < 3) ? 'block' : 'none';
-        document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
-        document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
-        document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
-        document.getElementById('btn-back').style.visibility = 'visible';
-        
-        document.getElementById('info-titel').innerText = aktuellesThema;
-        
-        // HIER WIRD DER TEXT AUS DEM ARRAY GELADEN
-        if (ebene === 2) {
-            document.getElementById('main-text').innerText = sektorTexte[tId];
-        }
-
-        const btnNext = document.getElementById('btn-next');
-        const sigGelb = document.getElementById('sig-r4');
-        const sigRot = document.getElementById('sig-l4');
-
-        if (ebene === 2) {
-            btnNext.style.visibility = (tId < 19) ? 'visible' : 'hidden';
-            sigGelb.classList.toggle('signal-aktiv', geleseneThemen.size === 20);
-        } else {
-            sigGelb.classList.remove('signal-aktiv');
-        }
-
-        if (ebene === 3) {
-            btnNext.style.visibility = (tId < 19) ? 'visible' : 'hidden';
-            let alleFertig = Object.values(interaktionsZaehler).every(val => val >= 20);
-            sigRot.classList.toggle('signal-aktiv', alleFertig);
-        } else {
-            sigRot.classList.remove('signal-aktiv');
-        }
-
-        aktiviereKandidatenLicht();
-        updateDots(); 
-        startRotation();
-    }
-
-    function aktiviereKandidatenLicht() {
-        const sigL1 = document.getElementById('sig-l1');
-        if (ebene === 4) {
-            sigL1.className = "oval-side ov-schwarz";
-            sigL1.onclick = null;
-        } 
-        else if (userBackstage.isQualifiziert && ebene < 5) { 
-            sigL1.className = "oval-side elite-aktiv"; 
-            sigL1.onclick = () => portalZuEbene5(); 
-        } 
-        else {
-            sigL1.className = "oval-side ov-schwarz";
-            sigL1.onclick = null;
-        }
-    }
-
-    function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
-    
-    function nextPage() { 
-        if ((ebene === 2 || ebene === 3) && tId < 19) { 
-            tId++; aktuellesThema = themen[tId];
-            if (ebene === 2) geleseneThemen.add(tId);
-            if (ebene === 3) document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${tId+1} bereit...</i>`;
-            updateUI(); updateNumColors();
-        } else if (ebene < 7 && ebene !== 2 && ebene !== 3) { ebene++; updateUI(); } 
-    }
 
     function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateNumColors(); }
     
