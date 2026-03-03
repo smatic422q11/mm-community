@@ -224,14 +224,21 @@
     }
 
     function showInfo(t, id) { 
-        tId = id; aktuellesThema = t; 
-        document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
-        if (geleseneThemen.has(id)) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
-        updateNumColors(); 
-        document.getElementById('dashboard').style.display = 'none'; 
-        document.getElementById('page-skelett').style.display = 'flex'; 
-        updateUI(); 
-    } 
+    tId = id; aktuellesThema = t; 
+    document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
+    
+    // AKTIVIERUNG DER LOGIK-KODES FÜR 8, 9, 10, 11
+    const sId = id + 1;
+    if (sektorLogik_8_11[sId]) {
+        sektorLogik_8_11[sId].aktion();
+    }
+
+    if (geleseneThemen.has(id)) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
+    updateNumColors(); 
+    document.getElementById('dashboard').style.display = 'none'; 
+    document.getElementById('page-skelett').style.display = 'flex'; 
+    updateUI(); 
+}
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
     function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
