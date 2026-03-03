@@ -118,22 +118,24 @@
             <div id="ebene4-title-red" class="ebene4-header-red">DER VIDEO-BEWEIS</div>
             <div class="tafel-layout">
                 <div class="buttons-links">
-                    <div class="oval-side ov-schwarz" id="sig-l1"></div>
-                    <div class="oval-side ov-grun" id="sig-l2"></div>
-                    <div class="oval-side ov-blau" id="sig-l3"></div>
-                    <div class="oval-side ov-rot" id="sig-l4" onclick="portalZuEbene4()"></div>
-                </div>
+    <div class="oval-side ov-schwarz" id="sig-l1"></div>
+    <div class="oval-side ov-grun" id="sig-l2"></div>
+    <div class="oval-side ov-blau" id="sig-l3"></div>
+    <div class="oval-side ov-rot" id="sig-l4" onclick="portalZuEbene4()"></div>
+    <span style="font-size: 0.5rem; color: #ff0000; font-weight: bold;">OFFENBAREN</span>
+</div>
                 <div class="info-section-ebene">
                     <div class="werbe-bild-bg" id="werbe-bg"></div>
                     <div id="counter-box"><span style="font-size:0.4rem; color:#fff; display:block;">STILLE MILLION</span><span class="counter-value">842.336</span></div>
                     <div style="z-index: 5; text-align: center; font-weight: bold; color: rgba(255,255,255,0.3); letter-spacing: 5px;">PLATZ FÜR WERBUNG</div>
                 </div>
                 <div class="buttons-rechts">
-                    <div class="oval-side ov-grun" id="sig-r1"></div>
-                    <div class="oval-side ov-blau" id="sig-r2"></div>
-                    <div class="oval-side ov-pink" id="sig-r3"></div>
-                    <div class="oval-side ov-gelb" id="sig-r4" onclick="portalZuEbene3()"></div>
-                </div>
+    <div class="oval-side ov-grun" id="sig-r1"></div>
+    <div class="oval-side ov-blau" id="sig-r2"></div>
+    <div class="oval-side ov-pink" id="sig-r3"></div>
+    <div class="oval-side ov-gelb" id="sig-r4" onclick="portalZuEbene3()"></div>
+    <span style="font-size: 0.5rem; color: #ffff00; font-weight: bold;">SCHREIBEN</span>
+</div>
             </div>
             <div id="lila-balken-container" style="display: none; width: 100%;">
                 <div class="lila-registrierung-leiste"><div class="registrierung-text">REGISTRIERUNG</div></div>
@@ -259,19 +261,14 @@
     const sigGelb = document.getElementById('sig-r4');
     const sigRot = document.getElementById('sig-l4');
 
-    // Barriere gelöst: Gelbes Signal (Ebene 3) ist in Ebene 2 immer aktiv
+  // Barriere gelöst: Beide Signale blinken sofort in Ebene 2
     if (ebene === 2) {
-        btnNext.style.visibility = 'hidden'; // Deaktiviert Sprung zur nächsten Box
-        sigGelb.classList.add('signal-aktiv'); 
+        btnNext.style.visibility = 'hidden'; 
+        sigGelb.classList.add('signal-aktiv'); // Einladung zum Schreiben
+        sigRot.classList.add('signal-aktiv');  // Einladung zum Offenbaren
     } else {
+        // In anderen Ebenen verhalten sie sich neutral oder nach Bedarf
         sigGelb.classList.remove('signal-aktiv');
-    }
-
-    // Barriere gelöst: Rotes Signal (Ebene 4) ist in Ebene 3 immer aktiv
-    if (ebene === 3) {
-        btnNext.style.visibility = 'hidden'; // Deaktiviert Sprung zur nächsten Box
-        sigRot.classList.add('signal-aktiv');
-    } else {
         sigRot.classList.remove('signal-aktiv');
     }
 
