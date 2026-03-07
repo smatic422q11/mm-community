@@ -1,61 +1,57 @@
-# Visionen der M&M Community
+# 🏛️ M&M-COMMUNITY: DAS KONSTRUKT
 
-Willkommen im Visionsraum der M&M Community! 
+## 🎯 VISION & ENDZIEL
+Aufbau einer starken demokratischen Opposition (20–30 %), Rückführung der Justizgewalt an die Bürger und Etablierung des Glaubens als moralische Instanz über dem Gesetz.
 
-## Zweck
+---
 
-Dies ist ein offener Raum für:
-- **Neue Ideen**: Teilen Sie innovative Konzepte und Zukunftsvisionen
-- **Strategische Planung**: Diskutieren Sie langfristige Ziele und Richtungen
-- **Kreative Exploration**: Experimentieren Sie mit neuen Ansätzen
-- **Community-Input**: Sammeln Sie Feedback zu Ihren Visionen
+## 🏗️ TECHNISCHE GRUNDSTRUKTUR (DIE 22 SÄULEN)
+Das System basiert auf 22 festen Datenbank-Ankern:
+1. RECHT AUF GEFÜHLSVORDERUNG
+2. WIE WERDE ICH MENSCH
+3. GLAUBE AN FRIEDE
+4. PROGRAMM FÜR BÜRGERLICHE RECHTE
+5. MORALISCHE PFLICHT UND VERANTWORTUNG
+6. MENSCHLICHKEIT WIEDERHERSTELLUNG
+7. KINDERSCHUTZ-PFLICHT-ELTERNRECHTE
+8. WAHRE RICHTUNG UND KUNST
+9. LGBTQ UND KIRCHE
+10. TREND UND TRADITION
+11. RELIGIONSBEKENNTNIS ODER SELBSTWAHL
+12. GESUNDHEITSWESEN UND VERHALTEN
+13. ARBEITWELT UND DU
+14. MOBBING AM ARBEITSPLATZ
+15. JUGENDSPRECHER
+16. RATGEBER FÜR PENSIONISTEN
+17. SOZIALGEFALLEN UND WIDERKEHR
+18. NACHBARSCHAFT UND GEMEINSCHAFT
+19. MENSCH UND TECHNIK
+20. DIE BRÜCKE
+21. KAPITAL UND VERWALTUNG
+22. DAS KOLLEKTIV
 
-## Wie Sie eine Vision teilen
+---
 
-1. **Erstellen Sie ein neues Dokument** im `visionen/` Verzeichnis
-2. **Verwenden Sie ein aussagekräftiges Format**:
-   - Titel der Vision
-   - Beschreibung und Ziele
-   - Potenzielle Auswirkungen
-   - Nächste Schritte (optional)
-3. **Öffnen Sie einen Pull Request** oder ein Issue zur Diskussion
-4. **Engagieren Sie sich** in der Community-Diskussion
+## 💬 DEBATTEN-LOGIK: DAS 8ER-SLOT-SYSTEM
+- **Kapazität:** Exakt 8 User pro Video-Raum (Die Geschworenen).
+- **Auto-Scaling:** Bei 8/8 Belegung wird sofort ein neuer Slot instanziiert.
+- **Backfill:** Sobald ein User den Slot verlässt, wird der Platz für den nächsten User in der Queue freigegeben.
+- **Tech-Anforderung:** WebRTC/WebSockets für Echtzeit-Kommunikation.
 
-## Beispielstruktur für eine Vision
+---
 
-```markdown
-# Vision: [Titel]
+## 🗳️ DAS DIGITALE PARLAMENT (ENDZIEL)
+- **Verifizierung:** One-User-One-Vote (ID/SMS Validierung).
+- **Gesetzes-Tracker:** Interface zur moralischen Bewertung und Korrektur bestehender Gesetze.
+- **Opposition-Meter:** Live-Anzeige der kollektiven Stärke (Ziel: 20-30%).
 
-## Überblick
-Kurze Zusammenfassung der Vision
+---
 
-## Motivation
-Warum ist diese Vision wichtig?
+## 💰 ÖKONOMIE (DAS BRÖTCHEN-SYSTEM)
+- **Revenue Sharing:** Automatisierte Auszahlung von Werbeeinnahmen an aktive User.
+- **Transparenz:** Säule 21 (Kapitalverwaltung) ist als Open Ledger für alle Mitglieder einsehbar.
 
-## Beschreibung
-Detaillierte Beschreibung der Idee
+---
 
-## Ziele
-- Ziel 1
-- Ziel 2
-- Ziel 3
-
-## Potenzielle Auswirkungen
-Wie könnte dies die Community beeinflussen?
-
-## Nächste Schritte
-Vorgeschlagene Aktionen zur Umsetzung
-```
-
-## Vorhandene Visionen
-
-*Aktuell gibt es keine eingetragenen Visionen. Seien Sie der Erste, der eine Vision teilt!*
-
-## Richtlinien
-
-- Seien Sie konstruktiv und zukunftsorientiert
-- Respektieren Sie unterschiedliche Perspektiven
-- Fokussieren Sie sich auf Möglichkeiten, nicht auf Einschränkungen
-- Ermutigen Sie Dialog und Zusammenarbeit
-
-Lesen Sie auch unseren [Code of Conduct](../CODE_OF_CONDUCT.md) und die [Beitragsrichtlinien](../CONTRIBUTING.md).
+## 📈 SKALIERUNG: DIE STILLE MILLION
+Das System operiert im "Silent Mode", bis 1.000.000 verifizierte Nutzer erreicht sind. Erst dann wird die Funktion zur Wahl der Vorsitzenden freigeschaltet.
