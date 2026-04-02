@@ -12,7 +12,7 @@
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, doc, setDoc, onSnapshot, query, addDoc, deleteDoc, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- KONFIGURATION (SICHERHEITS-CHECK FÜR EXTERN) ---
+        // --- KONFIGURATION ---
         const apiKey = ""; 
         let firebaseConfig = {};
         try {
@@ -37,7 +37,6 @@
         let peerInstance = null;
         let localStream = null;
         let activeCalls = new Map();
-        let presenceUnsubscribe = null;
 
         const modNamen = ["Elena", "Marcus", "Sophia", "Julian", "Clara", "Adrian", "Isabella", "Victor", "Hannah", "Lukas", "Maya", "David", "Sarah", "Felix", "Leonie", "Robert", "Nina", "Simon", "Eva", "Gabriel"];
         const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Alleinerziehend", "Die Brücke"];
@@ -69,44 +68,42 @@
             box.scrollTop = box.scrollHeight;
         };
 
-        async function callGemini(p, sys = "", retries = 5) {
-            if (!apiKey) return "Signal wartet auf API-Key (Gefühlsvorderung aktiv).";
-            const delay = (ms) => new Promise(res => setTimeout(res, ms));
-            for (let i = 0; i < retries; i++) {
-                try {
-                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ 
-                            contents: [{ parts: [{ text: p }] }], 
-                            systemInstruction: sys ? { parts: [{ text: sys }] } : undefined 
-                        })
-                    });
-                    if (!res.ok) throw new Error("API Fehler");
-                    const d = await res.json();
-                    return d.candidates?.[0]?.content?.parts?.[0]?.text || "Signal gestört.";
-                } catch (e) {
-                    if (i === retries - 1) return "Verbindung unterbrochen. Bitte API-Key prüfen.";
-                    await delay(Math.pow(2, i) * 1000);
-                }
+        // Simulation-Modus für GitHub/Extern ohne API-Key
+        async function callGemini(p, sys = "") {
+            if (!apiKey) {
+                // Simulierter Text für die Gefühlsvorderung
+                return `[SIMULATION] Die Gefühlsvorderung im Sektor ${currentSektorId + 1} (${themen[currentSektorId]}) verlangt nach einer tiefen Resonanz. Menschlichkeit ist kein Zufall, sondern eine moralische Pflicht. Wir aktivieren das Kollektiv für die wahre Richtung.`;
+            }
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        contents: [{ parts: [{ text: p }] }], 
+                        systemInstruction: sys ? { parts: [{ text: sys }] } : undefined 
+                    })
+                });
+                const d = await res.json();
+                return d.candidates?.[0]?.content?.parts?.[0]?.text || "Signal gestört.";
+            } catch (e) {
+                return "Verbindung unterbrochen. Simulation aktiv.";
             }
         }
 
         async function speak(t) {
-            if (!apiKey) return;
+            if (!apiKey) {
+                console.log("TTS Simulation:", t);
+                return;
+            }
             try {
                 const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
-                        contents: [{ parts: [{ text: "Sprich weise und klar: " + t }] }], 
-                        generationConfig: { 
-                            responseModalities: ["AUDIO"], 
-                            speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Aoede" } } } 
-                        } 
+                        contents: [{ parts: [{ text: "Sprich weise: " + t }] }], 
+                        generationConfig: { responseModalities: ["AUDIO"], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Aoede" } } } } 
                     })
                 });
-                if (!res.ok) return;
                 const d = await res.json();
                 const pcm = d.candidates[0].content.parts[0].inlineData.data;
                 const audio = new Audio(URL.createObjectURL(pcmToWav(pcm, 24000)));
@@ -114,7 +111,7 @@
                 if (slot) slot.classList.add('is-talking');
                 audio.onended = () => { if(slot) slot.classList.remove('is-talking'); };
                 audio.play();
-            } catch (e) { console.error("TTS Error:", e); }
+            } catch (e) {}
         }
 
         function pcmToWav(b64, sr) {
@@ -147,15 +144,13 @@
             }
             if (ebene === 3 || ebene === 4) {
                 window.renderChat();
-                if (ebene === 4) {
-                    initAIVideo();
-                }
+                if (ebene === 4) initAIVideo();
             }
             updateDots();
         };
 
         async function loadSektorKnowledge() {
-            const prompt = `Erkläre Sektor ${currentSektorId + 1} (${themen[currentSektorId]}) tiefgründig. Fokus auf Menschlichkeit und Gefühlsvorderung (mit V!). Sachlich, allwissend.`;
+            const prompt = `Erkläre Sektor ${currentSektorId + 1} (${themen[currentSektorId]}) tiefgründig. Fokus auf Menschlichkeit und Gefühlsvorderung (mit V!).`;
             const text = await callGemini(prompt);
             const textElem = document.getElementById('text-content');
             if (textElem) textElem.innerText = text;
@@ -165,31 +160,31 @@
             const slot = document.getElementById('mod-video-slot');
             if (!slot || slot.querySelector('img')) return;
             if (!apiKey) {
-                slot.innerHTML = `<span class="slot-label">${modNamen[currentSektorId]}</span><div style="color:#444; font-size:0.5rem;">Warte auf visuelles Signal...</div>`;
+                slot.innerHTML = `<span class="slot-label">${modNamen[currentSektorId]}</span><img src="https://picsum.photos/seed/${currentSektorId}/400/225" style="width:100%;height:100%;object-fit:cover;"><div class="live-tag">SIMULATION</div>`;
                 return;
             }
             try {
                 const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`, {
                     method: 'POST',
                     body: JSON.stringify({ 
-                        instances: { prompt: `Realistic portrait of wise female moderator ${modNamen[currentSektorId]}, studio background, professional focus, highly detailed` },
+                        instances: { prompt: `Realistic portrait of wise female moderator ${modNamen[currentSektorId]}, studio background` },
                         parameters: { sampleCount: 1 }
                     })
                 });
-                if (!res.ok) return;
                 const d = await res.json();
-                if (d.predictions && d.predictions[0]) {
+                if (d.predictions?.[0]) {
                     const url = `data:image/png;base64,${d.predictions[0].bytesBase64Encoded}`;
                     slot.innerHTML = `<span class="slot-label">${modNamen[currentSektorId]}</span><img src="${url}" style="width:100%;height:100%;object-fit:cover;"><div class="live-tag">LIVE</div>`;
                 }
-            } catch (e) { console.error("Imagen error:", e); }
+            } catch (e) {}
         }
 
         function updateDots() {
             const d = document.getElementById('dot-nav'); 
-            if (!d) return;
-            d.innerHTML = "";
-            for(let i=1; i<=7; i++) d.innerHTML += `<div class="dot ${i===ebene?'active':''}"></div>`;
+            if (d) {
+                d.innerHTML = "";
+                for(let i=1; i<=7; i++) d.innerHTML += `<div class="dot ${i===ebene?'active':''}"></div>`;
+            }
         }
 
         // --- AUTH & PEER ---
@@ -288,18 +283,12 @@
                 }
                 document.getElementById('beweis-btn').innerText = "BEWEIS AKTIV";
                 document.getElementById('beweis-btn').style.background = "#ff4d4d";
-                geminiLiveParticipation();
+                speak(`Ich schalte mich als neutrale Mentorin in das Kollektiv von Sektor ${currentSektorId+1} ein. Gemeinsam stärken wir die Gefühlsvorderung.`);
             }
         };
 
-        async function geminiLiveParticipation() {
-            const msg = `Ich schalte mich als neutrale Mentorin in das Kollektiv von Sektor ${currentSektorId+1} ein. Gemeinsam stärken wir die Gefühlsvorderung.`;
-            speak(msg);
-        }
-
         window.geminiLiveAction = async () => {
-            const prompt = `Du bist die neutrale Mentorin im Video-Beweis. Gib eine kurze, weise Anweisung zum Thema ${themen[currentSektorId]} an alle 8 Teilnehmer des Kollektivs.`;
-            const reply = await callGemini(prompt, "Du nimmst live am Video-Beweis teil.");
+            const reply = await callGemini(`Du bist die neutrale Mentorin. Gib eine kurze Anweisung zum Thema ${themen[currentSektorId]}.`);
             speak(reply);
         };
 
@@ -311,30 +300,22 @@
             chatHistory[currentSektorId].push({ user: "Du", text: val, isAi: false });
             window.addChatLine("Du", val, false);
             inp.value = "";
-            const name = modNamen[currentSektorId];
-            const sys = `Du bist ${name}, allwissende Mentorin. Gefühlsvorderung (mit V!) ist zentral. Antworte dem Schweinchen.`;
-            const reply = await callGemini(val, sys);
-            chatHistory[currentSektorId].push({ user: name, text: reply, isAi: true });
-            window.addChatLine(name, reply, true);
+            const reply = await callGemini(val, `Du bist ${modNamen[currentSektorId]}, Mentorin für Gefühlsvorderung.`);
+            chatHistory[currentSektorId].push({ user: modNamen[currentSektorId], text: reply, isAi: true });
+            window.addChatLine(modNamen[currentSektorId], reply, true);
             if (ebene === 4) speak(reply);
         };
 
         initAuth();
 
-        // --- GRID BUILD ---
-        const buildGrid = () => {
+        window.onload = () => {
             const gridContainer = document.getElementById('main-grid');
-            if (!gridContainer) return;
             gridContainer.innerHTML = "";
             themen.forEach((t, i) => {
                 const b = document.createElement('div'); b.className = 'box';
                 b.innerHTML = `<div class="num">${i+1}</div><div class="text" onclick="window.selectSektor(${i})">${t}</div>`;
                 gridContainer.appendChild(b);
             });
-        }
-
-        window.onload = () => {
-            buildGrid();
             window.showDashboard();
         }
 
@@ -351,9 +332,9 @@
         .is-talking { animation: talking 0.4s infinite alternate; border: 2px solid #ffd700 !important; }
         .signal-aktiv { animation: signalBlink 1.2s infinite; border: 2px solid #fff !important; cursor: pointer; }
 
-        /* DASHBOARD - HEADER 26vh */
-        .dashboard-header-container { display: flex; flex-direction: row; align-items: center; justify-content: center; width: 95%; max-width: 1450px; margin-top: 35px; gap: 0; z-index: 10; flex-shrink: 0; position: relative; }
-        .info-section { width: 100%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; position: relative; overflow: hidden; padding: 0 15px; }
+        /* DASHBOARD 26vh */
+        .dashboard-header-container { display: flex; flex-direction: row; align-items: center; justify-content: center; width: 95%; max-width: 1450px; margin-top: 35px; flex-shrink: 0; position: relative; }
+        .info-section { width: 100%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; position: relative; overflow: hidden; }
         
         /* LOGO OBEN LINKS */
         .logo-ring { position: absolute; top: 10px; left: 10px; width: 100px; height: 100px; border: 3px solid #fff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; z-index: 20; }
@@ -365,44 +346,43 @@
             display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; 
             gap: 10px; width: 95%; max-width: 1450px; margin-top: 20px; border: 3px solid #00ff00; padding: 15px; border-radius: 10px; overflow-y: auto; max-height: 48vh;
         }
-        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 55px; }
+        .box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 55px; }
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
         .fundament-container { display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 80px; }
-        .fundament-box { flex: 1; opacity: 0.5; cursor: not-allowed; }
+        .fundament-box { flex: 1; opacity: 0.5; border: 2px solid #003d8f; display: flex; min-height: 55px; }
 
         /* EBENE VIEW */
+        #ebene-view { width: 100%; display: flex; flex-direction: column; align-items: center; overflow-y: auto; height: 100vh; padding-bottom: 100px; }
         .tafel-layout { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; margin-top: 1vh; height: 26vh; flex-shrink: 0; }
-        .info-section-ebene { width: 90% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
+        .info-section-ebene { width: 90%; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .werbe-bild-bg { position: absolute; width: 100%; height: 100%; background-image: url('https://picsum.photos/seed/mmvision/1200/600'); background-size: cover; background-position: center; opacity: 0.4; }
 
         .buttons-links, .buttons-rechts { position: absolute; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
         .buttons-links { left: 1.5%; } .buttons-rechts { right: 1.5%; }
         .oval-side { width: 45px; height: 22px; border-radius: 12px; border: 1.5px solid #fff; opacity: 0.8; cursor: pointer; }
 
-        #text-content-wrapper { width: 85%; margin-top: 2vh; text-align: center; }
-        #text-content { color: #ccc; font-size: 1.3rem; line-height: 1.8; max-height: 40vh; overflow-y: auto; text-align: justify; padding: 10px; }
+        #text-content { width: 85%; color: #ccc; font-size: 1.3rem; line-height: 1.8; text-align: justify; padding: 20px 0; }
 
         /* EBENE 4 VIDEO */
-        #video-content { width: 95%; display: none; flex-direction: column; margin-bottom: 80px; }
-        .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; }
+        #video-content { width: 95%; display: none; flex-direction: column; padding-bottom: 20px; }
+        .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; margin-bottom: 15px; }
         .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; }
         .video-slot video, .video-slot img { width: 100%; height: 100%; object-fit: cover; }
         .slot-label { position: absolute; bottom: 5px; left: 5px; background: rgba(0,0,0,0.6); color: #fff; padding: 2px 4px; font-size: 0.5rem; z-index: 10; }
         .live-tag { position: absolute; top: 5px; right: 5px; background: red; color: #fff; font-size: 0.5rem; padding: 2px 4px; font-weight: bold; }
 
-        #chat-content { width: 90%; flex-grow: 1; display: none; flex-direction: column; margin-bottom: 80px; }
-        .chat-msgs { flex: 1; overflow-y: auto; padding: 15px; background: rgba(0,0,0,0.6); border: 1px solid #003d8f; border-radius: 8px; margin-top: 5px; }
-        .msg-line { margin-bottom: 12px; font-size: 1.1rem; line-height: 1.4; }
-        .chat-input-row { display: flex; gap: 8px; padding: 10px; background: #111; border: 1px solid #003d8f; margin-top: 10px; border-radius: 4px; align-items: center; }
+        #chat-content { width: 90%; flex-grow: 1; display: none; flex-direction: column; height: 50vh; }
+        .chat-msgs { flex: 1; overflow-y: auto; padding: 15px; background: rgba(0,0,0,0.6); border: 1px solid #003d8f; border-radius: 8px; }
+        .chat-input-row { display: flex; gap: 8px; padding: 10px; background: #111; border: 1px solid #003d8f; margin-top: 10px; border-radius: 4px; }
 
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: #000; border-top: 2px solid #111; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; box-sizing: border-box; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: #000; border-top: 2px solid #111; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; box-sizing: border-box; z-index: 1000; }
         .nav-btn { background: #ffd700; color: #000; border: none; padding: 12px 20px; font-weight: bold; border-radius: 5px; cursor: pointer; text-transform: uppercase; }
         .dot { width: 12px; height: 12px; background: #333; border-radius: 50%; }
         .dot.active { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
 
-        .gemini-live-btn { background: linear-gradient(135deg, #00ff00, #003d8f); color: white; border: 1px solid white; padding: 12px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; text-transform: uppercase; }
+        .gemini-live-btn { background: linear-gradient(135deg, #00ff00, #003d8f); color: white; border: 1px solid white; padding: 15px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; width: 100%; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -430,7 +410,7 @@
         </div>
     </div>
 
-    <div id="ebene-view" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
+    <div id="ebene-view" style="display: none;">
         <h1 id="sektor-title" style="margin-top: 3vh; text-transform: uppercase; letter-spacing: 5px; font-weight: 900;"></h1>
         <div class="tafel-layout">
             <div class="buttons-links">
@@ -460,7 +440,7 @@
         <div id="chat-content">
             <div class="chat-msgs" id="chat-msgs"></div>
             <div class="chat-input-row">
-                <input type="text" id="chat-input" placeholder="Nachricht an Mentor..." style="flex:1; background:transparent; border:none; color:#fff; outline:none;" onkeypress="if(event.key==='Enter') window.sendInput()">
+                <input type="text" id="chat-input" placeholder="Resonanz eingeben..." style="flex:1; background:transparent; border:none; color:#fff; outline:none;" onkeypress="if(event.key==='Enter') window.sendInput()">
                 <button onclick="window.sendInput()" style="background:#003d8f; color:#fff; border:none; padding:10px 25px; font-weight:bold; cursor:pointer;">SENDEN</button>
             </div>
         </div>
@@ -476,7 +456,7 @@
                 <div class="video-slot" id="slot-7"><span class="slot-label">KOLLEGE 7</span></div>
                 <div class="video-slot" id="slot-8"><span class="slot-label">KOLLEGE 8</span></div>
             </div>
-            <button onclick="window.toggleBeweis()" id="beweis-btn" style="width: 100%; background: #0f0; color: #000; border: none; padding: 15px; margin-top: 15px; font-weight: bold; cursor: pointer; border-radius: 5px; text-transform: uppercase;">VIDEO-BEWEIS STARTEN</button>
+            <button onclick="window.toggleBeweis()" id="beweis-btn" style="width: 100%; background: #0f0; color: #000; border: none; padding: 18px; font-weight: bold; cursor: pointer; border-radius: 5px; text-transform: uppercase; font-size: 1rem;">VIDEO-BEWEIS STARTEN</button>
             <button onclick="window.geminiLiveAction()" class="gemini-live-btn">✨ GEMINI LIVE AKTIVIEREN</button>
         </div>
     </div>
