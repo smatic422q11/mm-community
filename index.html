@@ -12,17 +12,16 @@
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, doc, setDoc, onSnapshot, query, addDoc, deleteDoc, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- KONFIGURATION (SICHERHEITS-CHECK FÜR GITHUB) ---
+        // --- KONFIGURATION (SICHERHEITS-CHECK FÜR EXTERN) ---
         const apiKey = ""; 
         let firebaseConfig = {};
         try {
             firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
         } catch (e) {
-            console.warn("Firebase Config nicht gefunden, nutze Demo-Modus.");
+            console.warn("Firebase Config nicht gefunden.");
         }
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'mm-community-original';
         
-        // Initialisierung nur wenn Config da ist
         let app, auth, db;
         if (firebaseConfig.apiKey) {
             app = initializeApp(firebaseConfig);
@@ -71,6 +70,7 @@
         };
 
         async function callGemini(p, sys = "", retries = 5) {
+            if (!apiKey) return "Signal wartet auf API-Key (Gefühlsvorderung aktiv).";
             const delay = (ms) => new Promise(res => setTimeout(res, ms));
             for (let i = 0; i < retries; i++) {
                 try {
@@ -86,19 +86,20 @@
                     const d = await res.json();
                     return d.candidates?.[0]?.content?.parts?.[0]?.text || "Signal gestört.";
                 } catch (e) {
-                    if (i === retries - 1) return "Verbindung unterbrochen.";
+                    if (i === retries - 1) return "Verbindung unterbrochen. Bitte API-Key prüfen.";
                     await delay(Math.pow(2, i) * 1000);
                 }
             }
         }
 
         async function speak(t) {
+            if (!apiKey) return;
             try {
                 const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
-                        contents: [{ parts: [{ text: "Sprich sachlich und mitfühlend: " + t }] }], 
+                        contents: [{ parts: [{ text: "Sprich weise und klar: " + t }] }], 
                         generationConfig: { 
                             responseModalities: ["AUDIO"], 
                             speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Aoede" } } } 
@@ -163,6 +164,10 @@
         async function initAIVideo() {
             const slot = document.getElementById('mod-video-slot');
             if (!slot || slot.querySelector('img')) return;
+            if (!apiKey) {
+                slot.innerHTML = `<span class="slot-label">${modNamen[currentSektorId]}</span><div style="color:#444; font-size:0.5rem;">Warte auf visuelles Signal...</div>`;
+                return;
+            }
             try {
                 const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`, {
                     method: 'POST',
@@ -316,14 +321,14 @@
 
         initAuth();
 
-        // --- GRID BUILD (ERFOLGT IMMER, AUCH OHNE FIREBASE) ---
+        // --- GRID BUILD ---
         const buildGrid = () => {
             const gridContainer = document.getElementById('main-grid');
             if (!gridContainer) return;
             gridContainer.innerHTML = "";
             themen.forEach((t, i) => {
                 const b = document.createElement('div'); b.className = 'box';
-                b.innerHTML = `<div class="num">${i+1}</div><div class="text" onclick="selectSektor(${i})">${t}</div>`;
+                b.innerHTML = `<div class="num">${i+1}</div><div class="text" onclick="window.selectSektor(${i})">${t}</div>`;
                 gridContainer.appendChild(b);
             });
         }
@@ -350,6 +355,7 @@
         .dashboard-header-container { display: flex; flex-direction: row; align-items: center; justify-content: center; width: 95%; max-width: 1450px; margin-top: 35px; gap: 0; z-index: 10; flex-shrink: 0; position: relative; }
         .info-section { width: 100%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; position: relative; overflow: hidden; padding: 0 15px; }
         
+        /* LOGO OBEN LINKS */
         .logo-ring { position: absolute; top: 10px; left: 10px; width: 100px; height: 100px; border: 3px solid #fff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; z-index: 20; }
         .logo-mm { font-size: 1.8rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.5rem; letter-spacing: 1px; text-transform: uppercase; font-weight: bold; }
@@ -378,6 +384,7 @@
         #text-content-wrapper { width: 85%; margin-top: 2vh; text-align: center; }
         #text-content { color: #ccc; font-size: 1.3rem; line-height: 1.8; max-height: 40vh; overflow-y: auto; text-align: justify; padding: 10px; }
 
+        /* EBENE 4 VIDEO */
         #video-content { width: 95%; display: none; flex-direction: column; margin-bottom: 80px; }
         .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; }
         .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; }
@@ -395,7 +402,7 @@
         .dot { width: 12px; height: 12px; background: #333; border-radius: 50%; }
         .dot.active { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
 
-        .gemini-live-btn { background: linear-gradient(135deg, #00ff00, #003d8f); color: white; border: 1px solid white; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; width: 100%; }
+        .gemini-live-btn { background: linear-gradient(135deg, #00ff00, #003d8f); color: white; border: 1px solid white; padding: 12px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -469,7 +476,7 @@
                 <div class="video-slot" id="slot-7"><span class="slot-label">KOLLEGE 7</span></div>
                 <div class="video-slot" id="slot-8"><span class="slot-label">KOLLEGE 8</span></div>
             </div>
-            <button onclick="window.toggleBeweis()" id="beweis-btn" style="width: 100%; background: #0f0; color: #000; border: none; padding: 15px; margin-top: 15px; font-weight: bold; cursor: pointer; border-radius: 5px;">VIDEO-BEWEIS STARTEN</button>
+            <button onclick="window.toggleBeweis()" id="beweis-btn" style="width: 100%; background: #0f0; color: #000; border: none; padding: 15px; margin-top: 15px; font-weight: bold; cursor: pointer; border-radius: 5px; text-transform: uppercase;">VIDEO-BEWEIS STARTEN</button>
             <button onclick="window.geminiLiveAction()" class="gemini-live-btn">✨ GEMINI LIVE AKTIVIEREN</button>
         </div>
     </div>
