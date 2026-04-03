@@ -122,13 +122,16 @@
 </head>
 <body>
 
+    <!-- DER GLOBALE SCHRIFTZUG (Bleibt auf Ebene 2, 3 etc.) -->
     <div id="top-label" class="global-community-label">Von M&M Community</div>
 
+    <!-- DASHBOARD -->
     <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="dashboard-header">
             <div class="logo-ring" ondblclick="adminUnlock()"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
         </div>
         <div class="info-section">
+            <!-- SCHRIFTZUG HIER NUR AUF DEM DASHBOARD IN DER TAFEL -->
             <div class="inner-community-label">Von M&M Community</div>
             <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
             <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
@@ -143,6 +146,7 @@
         </div>
     </div>
 
+    <!-- PAGE SKELETT (EBENE 2, 3, 4, 5) -->
     <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
         <div class="top-container">
             <h1 id="info-titel" class="page-title-white"></h1>
@@ -274,7 +278,7 @@
     document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
     document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
     document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
-    document.getElementById('lila-balken-container').style.display = (userBackstage.isQualifiziert && ebene > 1) ? 'block' : 'none';
+    document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
     document.getElementById('main-text').style.display = (ebene < 3) ? 'block' : 'none';
     document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
     document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
@@ -312,7 +316,11 @@
 }
     function aktiviereKandidatenLicht() {
         const sigL1 = document.getElementById('sig-l1');
-        if (userBackstage.isQualifiziert && ebene > 1 && ebene !== 4) { 
+        if (ebene === 4) {
+            sigL1.className = "oval-side ov-schwarz";
+            sigL1.onclick = null;
+        } 
+        else if (userBackstage.isQualifiziert && ebene < 5) { 
             sigL1.className = "oval-side elite-aktiv"; 
             sigL1.onclick = () => portalZuEbene5(); 
         } 
@@ -394,9 +402,7 @@ async function starteVideoKonferenz() {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
         meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover;"></video>`;
         document.getElementById('user-video').srcObject = stream;
-    } catch (err) {
-        console.error("Kamera-Zugriff fehlgeschlagen:", err);
-    }
+    } catch (err) {}
 }
 
 function verbindeMitAllen() {
@@ -412,3 +418,4 @@ window.onload = () => updateUI();
 </script>
 </body>
 </html>
+
