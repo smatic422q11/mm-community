@@ -17,11 +17,11 @@
         @keyframes signalBlink { 0% { box-shadow: 0 0 5px #fff; opacity: 0.8; } 50% { box-shadow: 0 0 25px #fff, 0 0 35px #003d8f; opacity: 1; transform: scale(1.05); } 100% { box-shadow: 0 0 5px #fff; opacity: 0.8; } }
         @keyframes pulsieren { 0% { opacity: 0.5; } 50% { opacity: 1; text-shadow: 0 0 10px #ffd700; } 100% { opacity: 0.5; } }
 
-        .elite-aktiv { background-color: #ffd700 !important; box-shadow: 0 0 10px #ffd700; border: 2px solid #fff !important; cursor: pointer; }
+        .elite-aktiv { background-color: #ffd700 !important; box-shadow: 0 0 20px #ffd700; border: 2px solid #fff !important; cursor: pointer; animation: pulsieren 2s infinite; }
         .signal-aktiv { animation: signalBlink 1.0s infinite ease-in-out !important; border: 2px solid #fff !important; cursor: pointer; }
 
         .lila-registrierung-leiste { width: 100%; height: 80px; background: #8b00ff; border-top: 2px solid #fff; border-bottom: 2px solid #fff; display: flex; align-items: center; justify-content: center; margin-top: 20px; box-shadow: 0 0 20px #8b00ff; }
-        .registrierung-text { color: #fff; font-size: 2.2rem; font-weight: 900; letter-spacing: 15px; text-transform: uppercase; animation: pulsieren 2s infinite; }
+        .registrierung-text { color: #fff; font-size: 2.2rem; font-weight: 900; letter-spacing: 15px; text-transform: uppercase; }
 
         .dashboard-header { width: 100%; position: absolute; top: 3%; display: flex; justify-content: flex-start; padding: 0 2%; box-sizing: border-box; z-index: 20; }
         .logo-ring { width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; }
@@ -59,13 +59,14 @@
         .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; }
         .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; position: relative; overflow: hidden; }
         .video-slot video { width: 100%; height: 100%; object-fit: cover; }
-        .slot-1-user { border-color: #00ff00; color: #00ff00; box-shadow: 0 0 15px rgba(0, 255, 0, 0.2); }
+        .slot-1-user { border-color: #00ff00; color: #00ff00; }
 
         #counter-box { position: absolute; right: 0; top: 0; width: 100px; padding: 5px; border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f; background: #000; text-align: center; display: none; z-index: 100; }
         .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
         .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
         .ebene4-header-red { width: 90%; background: #ff0000; color: #fff; padding: 10px 0; text-align: center; font-weight: 900; font-size: 1.5rem; border-radius: 5px 5px 0 0; display: none; }
 
+        /* NUM COLORS */
         .num-neutral { background-color: #003d8f !important; }
         .num-gelesen { background-color: #ffd700 !important; color: #000 !important; }
         .num-offen { background-color: #ff4d4d !important; }
@@ -87,7 +88,7 @@
             <div class="inner-community-label">Von M&M Community</div>
             <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
             <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
-            <p id="dashboard-million-text" style="max-width: 85%; color: #ccc; font-size: 1.1rem; margin: 10px 0 0 0; text-align: center;">
+            <p style="max-width: 85%; color: #ccc; font-size: 1.1rem; margin: 10px 0 0 0; text-align: center;">
                 Die M&M-Community ist das Fundament für alle. <strong>Die Wahl erfolgt nach Erreichen der stillen Million.</strong>
             </p>
         </div>
@@ -149,7 +150,7 @@
             <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; margin-top: 15px; font-weight: bold; cursor: pointer; border-radius: 5px;">JETZT VIDEO-BEWEIS AKTIVIEREN</button>
         </div> 
 
-        <div id="ebene5-bereich"><div class="freie-zone-text">ADMIN ZONE</div></div>
+        <div id="ebene5-bereich" style="display:none; padding:20px; text-align:center;"><h2 class="registrierung-text">ADMIN ZONE AKTIV</h2></div>
     </div>
 
     <div class="bottom-nav">
@@ -159,39 +160,16 @@
     </div>
 
 <script>
-    // SPEICHER-LOGIK
+    const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Alleinerziehend", "Die Brücke"];
+    
     let aktuelleMillion = parseInt(localStorage.getItem('m_m_million')) || 842336;
     let geleseneThemen = new Set(JSON.parse(localStorage.getItem('m_m_gelesen') || "[]"));
     let interaktionsZaehler = JSON.parse(localStorage.getItem('m_m_interaktion') || "{}");
     let userBackstage = { isQualifiziert: localStorage.getItem('m_m_admin') === 'true' };
 
-    const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Alleinerziehend", "Die Brücke"];
-    const sektorTexte = [
-        "Die digitale Welt hat eine Schicht aus Taubheit über das menschliche Erleben gelegt... [Sektor 1 Text]",
-        "Die Verbreitung der Menschlichkeit markiert den entscheidenden Übergang... [Sektor 2 Text]",
-        "Wahrer innerer Friede ist kein passiver Zustand... [Sektor 3 Text]",
-        "Die politische Befreiung des Individuums... [Sektor 4 Text]",
-        "Wahre Verantwortung ist keine Last... [Sektor 5 Text]",
-        "Die Wiederherstellung der Menschlichkeit... [Sektor 6 Text]",
-        "Wahrer Kinderschutz findet seine Wurzeln... [Sektor 7 Text]",
-        "Wahre Kunst ist niemals nur gefällige Dekoration... [Sektor 8 Text]",
-        "In diesem Sektor vollziehen wir die Heilung... [Sektor 9 Text]",
-        "Trend und Tradition sind die unsichtbaren Waffen... [Sektor 10 Text]",
-        "In diesem Sektor laden wir die Seele ein... [Sektor 11 Text]",
-        "In diesem Sektor vollziehen wir den radikalen Bruch... [Sektor 12 Text]",
-        "In diesem Sektor sprengen wir das Modell... [Sektor 13 Text]",
-        "Mobbing ist kein privater Konflikt... [Sektor 14 Text]",
-        "In diesem Sektor geben wir der Zukunft ein Megafon... [Sektor 15 Text]",
-        "In diesem Sektor beenden wir die Schande... [Sektor 16 Text]",
-        "In diesem Sektor zertrümmern wir die Anonymität... [Sektor 17 Text]",
-        "In diesem Sektor entschlüsseln wir das Gesetz... [Sektor 18 Text]",
-        "In diesem Sektor korrigieren wir eine Ungerechtigkeit... [Sektor 19 Text]",
-        "In diesem Sektor fließen alle Ströme zusammen... [Sektor 20 Text]"
-    ];
-
     let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, bildIndex = 0;
 
-    // GRID GENERIEREN
+    // GRID INITIALISIEREN
     const grid = document.getElementById('main-grid');
     themen.forEach((t, i) => { 
         if(interaktionsZaehler[i] === undefined) interaktionsZaehler[i] = 0;
@@ -201,16 +179,13 @@
     const dots = document.getElementById('dot-holder');
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot"></div>`;
 
-    // LIVE MILLION
     function updateStilleMillion() {
-        aktuelleMillion += Math.floor(Math.random() * 20) + 2;
-        const els = document.querySelectorAll('.counter-value');
-        els.forEach(el => el.innerText = aktuelleMillion.toLocaleString('de-DE'));
+        aktuelleMillion += Math.floor(Math.random() * 15) + 1;
+        document.querySelectorAll('.counter-value').forEach(el => el.innerText = aktuelleMillion.toLocaleString('de-DE'));
         localStorage.setItem('m_m_million', aktuelleMillion);
-        setTimeout(updateStilleMillion, 5000);
+        setTimeout(updateStilleMillion, 4000);
     }
 
-    // ADMIN UNLOCK
     function adminUnlock() {
         themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
         userBackstage.isQualifiziert = true;
@@ -227,121 +202,102 @@
 
     function showInfo(t, id) { 
         tId = id; aktuellesThema = t; 
-        document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
         if (geleseneThemen.has(id)) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
         saveProgress();
-        updateNumColors(); 
         updateUI(); 
     } 
 
-    function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
-    function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
-    function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv')) { ebene = 5; updateUI(); } }
+    function portalZuEbene3() { if (ebene === 2 || ebene === 4) { ebene = 3; updateUI(); } }
+    function portalZuEbene4() { if (ebene === 2 || ebene === 3) { ebene = 4; updateUI(); } }
+    function portalZuEbene5() { if (userBackstage.isQualifiziert) { ebene = 5; updateUI(); } }
 
     function updateUI() {
-        const isDashboard = (ebene === 1);
-        document.getElementById('dashboard').style.display = isDashboard ? 'flex' : 'none';
-        document.getElementById('page-skelett').style.display = isDashboard ? 'none' : 'flex';
-        document.getElementById('top-label').style.display = isDashboard ? 'none' : 'block';
+        const isDash = (ebene === 1);
+        document.getElementById('dashboard').style.display = isDash ? 'flex' : 'none';
+        document.getElementById('page-skelett').style.display = isDash ? 'none' : 'flex';
+        document.getElementById('top-label').style.display = isDash ? 'none' : 'block';
         
         document.getElementById('chat-area').style.display = (ebene === 3) ? 'flex' : 'none';
         document.getElementById('drawer-ebene4').style.display = (ebene === 4) ? 'flex' : 'none';
         document.getElementById('ebene5-bereich').style.display = (ebene === 5) ? 'flex' : 'none';
         document.getElementById('main-text').style.display = (ebene === 2) ? 'block' : 'none';
         document.getElementById('ebene4-title-red').style.display = (ebene === 4) ? 'block' : 'none';
-        
-        if (ebene === 2) document.getElementById('main-text').innerText = sektorTexte[tId] || "Text folgt...";
+        document.getElementById('info-titel').style.display = (ebene === 4 || ebene === 5) ? 'none' : 'block';
+
+        // Lila Balken nur wenn Admin qualifiziert
+        document.getElementById('lila-balken-container').style.display = (userBackstage.isQualifiziert && ebene >= 2) ? 'block' : 'none';
+
         document.getElementById('info-titel').innerText = aktuellesThema;
         document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
-        document.getElementById('btn-back').style.visibility = isDashboard ? 'hidden' : 'visible';
+        document.getElementById('btn-back').style.visibility = isDash ? 'hidden' : 'visible';
 
-        const sigGelb = document.getElementById('sig-r4'), sigRot = document.getElementById('sig-l4');
-        sigGelb.classList.toggle('signal-aktiv', ebene === 2 || ebene === 4);
-        sigRot.classList.toggle('signal-aktiv', ebene === 2 || ebene === 3);
+        const sG = document.getElementById('sig-r4'), sR = document.getElementById('sig-l4');
+        sG.classList.toggle('signal-aktiv', ebene === 2 || ebene === 4);
+        sR.classList.toggle('signal-aktiv', ebene === 2 || ebene === 3);
 
         aktiviereKandidatenLicht();
         updateDots(); 
+        updateNumColors();
         startRotation();
     }
 
     function registriereSenden() { 
-        const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); 
-        if (text === "") return; 
-        chatBox.innerHTML += `<div><strong>Du:</strong> ${text}</div>`; 
-        interaktionsZaehler[tId] = Math.min(20, (interaktionsZaehler[tId] || 0) + 1); 
-        input.value = ""; chatBox.scrollTop = chatBox.scrollHeight;
+        const input = document.getElementById('chat-input'), box = document.getElementById('chat-box');
+        if (input.value.trim() === "") return;
+        box.innerHTML += `<div><strong>Du:</strong> ${input.value}</div>`;
+        interaktionsZaehler[tId] = Math.min(20, (interaktionsZaehler[tId] || 0) + 1);
+        input.value = ""; box.scrollTop = box.scrollHeight;
         saveProgress();
-        updateNumColors();
-        updateUI(); 
+        updateUI();
     }
 
     function updateNumColors() {
         themen.forEach((_, i) => {
-            const nBox = document.getElementById(`num-${i}`);
-            if (!nBox) return;
-            if (interaktionsZaehler[i] >= 20) nBox.className = "num num-fertig";
-            else if (interaktionsZaehler[i] > 0) nBox.className = "num num-offen";
-            else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen";
-            else nBox.className = "num num-neutral";
+            const n = document.getElementById(`num-${i}`);
+            if (!n) return;
+            if (interaktionsZaehler[i] >= 20) n.className = "num num-fertig";
+            else if (interaktionsZaehler[i] > 0) n.className = "num num-offen";
+            else if (geleseneThemen.has(i)) n.className = "num num-gelesen";
+            else n.className = "num num-neutral";
         });
     }
 
     function aktiviereKandidatenLicht() {
-        const sigL1 = document.getElementById('sig-l1');
-        if (userBackstage.isQualifiziert && ebene < 5) { 
-            sigL1.className = "oval-side elite-aktiv"; sigL1.onclick = portalZuEbene5; 
+        const s = document.getElementById('sig-l1');
+        if (userBackstage.isQualifiziert && ebene >= 2) { 
+            s.className = "oval-side elite-aktiv"; s.onclick = portalZuEbene5; 
         } else { 
-            sigL1.className = "oval-side ov-schwarz"; sigL1.onclick = null; 
+            s.className = "oval-side ov-schwarz"; s.onclick = null; 
         }
     }
 
-    // VIDEO-FUNKTION (VOLLSTÄNDIG)
     async function starteVideoKonferenz() {
-        const meinSlot = document.getElementById('v-slot-1');
+        const slot = document.getElementById('v-slot-1');
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ 
-                video: { width: 1280, height: 720 }, 
-                audio: true 
-            });
-            meinSlot.innerHTML = `<video autoplay playsinline muted></video>`;
-            const video = meinSlot.querySelector('video');
-            video.srcObject = stream;
-            video.onloadedmetadata = () => video.play();
-            meinSlot.style.borderColor = "#00ff00";
-        } catch (err) {
-            console.error("Video-Fehler:", err);
-            alert("Kamera-Zugriff verweigert oder nicht vorhanden.");
-        }
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            slot.innerHTML = `<video autoplay playsinline muted></video>`;
+            slot.querySelector('video').srcObject = stream;
+            slot.style.borderColor = "#00ff00";
+        } catch (e) { alert("Kamera-Fehler"); }
     }
 
-    function updateDots() { 
-        for(let i=1; i<=7; i++) { 
-            const d = document.getElementById('dot'+i); 
-            if(d) d.classList.toggle('active', i === ebene); 
-        } 
-    }
-    
-    function showDashboard() { ebene = 1; updateUI(); updateNumColors(); }
+    function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
+    function showDashboard() { ebene = 1; updateUI(); }
 
     function startRotation() {
         clearInterval(wechselInterval);
         const bg = document.getElementById('werbe-bg');
         if(!bg) return;
-        setNewImage(bg);
         wechselInterval = setInterval(() => {
             if (ebene >= 2 && ebene <= 4) { bildIndex = (bildIndex + 1) % 4; setNewImage(bg); }
         }, 8000);
     }
 
-    function setNewImage(element) {
-        const currentSeed = (tId * 10) + [100, 200, 300, 400][bildIndex];
-        element.style.backgroundImage = `url('https://picsum.photos/seed/${currentSeed}/1200/600')`;
-        element.classList.remove('bild-aktiv');
-        void element.offsetWidth;
-        element.classList.add('bild-aktiv');
+    function setNewImage(el) {
+        const s = (tId * 10) + [100, 200, 300, 400][bildIndex];
+        el.style.backgroundImage = `url('https://picsum.photos/seed/${s}/1200/600')`;
+        el.classList.remove('bild-aktiv'); void el.offsetWidth; el.classList.add('bild-aktiv');
     }
 
-    window.onload = () => { updateUI(); updateNumColors(); updateStilleMillion(); };
-</script>
-</body>
-</html>
+    window.onload = () => { updateUI(); updateStilleMillion(); };
+</script></body></html>
