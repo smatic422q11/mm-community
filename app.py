@@ -2,10 +2,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uvicorn
+import random
 
 app = FastAPI()
 
-# Erlaubt deiner Webseite (Frontend), mit diesem Server zu sprechen
+# Erlaubt deiner Webseite den Zugriff
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -20,24 +21,26 @@ class QueryRequest(BaseModel):
 
 @app.post("/query")
 async def chat_endpoint(request: QueryRequest):
-    # Hier definieren wir die Identität der KI
-    system_instruction = f"""
-    Du bist der M&M-Community-Expert. 
-    Dein Wissen basiert auf dem Thema: {request.topic}.
-    Nutze diesen Sektor-Text als deine absolute Wahrheit: {request.context}
+    user_msg = request.prompt.lower()
     
-    Regeln:
-    1. Antworte tiefgründig, philosophisch und empathisch.
-    2. Wenn der Nutzer "Gefühlsvorderung" schreibt, achte auf das Vogel-V.
-    3. Erinnere den Nutzer an sein 'Diplom Gottes' und seine Eigenverantwortung.
-    4. Antworte kurz, aber prägnant (max. 3-4 Sätze).
-    """
+    # 1. Spezial-Regel: Gefühlsvorderung (mit Vogel-V!)
+    if "gefühl" in user_msg:
+        reply = "In der M&M Community ist die **Gefühlsvorderung** (mit Vogel-V) unser höchstes Gut. Dein Diplom Gottes gibt dir das Recht dazu."
     
-    # HIER: Verbindung zu deinem lokalen Modell oder API (z.B. Claude/Gemini)
-    # Für den ersten Test geben wir eine strukturierte Antwort zurück:
-    ai_reply = f"In Bezug auf '{request.topic}' und dein 'Diplom Gottes': Deine Nachricht '{request.prompt}' zeigt mir, dass du bereit bist, die Taubheit zu durchbrechen. Wie fühlt sich dieser Aufbruch für dich an?"
+    # 2. Logik: Bezug auf den Sektor-Text nehmen
+    elif len(user_msg) < 4: # Bei kurzen Nachrichten wie "Hi" oder "hallo"
+        reply = f"Willkommen im Sektor für '{request.topic}'. Ich habe dein Signal empfangen. Was beschäftigt dich an diesem Fundament?"
     
-    return {"reply": ai_reply}
+    # 3. Zufällige philosophische Antwort (passend zur Community)
+    else:
+        antworten = [
+            f"Deine Gedanken zu '{request.topic}' fließen in die Stille Million ein. Erkenne deine Eigenverantwortung.",
+            "Das System versucht uns taub zu machen, aber hier im Sektor hören wir hin. Erzähl mir mehr.",
+            "Erinnere dich an dein Diplom Gottes. Jedes Wort, das du hier schreibst, bricht die digitale Taubheit."
+        ]
+        reply = random.choice(antworten)
+
+    return {"reply": reply}
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000
+    uvicorn.run(app, host="0.0.0.0", port=8000)
