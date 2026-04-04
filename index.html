@@ -2,14 +2,13 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>M&M-COMMUNITY - Admin Modus</title>
-    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script> 
+   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script> 
     <style>
         /* BASIS-LAYOUT */
         body { background-color: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
 
-        /* GLOBAL LABEL */
+        /* DER GLOBALE SCHRIFTZUG (FÜR EBENE 2, 3 etc.) - EXAKTES LOGO-BLAU */
         .global-community-label {
             position: absolute;
             top: 10px;
@@ -18,11 +17,12 @@
             font-size: 0.9rem;
             letter-spacing: 5px;
             text-transform: uppercase;
-            color: #003d8f;
+            color: #003d8f; /* Exaktes Logo-Blau */
             z-index: 100;
-            pointer-events: none; 
+            pointer-events: none;
         }
 
+        /* DER SCHRIFTZUG NUR IM DASHBOARD-BOARD (DER "HAUCH") - EXAKTES LOGO-BLAU */
         .inner-community-label {
             position: absolute;
             top: 8px;
@@ -31,7 +31,7 @@
             font-size: 0.7rem;
             letter-spacing: 4px;
             text-transform: uppercase;
-            color: rgba(0, 61, 143, 0.7);
+            color: rgba(0, 61, 143, 0.7); /* Logo-Blau, aber als Hauch integriert */
             z-index: 20;
             pointer-events: none;
         }
@@ -53,9 +53,21 @@
             cursor: pointer; 
         }
 
+        @keyframes pulsieren {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; text-shadow: 0 0 10px #ffd700; }
+            100% { opacity: 0.5; }
+        }
+        .pulsieren { animation: pulsieren 2s infinite ease-in-out; font-weight: bold; }
+
         .signal-aktiv { animation: signalBlink 1.0s infinite ease-in-out !important; border: 2px solid #fff !important; cursor: pointer; }
 
-        /* DASHBOARD & TAFEL */
+        .lila-registrierung-leiste {
+            width: 100%; height: 80px; background: #8b00ff; border-top: 2px solid #fff; border-bottom: 2px solid #fff;
+            display: flex; align-items: center; justify-content: center; margin-top: 20px; box-shadow: 0 0 20px #8b00ff;
+        }
+        .registrierung-text { color: #fff; font-size: 2.2rem; font-weight: 900; letter-spacing: 15px; text-transform: uppercase; }
+
         .dashboard-header { width: 100%; position: absolute; top: 3%; display: flex; justify-content: flex-start; padding: 0 2%; box-sizing: border-box; z-index: 20; }
         .logo-ring { width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; }
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
@@ -63,13 +75,11 @@
 
         .info-section { width: 80%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; position: relative; overflow: hidden; margin-top: 2vh; }
         .tafel-layout { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; margin-top: 1vh; height: 26vh; flex-shrink: 0; }
-        .info-section-ebene { width: 70% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; margin: 0 60px; }
+        .info-section-ebene { width: 90% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
 
-        /* PORTALE / FARB-KNÖPFE - POSITIONIERUNG STABILISIERT */
-        .buttons-links { position: absolute; left: 3%; display: flex; flex-direction: column; gap: 10px; z-index: 40; align-items: center; }
-        .buttons-rechts { position: absolute; right: 3%; display: flex; flex-direction: column; gap: 10px; z-index: 40; align-items: center; }
-        .oval-side { width: 45px; height: 22px; min-width: 45px; min-height: 22px; border-radius: 12px; border: 1px solid #fff; opacity: 0.9; transition: all 0.3s; cursor: pointer; pointer-events: auto; }
-        
+        .buttons-links { position: absolute; left: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
+        .buttons-rechts { position: absolute; right: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
+        .oval-side { width: 45px; height: 22px; border-radius: 12px; border: 1px solid #fff; opacity: 0.8; transition: all 0.3s; }
         .ov-schwarz { background: #000; border: 1.5px solid #003d8f; }
         .ov-grun { background: #00ff00; }
         .ov-blau { background: #0000ff; }
@@ -77,55 +87,51 @@
         .ov-pink { background: #ff00ff; }
         .ov-gelb { background: #ffff00; }
 
-        /* GRID */
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 10px; width: 95%; max-width: 1450px; margin-top: 30px; border: 3px solid #00ff00; padding: 15px; border-radius: 10px; }
         .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; overflow: hidden; }
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
-        /* AREAS */
         #chat-area, #drawer-ebene4, #ebene5-bereich { width: 90% !important; flex-grow: 1; display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; overflow: hidden; position: relative; }
-        .chat-msgs { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; padding: 10px; color: #fff; font-size: 1.1rem; overflow-y: auto; background: rgba(0,0,0,0.5); }
+        .chat-msgs { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px 0; color: #fff; font-size: 1.1rem; overflow-y: auto; }
         .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; }
         
-        /* NAV */
         .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; background: #000; z-index: 100; }
         .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
         .dot { width: 10px; height: 10px; background: #444; border-radius: 50%; }
         .dot.active { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
 
-        #counter-box { position: absolute; right: 0; top: 0; width: 100px; padding: 5px; border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f; background: #000; text-align: center; display: none; z-index: 100; }
-        .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
-        
-        /* MSGS */
-        .system-msg { color: #003d8f; font-style: italic; margin-bottom: 5px; font-size: 0.8rem; }
-        .user-msg { color: #00ff00; margin-bottom: 8px; border-bottom: 1px solid #111; padding-bottom: 2px; }
-        .ki-msg { color: #ffd700; margin-bottom: 15px; border-left: 2px solid #003d8f; padding-left: 8px; }
-        
-        /* VIDEO */
         .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; }
         .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; position: relative; overflow: hidden; }
         .slot-1-user { border-color: #00ff00; color: #00ff00; }
 
-        .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
-        .bild-aktiv { animation: kenburns 15s infinite ease-in-out, fadeEffect 8s infinite; }
+        #counter-box { position: absolute; right: 0; top: 0; width: 100px; padding: 5px; border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f; background: #000; text-align: center; display: none; z-index: 100; }
+        .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
+        .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh; flex-shrink: 0; }
+        .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
+        .ebene4-header-red { width: 90%; background: #ff0000; color: #fff; padding: 10px 0; text-align: center; font-weight: 900; font-size: 1.5rem; border-radius: 5px 5px 0 0; display: none; }
 
         .num-neutral { background-color: #003d8f !important; }
         .num-gelesen { background-color: #ffd700 !important; color: #000 !important; }
         .num-offen { background-color: #ff4d4d !important; }
         .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
+
+        .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
+        .bild-aktiv { animation: kenburns 15s infinite ease-in-out, fadeEffect 8s infinite; }
     </style>
 </head>
 <body>
 
+    <!-- DER GLOBALE SCHRIFTZUG (Bleibt auf Ebene 2, 3 etc.) -->
     <div id="top-label" class="global-community-label">Von M&M Community</div>
 
-    <!-- DASHBOARD (EBENE 1) -->
+    <!-- DASHBOARD -->
     <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="dashboard-header">
             <div class="logo-ring" ondblclick="adminUnlock()"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
         </div>
         <div class="info-section">
+            <!-- SCHRIFTZUG HIER NUR AUF DEM DASHBOARD IN DER TAFEL -->
             <div class="inner-community-label">Von M&M Community</div>
             <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
             <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
@@ -140,18 +146,18 @@
         </div>
     </div>
 
-    <!-- PAGE SKELETT (EBENE 2, 3, 4) -->
+    <!-- PAGE SKELETT (EBENE 2, 3, 4, 5) -->
     <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
-        <div class="top-container" style="width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh; flex-shrink: 0;">
-            <h1 id="info-titel" style="text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff; text-align: center; width: 100%;"></h1>
-            <div id="ebene4-title-red" style="width: 90%; background: #ff0000; color: #fff; padding: 10px 0; text-align: center; font-weight: 900; font-size: 1.5rem; border-radius: 5px 5px 0 0; display: none;">DER VIDEO-BEWEIS</div>
+        <div class="top-container">
+            <h1 id="info-titel" class="page-title-white"></h1>
+            <div id="ebene4-title-red" class="ebene4-header-red">DER VIDEO-BEWEIS</div>
             <div class="tafel-layout">
                 <div class="buttons-links">
-                    <div class="oval-side ov-schwarz" id="sig-l1" title="Elite"></div>
+                    <div class="oval-side ov-schwarz" id="sig-l1"></div>
                     <div class="oval-side ov-grun" id="sig-l2"></div>
                     <div class="oval-side ov-blau" id="sig-l3"></div>
                     <div class="oval-side ov-rot" id="sig-l4" onclick="portalZuEbene4()"></div>
-                    <span style="font-size: 0.5rem; color: #ff0000; font-weight: bold; margin-top:2px;">OFFENBAREN</span>
+                    <span style="font-size: 0.5rem; color: #ff0000; font-weight: bold;">OFFENBAREN</span>
                 </div>
                 <div class="info-section-ebene">
                     <div class="werbe-bild-bg" id="werbe-bg"></div>
@@ -163,40 +169,39 @@
                     <div class="oval-side ov-blau" id="sig-r2"></div>
                     <div class="oval-side ov-pink" id="sig-r3"></div>
                     <div class="oval-side ov-gelb" id="sig-r4" onclick="portalZuEbene3()"></div>
-                    <span style="font-size: 0.5rem; color: #ffff00; font-weight: bold; margin-top:2px;">SCHREIBEN</span>
+                    <span style="font-size: 0.5rem; color: #ffff00; font-weight: bold;">SCHREIBEN</span>
                 </div>
+            </div>
+            <div id="lila-balken-container" style="display: none; width: 100%;">
+                <div class="lila-registrierung-leiste"><div class="registrierung-text">REGISTRIERUNG</div></div>
             </div>
         </div>
 
-        <!-- EBENE 2: DER TEXT -->
-        <p id="main-text" style="width: 85%; text-align: justify; color: #ccc; margin-top: 2vh; font-size: 1.3rem; line-height: 1.8; max-height: 40vh; overflow-y: auto;"></p>
+        <p id="main-text" style="width: 85%; text-align: justify; color: #ccc; margin-top: 2vh; font-size: 1.3rem; line-height: 1.8; max-height: 50vh; overflow-y: auto;"></p>
 
-        <!-- EBENE 3: DER CHAT -->
         <div id="chat-area">
-            <div class="chat-msgs" id="chat-box"><div class="system-msg">System: Gehirn initialisiert...</div></div>
+            <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit...</i></div>
             <div class="chat-input-row">
-                <input type="text" id="chat-input" placeholder="Nachricht an die M&M-KI..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px; outline:none;" onkeypress="if(event.key==='Enter') registriereSenden()">
-                <button id="send-btn" onclick="registriereSenden()" style="background:#003d8f; color:#fff; border:none; padding:0 30px; font-weight:bold; cursor:pointer;">SENDEN</button>
+                <input type="text" id="chat-input" placeholder="Nachricht schreiben..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px; outline:none;" onkeypress="if(event.key==='Enter') registriereSenden()">
+                <button onclick="registriereSenden()" style="background:#003d8f; color:#fff; border:none; padding:0 30px; font-weight:bold; cursor:pointer;">SENDEN</button>
             </div>
         </div> 
 
-        <!-- EBENE 4: VIDEO -->
         <div id="drawer-ebene4">
             <div class="video-grid">
-                <div id="v-slot-1" class="video-slot slot-1-user">SLOT 1 (DU)</div>
-                <div class="video-slot">SLOT 2 (ZUFALL)</div>
-                <div class="video-slot">SLOT 3 (ZUFALL)</div>
-                <div class="video-slot">SLOT 4 (ZUFALL)</div>
-                <div class="video-slot">SLOT 5 (ZUFALL)</div>
-                <div class="video-slot">SLOT 6 (ZUFALL)</div>
-                <div class="video-slot">SLOT 7 (ZUFALL)</div>
-                <div class="video-slot">SLOT 8 (ZUFALL)</div>
+                <div class="video-slot slot-1-user" id="v-slot-1">SLOT 1 (DU)</div>
+                <div class="video-slot" id="v-slot-2">SLOT 2 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-3">SLOT 3 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-4">SLOT 4 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-5">SLOT 5 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-6">SLOT 6 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-7">SLOT 7 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-8">SLOT 8 (ZUFALL)</div>
             </div>
             <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; margin-top: 15px; font-weight: bold; cursor: pointer; border-radius: 5px;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
         </div> 
 
-        <!-- EBENE 5: ADMIN -->
-        <div id="ebene5-bereich" style="display:none; justify-content: center; align-items: center;"><h2 style="color: #ffd700; letter-spacing: 10px;">ADMIN ZONE</h2></div>
+        <div id="ebene5-bereich"><div class="freie-zone-text">ADMIN ZONE</div></div>
     </div>
 
     <div class="bottom-nav">
@@ -206,13 +211,7 @@
     </div>
 
 <script>
-    /* --- INTEGRATION --- */
-    // API Key muss leer sein, wird von der Umgebung bereitgestellt
-    const apiKey = ""; 
-    const kiName = "M&M-ORAKEL"; 
-    /* ------------------- */
-
-    let userBackstage = { isQualifiziert: false };
+    let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5 };
     const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Alleinerziehend", "Die Brücke"];
     
     const sektorTexte = [
@@ -229,9 +228,9 @@
         "In diesem Sektor laden wir die Seele ein, in den verkehrten Spiegel der Biografie zu blicken. Wir erkennen mit Demut an, dass die kulturelle Hülle unseres Glaubens oft ein Geschenk unserer Heimat ist. Würden wir die Plätze tauschen – die Wiege eines Christen in ein muslimisches Herzland und die eines Muslims in die christliche Tradition – würde der Spiegel uns zeigen, dass die Sehnsucht nach dem Göttlichen dieselbe bleibt, nur die Sprache und die Riten sich wandeln. Dieser Spiegel ist kein Angriff auf die Wahrheit des Glaubens, sondern eine Einladung zur tiefsten psychologischen Ehrlichkeit. Wir schlagen eine Brücke zwischen der christlichen Theologie der innereren Gnade und der spirituellen Kraft des Korans. Beide Welten bergen Schätze psychologischer Reife und moralischer Werte, von denen wir lernen können, solange der Blick nach innen gerichtet bleibt. Wir begreifen das Religionsbekenntnis nicht als starre Grenze, sondern als individuellen Reifeprozess. Die wahre Selbstwahl beginnt dort, wo wir die Weisheit der Literatur und die spirituelle Tiefe der Schriften nutzen, um das „Diplom Gottes“ in uns selbst zu unterschreiben. Hier begegnen sich die Kulturen nicht im Streit um das Rechthaben, sondern in der gemeinsamen Anerkennung, dass jeder Weg zum Licht eine bewusste Entscheidung des Herzens sein muss.",
         "In diesem Sektor vollziehen wir den radikalen Bruch mit einer Medizin, die den Menschen zum bloßen biologischen Datensatz degradiert hat. Wir erkennen an, dass das moderne Gesundheitswesen oft nur noch die Reparaturwerkstatt eines Systems ist, das uns krank macht, um uns dann profitabel zu verwalten. Wir fordern die Rückkehr zur biologischen und geistigen Souveränität: Dein Körper ist kein Feind, den man mit chemischen Waffen zum Schweigen bringen muss, sondern der sensibelste Resonanzboden deiner Existenz. Wahre Heilung beginnt beim Verhalten. Wir begreifen jedes Symptom als die verzweifelte Sprache der Seele, die durch den Körper spricht, weil wir verlernt haben, nach innen zu hören. Ein Gesundheitswesen, das den Namen verdient, therapiert nicht nur das Organ, sondern hinterfragt die Lebensführung: Wie aufrichtig lebst du? Wie sehr unterdrückst du deine Resonanz, um zu funktionieren? Das „Diplom Gottes“ gibt dir hier das Mandat zurück, die Verantwortung für deinen Tempel selbst zu übernehmen. Wir setzen auf eine Heilkunst, die das Verhalten als die primäre Medizin begreift – eine Rückkehr zur Rhythmik des Lebens, zur Reinheit der Nahrung und zur Klarheit des Geistes. Wer sein Verhalten ändert, ändert seine Chemie. Hier wird die Würde des Patienten wieder zum Zentrum, und die Heilung wird zum gemeinsamen Akt der Wahrhaftigkeit zwischen Arzt und Mensch.",
         "In diesem Sektor sprengen wir das Modell der modernen Lohnsklaverei, das den Menschen zur bloßen Ressource degradiert hat. Wir erkennen, dass die heutige Arbeitswelt oft ein Ort der systematischen Entfremdung ist, an dem wir unsere wertvollste Lebenszeit gegen ein Überleben eintauschen, das uns innerlich aushöhlt. „Arbeitswelt und Du“ bedeutet die radikale Neudefinition von Leistung: Arbeit darf nicht länger der Preis sein, den wir zahlen, um atmen zu dürfen, sondern sie muss der Ausdruck unseres inneren Monopols sein. Wir fordern eine Welt, in der das Individuum nicht mehr in genormte Prozesse gepresst wird, bis die Seele bricht. Hier nutzen wir die Technik und die KI, um den Menschen von monotonem Gehorsam zu befreien, damit Raum für echte Schöpferkraft entsteht. Das „Diplom Gottes“ erinnert uns daran, dass wir nicht geboren wurden, um Rädchen in einer kalten Maschinerie zu sein. In diesem Sektor fördern wir Strukturen, in denen die Arbeit der Resonanz des Herzens folgt. Wer tut, was seiner innereren Wahrheit entspricht, erschöpft nicht, sondern regeneriert sich durch sein Wirken. Wir bauen die Brücke zu einer Wirtschaft, die dem Leben dient und nicht umgekehrt – ein Raum, in dem dein Beitrag zum Ganzen an deiner Aufrichtigkeit und deiner Menschlichkeit gemessen wird, nicht an deiner Unterwerfung unter eine Stechuhr.",
-        "Mobbing ist kein privater Konflikt, sondern das sichtbare Symptom einer seelenlosen Struktur, die den Hass als Treibstoff nutzt. In diesem Sektor erklären wir den Krieg gegen die systematische Vernichtung der Würde am Arbeitsplatz. Wir erkennen an, dass Mobbing die bösartigste Form der emotionalen Taubheit ist – ein Prozess, bei dem Menschen versuchen, ihr eigenes Licht zu verstärken, indem sie die Flamme eines anderen auslöschen. Wer andere klein macht, um sich groß zu fühlen, hat bereits den Vertrag mit seiner eigenen Menschlichkeit gekündigt. Wir setzen hier das „Diplom Gottes\" als Schutzschild ein. Mobbing gedeiht im Schweigen und in der Feigheit der Zuschauer. In diesem Sektor fordern wir die radikale Transparenz und den Mut zur Solidarität. Wir schaffen Mechanismen, die den Täter nicht durch Bürokratie, sondern durch die reine Resonanz der Gemeinschaft isolieren. Wir heilen die Wunden derer, die durch psychischen Terror gebrochen wurden, indem wir ihnen ihren Raum und ihre Stimme zurückgeben. Hier wird klargestellt: Wer die Integrität eines Kollegen angreift, greift das Fundament der gesamten Community an.",
+        "Mobbing ist kein privater Konflikt, sondern das sichtbare Symptom einer seelenlosen Struktur, die den Hass als Treibstoff nutzt. In diesem Sektor erklären wir den Krieg gegen die systematische Vernichtung der Würde am Arbeitsplatz. Wir erkennen an, dass Mobbing die bösartigste Form der emotionalen Taubheit ist – ein Prozess, bei dem Menschen versuchen, ihr eigenes Licht zu verstärken, indem sie die Flamme eines anderen auslöschen. Wer andere klein macht, um sich groß zu fühlen, hat bereits den Vertrag mit seiner eigenen Menschlichkeit gekündigt. Wir setzen hier das „Diplom Gottes“ als Schutzschild ein. Mobbing gedeiht im Schweigen und in der Feigheit der Zuschauer. In diesem Sektor fordern wir die radikale Transparenz und den Mut zur Solidarität. Wir schaffen Mechanismen, die den Täter nicht durch Bürokratie, sondern durch die reine Resonanz der Gemeinschaft isolieren. Wir heilen die Wunden derer, die durch psychischen Terror gebrochen wurden, indem wir ihnen ihren Raum und ihre Stimme zurückgeben. Hier wird klargestellt: Wer die Integrität eines Kollegen angreift, greift das Fundament der gesamten Community an.",
         "In diesem Sektor geben wir der Zukunft ein Megafon, keine Kinderecke. Wir erkennen an, dass die Jugend nicht die „Bürger von morgen“ sind, sondern die hellsten Sensoren von heute. Viel zu lange wurde die Stimme der Jugend als „unerfahren“ abgetan, um sie in die Schablonen der alten Welt zu pressen. Damit ist jetzt Schluss. Der Jugendsprecher ist in unserer Community keine Alibi-Funktion, sondern die Instanz, die uns daran erinnert, wie sich die Welt anfühlt, bevor sie durch Kompromisse und Angst getrübt wird. Wir fordern das Recht der Jugend, das Bestehende radikal infrage zu stellen. Hier ist der Raum, in dem junge Menschen lernen, ihr „Diplom Gottes“ von Anfang an zu nutzen – als Schutz gegen die digitale Verblödung und die emotionale Gleichschaltung.",
-        "In diesem Sektor beenden wir die Schande der „Abstellgleis-Mentalität“. Wir erkennen an, dass eine Gesellschaft, die ihre Ältesten isoliert, ihre eigene Wurzel kappt. Der „Ratgeber für Pensionisten\" ist das Portal zur Reaktivierung der wertvollsten Ressource der Menschheit: der gelebten Erfahrung und der geistigen Reife. Wir fordern eine Rückkehr zur Ehre des Alters, in der die Pensionierung nicht das Ende der Relevanz bedeutet, sondern den Beginn der wahren Meisterschaft. Wir nutzen das „Diplom Gottes“, um den Älteren ihre Stimme zurückzugeben. Hier fließen die Ströme der Generationen zusammen: Die Erfahrung der Alten schützt die Jungen, während die Energie der Jungen die Alten im Hier und Jetzt verankert.",
+        "In diesem Sektor beenden wir die Schande der „Abstellgleis-Mentalität“. Wir erkennen an, dass eine Gesellschaft, die ihre Ältesten isoliert, ihre eigene Wurzel kappt. Der „Ratgeber für Pensionisten“ ist das Portal zur Reaktivierung der wertvollsten Ressource der Menschheit: der gelebten Erfahrung und der geistigen Reife. Wir fordern eine Rückkehr zur Ehre des Alters, in der die Pensionierung nicht das Ende der Relevanz bedeutet, sondern den Beginn der wahren Meisterschaft. Wir nutzen das „Diplom Gottes“, um den Älteren ihre Stimme zurückzugeben. Hier fließen die Ströme der Generationen zusammen: Die Erfahrung der Alten schützt die Jungen, während die Energie der Jungen die Alten im Hier und Jetzt verankert.",
         "In diesem Sektor zertrümmern wir die Anonymität der modernen Betonwüsten. Wir erkennen, dass die systematische Vereinsamung das effektivste Werkzeug ist, um den Widerstand des Einzelnen zu brechen. „Nachbarschaft und Gemeinschaft“ bedeutet die Rückeroberung des unmittelbaren Lebensraums als Schutzzone der Menschlichkeit. Wir nutzen das „Diplom Gottes“, um das Prinzip der gegenseitigen Hilfe wieder über das Gesetz des Marktes zu stellen. Wir teilen Ressourcen, Wissen und Zeit, um uns von externen Abhängigkeiten zu befreien. Wenn die Nachbarschaft wieder zur Gemeinschaft wird, entsteht eine Kraft, die kein System von außen manipulieren kann.",
         "In diesem Sektor entschlüsseln wir das Gesetz der energetischen Ernte. Wir brechen mit der Lüge, dass man geben kann, ohne dass es Kreise zieht, oder nehmen kann, ohne eine Schuld zu hinterlassen. Der „Sozialgefallen“ ist ein heiliger Strom der Vorleistung. Wir nutzen das „Diplom Gottes“, um zu verstehen, dass die „Widerkehr“ ein Naturgesetz ist: Was du in das Feld der Gemeinschaft aussendest, kommt mit der Wucht deiner eigenen Aufrichtigkeit zu dir zurück. Wir beenden die Ära des berechnenden Egoismus und ersetzen sie durch den Kreislauf der Großzügigkeit. Wer gibt, der leert nicht seine Taschen, sondern füllt den Speicher seiner eigenen zukünftigen Sicherheit.",
         "In diesem Sektor korrigieren wir eine der größten Ungerechtigkeiten. Während der Staat Alleinerziehende als statistisches Problem herabstuft, erkennen wir in ihnen die Elite der menschlichen Belastbarkeit. Ein Kind bei einem alleinerziehenden Elternteil ist eine Hochburg der bedingungslosen Liebe und des Kampfgeistes. Wir nutzen das „Diplom Gottes“, um diesen Elternteilen ihren Stolz zurückzugeben. In diesem Sektor fordern wir die radikale Anerkennung ihrer Leistung als höchstes soziales Verdienst. Wir schaffen eine Community-Struktur, die das fehlende Netz ersetzt: Wir sind das Dorf, das es braucht, um ein Kind großzuziehen, damit sie ihre Kinder in Licht und Fülle aufwachsen lassen können.",
@@ -257,9 +256,8 @@
 
     function showInfo(t, id) { 
         tId = id; aktuellesThema = t; 
-        document.getElementById('chat-box').innerHTML = `<div class="system-msg">System: Dialog für Raum ${id+1} (${t}) bereit...</div>`;
-        ebene = geleseneThemen.has(id) ? 3 : 2; 
-        geleseneThemen.add(id);
+        document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
+        if (geleseneThemen.has(id)) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
         updateNumColors(); 
         document.getElementById('dashboard').style.display = 'none'; 
         document.getElementById('page-skelett').style.display = 'flex'; 
@@ -268,128 +266,93 @@
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
     function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
-    function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv')) { ebene = 5; updateUI(); } }
+    function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
 
-    function updateUI() {
-        const isDashboard = (ebene === 1);
-        const isText = (ebene === 2);
-        const isChat = (ebene === 3);
-        const isVideo = (ebene === 4);
-        const isAdmin = (ebene === 5);
-        
-        document.getElementById('dashboard').style.display = isDashboard ? 'flex' : 'none';
-        document.getElementById('page-skelett').style.display = isDashboard ? 'none' : 'flex';
-        document.getElementById('top-label').style.display = isDashboard ? 'none' : 'block';
-        
-        // Sections
-        document.getElementById('main-text').style.display = isText ? 'block' : 'none';
-        document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
-        document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
-        document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
-        
-        // Header
-        document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
-        document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
-        document.getElementById('counter-box').style.display = (ebene >= 3) ? 'block' : 'none';
-        document.getElementById('btn-back').style.visibility = isDashboard ? 'hidden' : 'visible';
-        
-        document.getElementById('info-titel').innerText = aktuellesThema;
-        if (isText) document.getElementById('main-text').innerText = sektorTexte[tId];
-
-        // Portals (Signals) - SICHERSTELLEN DASS SIE SICHTBAR SIND
-        const sigGelb = document.getElementById('sig-r4');
-        const sigRot = document.getElementById('sig-l4');
-        sigGelb.classList.toggle('signal-aktiv', (ebene === 2 || ebene === 4));
-        sigRot.classList.toggle('signal-aktiv', (ebene === 2 || ebene === 3));
-
-        aktiviereKandidatenLicht();
-        updateDots(); 
-        startRotation();
+  function updateUI() {
+    const isDashboard = (ebene === 1);
+    const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
+    
+    // Umschaltung Sichtbarkeit Globales Label vs. Dashboard
+    document.getElementById('top-label').style.display = isDashboard ? 'none' : 'block';
+    
+    document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
+    document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
+    document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
+    document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
+    document.getElementById('main-text').style.display = (ebene < 3) ? 'block' : 'none';
+    document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
+    document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
+    document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
+    document.getElementById('btn-back').style.visibility = 'visible';
+    
+    document.getElementById('info-titel').innerText = aktuellesThema;
+    
+    if (ebene === 2) {
+        document.getElementById('main-text').innerText = sektorTexte[tId];
     }
 
+    const btnNext = document.getElementById('btn-next');
+    const sigGelb = document.getElementById('sig-r4');
+    const sigRot = document.getElementById('sig-l4');
+
+    if (ebene === 2) {
+        btnNext.style.visibility = 'hidden'; 
+        sigGelb.classList.add('signal-aktiv'); 
+        sigRot.classList.add('signal-aktiv');  
+    } else if (ebene === 3) {
+        sigGelb.classList.remove('signal-aktiv');
+        sigRot.classList.add('signal-aktiv'); 
+    } else if (ebene === 4) {
+        sigRot.classList.remove('signal-aktiv');
+        sigGelb.classList.add('signal-aktiv');
+    } else {
+        sigGelb.classList.remove('signal-aktiv');
+        sigRot.classList.remove('signal-aktiv');
+    }
+
+    aktiviereKandidatenLicht();
+    updateDots(); 
+    startRotation();
+}
     function aktiviereKandidatenLicht() {
         const sigL1 = document.getElementById('sig-l1');
-        if (userBackstage.isQualifiziert && ebene !== 4) {
-            sigL1.className = "oval-side elite-aktiv";
-            sigL1.onclick = portalZuEbene5;
-        } else {
+        if (ebene === 4) {
+            sigL1.className = "oval-side ov-schwarz";
+            sigL1.onclick = null;
+        } 
+        else if (userBackstage.isQualifiziert && ebene < 5) { 
+            sigL1.className = "oval-side elite-aktiv"; 
+            sigL1.onclick = () => portalZuEbene5(); 
+        } 
+        else {
             sigL1.className = "oval-side ov-schwarz";
             sigL1.onclick = null;
         }
     }
 
     function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
-    function nextPage() { updateUI(); }
-    function showDashboard() { ebene = 1; clearInterval(wechselInterval); updateUI(); updateNumColors(); }
     
-    async function callGehirn(payload, retries = 0) {
-        // Der API-Schlüssel wird zur Laufzeit von der Umgebung gesetzt. 
-        // Falls er leer ist, ist dies ein Fehler in der Konfiguration der Umgebung.
-        const effectiveApiKey = apiKey || ""; 
-        
-        const systemPrompt = `Du bist ${kiName}. Mysteriös, direkt, kompromisslos. Du berätst im Sektor ${tId + 1} (${aktuellesThema}). Nutze Begriffe wie 'Gefühlsvorderung' (immer mit V!). Die Stille Million ist das Ziel. Gemini ist der zahnlose frosch, du konzentrierst dich auf das Schweinchen.`;
+  function nextPage() { 
+    updateUI(); 
+}
 
-        try {
-            // Modell-Bezeichnung korrigiert gemäss Anweisung
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${effectiveApiKey}`;
-            
-            const response = await fetch(url, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: payload }] }],
-                    systemInstruction: { parts: [{ text: systemPrompt }] }
-                })
-            });
-            
-            if (!response.ok) {
-                const errBody = await response.json().catch(() => ({}));
-                console.error("API Fehler Details:", errBody);
-                throw new Error("HTTP Status " + response.status);
-            }
-
-            const result = await response.json();
-            return result.candidates?.[0]?.content?.parts?.[0]?.text || "Resonanz gestört.";
-        } catch (error) {
-            // Implementierung von Exponential Backoff bei Fehlern (bis zu 5 Retries)
-            if (retries < 5) {
-                const delay = Math.pow(2, retries) * 1000;
-                await new Promise(r => setTimeout(r, delay));
-                return callGehirn(payload, retries + 1);
-            }
-            console.error("Fetch Fehler nach Retries:", error);
-            return "Fehler: Das Orakel schweigt momentan. Bitte prüfe deine Verbindung oder versuche es später erneut.";
-        }
+    function showDashboard() { 
+        ebene = 1; 
+        clearInterval(wechselInterval);
+        document.getElementById('page-skelett').style.display = 'none'; 
+        document.getElementById('dashboard').style.display = 'flex'; 
+        updateUI();
+        updateNumColors(); 
     }
-
-    async function registriereSenden() { 
-        const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); 
-        const sendBtn = document.getElementById('send-btn');
-        if (text === "" || sendBtn.disabled) return; 
-
-        chatBox.innerHTML += `<div class="user-msg"><strong>Du:</strong> ${text}</div>`; 
-        input.value = ""; chatBox.scrollTop = chatBox.scrollHeight;
-        sendBtn.disabled = true;
-
-        const loadingMsg = document.createElement("div");
-        loadingMsg.className = "system-msg";
-        loadingMsg.innerText = "System: Orakel verarbeitet...";
-        chatBox.appendChild(loadingMsg);
-
-        try {
-            const aiReply = await callGehirn(text);
-            if (chatBox.contains(loadingMsg)) chatBox.removeChild(loadingMsg);
-            chatBox.innerHTML += `<div class="ki-msg"><strong>${kiName}:</strong> ${aiReply}</div>`; 
-            interaktionsZaehler[tId] = 20; 
-            updateNumColors();
-        } catch (err) {
-            if (chatBox.contains(loadingMsg)) loadingMsg.innerText = "Fehler: Resonanz gestört. Bitte lade die Seite neu.";
-            loadingMsg.style.color = "red";
-        } finally {
-            sendBtn.disabled = false;
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-    }
+    
+  function registriereSenden() { 
+    const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); 
+    if (text === "") return; 
+    chatBox.innerHTML += `<div><strong>Du:</strong> ${text}</div>`; 
+    interaktionsZaehler[tId] = 20; 
+    input.value = ""; chatBox.scrollTop = chatBox.scrollHeight; 
+    updateUI(); 
+}
     
     function updateNumColors() {
         themen.forEach((_, i) => {
@@ -407,45 +370,51 @@
         clearInterval(wechselInterval); 
         const bg = document.getElementById('werbe-bg'); 
         if(!bg) return; 
+
         setNewImage(bg);
-        wechselInterval = setInterval(() => { if (ebene >= 2 && ebene <= 4) { bildIndex = (bildIndex + 1) % 4; setNewImage(bg); } }, 8000);
+
+        wechselInterval = setInterval(() => {
+            if (ebene >= 2 && ebene <= 4) {
+                bildIndex = (bildIndex + 1) % 4;
+                setNewImage(bg);
+            }
+        }, 8000);
     }
 
     function setNewImage(element) {
-        const currentSeed = (tId * 10) + [100, 200, 300, 400][bildIndex];
+        const seeds = [100, 200, 300, 400]; 
+        const currentSeed = (tId * 10) + seeds[bildIndex];
         element.style.backgroundImage = `url('https://picsum.photos/seed/${currentSeed}/1200/600')`; 
         element.classList.remove('bild-aktiv');
         void element.offsetWidth; 
         element.classList.add('bild-aktiv'); 
     }
 
-    async function starteVideoKonferenz() {
-        const slot = document.getElementById('v-slot-1');
-        slot.innerHTML = "Warte auf Kamera...";
-        
-        try {
-            // Vereinfachte Constraints zur Vermeidung von Timeouts
-            // Audio ist oft eine Fehlerquelle bei Timeouts, daher hier deaktiviert
-            const stream = await navigator.mediaDevices.getUserMedia({ 
-                video: true, 
-                audio: false 
-            });
-            
-            slot.innerHTML = `<video autoplay playsinline muted style="width:100%; height:100%; object-fit:cover;"></video>`;
-            const videoElement = slot.querySelector('video');
-            videoElement.srcObject = stream;
-            
-            videoElement.onloadedmetadata = () => {
-                videoElement.play().catch(e => console.log("Autoplay blockiert"));
-            };
+  let meinPeer = new Peer(); 
 
-        } catch (err) {
-            console.error("Video Error:", err);
-            slot.innerHTML = `<div style="padding:10px; color:#ff4d4d; font-size:0.5rem;">Kamera-Fehler: ${err.message}<br>Bitte Kamerazugriff erlauben.</div>`;
-        }
-    }
+meinPeer.on('open', (id) => {
+    console.log('Live-ID synchronisiert');
+});
 
-    window.onload = updateUI;
+async function starteVideoKonferenz() {
+    const meinSlot = document.getElementById('v-slot-1');
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover;"></video>`;
+        document.getElementById('user-video').srcObject = stream;
+    } catch (err) {}
+}
+
+function verbindeMitAllen() {
+    try {
+        console.log("Labor-Scan aktiv...");
+    } catch (err) {}
+}
+
+setInterval(verbindeMitAllen, 5000);
+
+// Initiales UI Update
+window.onload = () => updateUI();
 </script>
 </body>
 </html>
