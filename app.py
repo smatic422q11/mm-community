@@ -2,11 +2,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uvicorn
-import random
 
 app = FastAPI()
 
-# Erlaubt deiner Webseite den Zugriff
+# WICHTIG: Das erlaubt deiner Webseite den Zugriff
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -23,24 +22,18 @@ class QueryRequest(BaseModel):
 async def chat_endpoint(request: QueryRequest):
     user_msg = request.prompt.lower()
     
-    # 1. Spezial-Regel: Gefühlsvorderung (mit Vogel-V!)
-    if "gefühl" in user_msg:
-        reply = "In der M&M Community ist die **Gefühlsvorderung** (mit Vogel-V) unser höchstes Gut. Dein Diplom Gottes gibt dir das Recht dazu."
-    
-    # 2. Logik: Bezug auf den Sektor-Text nehmen
-    elif len(user_msg) < 4: # Bei kurzen Nachrichten wie "Hi" oder "hallo"
-        reply = f"Willkommen im Sektor für '{request.topic}'. Ich habe dein Signal empfangen. Was beschäftigt dich an diesem Fundament?"
-    
-    # 3. Zufällige philosophische Antwort (passend zur Community)
+    # --- DEINE LOGIK ---
+    if "hallo" in user_msg or "hi" in user_msg:
+        reply = f"Sei gegrüßt im Sektor für {request.topic}. Wie kann ich dir heute auf deinem Weg zur Stillen Million helfen?"
+    elif "gefühl" in user_msg:
+        reply = "In unserer Community fordern wir die **GefühlsVorderung** immer mit Vogel-V. Das ist ein Fundament unserer Wahrhaftigkeit."
+    elif "warum" in user_msg:
+        reply = "Das Warum liegt in deinem Diplom Gottes. Jedes Wort hier bricht die Schicht aus digitaler Taubheit."
     else:
-        antworten = [
-            f"Deine Gedanken zu '{request.topic}' fließen in die Stille Million ein. Erkenne deine Eigenverantwortung.",
-            "Das System versucht uns taub zu machen, aber hier im Sektor hören wir hin. Erzähl mir mehr.",
-            "Erinnere dich an dein Diplom Gottes. Jedes Wort, das du hier schreibst, bricht die digitale Taubheit."
-        ]
-        reply = random.choice(antworten)
-
+        reply = f"Ich habe deine Nachricht zu '{request.topic}' empfangen. Deine Resonanz ist wichtig für das Kollektiv. Erzähl mir mehr."
+    
     return {"reply": reply}
 
 if __name__ == "__main__":
+    # Startet den Server auf Port 8000
     uvicorn.run(app, host="0.0.0.0", port=8000)
