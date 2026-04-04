@@ -207,9 +207,9 @@
 
 <script>
     /* --- EINSTELLUNGEN --- */
-    // WICHTIG: Setze hier deinen API-Key ein, damit es auf deiner Webseite funktioniert!
+    // Dein API-Key ist hier fest hinterlegt
     const apiKey = "AIzaSyCcyWBoC481Ojk8vkVlhG6JIFuyBxW0-Os"; 
-    const kiName = "M&M-ORAKEL"; // Hier kannst du den Namen der KI ändern
+    const kiName = "M&M-ORAKEL"; 
     /* --------------------- */
     
     let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5 };
@@ -343,15 +343,13 @@
         updateNumColors(); 
     }
     
-    /* KI-LOGIK MIT STABILISIERTER VERBINDUNG */
+    /* KI-LOGIK KORRIGIERT */
     async function callGehirn(payload, retries = 0) {
-        // Wenn kein Key da ist und wir nicht in der Vorschau sind -> Warnung
-        if (!apiKey && typeof __app_id === 'undefined') {
-            return "Fehler: Kein API-Schlüssel hinterlegt. Bitte trage deinen Google AI Key im Code ein.";
-        }
+        if (!apiKey) return "Fehler: Kein API-Schlüssel hinterlegt.";
 
         try {
-            const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=" + apiKey;
+            // Modell auf das stabile gemini-1.5-flash geändert
+            const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey;
             const response = await fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
