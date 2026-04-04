@@ -1,7 +1,18 @@
-import random
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+# --- DEINE KAISERLICHEN EINSTELLUNGEN (DIE SCHRAUBEN) ---
+KAISER_PERSONA = {
+    "name": "M&M Mentor",
+    "charakter": "Empathisch, tiefgründig, unbestechlich",
+    "mission": "Vorbereitung auf die Stille Million",
+    "geheimwissen": "Doppel-Skorpion, Zwei Seelen (11), Diplom Gottes",
+    "vogel_v_pflicht": True
+}
+
+# Diese Liste kannst du täglich erweitern für die Mundpropaganda
+MUNDPROPAGANDA_IMPULSE = [
+    "Hast du heute schon jemandem von deinem Diplom Gottes erzählt?",
+    "Die Stille Million wächst. Sei die Stimme, die das Schweigen bricht.",
+    "Wahrhaftigkeit spricht sich herum. Werde zum Sender."
+]
 
 app = FastAPI()
 
