@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 # DEIN SCHLÜSSEL HIER REIN
-genai.configure(api_key="DEIN_API_KEY_HIER")
+genai.configure(api_key="AIzaSyC5WYNchT0wmMjoGgQxfzqr6wPwlH9odFE")
 model = genai.GenerativeModel('gemini-1.5-flash')
 
 app = FastAPI()
