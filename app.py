@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-# DEIN SCHLÜSSEL HIER REIN
+# DEIN SCHLÜSSEL IST HIER RICHTIG DRIN
 genai.configure(api_key="AIzaSyC5WYNchT0wmMjoGgQxfzqr6wPwlH9odFE")
 model = genai.GenerativeModel('gemini-1.5-flash')
 
@@ -21,7 +21,7 @@ async def chat_endpoint(request: QueryRequest):
     try:
         response = model.generate_content(f"{instruktion}\nUser: {request.prompt}")
         return {"reply": response.text}
-    except:
+    except Exception as e:
         return {"reply": "Fehler: Key prüfen."}
 
 if __name__ == "__main__":
