@@ -3,12 +3,17 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-# DEIN SCHLÜSSEL IST HIER RICHTIG DRIN
 genai.configure(api_key="AIzaSyC5WYNchT0wmMjoGgQxfzqr6wPwlH9odFE")
 model = genai.GenerativeModel('gemini-1.5-flash')
 
 app = FastAPI()
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class QueryRequest(BaseModel):
     prompt: str
@@ -17,13 +22,12 @@ class QueryRequest(BaseModel):
 
 @app.post("/query")
 async def chat_endpoint(request: QueryRequest):
-    instruktion = "Du bist die KI für einen Doppel-Skorpion (22). Antworte kurz. Nutze immer GefühlsVorderung (V!)."
     try:
-        response = model.generate_content(f"{instruktion}\nUser: {request.prompt}")
+        response = model.generate_content(request.prompt)
         return {"reply": response.text}
     except Exception as e:
-        return {"reply": "Fehler: Key prüfen."}
+        return {"reply": str(e)}
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000
