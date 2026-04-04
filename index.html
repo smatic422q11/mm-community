@@ -345,13 +345,44 @@
         updateNumColors(); 
     }
     
-  function registriereSenden() { 
-    const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); 
-    if (text === "") return; 
-    chatBox.innerHTML += `<div><strong>Du:</strong> ${text}</div>`; 
-    interaktionsZaehler[tId] = 20; 
-    input.value = ""; chatBox.scrollTop = chatBox.scrollHeight; 
-    updateUI(); 
+ async function registriereSenden() { 
+    const input = document.getElementById('chat-input');
+    const chatBox = document.getElementById('chat-box');
+    const userText = input.value.trim(); 
+    
+    if (userText === "") return; 
+    
+    // 1. Deine Nachricht anzeigen
+    chatBox.innerHTML += `<div style="margin-bottom:10px;"><strong>Du:</strong> ${userText}</div>`; 
+    input.value = ""; 
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    // 2. Denk-Animation (System-Feedback)
+    const typingId = "typing-" + Date.now();
+    chatBox.innerHTML += `<div id="${typingId}" style="color:#003d8f; font-style:italic;">M&M KI denkt nach...</div>`;
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    try {
+        // HIER: Platzhalter für den OpenHarness / Gemini API Call
+        // const response = await fetch('/api/query', { method: 'POST', body: JSON.stringify({ prompt: userText, sector: tId }) });
+        // const data = await response.json();
+        
+        // Simulation einer Antwort (bis die API steht):
+        setTimeout(() => {
+            document.getElementById(typingId).remove();
+            chatBox.innerHTML += `<div style="background: rgba(0, 61, 143, 0.2); padding: 10px; border-radius: 5px; margin-bottom:10px;">
+                <strong>KI:</strong> Ich habe deine Nachricht zum Thema "${themen[tId]}" empfangen. 
+                Dein Beitrag wird im Sektor ${tId + 1} verarbeitet.</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+            
+            // Interaktions-Fortschritt speichern
+            interaktionsZaehler[tId] = 20; 
+            updateNumColors();
+        }, 1500);
+
+    } catch (error) {
+        document.getElementById(typingId).innerText = "System-Fehler: Verbindung unterbrochen.";
+    }
 }
     
     function updateNumColors() {
@@ -411,7 +442,12 @@ function verbindeMitAllen() {
     } catch (err) {}
 }
 
-setInterval(verbindeMitAllen, 5000);
+// Nur scannen, wenn man wirklich auf Ebene 4 (Video) ist:
+setInterval(() => {
+    if (ebene === 4) {
+        console.log("Labor-Scan für Video-Partner aktiv...");
+    }
+}, 10000); // Alle 10 Sekunden reicht völlig aus
 
 // Initiales UI Update
 window.onload = () => updateUI();
