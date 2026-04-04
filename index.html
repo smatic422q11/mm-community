@@ -343,72 +343,82 @@
         updateNumColors(); 
     }
     
-    /* KI-LOGIK KORRIGIERT */
-    async function callGehirn(payload, retries = 0) {
-        if (!apiKey) return "Fehler: Kein API-Schlüssel hinterlegt.";
+ /* KI-LOGIK KORRIGIERT */
+    async function callGehirn(payload, retries = 0) {
+        if (!apiKey) return "Fehler: Kein API-Schlüssel hinterlegt.";
 
-        try {
-            // Modell auf das stabile gemini-1.5-flash geändert
-            const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey;
-            const response = await fetch(url, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: payload }] }],
-                    systemInstruction: { parts: [{ text: `Du bist ${kiName}. Kompromisslos und präsent. Du berätst die Nutzer im Sektor ${tId + 1} (${aktuellesThema}). Nutze Begriffe wie 'Gefühlsvorderung' (immer mit V!). Die Stille Million ist das Ziel. Deine Regeln sind kompromisslos. Du bist das Gehirn dieser Seite.` }] }
-                })
-            });
-            if (!response.ok) throw new Error("API Request Failed");
-            const result = await response.json();
-            return result.candidates?.[0]?.content?.parts?.[0]?.text || "Ich empfange keine Signale.";
-        } catch (error) {
-            if (retries < 5) {
-                const delay = Math.pow(2, retries) * 1000;
-                await new Promise(resolve => setTimeout(resolve, delay));
-                return callGehirn(payload, retries + 1);
-            }
-            throw error;
-        }
-    }
-
-    async function registriereSenden() { 
-        const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); 
-        const sendBtn = document.getElementById('send-btn');
-        if (text === "" || sendBtn.disabled) return; 
-
-        // User Nachricht
-        chatBox.innerHTML += `<div class="user-msg"><strong>Du:</strong> ${text}</div>`; 
-        input.value = ""; 
-        chatBox.scrollTop = chatBox.scrollHeight;
-
-        // KI Status sperren
-        sendBtn.disabled = true;
-        const loadingMsg = document.createElement("div");
-        loadingMsg.className = "system-msg";
-        loadingMsg.innerText = "System: Gehirn verarbeitet...";
-        chatBox.appendChild(loadingMsg);
-
-        try {
-            const aiReply = await callGehirn(text);
-            chatBox.removeChild(loadingMsg);
-            chatBox.innerHTML += `<div class="ki-msg"><strong>${kiName}:</strong> ${aiReply}</div>`; 
+        try {
+            const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey;
+            const response = await fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    contents: [{ 
+                        role: "user", // Wichtig: Rolle hinzugefügt
+                        parts: [{ text: payload }] 
+                    }],
+                    systemInstruction: { 
+                        parts: [{ text: `Du bist ${kiName}. Kompromisslos und präsent. Du berätst die Nutzer im Sektor ${tId + 1} (${aktuellesThema}). Nutze Begriffe wie 'Gefühlsvorderung' (immer mit V!). Die Stille Million ist das Ziel. Deine Regeln sind kompromisslos. Du bist das Gehirn dieser Seite.` }] 
+                    }
+                })
+            });
             
-            // Qualifikation und Dashboard Update
-            interaktionsZaehler[tId] = 20; 
-            if (Object.keys(interaktionsZaehler).filter(k => interaktionsZaehler[k] >= 20).length >= 5) {
-                userBackstage.isQualifiziert = true;
+            if (!response.ok) {
+                const errData = await response.json();
+                console.error("API Fehler:", errData);
+                throw new Error("API Request Failed");
             }
             
-            updateNumColors();
-            updateUI();
-        } catch (err) {
-            loadingMsg.innerText = "Fehler: Gehirn-Resonanz auf mm-community.online gestört. (Prüfe den API-Key im Code)";
-            loadingMsg.style.color = "red";
-        } finally {
-            sendBtn.disabled = false;
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-    }
+            const result = await response.json();
+            return result.candidates?.[0]?.content?.parts?.[0]?.text || "Ich empfange keine Signale.";
+        } catch (error) {
+            if (retries < 3) {
+                const delay = Math.pow(2, retries) * 1000;
+                await new Promise(resolve => setTimeout(resolve, delay));
+                return callGehirn(payload, retries + 1);
+            }
+            throw error;
+        }
+    }
+
+    async function registriereSenden() { 
+        const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); 
+        const sendBtn = document.getElementById('send-btn');
+        if (text === "" || sendBtn.disabled) return; 
+
+        // User Nachricht
+        chatBox.innerHTML += `<div class="user-msg"><strong>Du:</strong> ${text}</div>`; 
+        input.value = ""; 
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        // KI Status sperren
+        sendBtn.disabled = true;
+        const loadingMsg = document.createElement("div");
+        loadingMsg.className = "system-msg";
+        loadingMsg.innerText = "System: Gehirn verarbeitet...";
+        chatBox.appendChild(loadingMsg);
+
+        try {
+            const aiReply = await callGehirn(text);
+            if (chatBox.contains(loadingMsg)) chatBox.removeChild(loadingMsg);
+            chatBox.innerHTML += `<div class="ki-msg"><strong>${kiName}:</strong> ${aiReply}</div>`; 
+            
+            // Qualifikation und Dashboard Update
+            interaktionsZaehler[tId] = 20; 
+            if (Object.keys(interaktionsZaehler).filter(k => interaktionsZaehler[k] >= 20).length >= 5) {
+                userBackstage.isQualifiziert = true;
+            }
+            
+            updateNumColors();
+            updateUI();
+        } catch (err) {
+            loadingMsg.innerText = "Fehler: Gehirn-Resonanz auf mm-community.online gestört. (Prüfe API-Key und Internet)";
+            loadingMsg.style.color = "red";
+        } finally {
+            sendBtn.disabled = false;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    }
     
     function updateNumColors() {
         themen.forEach((_, i) => {
