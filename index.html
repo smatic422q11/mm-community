@@ -2,13 +2,14 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>M&M-COMMUNITY - Admin Modus</title>
-   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script> 
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script> 
     <style>
         /* BASIS-LAYOUT */
         body { background-color: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
 
-        /* DER GLOBALE SCHRIFTZUG (FÜR EBENE 2, 3 etc.) - EXAKTES LOGO-BLAU */
+        /* DER GLOBALE SCHRIFTZUG */
         .global-community-label {
             position: absolute;
             top: 10px;
@@ -17,12 +18,11 @@
             font-size: 0.9rem;
             letter-spacing: 5px;
             text-transform: uppercase;
-            color: #003d8f; /* Exaktes Logo-Blau */
+            color: #003d8f;
             z-index: 100;
             pointer-events: none;
         }
 
-        /* DER SCHRIFTZUG NUR IM DASHBOARD-BOARD (DER "HAUCH") - EXAKTES LOGO-BLAU */
         .inner-community-label {
             position: absolute;
             top: 8px;
@@ -31,7 +31,7 @@
             font-size: 0.7rem;
             letter-spacing: 4px;
             text-transform: uppercase;
-            color: rgba(0, 61, 143, 0.7); /* Logo-Blau, aber als Hauch integriert */
+            color: rgba(0, 61, 143, 0.7);
             z-index: 20;
             pointer-events: none;
         }
@@ -93,7 +93,7 @@
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
         #chat-area, #drawer-ebene4, #ebene5-bereich { width: 90% !important; flex-grow: 1; display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; overflow: hidden; position: relative; }
-        .chat-msgs { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px 0; color: #fff; font-size: 1.1rem; overflow-y: auto; }
+        .chat-msgs { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; padding: 10px; color: #fff; font-size: 1.1rem; overflow-y: auto; background: rgba(0,0,0,0.5); }
         .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; }
         
         .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; background: #000; z-index: 100; }
@@ -118,11 +118,14 @@
 
         .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
         .bild-aktiv { animation: kenburns 15s infinite ease-in-out, fadeEffect 8s infinite; }
+
+        .system-msg { color: #003d8f; font-style: italic; margin-bottom: 5px; font-size: 0.8rem; }
+        .user-msg { color: #00ff00; margin-bottom: 8px; border-bottom: 1px solid #111; padding-bottom: 2px; }
+        .ki-msg { color: #ffd700; margin-bottom: 15px; border-left: 2px solid #003d8f; padding-left: 8px; }
     </style>
 </head>
 <body>
 
-    <!-- DER GLOBALE SCHRIFTZUG (Bleibt auf Ebene 2, 3 etc.) -->
     <div id="top-label" class="global-community-label">Von M&M Community</div>
 
     <!-- DASHBOARD -->
@@ -131,7 +134,6 @@
             <div class="logo-ring" ondblclick="adminUnlock()"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
         </div>
         <div class="info-section">
-            <!-- SCHRIFTZUG HIER NUR AUF DEM DASHBOARD IN DER TAFEL -->
             <div class="inner-community-label">Von M&M Community</div>
             <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
             <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
@@ -146,7 +148,7 @@
         </div>
     </div>
 
-    <!-- PAGE SKELETT (EBENE 2, 3, 4, 5) -->
+    <!-- PAGE SKELETT -->
     <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
         <div class="top-container">
             <h1 id="info-titel" class="page-title-white"></h1>
@@ -177,13 +179,13 @@
             </div>
         </div>
 
-        <p id="main-text" style="width: 85%; text-align: justify; color: #ccc; margin-top: 2vh; font-size: 1.3rem; line-height: 1.8; max-height: 50vh; overflow-y: auto;"></p>
+        <p id="main-text" style="width: 85%; text-align: justify; color: #ccc; margin-top: 2vh; font-size: 1.3rem; line-height: 1.8; max-height: 40vh; overflow-y: auto;"></p>
 
         <div id="chat-area">
-            <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit...</i></div>
+            <div class="chat-msgs" id="chat-box"><div class="system-msg">System: Gehirn initialisiert...</div></div>
             <div class="chat-input-row">
-                <input type="text" id="chat-input" placeholder="Nachricht schreiben..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px; outline:none;" onkeypress="if(event.key==='Enter') registriereSenden()">
-                <button onclick="registriereSenden()" style="background:#003d8f; color:#fff; border:none; padding:0 30px; font-weight:bold; cursor:pointer;">SENDEN</button>
+                <input type="text" id="chat-input" placeholder="Nachricht an die M&M-KI..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px; outline:none;" onkeypress="if(event.key==='Enter') registriereSenden()">
+                <button id="send-btn" onclick="registriereSenden()" style="background:#003d8f; color:#fff; border:none; padding:0 30px; font-weight:bold; cursor:pointer;">SENDEN</button>
             </div>
         </div> 
 
@@ -211,6 +213,8 @@
     </div>
 
 <script>
+    const apiKey = ""; // Wird von der Umgebung bereitgestellt
+    
     let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5 };
     const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Alleinerziehend", "Die Brücke"];
     
@@ -256,7 +260,7 @@
 
     function showInfo(t, id) { 
         tId = id; aktuellesThema = t; 
-        document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
+        document.getElementById('chat-box').innerHTML = `<div class="system-msg">System: Dialog für Raum ${id+1} (${t}) bereit...</div>`;
         if (geleseneThemen.has(id)) { ebene = 3; } else { ebene = 2; geleseneThemen.add(id); }
         updateNumColors(); 
         document.getElementById('dashboard').style.display = 'none'; 
@@ -268,52 +272,51 @@
     function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
     function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
 
-  function updateUI() {
-    const isDashboard = (ebene === 1);
-    const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
-    
-    // Umschaltung Sichtbarkeit Globales Label vs. Dashboard
-    document.getElementById('top-label').style.display = isDashboard ? 'none' : 'block';
-    
-    document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
-    document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
-    document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
-    document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
-    document.getElementById('main-text').style.display = (ebene < 3) ? 'block' : 'none';
-    document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
-    document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
-    document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
-    document.getElementById('btn-back').style.visibility = 'visible';
-    
-    document.getElementById('info-titel').innerText = aktuellesThema;
-    
-    if (ebene === 2) {
-        document.getElementById('main-text').innerText = sektorTexte[tId];
+    function updateUI() {
+        const isDashboard = (ebene === 1);
+        const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
+        
+        document.getElementById('top-label').style.display = isDashboard ? 'none' : 'block';
+        document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
+        document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
+        document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
+        document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
+        document.getElementById('main-text').style.display = (ebene < 3) ? 'block' : 'none';
+        document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
+        document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
+        document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
+        document.getElementById('btn-back').style.visibility = 'visible';
+        
+        document.getElementById('info-titel').innerText = aktuellesThema;
+        
+        if (ebene === 2) {
+            document.getElementById('main-text').innerText = sektorTexte[tId];
+        }
+
+        const btnNext = document.getElementById('btn-next');
+        const sigGelb = document.getElementById('sig-r4');
+        const sigRot = document.getElementById('sig-l4');
+
+        if (ebene === 2) {
+            btnNext.style.visibility = 'hidden'; 
+            sigGelb.classList.add('signal-aktiv'); 
+            sigRot.classList.add('signal-aktiv');  
+        } else if (ebene === 3) {
+            sigGelb.classList.remove('signal-aktiv');
+            sigRot.classList.add('signal-aktiv'); 
+        } else if (ebene === 4) {
+            sigRot.classList.remove('signal-aktiv');
+            sigGelb.classList.add('signal-aktiv');
+        } else {
+            sigGelb.classList.remove('signal-aktiv');
+            sigRot.classList.remove('signal-aktiv');
+        }
+
+        aktiviereKandidatenLicht();
+        updateDots(); 
+        startRotation();
     }
 
-    const btnNext = document.getElementById('btn-next');
-    const sigGelb = document.getElementById('sig-r4');
-    const sigRot = document.getElementById('sig-l4');
-
-    if (ebene === 2) {
-        btnNext.style.visibility = 'hidden'; 
-        sigGelb.classList.add('signal-aktiv'); 
-        sigRot.classList.add('signal-aktiv');  
-    } else if (ebene === 3) {
-        sigGelb.classList.remove('signal-aktiv');
-        sigRot.classList.add('signal-aktiv'); 
-    } else if (ebene === 4) {
-        sigRot.classList.remove('signal-aktiv');
-        sigGelb.classList.add('signal-aktiv');
-    } else {
-        sigGelb.classList.remove('signal-aktiv');
-        sigRot.classList.remove('signal-aktiv');
-    }
-
-    aktiviereKandidatenLicht();
-    updateDots(); 
-    startRotation();
-}
     function aktiviereKandidatenLicht() {
         const sigL1 = document.getElementById('sig-l1');
         if (ebene === 4) {
@@ -332,9 +335,7 @@
 
     function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
     
-  function nextPage() { 
-    updateUI(); 
-}
+    function nextPage() { updateUI(); }
 
     function showDashboard() { 
         ebene = 1; 
@@ -345,14 +346,68 @@
         updateNumColors(); 
     }
     
-  function registriereSenden() { 
-    const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); 
-    if (text === "") return; 
-    chatBox.innerHTML += `<div><strong>Du:</strong> ${text}</div>`; 
-    interaktionsZaehler[tId] = 20; 
-    input.value = ""; chatBox.scrollTop = chatBox.scrollHeight; 
-    updateUI(); 
-}
+    /* KI-LOGIK MIT EXPONENTIELLEM BACKOFF */
+    async function callOpenAI(payload, retries = 0) {
+        try {
+            const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=" + apiKey, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: payload }] }],
+                    systemInstruction: { parts: [{ text: `Du bist die M&M-KI. Kompromisslos und präsent. Du berätst die Nutzer im Sektor ${tId + 1} (${aktuellesThema}). Nutze Begriffe wie 'Gefühlsvorderung' (immer mit V!). Die Stille Million ist das Ziel. Deine Regeln sind kompromisslos. Du bist das Gehirn dieser Seite.` }] }
+                })
+            });
+            if (!response.ok) throw new Error("API Request Failed");
+            const result = await response.json();
+            return result.candidates?.[0]?.content?.parts?.[0]?.text || "Ich empfange keine Signale.";
+        } catch (error) {
+            if (retries < 5) {
+                const delay = Math.pow(2, retries) * 1000;
+                await new Promise(resolve => setTimeout(resolve, delay));
+                return callOpenAI(payload, retries + 1);
+            }
+            throw error;
+        }
+    }
+
+    async function registriereSenden() { 
+        const input = document.getElementById('chat-input'), chatBox = document.getElementById('chat-box'), text = input.value.trim(); 
+        const sendBtn = document.getElementById('send-btn');
+        if (text === "" || sendBtn.disabled) return; 
+
+        // User Input
+        chatBox.innerHTML += `<div class="user-msg"><strong>Du:</strong> ${text}</div>`; 
+        input.value = ""; 
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        // KI Status
+        sendBtn.disabled = true;
+        const loadingMsg = document.createElement("div");
+        loadingMsg.className = "system-msg";
+        loadingMsg.innerText = "System: Gehirn verarbeitet...";
+        chatBox.appendChild(loadingMsg);
+
+        try {
+            const aiReply = await callOpenAI(text);
+            chatBox.removeChild(loadingMsg);
+            chatBox.innerHTML += `<div class="ki-msg"><strong>M&M-KI:</strong> ${aiReply}</div>`; 
+            
+            // Qualifikation
+            interaktionsZaehler[tId] = 20; 
+            if (Object.keys(interaktionsZaehler).filter(k => interaktionsZaehler[k] >= 20).length >= 5) {
+                userBackstage.isQualifiziert = true;
+            }
+            
+            updateNumColors();
+            updateUI();
+        } catch (err) {
+            loadingMsg.innerText = "Fehler: Gehirn-Resonanz gestört.";
+            loadingMsg.style.color = "red";
+        } finally {
+            sendBtn.disabled = false;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    }
     
     function updateNumColors() {
         themen.forEach((_, i) => {
@@ -390,32 +445,19 @@
         element.classList.add('bild-aktiv'); 
     }
 
-  let meinPeer = new Peer(); 
+    let meinPeer = new Peer(); 
+    meinPeer.on('open', (id) => { console.log('Live-ID synchronisiert'); });
 
-meinPeer.on('open', (id) => {
-    console.log('Live-ID synchronisiert');
-});
+    async function starteVideoKonferenz() {
+        const meinSlot = document.getElementById('v-slot-1');
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover;"></video>`;
+            document.getElementById('user-video').srcObject = stream;
+        } catch (err) {}
+    }
 
-async function starteVideoKonferenz() {
-    const meinSlot = document.getElementById('v-slot-1');
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover;"></video>`;
-        document.getElementById('user-video').srcObject = stream;
-    } catch (err) {}
-}
-
-function verbindeMitAllen() {
-    try {
-        console.log("Labor-Scan aktiv...");
-    } catch (err) {}
-}
-
-setInterval(verbindeMitAllen, 5000);
-
-// Initiales UI Update
-window.onload = () => updateUI();
+    window.onload = () => updateUI();
 </script>
 </body>
 </html>
-
