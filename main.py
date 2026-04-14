@@ -1,11 +1,10 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-import openai
+import google.generativeai as genai
 import os
 
 app = FastAPI()
 
-# Der Türsteher lässt die Webseite rein
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -14,8 +13,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Hier holt sich der Server den API-Key, den wir bei Render hinterlegt haben
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# Gemini Gehirn konfigurieren
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 @app.post("/chat")
 async def chat(request: Request):
@@ -23,20 +22,14 @@ async def chat(request: Request):
         data = await request.json()
         user_message = data.get("message")
 
-        # Die echte Anfrage an die KI
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "Du bist ein hilfreicher Assistent."},
-                {"role": "user", "content": user_message}
-            ]
-        )
+        # Wir nutzen das schnelle Gemini 2.0 Flash
+        model = genai.GenerativeModel('gemini-2.0-flash')
+        response = model.generate_content(user_message)
         
-        ki_antwort = response.choices[0].message.content
-        return {"reply": ki_antwort}
+        return {"reply": response.text}
 
     except Exception as e:
-        return {"reply": f"Fehler im Gehirn: {str(e)}"}
+        return {"reply": f"Parlaments-Zentrale: Verbindung unterbrochen ({str(e)})"}
 
 @app.get("/")
 async def root():
