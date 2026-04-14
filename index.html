@@ -362,7 +362,7 @@ async function registriereSenden() {
 
     try {
         const sektorWissen = sektorTexte[tId]; 
-        const response = await fetch('https://mm-community-api.onrender.com/chat', {
+        const response = await fetch('https://mm-community.onrender.com/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: userText })
