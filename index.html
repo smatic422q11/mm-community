@@ -367,9 +367,7 @@ async function registriereSenden() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: userText })
         });
-        
-        const data = await response.json();
-        
+
         const data = await response.json();
         const typingElement = document.getElementById(typingId);
         if (typingElement) typingElement.remove();
