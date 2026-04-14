@@ -5,7 +5,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry]
 name = "mm-community"
 version = "0.1.0"
-description = "M&M Plattform"
+description = "Backend"
 authors = ["Goran"]
 
 [tool.poetry.dependencies]
@@ -14,4 +14,3 @@ fastapi = "^0.109.0"
 uvicorn = "^0.27.0"
 openai = "^1.12.0"
 python-multipart = "^0.0.9"
-jinja2 = "^3.1.3"
