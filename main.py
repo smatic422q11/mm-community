@@ -18,17 +18,17 @@ async def chat(request: Request):
     try:
         data = await request.json()
         user_message = data.get("message")
+        mm_context = data.get("context", "") # Das Wissen aus Ebene 2
+
         api_key = os.getenv("GEMINI_API_KEY")
-
-        if not api_key:
-            return {"reply": "System-Fehler: API-Key fehlt in Render-Umgebung."}
-
-        # Korrektur auf v1beta für volle Kompatibilität
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+        
+        # Hier wird die Vorgabe der M&M Community fest verankert
+        system_instruction = f"Handle im Sinne der M&M Community. Prinzip: Ich denke, ich sage, ich tue. Hintergrundwissen für diesen Sektor: {mm_context}"
         
         payload = {
             "contents": [{
-                "parts": [{"text": user_message}]
+                "parts": [{"text": f"{system_instruction}\n\nNutzer-Anfrage: {user_message}"}]
             }]
         }
 
