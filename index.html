@@ -177,7 +177,7 @@
             </div>
         </div>
 
-      <div id="ebene2-terminal" style="width: 85%; display: none; flex-direction: column; gap: 20px; margin-top: 2vh; max-height: 55vh; overflow-y: auto;">
+      <div id="ebene2-terminal" style="width: 85%; display: flex; flex-direction: column; gap: 20px; margin-top: 2vh; max-height: 55vh; overflow-y: auto;">
     <div id="sector-base-text" style="color: #fff; font-size: 1.2rem; line-height: 1.6; border-left: 3px solid #003d8f; padding-left: 15px;"></div>
 
     <div id="world-news-feed" style="background: rgba(0, 61, 143, 0.1); border: 1px solid #003d8f; padding: 15px; border-radius: 5px;">
@@ -279,18 +279,23 @@
     function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
     function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
 
-  function updateUI() {
+ function updateUI() {
     const isDashboard = (ebene === 1);
+    const isEbene2 = (ebene === 2);
     const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
     
-    // Umschaltung Sichtbarkeit Globales Label vs. Dashboard
     document.getElementById('top-label').style.display = isDashboard ? 'none' : 'block';
     
+    // UMSCHALTUNG DER BEREICHE
+    document.getElementById('ebene2-terminal').style.display = isEbene2 ? 'flex' : 'none';
     document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
     document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
     document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
+    
+    // ENTFERNE ODER KOMMENTIERE DIE NÄCHSTE ZEILE AUS (Sie verursacht den Fehler):
+    // document.getElementById('main-text').style.display = (ebene < 3) ? 'block' : 'none'; 
+
     document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
-    document.getElementById('main-text').style.display = (ebene < 3) ? 'block' : 'none';
     document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
     document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
     document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
@@ -298,22 +303,11 @@
     
     document.getElementById('info-titel').innerText = aktuellesThema;
     
-  if (ebene === 2) {
-    const terminal = document.getElementById('ebene2-terminal');
-    terminal.style.display = 'flex';
-    
-    // 1. Statischer Kerntext
-    document.getElementById('sector-base-text').innerText = sektorTexte[tId];
-    
-    // 2. Befehl an die KI: Hol Welt-News & Highlights (Simulation der Chefredaktion)
-    // Hier schießt Gemini später die Echtzeit-Daten rein
-    document.getElementById('news-content').innerHTML = `Analysiere aktuelle Meldungen zu <strong>${aktuellesThema}</strong> in allen 198 Ländern...`;
-    
-    // 3. Highlight-Check
-    document.getElementById('echo-content').innerText = "Suche nach 30s-Highlights aus den Video-Beweisen von gestern...";
-} else {
-    document.getElementById('ebene2-terminal').style.display = 'none';
-}
+    if (isEbene2) {
+        document.getElementById('sector-base-text').innerText = sektorTexte[tId];
+        document.getElementById('news-content').innerHTML = `Analysiere aktuelle Meldungen zu <strong>${aktuellesThema}</strong> in allen 198 Ländern...`;
+        document.getElementById('echo-content').innerText = "Suche nach 30s-Highlights aus den Video-Beweisen von gestern...";
+    }
 
     const btnNext = document.getElementById('btn-next');
     const sigGelb = document.getElementById('sig-r4');
@@ -337,7 +331,7 @@
     aktiviereKandidatenLicht();
     updateDots(); 
     startRotation();
-}
+} 
     function aktiviereKandidatenLicht() {
         const sigL1 = document.getElementById('sig-l1');
         if (ebene === 4) {
