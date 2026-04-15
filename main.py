@@ -23,7 +23,7 @@ async def chat(request: Request):
         api_key = os.getenv("GEMINI_API_KEY")
         
         # KORREKTUR: Das "-latest" wurde hinzugefügt, damit Google das Modell findet
-        url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
+       url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
         
         # Hier wird die Vorgabe der M&M Community fest verankert
         system_instruction = f"Handle im Sinne der M&M Community. Prinzip: Ich denke, ich sage, ich tue. Hintergrundwissen für diesen Sektor: {mm_context}"
