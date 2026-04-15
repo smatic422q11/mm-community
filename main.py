@@ -23,7 +23,7 @@ async def chat(request: Request):
         user_message = data.get("message")
 
         # Wir nutzen das schnelle Gemini 2.0 Flash
-        model = genai.GenerativeModel('gemini-2.0-flash')
+       model = genai.GenerativeModel('gemini-1.5-flash')
         response = model.generate_content(user_message)
         
         return {"reply": response.text}
