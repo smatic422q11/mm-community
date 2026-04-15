@@ -20,9 +20,8 @@ async def chat(request: Request):
         user_message = data.get("message")
         api_key = os.getenv("GEMINI_API_KEY")
 
-        # Wir nehmen die absolut stabile v1 URL und das Standard-Modell
-        # KEIN v1beta mehr!
-       url = f"https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key={api_key}"
+        # Hier war der Einrückungsfehler - jetzt ist es perfekt untereinander
+        url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
         
         payload = {
             "contents": [{
@@ -33,10 +32,13 @@ async def chat(request: Request):
         response = requests.post(url, json=payload)
         response_data = response.json()
 
-        # Wenn es hier einen Fehler gibt, zeigt er uns jetzt die WAHRE Ursache
         if response.status_code != 200:
             error_msg = response_data.get('error', {}).get('message', 'Unbekannter Fehler')
             return {"reply": f"Google-Sperre: {error_msg}"}
+
+        # Falls Google eine leere Antwort schickt
+        if 'candidates' not in response_data:
+             return {"reply": "Parlament: Keine Antwort erhalten. Prüfe dein Guthaben."}
 
         reply_text = response_data['candidates'][0]['content']['parts'][0]['text']
         return {"reply": reply_text}
