@@ -13,8 +13,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Gemini Gehirn konfigurieren
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+# Wir erzwingen die STABILE API-Version v1, um den v1beta-Fehler zu killen
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"), transport="rest")
 
 @app.post("/chat")
 async def chat(request: Request):
@@ -22,8 +22,8 @@ async def chat(request: Request):
         data = await request.json()
         user_message = data.get("message")
 
-        # Wir nutzen den Standard-Namen ohne Zusätze
-        model = genai.GenerativeModel('models/gemini-1.5-flash')
+        # Das Standard-Modell auf der stabilen Leitung
+        model = genai.GenerativeModel('gemini-1.5-flash')
         response = model.generate_content(user_message)
         
         return {"reply": response.text}
