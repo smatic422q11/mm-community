@@ -20,8 +20,8 @@ async def chat(request: Request):
         user_message = data.get("message")
         api_key = os.getenv("GEMINI_API_KEY")
 
-        # Die URL muss exakt so eingerückt sein wie die Zeilen darüber
-        url = f"https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key={api_key}"
+        # Wir erzwingen die v1beta mit dem Standard-Pro Modell
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key={api_key}"
         
         payload = {
             "contents": [{
@@ -33,7 +33,8 @@ async def chat(request: Request):
         response_data = response.json()
 
         if response.status_code != 200:
-            return {"reply": f"Fehler von Google: {response_data.get('error', {}).get('message', 'Unbekannter Fehler')}"}
+            error_msg = response_data.get('error', {}).get('message', 'Unbekannter Fehler')
+            return {"reply": f"Fehler von Google: {error_msg}"}
 
         reply_text = response_data['candidates'][0]['content']['parts'][0]['text']
         return {"reply": reply_text}
