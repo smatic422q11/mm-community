@@ -362,11 +362,14 @@ async function registriereSenden() {
 
     try {
         const sektorWissen = sektorTexte[tId]; 
-        const response = await fetch('https://mm-community.onrender.com/chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: userText })
-        });
+    const response = await fetch('https://DEINE-RENDER-URL.com/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ 
+        message: userText,
+        context: sektorTexte[tId] // Hier wird das M&M Wissen der Ebene 2 mitgesendet
+    })
+});
 
         const data = await response.json();
         const typingElement = document.getElementById(typingId);
