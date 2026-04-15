@@ -22,7 +22,7 @@ async def chat(request: Request):
 
         # Wir nehmen die absolut stabile v1 URL und das Standard-Modell
         # KEIN v1beta mehr!
-        url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
+       url = f"https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key={api_key}"
         
         payload = {
             "contents": [{
