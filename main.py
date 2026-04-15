@@ -21,7 +21,7 @@ async def chat(request: Request):
         api_key = os.getenv("GEMINI_API_KEY")
 
         # Wir umgehen die kaputte Google-Library und gehen direkt auf die stabile v1
-       url = f"https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key={api_key}"
+      url = f"https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key={api_key}"
         
         payload = {
             "contents": [{
