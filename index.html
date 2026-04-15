@@ -360,16 +360,17 @@ async function registriereSenden() {
     chatBox.innerHTML += `<div id="${typingId}" style="color:#003d8f; font-style:italic;">M&M KI denkt nach...</div>`;
     chatBox.scrollTop = chatBox.scrollHeight;
 
-    try {
-        const sektorWissen = sektorTexte[tId]; 
-    const response = await fetch('https://DEINE-RENDER-URL.com/chat', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ 
-        message: userText,
-        context: sektorTexte[tId] // Hier wird das M&M Wissen der Ebene 2 mitgesendet
-    })
-});
+  try {
+    const sektorWissen = sektorTexte[tId]; 
+    // Ersetze 'DEINE-RENDER-URL' durch deinen echten Namen von Render!
+    const response = await fetch('https://mm-community.onrender.com/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            message: userText,
+            context: sektorWissen // Hier wird das M&M Wissen der Ebene 2 mitgesendet
+        })
+    }); 
 
         const data = await response.json();
         const typingElement = document.getElementById(typingId);
