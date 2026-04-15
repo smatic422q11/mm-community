@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-import requests
+import google.generativeai as genai
 import os
 
 app = FastAPI()
@@ -13,34 +13,24 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Jetzt, wo du alles aktiviert hast, greift der Key sauber
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
 @app.post("/chat")
 async def chat(request: Request):
     try:
         data = await request.json()
         user_message = data.get("message")
-        api_key = os.getenv("GEMINI_API_KEY")
 
-        # Wir erzwingen die v1beta mit dem Standard-Pro Modell
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key={api_key}"
+        # Wir nehmen das stabilste Modell für aktivierte Cloud-Konten
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        response = model.generate_content(user_message)
         
-        payload = {
-            "contents": [{
-                "parts": [{"text": user_message}]
-            }]
-        }
-
-        response = requests.post(url, json=payload)
-        response_data = response.json()
-
-        if response.status_code != 200:
-            error_msg = response_data.get('error', {}).get('message', 'Unbekannter Fehler')
-            return {"reply": f"Fehler von Google: {error_msg}"}
-
-        reply_text = response_data['candidates'][0]['content']['parts'][0]['text']
-        return {"reply": reply_text}
+        return {"reply": response.text}
 
     except Exception as e:
-        return {"reply": f"Parlaments-Zentrale: Verbindung unterbrochen ({str(e)})"}
+        # Hier lassen wir uns den Fehler GENAU anzeigen, falls noch was klemmt
+        return {"reply": f"Parlaments-Zentrale: {str(e)}"}
 
 @app.get("/")
 async def root():
