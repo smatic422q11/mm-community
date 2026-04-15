@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-import google.generativeai as genai
+import requests
 import os
 
 app = FastAPI()
@@ -13,29 +13,36 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Konfiguration mit deinem neuen Key
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-
 @app.post("/chat")
 async def chat(request: Request):
     try:
         data = await request.json()
         user_message = data.get("message")
+        api_key = os.getenv("GEMINI_API_KEY")
 
-        # Wir nutzen jetzt den VOLLSTÄNDIGEN Namen, den Google intern erzwingt
-        # Das 'models/' davor ist der Schlüssel!
-        model = genai.GenerativeModel(model_name='models/gemini-1.5-flash')
+        # Wir nehmen die absolut stabile v1 URL und das Standard-Modell
+        # KEIN v1beta mehr!
+        url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
         
-        response = model.generate_content(user_message)
-        
-        if not response.text:
-            return {"reply": "Parlament: Gehirn ist leer, bitte nochmal senden."}
-            
-        return {"reply": response.text}
+        payload = {
+            "contents": [{
+                "parts": [{"text": user_message}]
+            }]
+        }
+
+        response = requests.post(url, json=payload)
+        response_data = response.json()
+
+        # Wenn es hier einen Fehler gibt, zeigt er uns jetzt die WAHRE Ursache
+        if response.status_code != 200:
+            error_msg = response_data.get('error', {}).get('message', 'Unbekannter Fehler')
+            return {"reply": f"Google-Sperre: {error_msg}"}
+
+        reply_text = response_data['candidates'][0]['content']['parts'][0]['text']
+        return {"reply": reply_text}
 
     except Exception as e:
-        # Das hier zeigt uns jetzt den WIRKLICHEN Grund (Region, Key oder Permission)
-        return {"reply": f"Parlaments-Zentrale: {str(e)}"}
+        return {"reply": f"Parlaments-Zentrale: Verbindung unterbrochen ({str(e)})"}
 
 @app.get("/")
 async def root():
