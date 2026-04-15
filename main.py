@@ -22,8 +22,8 @@ async def chat(request: Request):
         data = await request.json()
         user_message = data.get("message")
 
-        # Wir nutzen die stabilste Version von 1.5 Flash
-        model = genai.GenerativeModel('gemini-1.5-flash-latest')
+        # Wir nutzen den Standard-Namen ohne Zusätze
+        model = genai.GenerativeModel('models/gemini-1.5-flash')
         response = model.generate_content(user_message)
         
         return {"reply": response.text}
