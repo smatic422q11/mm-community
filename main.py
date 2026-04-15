@@ -20,8 +20,8 @@ async def chat(request: Request):
         user_message = data.get("message")
         api_key = os.getenv("GEMINI_API_KEY")
 
-        # Hier war der Einrückungsfehler - jetzt ist es perfekt untereinander
-        url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
+        # Wir wechseln auf v1beta - das MUSS bei neuen Projekten funktionieren
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
         
         payload = {
             "contents": [{
@@ -36,12 +36,12 @@ async def chat(request: Request):
             error_msg = response_data.get('error', {}).get('message', 'Unbekannter Fehler')
             return {"reply": f"Google-Sperre: {error_msg}"}
 
-        # Falls Google eine leere Antwort schickt
-        if 'candidates' not in response_data:
-             return {"reply": "Parlament: Keine Antwort erhalten. Prüfe dein Guthaben."}
-
-        reply_text = response_data['candidates'][0]['content']['parts'][0]['text']
-        return {"reply": reply_text}
+        # Sicherheitscheck für die Antwortstruktur
+        if 'candidates' in response_data and len(response_data['candidates']) > 0:
+            reply_text = response_data['candidates'][0]['content']['parts'][0]['text']
+            return {"reply": reply_text}
+        else:
+            return {"reply": "Parlament: Google hat keine Antwort geliefert. Prüfe die API-Einstellungen."}
 
     except Exception as e:
         return {"reply": f"Parlaments-Zentrale: Verbindung unterbrochen ({str(e)})"}
