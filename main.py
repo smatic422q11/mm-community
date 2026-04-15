@@ -21,7 +21,9 @@ async def chat(request: Request):
         mm_context = data.get("context", "") # Das Wissen aus Ebene 2
 
         api_key = os.getenv("GEMINI_API_KEY")
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+        
+        # KORREKTUR: Das "-latest" wurde hinzugefügt, damit Google das Modell findet
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={api_key}"
         
         # Hier wird die Vorgabe der M&M Community fest verankert
         system_instruction = f"Handle im Sinne der M&M Community. Prinzip: Ich denke, ich sage, ich tue. Hintergrundwissen für diesen Sektor: {mm_context}"
