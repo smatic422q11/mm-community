@@ -177,8 +177,19 @@
             </div>
         </div>
 
-        <p id="main-text" style="width: 85%; text-align: justify; color: #ccc; margin-top: 2vh; font-size: 1.3rem; line-height: 1.8; max-height: 50vh; overflow-y: auto;"></p>
+      <div id="ebene2-terminal" style="width: 85%; display: none; flex-direction: column; gap: 20px; margin-top: 2vh; max-height: 55vh; overflow-y: auto;">
+    <div id="sector-base-text" style="color: #fff; font-size: 1.2rem; line-height: 1.6; border-left: 3px solid #003d8f; padding-left: 15px;"></div>
 
+    <div id="world-news-feed" style="background: rgba(0, 61, 143, 0.1); border: 1px solid #003d8f; padding: 15px; border-radius: 5px;">
+        <h3 style="color: #00ff00; font-size: 0.8rem; letter-spacing: 2px; margin-top: 0;">GLOBAL PULSE (198 LÄNDER)</h3>
+        <div id="news-content" style="color: #ccc; font-size: 1rem;">Lade aktuelle Weltlage...</div>
+    </div>
+
+    <div id="community-echo" style="background: rgba(255, 0, 0, 0.05); border: 1px solid #ff0000; padding: 15px; border-radius: 5px;">
+        <h3 style="color: #ff0000; font-size: 0.8rem; letter-spacing: 2px; margin-top: 0;">ECHO DER MUTIGEN (EBENE 4 HIGHLIGHTS)</h3>
+        <div id="echo-content" style="color: #ccc; font-size: 0.9rem; font-style: italic;">Analysiere gestrige Debatten...</div>
+    </div>
+</div>
         <div id="chat-area">
             <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit...</i></div>
             <div class="chat-input-row">
@@ -287,9 +298,22 @@
     
     document.getElementById('info-titel').innerText = aktuellesThema;
     
-    if (ebene === 2) {
-        document.getElementById('main-text').innerText = sektorTexte[tId];
-    }
+  if (ebene === 2) {
+    const terminal = document.getElementById('ebene2-terminal');
+    terminal.style.display = 'flex';
+    
+    // 1. Statischer Kerntext
+    document.getElementById('sector-base-text').innerText = sektorTexte[tId];
+    
+    // 2. Befehl an die KI: Hol Welt-News & Highlights (Simulation der Chefredaktion)
+    // Hier schießt Gemini später die Echtzeit-Daten rein
+    document.getElementById('news-content').innerHTML = `Analysiere aktuelle Meldungen zu <strong>${aktuellesThema}</strong> in allen 198 Ländern...`;
+    
+    // 3. Highlight-Check
+    document.getElementById('echo-content').innerText = "Suche nach 30s-Highlights aus den Video-Beweisen von gestern...";
+} else {
+    document.getElementById('ebene2-terminal').style.display = 'none';
+}
 
     const btnNext = document.getElementById('btn-next');
     const sigGelb = document.getElementById('sig-r4');
