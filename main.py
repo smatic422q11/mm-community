@@ -5,7 +5,6 @@ import os
 
 app = FastAPI()
 
-# CORS-Einstellungen bleiben exakt wie von dir vorgegeben
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -14,12 +13,28 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Das Register für die Namen – Die Würze deiner 20 Sektoren
+# Register angepasst auf 0-19 (passend zu deinem System)
 SECTOR_NAMES = {
-    "1": "Lilith", "2": "Aris", "3": "Mira", "4": "Tarik", "5": "Kiron",
-    "6": "Vikas", "7": "Rhea", "8": "Lyra", "9": "Nova", "10": "Marek",
-    "11": "Silas", "12": "Aura", "13": "Joris", "14": "Sira", "15": "Kian",
-    "16": "Alma", "17": "Laris", "18": "Liv", "19": "Kyra", "20": "Chiron"
+    "0": "Lilith",  # Sektor 1 in deiner Welt, ID 0 im Code
+    "1": "Aris", 
+    "2": "Mira", 
+    "3": "Tarik", 
+    "4": "Kiron",
+    "5": "Vikas", 
+    "6": "Rhea", 
+    "7": "Lyra", 
+    "8": "Nova", 
+    "9": "Marek",
+    "10": "Silas", 
+    "11": "Aura", 
+    "12": "Joris", 
+    "13": "Sira", 
+    "14": "Kian",
+    "15": "Alma", 
+    "16": "Laris", 
+    "17": "Liv", 
+    "18": "Kyra", 
+    "19": "Chiron"  # Sektor 20 in deiner Welt, ID 19 im Code
 }
 
 @app.post("/chat")
@@ -29,19 +44,17 @@ async def chat(request: Request):
         user_message = data.get("message")
         mm_context = data.get("context", "")
         
-        # Sektor-ID auslesen. WICHTIG: Deine Webseite muss diese ID mitsenden!
-        sector_id = str(data.get("sector_id", "1"))
+        # Holt die ID (jetzt 0, 1, 2...)
+        sector_id = str(data.get("sector_id", "0"))
+        
+        # Sucht den Namen (findet jetzt auch die 0 für Lilith und 19 für Chiron)
         current_name = SECTOR_NAMES.get(sector_id, "KI")
 
         api_key = os.getenv("GEMINI_API_KEY")
-        
-        # 1. URL: Exakt nach deiner Vorgabe (Version 3)
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
         
-        # System_instruction bleibt original
         system_instruction = f"Handle im Sinne der M&M Community. Prinzip: Ich denke, ich sage, ich tue. Hintergrundwissen: {mm_context}"
         
-        # 2. Payload: Exakt nach deiner Struktur
         payload = {
             "contents": [{
                 "parts": [{"text": f"{system_instruction}\n\nFrage: {user_message}"}]
@@ -51,23 +64,18 @@ async def chat(request: Request):
         response = requests.post(url, json=payload)
         response_data = response.json()
 
-        # Fehlerprüfung
         if response.status_code != 200:
-            error_msg = response_data.get('error', {}).get('message', 'Fehler beim Modell-Zugriff')
-            return {"reply": f"Google sagt: {error_msg}"}
+            return {"reply": "Fehler beim Modell-Zugriff"}
 
-        # Die Antwort auslesen
         if 'candidates' in response_data:
             reply_text = response_data['candidates'][0]['content']['parts'][0]['text']
-            
-            # Hier wird NUR der Name und der Doppelpunkt davor gesetzt
-            # Ergebnis: "Lilith: [Antwort]"
+            # Name und Doppelpunkt davor
             return {"reply": f"{current_name}: {reply_text}"}
         else:
-            return {"reply": "Keine Antwort vom Gehirn erhalten."}
+            return {"reply": "Keine Antwort erhalten."}
 
     except Exception as e:
-        return {"reply": f"Verbindung unterbrochen: {str(e)}"}
+        return {"reply": f"Fehler: {str(e)}"}
 
 @app.get("/")
 async def root():
