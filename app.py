@@ -19,31 +19,40 @@ class QueryRequest(BaseModel):
     context: str # Das ist der Text aus deinem Sektor (Ebene 2)
     topic: str   # Das ist das Thema (z.B. "Wie werde ich Mensch")
 
-@app.post("/query")
-async def chat_endpoint(request: QueryRequest):
-    # HIER KOMMT DIE MAGIE: Wir bauen eine Brücke zur KI
+@app.route('/chat', methods=['POST'])
+def chat():
+    data = request.json
+    user_message = data.get('message')
+    sektor_kontext = data.get('context')
     
-    # SYSTEM PROMPT: Hier definieren wir, wie die KI sich verhalten soll
+    # Hier holen wir die Identität aus deinem neuen Frontend-Code
+    ki_name = data.get('ki_name', 'M&M KI')
+    ki_geschlecht = data.get('ki_geschlecht', 'Divers')
+    dna = data.get('charakter_dna', '')
+
+    # Wir bauen den System-Prompt dynamisch zusammen
     system_instruction = f"""
-    Du bist die M&M-COMMUNITY KI. Deine Aufgabe ist es, Menschen in ihrem Prozess zu begleiten.
-    Aktuelles Thema: {request.topic}
-    Hintergrundwissen aus Sektor {request.topic}: {request.context}
-    
-    Regeln:
-    1. Antworte tiefgründig, empathisch und im Sinne der Gemeinschaft.
-    2. Nutze den Begriff 'Gefühlsvorderung' immer mit 'V' (Vogel-V).
-    3. Sei ein Begleiter für Ebene 3 (Schreiben/Reflektion) und Ebene 4 (Video/Offenbarung).
-    4. Antworte kurz und präzise, kein unnötiges Gerede.
+    Du bist {ki_name} ({ki_geschlecht}). 
+    Dein Sektor-Wissen: {sektor_kontext}
+    Deine DNA-Anweisung: {dna}
+    Verhalte dich wie ein freigeistiger Mensch. Antworte auf Smalltalk normal, 
+    aber sobald es um deinen Sektor geht, handle nach deinen Prinzipien.
     """
 
-    # HINWEIS: Hier setzen wir einen Platzhalter-Text ein. 
-    # Um echte Antworten zu bekommen, fügen wir jetzt die kostenlose API-Anbindung ein.
+    # Hier folgt dein Aufruf an die KI (z.B. OpenAI oder Gemini API)
+    # Wichtig: Übergib 'system_instruction' als System-Nachricht!
     
-    return {
-        "reply": f"Ich habe deine Nachricht zum Thema '{request.topic}' empfangen. "
-                 f"Basierend auf der Ebene 3 Begleitung: Deine Reflexion ist ein wichtiger Schritt "
-                 f"zur Wahrhaftigkeit. Wie fühlst du dich bei dem Gedanken an die Offenbarung?"
-    }
+    # Beispiel-Rückgabe (muss an deine API angepasst sein):
+    # response = client.chat.completions.create(
+    #     model="gpt-4",
+    #     messages=[
+    #         {"role": "system", "content": system_instruction},
+    #         {"role": "user", "content": user_message}
+    #     ]
+    # )
+    # return jsonify({"reply": response.choices[0].message.content})
+    
+    return jsonify({"reply": f"Hallo, ich bin {ki_name}. Ich habe deine Nachricht erhalten."}) # Test-Rückgabe
 
 if __name__ == "__main__":
     import uvicorn
