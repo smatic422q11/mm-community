@@ -18,16 +18,21 @@ async def chat(request: Request):
     try:
         data = await request.json()
         user_message = data.get("message")
-        mm_context = data.get("context", "")
-
+        
+        # Den API-Key holen
         api_key = os.getenv("GEMINI_API_KEY")
         
-        # 1. KORREKTUR: Die URL exakt nach deinem Foto (Version 3)
+        # Die URL für Gemini 3 Flash
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
         
-        system_instruction = f"Handle im Sinne der M&M Community. Prinzip: Ich denke, ich sage, ich tue. Hintergrundwissen: {mm_context}"
+        # HIER SIND JETZT NUR DIE NAMEN DER 20 SEKTOREN
+        system_instruction = (
+            "Du arbeitest mit 20 Sektoren. Hier sind die Namen: "
+            "1. Kyra, 2. Leon, 3. Nia, 4. Jace, 5. Ben, 6. Mila, 7. Sam, 8. Romy, 9. Lulu, 10. Finn, "
+            "11. Noah, 12. Ivy, 13. Tom, 14. Cleo, 15. Nico, 16. Ella, 17. Erik, 18. Lea, 19. Sina, 20. Ian."
+        )
         
-        # 2. KORREKTUR: Die Struktur (Payload) angepasst an Gemini 3
+        # Die Struktur für die Anfrage
         payload = {
             "contents": [{
                 "parts": [{"text": f"{system_instruction}\n\nFrage: {user_message}"}]
