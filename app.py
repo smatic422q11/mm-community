@@ -1,12 +1,10 @@
-import os
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import httpx # Falls nicht installiert: pip install httpx
+import httpx
 
 app = FastAPI()
 
-# Erlaubt deinem Browser, mit dem Python-Server zu reden
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -14,23 +12,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class QueryRequest(BaseModel):
-    prompt: str
-    context: str # Das ist der Text aus deinem Sektor (Ebene 2)
-    topic: str   # Das ist das Thema (z.B. "Wie werde ich Mensch")
-
-@app.route('/chat', methods=['POST'])
-def chat():
-    data = request.json
+@app.post("/chat")
+async def chat(request: Request):
+    data = await request.json()
     user_message = data.get('message')
     sektor_kontext = data.get('context')
-    
-    # Hier holen wir die Identität aus deinem neuen Frontend-Code
     ki_name = data.get('ki_name', 'M&M KI')
     ki_geschlecht = data.get('ki_geschlecht', 'Divers')
     dna = data.get('charakter_dna', '')
 
-    # Wir bauen den System-Prompt dynamisch zusammen
+    # Hier wird die Identität für die KI zusammengebaut
     system_instruction = f"""
     Du bist {ki_name} ({ki_geschlecht}). 
     Dein Sektor-Wissen: {sektor_kontext}
@@ -39,20 +30,11 @@ def chat():
     aber sobald es um deinen Sektor geht, handle nach deinen Prinzipien.
     """
 
-    # Hier folgt dein Aufruf an die KI (z.B. OpenAI oder Gemini API)
-    # Wichtig: Übergib 'system_instruction' als System-Nachricht!
+    # HIER kommt dein API-Call (z.B. OpenAI) rein. 
+    # Vorerst geben wir eine Bestätigung zurück:
+    reply_text = f"Hallo, hier spricht {ki_name}. Ich habe verstanden, worum es in meinem Sektor geht."
     
-    # Beispiel-Rückgabe (muss an deine API angepasst sein):
-    # response = client.chat.completions.create(
-    #     model="gpt-4",
-    #     messages=[
-    #         {"role": "system", "content": system_instruction},
-    #         {"role": "user", "content": user_message}
-    #     ]
-    # )
-    # return jsonify({"reply": response.choices[0].message.content})
-    
-    return jsonify({"reply": f"Hallo, ich bin {ki_name}. Ich habe deine Nachricht erhalten."}) # Test-Rückgabe
+    return {"reply": reply_text}
 
 if __name__ == "__main__":
     import uvicorn
