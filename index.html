@@ -367,10 +367,10 @@ async function registriereSenden() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-            message: userText,
-            context: sektorWissen,
-            sector_id: tId  // <--- DIESE ZEILE HINZUFÜGEN
-        })
+        message: userText,
+        context: sektorWissen,
+        sector_id: String(tId) // Wir erzwingen, dass die ID als Text übertragen wird
+    })
     }); 
 
     const data = await response.json();
