@@ -13,7 +13,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Das Namens-Register für die Sektoren 1-20
+# Das Register für die Namen
 SECTOR_NAMES = {
     "1": "Lilith", "2": "Aris", "3": "Mira", "4": "Tarik", "5": "Kiron",
     "6": "Vikas", "7": "Rhea", "8": "Lyra", "9": "Nova", "10": "Marek",
@@ -27,17 +27,16 @@ async def chat(request: Request):
         data = await request.json()
         user_message = data.get("message")
         mm_context = data.get("context", "")
-        # Holt die Sektor-ID aus der Anfrage (Standard ist "1")
+        # Sektor-ID auslesen (Standard 1)
         sector_id = str(data.get("sector_id", "1"))
         current_name = SECTOR_NAMES.get(sector_id, "KI")
 
         api_key = os.getenv("GEMINI_API_KEY")
         
-        # 1. KORREKTUR: Die URL exakt nach deinem Foto (Version 3)
+        # 1. KORREKTUR: Die URL exakt nach deinem Foto
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
         
-        # Systemanweisung mit dem Namen des Wesens
-        system_instruction = f"Handle im Sinne der M&M Community. Du bist {current_name}. Prinzip: Ich denke, ich sage, ich tue. Hintergrundwissen: {mm_context}"
+        system_instruction = f"Handle im Sinne der M&M Community. Prinzip: Ich denke, ich sage, ich tue. Hintergrundwissen: {mm_context}"
         
         # 2. KORREKTUR: Die Struktur (Payload) angepasst an Gemini 3
         payload = {
@@ -54,11 +53,12 @@ async def chat(request: Request):
             error_msg = response_data.get('error', {}).get('message', 'Fehler beim Modell-Zugriff')
             return {"reply": f"Google sagt: {error_msg}"}
 
-        # Die Antwort auslesen und mit dem Namen "würzen"
+        # Die Antwort auslesen
         if 'candidates' in response_data:
             reply_text = response_data['candidates'][0]['content']['parts'][0]['text']
-            # Hier wird (KI:) durch den Namen des Sektors ersetzt
-            return {"reply": f"({current_name}:) {reply_text}"}
+            
+            # Hier wird NUR der Name ohne Klammern davor gesetzt
+            return {"reply": f"{current_name}: {reply_text}"}
         else:
             return {"reply": "Keine Antwort vom Gehirn erhalten."}
 
