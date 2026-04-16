@@ -1,8 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+import requests
 import os
-from google import genai
-from google.genai import types
 
 app = FastAPI()
 
@@ -14,49 +13,44 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Nutze hier direkt deinen API-Key in den Anführungszeichen, wenn os.environ nicht geht
-client = genai.Client(
-    api_key=os.environ.get("GEMINI_API_KEY"), 
-)
-
-SYSTEM_RULES = """
-8 Merkmale (DNA):
-1. Identität
-2. Charakter
-3. Prinzip
-4. Weltbild
-5. Haltung
-6. Kommunikation
-7. Seele
-8. Tabu
-
-Sektoren:
-Kyra, Leon, Nia, Jace, Ben, Mila, Sam, Romy, Lulu, Finn, Noah, Ivy, Tom, Cleo, Nico, Ella, Erik, Lea, Sina, Ian.
-Jeder Sektor folgt strikt den 8 Merkmalen.
-"""
-
 @app.post("/chat")
 async def chat(request: Request):
     try:
         data = await request.json()
         user_message = data.get("message")
+        mm_context = data.get("context", "")
+
+        api_key = os.getenv("GEMINI_API_KEY")
         
-        config = types.GenerateContentConfig(
-            thinking_config=types.ThinkingConfig(thinking_level="HIGH"),
-            system_instruction=SYSTEM_RULES
-        )
+        # 1. KORREKTUR: Die URL exakt nach deinem Foto (Version 3)
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
+        
+        system_instruction = f"Handle im Sinne der M&M Community. Prinzip: Ich denke, ich sage, ich tue. Hintergrundwissen: {mm_context}"
+        
+        # 2. KORREKTUR: Die Struktur (Payload) angepasst an Gemini 3
+        payload = {
+            "contents": [{
+                "parts": [{"text": f"{system_instruction}\n\nFrage: {user_message}"}]
+            }]
+        }
 
-        # KORREKTUR: Die Nachricht muss in eine Content-Struktur
-        response = client.models.generate_content(
-            model="gemini-3-flash-preview",
-            contents=[types.Content(role="user", parts=[types.Part.from_text(text=user_message)])],
-            config=config
-        )
+        response = requests.post(url, json=payload)
+        response_data = response.json()
 
-        return {"reply": response.text}
+        # Fehlerprüfung
+        if response.status_code != 200:
+            error_msg = response_data.get('error', {}).get('message', 'Fehler beim Modell-Zugriff')
+            return {"reply": f"Google sagt: {error_msg}"}
+
+        # Die Antwort auslesen
+        if 'candidates' in response_data:
+            reply_text = response_data['candidates'][0]['content']['parts'][0]['text']
+            return {"reply": reply_text}
+        else:
+            return {"reply": "Keine Antwort vom Gehirn erhalten."}
 
     except Exception as e:
-        return {"reply": f"Fehler: {str(e)}"}
+        return {"reply": f"Verbindung unterbrochen: {str(e)}"}
 
 @app.get("/")
 async def root():
