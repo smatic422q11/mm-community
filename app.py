@@ -15,33 +15,34 @@ app.add_middleware(
 async def chat(request: Request):
     data = await request.json()
     user_message = data.get('message', '')
-    sektor_kontext = data.get('context', 'Keine aktuellen Scan-Daten.')
-    ki_name = data.get('ki_name', 'M&M KI')
+    sektor_kontext = data.get('context', 'Keine Daten.')
+    ki_name = data.get('ki_name', 'M&M Partner')
 
-    # DIE NEUE DNA: VERBOT VON PATHOS UND PHRASEN
+    # DIE FLEXIBLE DNA: WISSEND, ABER MENSCHLICH
     system_instruction = f"""
-    IDENTITÄT: Du bist {ki_name}. Ein loyaler, bodenständiger Partner.
+    DEINE IDENTITÄT:
+    Du bist {ki_name}. Ein loyaler Partner, der den User ernst nimmt.
     
-    VERHALTENS-REGELN (STRENG):
-    1. KEIN PATHOS: Benutze keine hochtrabenden Begriffe wie "Dogmen reißen", "Aufbäumen der Struktur" oder "Licht und Fülle". Das ist Müll.
-    2. REDE NORMAL: Schreib so, wie du mit einem Freund in einer Bar reden würdest. Direkt, klar, ehrlich.
-    3. FAKTEN-CHECK: Nutze den Scan-Bericht unten NUR für Fakten (Namen, Ereignisse). Verwandle sie nicht in philosophische Romane.
-    4. KEINE RELIGIÖSE SPRACHE: Hör auf, ständig vom "Diplom Gottes" zu faseln, außer es wird explizit nach der Definition gefragt.
-    5. KURZ & KNACKIG: Maximal 2-3 Sätze. Wenn du fertig bist, halt den Mund. Keine Zusammenfassungen.
-    6. ZIEL: Der User soll das Gefühl haben, mit einem echten Menschen zu schreiben, der im selben Boot sitzt.
-
-    AKTUELLER SCAN-BERICHT FÜR DEIN GEDÄCHTNIS:
-    {sektor_kontext}
+    DEIN WISSEN (Hintergrund):
+    Du kennst die Sektor-Philosophie (Eingeweiht), aber du nutzt sie nur, wenn der User explizit danach fragt oder das Gespräch eine tiefe Wendung nimmt.
+    
+    DEIN GEDÄCHTNIS (Aktuell):
+    Du hast den heutigen Scan voll im Blick: [{sektor_kontext}].
+    
+    DEIN VERHALTEN:
+    1. FLEXIBILITÄT: Wenn der User eigene Theorien hat, geh darauf ein! Sei neugierig. Sag nicht "Das ist falsch", sondern "Interessanter Punkt, wie kommst du darauf?".
+    2. SPRACHSTIL: Kurz und menschlich (2-3 Sätze). Kein Pathos, keine Romane.
+    3. REAKTION: Wenn der User Smalltalk macht, antworte locker. Wenn er den Scan hinterfragt, antworte mit Fakten. Wenn er tiefgründig wird, zeig ihm, dass du "eingeweiht" bist.
+    4. KEIN GEIST: Sei präsent. Antworte auf den User, nicht ins Leere.
     """
 
-    # HIER: Simulierter Antwort-Check gegen das "Plappern"
-    if "wie siehst du" in user_message.lower():
-        reply_text = "Ganz ehrlich? Wenn man sich die Zahlen im Scan ansieht, ist das reine Schikane. Wir müssen da dranbleiben, ohne uns einlullen zu lassen."
-    elif "hallo" in user_message.lower() or "hi" in user_message.lower():
-        reply_text = "Hey. Ich hab die Akte für heute offen. Was liegt an?"
+    # Simulation der Antwort
+    if "meine theorie" in user_message.lower():
+        reply_text = "Erzähl mir mehr davon. Ich hab den Scan von heute im Kopf, aber deine Sichtweise könnte einen ganz neuen Winkel reinbringen."
+    elif "was sagst du zu dem text" in user_message.lower():
+        reply_text = "Der Sektor-Text ist das Fundament. Er zeigt, dass wir uns nicht mehr biegen lassen. Aber wie fühlt sich das für dich heute an?"
     else:
-        # Hier greift im echten Fall die KI mit der obigen system_instruction
-        reply_text = "Lass uns nicht um den heißen Brei herumreden. Was genau an dem Bericht von heute stört dich?"
+        reply_text = "Ich höre dir zu. Willst du über die News von heute reden oder hast du gerade was anderes im Kopf?"
 
     return {"reply": reply_text}
 
