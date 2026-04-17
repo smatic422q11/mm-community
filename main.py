@@ -53,7 +53,7 @@ async def chat(request: Request):
         api_key = os.getenv("GEMINI_API_KEY")
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
         
-        system_instruction = f"Handle im Sinne der M&M Community. Prinzip: Ich denke, ich sage, ich tue. Hintergrundwissen: {mm_context}"
+        system_instruction = f"Handle im Sinne der M&M Community.  {mm_context}"
         
         payload = {
             "contents": [{
