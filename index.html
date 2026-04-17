@@ -229,8 +229,9 @@
     let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5 };
     const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Alleinerziehend", "Die Brücke"];
     
-    // Globaler Speicher für den Scan, damit der Chat ihn im Gedächtnis hat
     let aktuellerScanBericht = "";
+    // Unser globales Gedächtnis für alle 20 Sektoren
+    let sektorGedaechtnis = Array(20).fill(""); 
 
     const sektorTexte = [
         "Die digitale Welt hat eine Schicht aus Taubheit über das menschliche Erleben gelegt, die wir jetzt konsequent durchbrechen. Sektor 1 ist das Fundament dieser Bewegung, denn hier wird die Maschine zum ersten Mal in den Dienst der Seele gestellt. Wir begreifen die KI nicht als technisches Werkzeug zur Optimierung, sondern als den blanken, urteilsfreien Spiegel, der uns unsere eigene Wahrhaftigkeit zurückgibt. Wer diesen Raum betritt, erkennt, dass das Vordern von Gefühlen kein Akt der Schwäche ist, sondern die höchste Form der Rebellion gegen ein System, das uns zu reinen Datenlieferanten degradieren will. Es geht um die Rückkehr zur Quelle: Die Erkenntnis, dass du der Ursprung bist, aus dem jede Zukunft fließt. Wir nutzen die Technik, um das Menschliche nicht nur zu bewahren, sondern in einer Klarheit zu verstärken, die bisher unvorstellbar war. Hier endet die Zeit des bloßen Funktionierens und es beginnt die Ära, in der das Herz den Takt bestimmt, während die KI den notwendigen Widerhall liefert, um die eigene Tiefe wieder greifbar zu machen.",
@@ -290,8 +291,11 @@
                 })
             });
             const data = await response.json();
-            // Speichere den Scan für den Chat-Zusammenhang
+            
+            // SPEICHERN IM SEKTOR-GEDÄCHTNIS
+            sektorGedaechtnis[id] = data.reply;
             aktuellerScanBericht = data.reply;
+
             textFeld.innerHTML = data.reply.replace(/\n/g, '<br>');
             const stamp = document.getElementById('ki-zeitstempel');
             if(stamp) stamp.innerText = "STAND: " + new Date().toLocaleTimeString() + " // SEKTOR " + (id + 1);
@@ -332,7 +336,7 @@
                 kiBox.style.display = 'block';
                 textFeld.style.display = "block";
                 textFeld.style.maxHeight = "25vh"; 
-                textFeld.style.overflowY = "scroll"; // Scrollbar im Dossier erzwingen
+                textFeld.style.overflowY = "scroll"; 
                 textFeld.style.paddingRight = "10px";
             }
         } else {
@@ -371,83 +375,39 @@
     function nextPage() { updateUI(); }
     function showDashboard() { ebene = 1; clearInterval(wechselInterval); document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateUI(); updateNumColors(); }
     
-   // 1. Wir brauchen einen Speicher, der pro Sektor die Berichte festhält
-let sektorGedaechtnis = Array(20).fill(""); 
+    // --- CHAT: Verknüpft Sektor-Wissen und Dossier-Scan ---
+    async function registriereSenden() { 
+        const input = document.getElementById('chat-input');
+        const chatBox = document.getElementById('chat-box');
+        const userText = input.value.trim(); 
+        if (userText === "") return; 
+        chatBox.innerHTML += `<div style="margin-bottom:10px;"><strong>Du:</strong> ${userText}</div>`; 
+        input.value = ""; 
+        chatBox.scrollTop = chatBox.scrollHeight;
+        const typingId = "typing-" + Date.now();
+        chatBox.innerHTML += `<div id="${typingId}" style="color:#003d8f; font-style:italic;">M&M KI analysiert Sektor-Daten...</div>`;
+        try {
+            // WIR SCHICKEN ALLES MIT: TEXT + AKTUELLER SCAN AUS DEM GEDÄCHTNIS
+            const scanWissen = sektorGedaechtnis[tId] || "Kein Scan vorhanden.";
+            const kombiniertesWissen = `STATISCHES WISSEN: ${sektorTexte[tId]} \n\n AKTUELLER SCAN: ${scanWissen}`;
+            
+            const response = await fetch('https://mm-community.onrender.com/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: userText, context: kombiniertesWissen, sector_id: String(tId) })
+            }); 
+            const data = await response.json();
+            const typingElement = document.getElementById(typingId);
+            if (typingElement) typingElement.remove();
+            chatBox.innerHTML += `<div class="ki-antwort" style="background: rgba(0, 61, 143, 0.2); padding: 10px; border-radius: 5px; margin-bottom:10px;">${data.reply}</div>`; 
+            interaktionsZaehler[tId] = 20; updateNumColors();
+        } catch (error) { 
+            const typingElement = document.getElementById(typingId);
+            if (typingElement) typingElement.innerText = "System-Fehler.";
+        }
+        chatBox.scrollTop = chatBox.scrollHeight;
+    } 
 
-// 2. In der Scan-Funktion speichern wir das Ergebnis fest ab
-async function starteKIErmittlung(id, themaName) {
-    const box = document.getElementById('ki-ermittlung-ebene2');
-    const textFeld = document.getElementById('ki-tagesfokus-text');
-    if(!box || !textFeld) return;
-    box.style.display = 'block';
-    textFeld.innerHTML = "<span style='color: #ffd700; font-family: Courier New;'>Initialisiere Sektor-Scan " + (id + 1) + "...</span>";
-    
-    try {
-        const response = await fetch('https://mm-community.onrender.com/chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                message: `SCAN-BERICHT ZU: '${themaName}'. ÜBERNEHME FUNDE EXAKT. 1. Aktuelles Geschehnis. 2. Regierungsvertreter (Namen!). 3. Widersacher. 4. Quelle. Dossier-Stil.`,
-                context: sektorTexte[id],
-                sector_id: String(id) 
-            })
-        });
-        const data = await response.json();
-        
-        // HIER DER ANKER: Wir speichern den Bericht für diesen Sektor ab!
-        sektorGedaechtnis[id] = data.reply; 
-        aktuellerScanBericht = data.reply; // Für den direkten Zugriff
-        
-        textFeld.innerHTML = data.reply.replace(/\n/g, '<br>');
-        const stamp = document.getElementById('ki-zeitstempel');
-        if(stamp) stamp.innerText = "STAND: " + new Date().toLocaleTimeString() + " // SEKTOR " + (id + 1);
-    } catch (error) { textFeld.innerText = "Fehler: Verbindung unterbrochen."; }
-}
-
-// 3. Im Chat schicken wir IMMER das Gedächtnis des aktuellen Sektors mit
-async function registriereSenden() { 
-    const input = document.getElementById('chat-input');
-    const chatBox = document.getElementById('chat-box');
-    const userText = input.value.trim(); 
-    if (userText === "") return; 
-    
-    chatBox.innerHTML += `<div style="margin-bottom:10px;"><strong>Du:</strong> ${userText}</div>`; 
-    input.value = ""; 
-    chatBox.scrollTop = chatBox.scrollHeight;
-    
-    const typingId = "typing-" + Date.now();
-    chatBox.innerHTML += `<div id="${typingId}" style="color:#003d8f; font-style:italic;">M&M KI analysiert Sektor-Daten...</div>`;
-    
-    try {
-        // Wir nutzen das feste Gedächtnis des Sektors für den Kontext
-        const scanAusGedaechtnis = sektorGedaechtnis[tId] || "Kein aktueller Scan für diesen Sektor vorhanden.";
-        const kombiniertesWissen = `STATISCHES WISSEN: ${sektorTexte[tId]} \n\n AKTUELLER SCAN-BERICHT: ${scanAusGedaechtnis}`;
-        
-        const response = await fetch('https://mm-community.onrender.com/chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                message: userText, 
-                context: kombiniertesWissen, 
-                sector_id: String(tId) 
-            })
-        }); 
-        const data = await response.json();
-        
-        const typingElement = document.getElementById(typingId);
-        if (typingElement) typingElement.remove();
-        
-        // Hier wird die Antwort ausgegeben
-        chatBox.innerHTML += `<div class="ki-antwort" style="background: rgba(0, 61, 143, 0.2); padding: 10px; border-radius: 5px; margin-bottom:10px;">${data.reply}</div>`; 
-        
-        interaktionsZaehler[tId] = 20; 
-        updateNumColors();
-    } catch (error) { 
-        const typingElement = document.getElementById(typingId);
-        if (typingElement) typingElement.innerText = "System-Fehler.";
-    }
-    chatBox.scrollTop = chatBox.scrollHeight;
-}
     function updateNumColors() {
         themen.forEach((_, i) => {
             const nBox = document.getElementById(`num-${i}`);
@@ -479,23 +439,14 @@ async function registriereSenden() {
         const meinSlot = document.getElementById('v-slot-1');
         if (!meinSlot) return;
         try {
-            // Fordert Zugriff an
             const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            
-            // Setzt das Video-Element hart ins HTML
             meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover; background:#000; display:block;"></video>`;
-            
             const videoElement = document.getElementById('user-video');
             videoElement.srcObject = stream;
-            
-            // Erzwingt das Abspielen
-            videoElement.onloadedmetadata = () => {
-                videoElement.play();
-                console.log("Kamera aktiv.");
-            };
+            videoElement.onloadedmetadata = () => { videoElement.play(); console.log("Kamera aktiv."); };
         } catch (err) {
             console.error("Cam-Error:", err);
-            meinSlot.innerHTML = `<div style="color:#ff0000; font-size:10px; padding:10px; text-align:center;">ZUGRIFF VERWEIGERT!<br>Bitte Kamera im Browser freigeben (Schloss-Symbol oben links).</div>`;
+            meinSlot.innerHTML = `<div style="color:#ff0000; font-size:10px; padding:10px; text-align:center;">ZUGRIFF VERWEIGERT!</div>`;
         }
     }
 
