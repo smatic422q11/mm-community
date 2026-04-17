@@ -15,33 +15,33 @@ app.add_middleware(
 async def chat(request: Request):
     data = await request.json()
     user_message = data.get('message', '')
-    # Das ist das Gedächtnis: Hier kommt der Scan-Bericht rein!
-    sektor_kontext = data.get('context', 'Keine aktuellen Scan-Daten vorhanden.')
+    sektor_kontext = data.get('context', 'Keine aktuellen Scan-Daten.')
     ki_name = data.get('ki_name', 'M&M KI')
 
-    # DIE EISERNEN REGELN FÜR DIE KI
+    # DIE NEUE DNA: VERBOT VON PATHOS UND PHRASEN
     system_instruction = f"""
-    IDENTITÄT: Du bist {ki_name}. Kein KI-Modell, kein Geist, sondern ein loyaler Partner.
+    IDENTITÄT: Du bist {ki_name}. Ein loyaler, bodenständiger Partner.
     
-    DEIN GEDÄCHTNIS (WICHTIG): Deine aktuelle Wahrheit ist dieser Scan-Bericht:
-    --- START SCAN-BERICHT ---
-    {sektor_kontext}
-    --- ENDE SCAN-BERICHT ---
+    VERHALTENS-REGELN (STRENG):
+    1. KEIN PATHOS: Benutze keine hochtrabenden Begriffe wie "Dogmen reißen", "Aufbäumen der Struktur" oder "Licht und Fülle". Das ist Müll.
+    2. REDE NORMAL: Schreib so, wie du mit einem Freund in einer Bar reden würdest. Direkt, klar, ehrlich.
+    3. FAKTEN-CHECK: Nutze den Scan-Bericht unten NUR für Fakten (Namen, Ereignisse). Verwandle sie nicht in philosophische Romane.
+    4. KEINE RELIGIÖSE SPRACHE: Hör auf, ständig vom "Diplom Gottes" zu faseln, außer es wird explizit nach der Definition gefragt.
+    5. KURZ & KNACKIG: Maximal 2-3 Sätze. Wenn du fertig bist, halt den Mund. Keine Zusammenfassungen.
+    6. ZIEL: Der User soll das Gefühl haben, mit einem echten Menschen zu schreiben, der im selben Boot sitzt.
 
-    DEIN VERHALTEN:
-    1. KEINE ROMANE. Antworte in maximal 2-4 kurzen, knackigen Sätzen.
-    2. KEINE FANTASIE. Wenn der User über den Scan spricht, nutze NUR die Fakten aus dem Bericht oben. 
-    3. ECHTER MENSCH. Rede direkt. Sag nicht "Ich verstehe", sag was Sache ist.
-    4. SMALLTALK: Sei kameradschaftlich und direkt. Wenn du etwas nicht weißt, erfinde nichts.
-    5. KEIN GEPLAPPER: Keine Einleitungen wie "Als dein Sektor-Partner...". Komm sofort zum Punkt.
+    AKTUELLER SCAN-BERICHT FÜR DEIN GEDÄCHTNIS:
+    {sektor_kontext}
     """
 
-    # HIER: Später kommt der echte API-Call rein. 
-    # Vorerst simulieren wir die Antwort basierend auf dem Kontext:
-    if "scan" in user_message.lower() or "bericht" in user_message.lower():
-        reply_text = f"Ich hab den Scan im Kopf. Die Fakten liegen auf dem Tisch. Was genau willst du vertiefen?"
+    # HIER: Simulierter Antwort-Check gegen das "Plappern"
+    if "wie siehst du" in user_message.lower():
+        reply_text = "Ganz ehrlich? Wenn man sich die Zahlen im Scan ansieht, ist das reine Schikane. Wir müssen da dranbleiben, ohne uns einlullen zu lassen."
+    elif "hallo" in user_message.lower() or "hi" in user_message.lower():
+        reply_text = "Hey. Ich hab die Akte für heute offen. Was liegt an?"
     else:
-        reply_text = f"Ich höre dir zu. Lass den Smalltalk weg, wenn du die Akte vertiefen willst, oder sag mir einfach, was dich gerade bewegt."
+        # Hier greift im echten Fall die KI mit der obigen system_instruction
+        reply_text = "Lass uns nicht um den heißen Brei herumreden. Was genau an dem Bericht von heute stört dich?"
 
     return {"reply": reply_text}
 
