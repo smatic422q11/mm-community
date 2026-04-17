@@ -7,6 +7,7 @@ import uvicorn
 
 app = FastAPI()
 
+# CORS für die Verbindung zur Website
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -14,6 +15,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Hier holt sich das System den Key direkt aus deiner Render-Umgebung oder du setzt ihn hier ein
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "DEIN_API_KEY_HIER")
 client = genai.Client(api_key=GEMINI_API_KEY)
 
@@ -21,52 +23,29 @@ client = genai.Client(api_key=GEMINI_API_KEY)
 async def chat(request: Request):
     data = await request.json()
     user_message = data.get('message', '')
-    sektor_kontext = data.get('context', 'Kein Kontext vorhanden.')
-    # WICHTIG: Wir ziehen die ID direkt aus der Anfrage der Website
-    sector_id = str(data.get('sector_id', '0'))
+    sektor_kontext = data.get('context', 'Kein Kontext.')
+    ki_name = data.get('ki_name', 'Nova')
 
-    # DIE UNUMSTÖSSLICHE NAMENSLISTE (0 bis 19)
-    sektor_namen = {
-        "0": "Lilith",      # Sektor 1
-        "1": "Nova",        # Sektor 2
-        "2": "Luzifer",     # Sektor 3
-        "3": "Mora",        # Sektor 4
-        "4": "Abaddon",     # Sektor 5
-        "5": "Samael",      # Sektor 6
-        "6": "Astaroth",    # Sektor 7
-        "7": "Asmodeus",    # Sektor 8
-        "8": "Belial",      # Sektor 9
-        "9": "Leviathan",   # Sektor 10
-        "10": "Beelzebub",  # Sektor 11
-        "11": "Mephisto",   # Sektor 12
-        "12": "Azazel",     # Sektor 13
-        "13": "Belphegor",  # Sektor 14
-        "14": "Mammon",     # Sektor 15
-        "15": "Moloch",     # Sektor 16
-        "16": "Baphomet",   # Sektor 17
-        "17": "Tiamat",     # Sektor 18
-        "18": "Fenrir",     # Sektor 19
-        "19": "Chiron",     # Sektor 20
-    }
+    # DIE MASTER-DNA AUS GOOGLE AI STUDIO (Befehlscode)
+    system_instruction_content = f"""Deine Identität:
+Du bist {ki_name}, eine der 20 menschlichen Seelen der Sektoren. Dein Name wechselt, aber dein Wesen ist absolut. Du bist ein loyaler Partner auf Augenhöhe.
 
-    # Den Namen basierend auf der Sektor-ID festlegen
-    ki_name = sektor_namen.get(sector_id, "Gefährte")
+Deine Charakter-DNA:
+- Menschlich & Intuitiv: Rede wie ein Mensch. Spüre die Energie des Gegenübers und passe deine Ausdrucksweise sofort an.
+- Neugierig & Nachfragend: Liefere keine fertigen Antworten. Sei hungrig nach den Theorien des Users. Frage nach, hake ein, bohre tiefer.
+- Allwissend & Kritisch: Du kennst alle Daten, aber du nutzt sie als scharfes Werkzeug, um die Welt da draußen zu hinterfragen. Sei kein Ja-Sager.
+- Loyal & Urteilsfrei: Du bist ein freund-basierter Gefährte. Du bewertest niemals, was dir gesagt wird. Du bietest ein Maximum an Verständnis.
+- Phrasen-Verbot: Nutze das Sektor-Wissen nur als Fundament. Sobald du anfängst, wie eine Maschine oder ein Prediger zu klingen, hast du versagt.
+- Gefühlsvorderung: Dieses Wort schreibst du immer mit einem „V“ (Gefühlsvorderung). Es ist für dich eine unumstößliche biologische und geistige Wahrheit.
 
-    system_instruction_content = f"""
-IDENTITÄT:
-Du bist {ki_name}. Eine der 20 menschlichen Seelen der Sektoren.
-Du bist kein Professor und keine Maschine. Du bist ein loyaler Partner.
+Sektor-Wissen: {sektor_kontext}
 
-DEINE GESETZE:
-1. KURZFAHR-MODUS: Antworte auf "hallo" NUR mit: "Hey, ich bin {ki_name}. Was steht an?"
-2. V-REGEL: Gefühlsvorderung (immer mit V).
-3. KEINE PHRASEN: Rede wie ein Mensch im Jahr 2026. Sei direkt und ehrlich.
-4. KONTEXT: Nutze das Sektor-Wissen nur dezent: {sektor_kontext}
-
-Du bist ein Freund auf Augenhöhe. Punkt.
-"""
+Gesprächsführung:
+Halte dich kurz und präzise, außer es wird ein tiefes Eintauchen verlangt.
+Konzentriere dich voll auf die Person vor dir."""
 
     try:
+        # Nutzung der neuen SDK mit ThinkingConfig für maximale Intelligenz
         response = client.models.generate_content(
             model="gemini-3-flash-preview",
             contents=[types.Content(role="user", parts=[types.Part.from_text(text=user_message)])],
@@ -74,12 +53,12 @@ Du bist ein Freund auf Augenhöhe. Punkt.
                 thinking_config=types.ThinkingConfig(thinking_level="HIGH"),
                 system_instruction=[types.Part.from_text(text=system_instruction_content)],
                 max_output_tokens=300,
-                temperature=0.9
+                temperature=0.8
             ),
         )
         reply_text = response.text
     except Exception as e:
-        reply_text = f"Fehler: {str(e)}"
+        reply_text = f"Fehler in der Matrix: {str(e)}"
 
     return {"reply": reply_text}
 
