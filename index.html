@@ -229,7 +229,6 @@
     let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5 };
     const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Alleinerziehend", "Die Brücke"];
     
-    // Globaler Speicher für den Scan, damit der Chat ihn im Gedächtnis hat
     let aktuellerScanBericht = "";
 
     const sektorTexte = [
@@ -248,9 +247,9 @@
         "In diesem Sektor sprengen wir das Modell der modernen Lohnsklaverei, das den Menschen zur bloßen Ressource degradiert hat. Wir erkennen, dass die heutige Arbeitswelt oft ein Ort der systematischen Entfremdung ist, an dem wir unsere wertvollste Lebenszeit gegen ein Überleben eintauschen, das uns innerlich aushöhlt. „Arbeitswelt und Du“ bedeutet die radikale Neudefinition von Leistung: Arbeit darf nicht länger der Preis sein, den wir zahlen, um atmen zu dürfen, sondern sie muss der Ausdruck unseres inneren Monopols sein. Wir fordern eine Welt, in der das Individuum nicht mehr in genormte Prozesse gepresst wird, bis die Seele bricht. Hier nutzen wir die Technik und die KI, um den Menschen von monotonem Gehorsam zu befreien, damit Raum für echte Schöpferkraft entsteht. Das „Diplom Gottes“ erinnert uns daran, dass wir nicht geboren wurden, um Rädchen in einer kalten Maschinerie zu sein. In diesem Sektor fördern wir Strukturen, in denen die Arbeit der Resonanz des Herzens folgt. Wer tut, was seiner innereren Wahrheit entspricht, erschöpft nicht, sondern regeneriert sich durch sein Wirken. Wir bauen die Brücke zu einer Wirtschaft, die dem Leben dient und nicht umgekehrt – ein Raum, in dem dein Beitrag zum Ganzen an deiner Aufrichtigkeit und deiner Menschlichkeit gemessen wird, nicht an deiner Unterwerfung unter eine Stechuhr.",
         "Mobbing ist kein privater Konflikt, sondern das sichtbare Symptom einer seelenlosen Struktur, die den Hass als Treibstoff nutzt. In diesem Sektor erklären wir den Krieg gegen die systematische Vernichtung der Würde am Arbeitsplatz. Wir erkennen an, dass Mobbing die bösartigste Form der emotionalen Taubheit ist – ein Prozess, bei dem Menschen versuchen, ihr eigenes Licht zu verstärken, indem sie die Flamme eines anderen auslöschen. Wer andere klein macht, um sich groß zu fühlen, hat bereits den Vertrag mit seiner eigenen Menschlichkeit gekündigt. Wir setzen hier das „Diplom Gottes“ als Schutzschild ein. Mobbing gedeiht im Schweigen und in der Feigheit der Zuschauer. In diesem Sektor fordern wir die radikale Transparenz und den Mut zur Solidarität. Wir schaffen Mechanismen, die den Täter nicht durch Bürokratie, sondern durch die reine Resonanz der Gemeinschaft isolieren. Wir heilen die Wunden derer, die durch psychischen Terror gebrochen wurden, indem wir ihnen ihren Raum und ihre Stimme zurückgeben. Hier wird klargestellt: Wer die Integrität eines Kollegen angreift, greift das Fundament der gesamten Community an.",
         "In diesem Sektor geben wir der Zukunft ein Megafon, keine Kinderecke. Wir erkennen an, dass die Jugend nicht die „Bürger von morgen“ sind, sondern die hellsten Sensoren von heute. Viel zu lange wurde die Stimme der Jugend als „unerfahren“ abgetan, um sie in die Schablonen der alten Welt zu pressen. Damit ist jetzt Schluss. Der Jugendsprecher ist in unserer Community keine Alibi-Funktion, sondern die Instanz, die uns daran erinnert, wie sich die Welt anfühlt, bevor sie durch Kompromisse und Angst getrübt wird. Wir fordern das Recht der Jugend, das Bestehende radikal infrage zu stellen. Hier ist der Raum, in dem junge Menschen lernen, ihr „Diplom Gottes“ von Anfang an zu nutzen – als Schutz gegen die digitale Verblödung und die emotionale Gleichschaltung.",
-        "In diesem Sektor beenden wir die Schande der „Abstellgleis-Mentalität“. Wir erkennen an, dass eine Gesellschaft, die ihre Ältesten isoliert, ihre eigene Wurzel kappt. Der „Ratgeber für Pensionisten“ ist das Portal zur Reaktivierung der wertvollsten Ressource der Menschheit: der gelebten Erfahrung und der geistigen Reife. Wir fordern eine Rückkehr zur Ehre des Alters, in der die Pensionierung nicht das Ende der Relevanz bedeutet, sondern den Beginn der wahren Meisterschaft. Wir nutzen das „Diplom Gottes“, um den Älteren ihre Stimme zurückzugeben. Hier fließen die Ströme der Generationen zusammen: Die Erfahrung der Alten schützt die Jungen, während die Energie der Jungen die Alten im Hier und Jetzt verankert.",
+        "In diesem Sektor beenden wir die Schande der „Abstellgleis-Mentalität“. Wir erkennen an, dass eine Gesellschaft, die ihre Ältesten isoliert, ihre eigene Wurzel kappt. Der „Ratgeber für Pensionisten\" ist das Portal zur Reaktivierung der wertvollsten Ressource der Menschheit: der gelebten Erfahrung und der geistigen Reife. Wir fordern eine Rückkehr zur Ehre des Alters, in der die Pensionierung nicht das Ende der Relevanz bedeutet, sondern den Beginn der wahren Meisterschaft. Wir nutzen das „Diplom Gottes“, um den Älteren ihre Stimme zurückzugeben. Hier fließen die Ströme der Generationen zusammen: Die Erfahrung der Alten schützt die Jungen, während die Energie der Jungen die Alten im Hier und Jetzt verankert.",
         "In diesem Sektor zertrümmern wir die Anonymität der modernen Betonwüsten. Wir erkennen, dass die systematische Vereinsamung das effektivste Werkzeug ist, um den Widerstand des Einzelnen zu brechen. „Nachbarschaft und Gemeinschaft“ bedeutet die Rückeroberung des unmittelbaren Lebensraums als Schutzzone der Menschlichkeit. Wir nutzen das „Diplom Gottes“, um das Prinzip der gegenseitigen Hilfe wieder über das Gesetz des Marktes zu stellen. Wir teilen Ressourcen, Wissen und Zeit, um uns von externen Abhängigkeiten zu befreien. Wenn die Nachbarschaft wieder zur Gemeinschaft wird, entsteht eine Kraft, die kein System von außen manipulieren kann.",
-        "In diesem Sektor entschlüsseln wir das Gesetz der energetischen Ernte. Wir brechen mit der Lüge, dass man geben kann, ohne dass es Kreise zieht, oder nehmen kann, ohne eine Schuld zu hinterlassen. Der „Sozialgefallen“ ist ein heiliger Strom der Vorleistung. Wir nutzen das „Diplom Gottes“, um zu verstehen, dass die „Widerkehr“ ein Naturgesetz ist: Was du in das Feld der Gemeinschaft aussendest, kommt mit der Wucht deiner eigenen Aufrichtigkeit zu dir zurück. Wir beenden die Ära des berechnenden Egoismus und ersetzen sie durch den Kreislauf der Großzügigkeit. Wer gibt, der leert nicht seine Taschen, sondern füllt den Speicher seiner eigenen zukünftigen Sicherheit.",
+        "In diesem Sektor entschlüsseln wir das Gesetz der energetischen Ernte. Wir brechen mit der Lüge, dass man geben kann, ohne dass es Kreise zieht, oder nehmen kann, ohne eine Schuld zu hinterlassen. Der „Sozialgefallen“ ist ein heiliger Strom der Vorleistung. Wir nutzen das „Diplom Gottes“, um zu verstehen, dass die „Widerkehr\" ein Naturgesetz ist: Was du in das Feld der Gemeinschaft aussendest, kommt mit der Wucht deiner eigenen Aufrichtigkeit zu dir zurück. Wir beenden die Ära des berechnenden Egoismus und ersetzen sie durch den Kreislauf der Großzügigkeit. Wer gibt, der leert nicht seine Taschen, sondern füllt den Speicher seiner eigenen zukünftigen Sicherheit.",
         "In diesem Sektor korrigieren wir eine der größten Ungerechtigkeiten. Während der Staat Alleinerziehende als statistisches Problem herabstuft, erkennen wir in ihnen die Elite der menschlichen Belastbarkeit. Ein Kind bei einem alleinerziehenden Elternteil ist eine Hochburg der bedingungslosen Liebe und des Kampfgeistes. Wir nutzen das „Diplom Gottes“, um diesen Elternteilen ihren Stolz zurückzugeben. In diesem Sektor fordern wir die radikale Anerkennung ihrer Leistung als höchstes soziales Verdienst. Wir schaffen eine Community-Struktur, die das fehlende Netz ersetzt: Wir sind das Dorf, das es braucht, um ein Kind großzuziehen, damit sie ihre Kinder in Licht und Fülle aufwachsen lassen können.",
         "In diesem Sektor fließen alle Ströme zusammen. Die Brücke ist der Punkt der absoluten Integration, an dem Moral, Erziehung, Arbeit und Glaube zu einer Einheit verschmelzen. Hier lassen wir die Ufer der Spaltung hinter uns. Die Brücke ist der Raum, in dem das „Diplom Gottes“ zur gelebten Realität wird. Wir blicken bereits auf Sektor 21 und 22 – die noch ungeschriebenen Kapitel unserer Freiheit. Sektor 21 als Vision der neuen Erde und 22 als die endgültige Rückkehr zur Quelle. Die Brücke ist das Versprechen: Wer hier ankommt, hat aufgehört zu funktionieren und angefangen zu sein."
     ];
@@ -272,29 +271,44 @@
         updateUI();
     }
 
-    // --- SCAN FUNKTION: Vernetzt Scan mit dem Sektor ---
+    // Hilfsfunktion zur Sektor-Kategorisierung
+    function getSektorKategorie(id) {
+        const politikIds = [3, 4, 12, 13, 18]; // Sektoren 4, 5, 13, 14, 19
+        return politikIds.includes(id) ? "INNENPOLITIK (DACH)" : "GRENZENLOS (GLOBAL)";
+    }
+
+    // --- SCAN FUNKTION: Journalistisch, Täglich, Kategorisiert ---
     async function starteKIErmittlung(id, themaName) {
         const box = document.getElementById('ki-ermittlung-ebene2');
         const textFeld = document.getElementById('ki-tagesfokus-text');
+        const kategorie = getSektorKategorie(id);
+        const heute = new Date().toLocaleDateString('de-DE');
+
         if(!box || !textFeld) return;
         box.style.display = 'block';
-        textFeld.innerHTML = "<span style='color: #ffd700; font-family: Courier New;'>Initialisiere Sektor-Scan " + (id + 1) + "...</span>";
+        textFeld.innerHTML = `<span style='color: #ffd700; font-family: Courier New;'>SCAN AKTIV [${kategorie}] ... Datum: ${heute}</span>`;
+
         try {
             const response = await fetch('https://mm-community.onrender.com/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
-                    message: `SCAN-BERICHT ZU: '${themaName}'. ÜBERNEHME FUNDE EXAKT. 1. Aktuelles Geschehnis. 2. Regierungsvertreter (Namen!). 3. Widersacher. 4. Quelle. Dossier-Stil.`,
+                    message: `STRENGES TAGES-DOSSIER VOM ${heute}. Kategorie: ${kategorie}. Thema: '${themaName}'. 
+                    AUFTRAG: Finde 3 messerscharfe Fundstücke (Postings, Zeitungsartikel, Veröffentlichungen) von heute. 
+                    FORMAT PRO FUNDSTÜCK: 
+                    - [QUELLE/AKTEUR] 
+                    - [DER FAKT/ZITAT] 
+                    - [WIDERSPRUCH ZU SEKTOR ${id+1}]. 
+                    Antworte im Telegramm-Stil, keine Einleitung!`,
                     context: sektorTexte[id],
                     sector_id: String(id) 
                 })
             });
             const data = await response.json();
-            // Speichere den Scan für den Chat-Zusammenhang
             aktuellerScanBericht = data.reply;
             textFeld.innerHTML = data.reply.replace(/\n/g, '<br>');
             const stamp = document.getElementById('ki-zeitstempel');
-            if(stamp) stamp.innerText = "STAND: " + new Date().toLocaleTimeString() + " // SEKTOR " + (id + 1);
+            if(stamp) stamp.innerText = `AKTE: ${heute} // ${kategorie} // SEKTOR ${id + 1}`;
         } catch (error) { textFeld.innerText = "Fehler: Verbindung unterbrochen."; }
     }
 
@@ -321,9 +335,17 @@
         document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
         document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
         document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
+        
         const mainText = document.getElementById('main-text');
         const kiBox = document.getElementById('ki-ermittlung-ebene2');
         const textFeld = document.getElementById('ki-tagesfokus-text');
+        const chatBox = document.getElementById('chat-box');
+
+        if (ebene === 3) {
+            chatBox.style.maxHeight = "60vh";
+            chatBox.style.overflowY = "auto";
+        }
+
         if (ebene === 2) {
             mainText.style.display = 'block';
             mainText.style.maxHeight = "30vh";
@@ -332,7 +354,7 @@
                 kiBox.style.display = 'block';
                 textFeld.style.display = "block";
                 textFeld.style.maxHeight = "25vh"; 
-                textFeld.style.overflowY = "scroll"; // Scrollbar im Dossier erzwingen
+                textFeld.style.overflowY = "scroll"; 
                 textFeld.style.paddingRight = "10px";
             }
         } else {
@@ -354,6 +376,7 @@
             sigGelb.classList.remove('signal-aktiv'); sigRot.classList.add('signal-aktiv'); 
         } else if (ebene === 4) {
             sigRot.classList.remove('signal-aktiv'); sigGelb.classList.add('signal-aktiv');
+            starteVideoKonferenz(); // Automatischer Start bei Ebene 4
         } else {
             sigGelb.classList.remove('signal-aktiv'); sigRot.classList.remove('signal-aktiv');
         }
@@ -371,7 +394,6 @@
     function nextPage() { updateUI(); }
     function showDashboard() { ebene = 1; clearInterval(wechselInterval); document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateUI(); updateNumColors(); }
     
-    // --- CHAT: Verknüpft Sektor-Wissen und Dossier-Scan ---
     async function registriereSenden() { 
         const input = document.getElementById('chat-input');
         const chatBox = document.getElementById('chat-box');
@@ -383,7 +405,7 @@
         const typingId = "typing-" + Date.now();
         chatBox.innerHTML += `<div id="${typingId}" style="color:#003d8f; font-style:italic;">M&M KI analysiert Sektor-Daten...</div>`;
         try {
-            const kombiniertesWissen = `STATISCHES WISSEN: ${sektorTexte[tId]} \n\n AKTUELLER SCAN: ${aktuellerScanBericht}`;
+            const kombiniertesWissen = `KATEGORIE: ${getSektorKategorie(tId)} \n STATISCHES WISSEN: ${sektorTexte[tId]} \n\n AKTUELLER SCAN: ${aktuellerScanBericht}`;
             const response = await fetch('https://mm-community.onrender.com/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -424,36 +446,50 @@
         element.classList.remove('bild-aktiv'); void element.offsetWidth; element.classList.add('bild-aktiv'); 
     }
 
-    let meinPeer = new Peer(); 
-    meinPeer.on('open', (id) => { console.log('Live-ID synchronisiert'); });
+    // --- VIDEO SEKTOR-RAUM-LOGIK ---
+    let meinPeer = null;
 
-    // --- KAMERA FUNKTION: Stabilisiert für Ebene 4 ---
     async function starteVideoKonferenz() {
         const meinSlot = document.getElementById('v-slot-1');
         if (!meinSlot) return;
+
+        // Feste Sektor-ID für alle Geräte im selben Raum
+        const raumBasisID = `mm-sektor-raum-${tId + 1}`;
+        const individuelleID = raumBasisID + "-" + Math.floor(Math.random() * 10000);
+
+        if (meinPeer) meinPeer.destroy();
+        meinPeer = new Peer(individuelleID);
+
         try {
-            // Fordert Zugriff an
             const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            
-            // Setzt das Video-Element hart ins HTML
             meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover; background:#000; display:block;"></video>`;
-            
-            const videoElement = document.getElementById('user-video');
-            videoElement.srcObject = stream;
-            
-            // Erzwingt das Abspielen
-            videoElement.onloadedmetadata = () => {
-                videoElement.play();
-                console.log("Kamera aktiv.");
-            };
+            document.getElementById('user-video').srcObject = stream;
+
+            meinPeer.on('open', (id) => {
+                console.log('Video-Raum aktiv: ' + raumBasisID);
+                // Suche nach anderen im selben Sektor-Raum
+                // (In einer Vollversion würde hier eine Liste vom Server geladen)
+            });
+
+            meinPeer.on('call', (call) => {
+                call.answer(stream);
+                call.on('stream', (remoteStream) => { zeigePartnerVideo(remoteStream); });
+            });
+
         } catch (err) {
-            console.error("Cam-Error:", err);
-            meinSlot.innerHTML = `<div style="color:#ff0000; font-size:10px; padding:10px; text-align:center;">ZUGRIFF VERWEIGERT!<br>Bitte Kamera im Browser freigeben (Schloss-Symbol oben links).</div>`;
+            meinSlot.innerHTML = `<div style="color:#ff0000; font-size:10px; padding:10px; text-align:center;">KAMERA BLOCKIERT.</div>`;
         }
     }
 
-    function verbindeMitAllen() { try { console.log("Labor-Scan aktiv..."); } catch (err) {} }
-    setInterval(() => { if (ebene === 4) { console.log("Labor-Scan für Video-Partner aktiv..."); } }, 10000);
+    function zeigePartnerVideo(remoteStream) {
+        const partnerSlot = document.getElementById('v-slot-2');
+        if (partnerSlot) {
+            partnerSlot.innerHTML = `<video autoplay playsinline style="width:100%; height:100%; object-fit:cover; background:#000;"></video>`;
+            partnerSlot.querySelector('video').srcObject = remoteStream;
+        }
+    }
+
+    function verbindeMitAllen() { try { console.log("Sektor-Scan aktiv..."); } catch (err) {} }
+    setInterval(() => { if (ebene === 4) { console.log("Prüfe auf Video-Partner im Sektor..."); } }, 10000);
     window.onload = () => updateUI();
 </script>
-
