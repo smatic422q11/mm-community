@@ -229,6 +229,7 @@
     let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5 };
     const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Alleinerziehend", "Die Brücke"];
     
+    // Globaler Speicher für den Scan, damit der Chat ihn im Gedächtnis hat
     let aktuellerScanBericht = "";
 
     const sektorTexte = [
@@ -239,7 +240,7 @@
         "Wahre Verantwortung ist keine Last, die uns von außen auelt wurde, sondern der höchste Ausdruck unserer innereren Souveränität. In diesem Sektor brechen wir mit der feigen Ausrede, man habe „nur Befehle befolgt“ oder sich den Umständen angepasst. Die moralische Pflicht verlangt von uns, dass wir die Konsequenzen unseres Handelns direkt in die Augen schauen, ohne den Blick abzuwenden. Es geht um die Erkenntnis, dass jede Handlung, jedes Wort und jedes Schweigen eine Signatur in der Welt hinterlässt. Wer diesen Raum betritt, erkennt, dass er die alleinige Verantwortung für die Reinheit seiner eigenen Resonanz trägt. Hier endet die Zeit des Ausflüchte; wir übernehmen das Mandat über unser eigenes Leben und verstehen, dass wir nur dann wahrhaft frei sind, wenn wir bereit sind, für unsere Wahrheit mit allem einzustehen, was wir sind.",
         "Die Wiederherstellung der Menschlichkeit ist der fundamentale Akt der Rebellion gegen die totale digitale und emotionale Entfremdung. In diesem Sektor lassen wir die Rolle des passiven Beobachters und des Opfers endgültig hinter uns. Wir nutzen das „Diplom Gottes“ – unser Geburtsrecht auf geistige und körperliche Freiheit – um die Welt nach den Gesetzen der Seele neu zu ordnen. Es geht nicht darum, ein kaputtes System zu reparieren, sondern die Trümmer der Angst beiseite zu räumen, um Platz für das ursprüngliche Leuchten des menschlichen Geistes zu machen. Menschlichkeit wiederherzustellen bedeutet, die Verbindung zur Ur-Quelle so tief zu verankern, dass keine äußere Macht mehr in der Lage ist, uns in künstliche Hierarchien oder Gehorsam zu zwingen. Hier wird der Mensch wieder in seine wahre Würde eingesetzt, als Schöpfer seiner eigenen Realität.",
         "Wahrer Kinderschutz findet seine Wurzeln in der kompromisslosen Ehrlichkeit der Eltern gegenüber sich selbst. Wir brechen mit der Tradition, Kindern als dekorative Schutzschilde für das eigene gesellschaftliche Image oder als Kompensation für unerfüllte Träume zu missbrauchen. Die höchste Pflicht der Eltern besteht darin, den Ur-Instinkt in sich selbst wiederzuentdecken, der das Kind instinktiv vor der schleichenden Vergiftung durch künstliche gesellschaftliche Erwartungen und systemischen Druck bewahrt. In diesem Sektor definieren wir Elternrechte nicht als Besitzanspruch, sondern als die heilige Verantwortung, einen Raum der Unversehrtheit zu schaffen. Es geht darum, die nächste Generation davor zu schützen, in die gleichen emotionalen Fallen zu tappen, die uns selbst taub gemacht haben. Wir fordern eine Rückkehr zur biologischen und geistigen Wahrheit: Ein Kind braucht keine perfekte Fassade, sondern Eltern, die den Mut haben, wahrhaftig zu sein und ihre Kinder in Freiheit und Schutz zum Licht wachsen zu lassen.",
-        "Wahre Kunst ist niemals nur gefällige Dekoration; sie ist der radikale Ausbruch der sexuellen und schöpcherischen Ur-Kraft, die durch unser Fleisch and unseren Geist pulsiert. Dieser Sektor markiert den Punkt, an dem wir aufhören, uns für unsere Natur zu schämen oder unsere Leidenschaften zu verstecken. Die „Wahre Richtung“ ist der Pfad unseres inneren Monopol – jener einzigartigen Essenz, die uns von der grauen Masse unterscheidet. Wir begreifen die Kunst als eine unaufhaltsame Welle der Manifestation: Wenn die innerere Vision eine kritische Masse erreicht, muss sie sich im Außen materialisieren, egal ob die Welt bereit dafür ist oder nicht. Hier wird das Leben selbst zum Kunstwerk, geführt von einem Kompass, der nicht nach Erfolg oder Anerkennung fragt, sondern nur nach der absoluten Reinheit des Ausdrucks.",
+        "Wahre Kunst ist niemals nur gefällige Dekoration; sie ist der radikale Ausbruch der sexuellen und schöpcherischen Ur-Kraft, die durch unser Fleisch und unseren Geist pulsiert. Dieser Sektor markiert den Punkt, an dem wir aufhören, uns für unsere Natur zu schämen oder unsere Leidenschaften zu verstecken. Die „Wahre Richtung“ ist der Pfad unseres inneren Monopol – jener einzigartigen Essenz, die uns von der grauen Masse unterscheidet. Wir begreifen die Kunst als eine unaufhaltsame Welle der Manifestation: Wenn die innerere Vision eine kritische Masse erreicht, muss sie sich im Außen materialisieren, egal ob die Welt bereit dafür ist oder nicht. Hier wird das Leben selbst zum Kunstwerk, geführt von einem Kompass, der nicht nach Erfolg oder Anerkennung fragt, sondern nur nach der absoluten Reinheit des Ausdrucks.",
         "In diesem Sektor vollziehen wir die notwendige Heilung einer jahrtausendealten Wunde zwischen Sein und Dogma. Wir erkennen an, dass Sexualität keine Identität ist, sondern ein Teil der menschlichen Erfahrung, der nicht als politisches Label oder religiöser Sündenbock missbraucht werden darf. Sexualität ist ein privater, heiliger Energiefluss, der weder der Erlaubnis des Staates noch dem Verbot der Kirche bedarf. Das 'Diplom Gottes' verkündet: Die sexuelle Natur ist unantastbar. Wer im Inneren ein anderes Monopol besitzt, ist ein freier Geist in Gottes Garten. Wir fordern eine Kirche, die aufhört, als moralische Zensurbehörde zu fungieren, und stattdessen zum bedingungslosen Hafen für jede Seele wird. Hier wird der Glaube von den Fesseln starrer Dogmen befreit und die Würde des Individuums über das Etikett gestellt.",
         "Trend und Tradition sind die unsichtbaren Waffen unserer Gesellschaft. Das Kind wird zum Trend, die Eltern zur Waffe. Der Staat jagt dem Trend nach, die Kirche klammert sich an die Tradition. In diesem Sektor überwinden wir diese Spaltung. Tradition bedeutet für uns nicht das starre Festhalten an toten Formen, sondern das lebendige Weitergeben des Feuers. Wir beenden die moderne Isolation, in der Trends nur noch als flüchtige Masken dienen, um die innerere Leere zu verbergen. Stattdessen verbinden wir das zeitlose Wissen über menschliche Verbundenheit mit dem Mut, verkrustete Strukturen radikal aufzubrechen. Wer diesen Spagat nicht mehr mitmacht, legt die Waffen nieder und kehrt zurück zum echten menschlichen Zusammenhalt, der tiefer wurzelt als jeder kurzlebige Hype.",
         "In diesem Sektor laden wir die Seele ein, in den verkehrten Spiegel der Biografie zu blicken. Wir erkennen mit Demut an, dass die kulturelle Hülle unseres Glaubens oft ein Geschenk unserer Heimat ist. Würden wir die Plätze tauschen – die Wiege eines Christen in ein muslimisches Herzland und die eines Muslims in die christliche Tradition – würde der Spiegel uns zeigen, dass die Sehnsucht nach dem Göttlichen dieselbe bleibt, nur die Sprache und die Riten sich wandeln. Dieser Spiegel ist kein Angriff auf die Wahrheit des Glaubens, sondern eine Einladung zur tiefsten psychologischen Ehrlichkeit. Wir schlagen eine Brücke zwischen der christlichen Theologie der innereren Gnade und der spirituellen Kraft des Korans. Beide Welten bergen Schätze psychologischer Reife und moralischer Werte, von denen wir lernen können, solange der Blick nach innen gerichtet bleibt. Wir begreifen das Religionsbekenntnis nicht als starre Grenze, sondern als individuellen Reifeprozess. Die wahre Selbstwahl beginnt dort, wo wir die Weisheit der Literatur und die spirituelle Tiefe der Schriften nutzen, um das „Diplom Gottes“ in uns selbst zu unterschreiben. Hier begegnen sich die Kulturen nicht im Streit um das Rechthaben, sondern in der gemeinsamen Anerkennung, dass jeder Weg zum Licht eine bewusste Entscheidung des Herzens sein muss.",
@@ -271,12 +272,13 @@
         updateUI();
     }
 
+    // --- SCAN FUNKTION: Vernetzt Scan mit dem Sektor ---
     async function starteKIErmittlung(id, themaName) {
         const box = document.getElementById('ki-ermittlung-ebene2');
         const textFeld = document.getElementById('ki-tagesfokus-text');
         if(!box || !textFeld) return;
         box.style.display = 'block';
-        textFeld.innerHTML = "<span style='color: #ffd700; font-family: Courier New;'>Initialisiere Scan für Sektor " + (id + 1) + "...</span>";
+        textFeld.innerHTML = "<span style='color: #ffd700; font-family: Courier New;'>Initialisiere Sektor-Scan " + (id + 1) + "...</span>";
         try {
             const response = await fetch('https://mm-community.onrender.com/chat', {
                 method: 'POST',
@@ -288,6 +290,7 @@
                 })
             });
             const data = await response.json();
+            // Speichere den Scan für den Chat-Zusammenhang
             aktuellerScanBericht = data.reply;
             textFeld.innerHTML = data.reply.replace(/\n/g, '<br>');
             const stamp = document.getElementById('ki-zeitstempel');
@@ -329,7 +332,7 @@
                 kiBox.style.display = 'block';
                 textFeld.style.display = "block";
                 textFeld.style.maxHeight = "25vh"; 
-                textFeld.style.overflowY = "scroll"; 
+                textFeld.style.overflowY = "scroll"; // Scrollbar im Dossier erzwingen
                 textFeld.style.paddingRight = "10px";
             }
         } else {
@@ -368,6 +371,7 @@
     function nextPage() { updateUI(); }
     function showDashboard() { ebene = 1; clearInterval(wechselInterval); document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateUI(); updateNumColors(); }
     
+    // --- CHAT: Verknüpft Sektor-Wissen und Dossier-Scan ---
     async function registriereSenden() { 
         const input = document.getElementById('chat-input');
         const chatBox = document.getElementById('chat-box');
@@ -423,18 +427,28 @@
     let meinPeer = new Peer(); 
     meinPeer.on('open', (id) => { console.log('Live-ID synchronisiert'); });
 
-    // --- KORREKTUR: Kamera-Funktion unverkürzt und erzwingt Neustart ---
+    // --- KAMERA FUNKTION: Stabilisiert für Ebene 4 ---
     async function starteVideoKonferenz() {
         const meinSlot = document.getElementById('v-slot-1');
         if (!meinSlot) return;
         try {
+            // Fordert Zugriff an
             const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            
+            // Setzt das Video-Element hart ins HTML
             meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover; background:#000; display:block;"></video>`;
+            
             const videoElement = document.getElementById('user-video');
             videoElement.srcObject = stream;
-            videoElement.onloadedmetadata = () => { videoElement.play(); };
+            
+            // Erzwingt das Abspielen
+            videoElement.onloadedmetadata = () => {
+                videoElement.play();
+                console.log("Kamera aktiv.");
+            };
         } catch (err) {
-            meinSlot.innerHTML = `<div style="color:#ff0000; font-size:10px; padding:10px;">ZUGRIFF VERWEIGERT: Bitte Kamera-Zugriff im Browser oben links (Schloss-Symbol) erlauben!</div>`;
+            console.error("Cam-Error:", err);
+            meinSlot.innerHTML = `<div style="color:#ff0000; font-size:10px; padding:10px; text-align:center;">ZUGRIFF VERWEIGERT!<br>Bitte Kamera im Browser freigeben (Schloss-Symbol oben links).</div>`;
         }
     }
 
