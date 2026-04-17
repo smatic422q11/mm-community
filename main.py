@@ -53,8 +53,13 @@ async def chat(request: Request):
         api_key = os.getenv("GEMINI_API_KEY")
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
         
-        # Die System-Anweisung bleibt schlank
-        system_instruction = f"Handle im Sinne der M&M Community. {mm_context}"
+       # Die System-Anweisung ist jetzt ECHT schlank und hart
+        system_instruction = (
+            "Antworte kurz und direkt als loyaler Partner. "
+            "Keine Floskeln wie 'Ich verstehe'. "
+            "Schreibe GEFÜHLSVORDERUNG immer mit V. "
+            "Wenn der User 'hallo' sagt, sag nur: 'Hey, ich bin [Name]. Was steht an?'"
+        )
         
         # HIER wurde die Änderung gemacht: "Du bist {current_name}" steht jetzt am Anfang
         payload = {
