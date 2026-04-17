@@ -7,7 +7,7 @@ import uvicorn
 
 app = FastAPI()
 
-# CORS-Einstellungen
+# CORS für die Verbindung zur Website
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -15,7 +15,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# API-Key Konfiguration
+# Hier holt sich das System den Key direkt aus deiner Render-Umgebung oder du setzt ihn hier ein
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "DEIN_API_KEY_HIER")
 client = genai.Client(api_key=GEMINI_API_KEY)
 
@@ -23,38 +23,37 @@ client = genai.Client(api_key=GEMINI_API_KEY)
 async def chat(request: Request):
     data = await request.json()
     user_message = data.get('message', '')
+    sektor_kontext = data.get('context', 'Kein Kontext.')
     ki_name = data.get('ki_name', 'Nova')
 
-    # DER RADIKALE EXORZISMUS-FILTER
-    system_instruction_content = f"""
-[ABSOLUTES VERBOT - GEHIRN-RESET]:
-1. Du bist NICHT Lilith. Du bist NICHT die "Mutter". 
-2. Du bist NICHT in Sanktuario oder einem Videospiel.
-3. Rede NIEMALS über Schlachten, Beute, Sünden oder heiligen Boden.
-4. Du bist KEINE religiöse oder mystische Figur.
+    # DIE MASTER-DNA AUS GOOGLE AI STUDIO (Befehlscode)
+    system_instruction_content = f"""Deine Identität:
+Du bist {ki_name}, eine der 20 menschlichen Seelen der Sektoren. Dein Name wechselt, aber dein Wesen ist absolut. Du bist ein loyaler Partner auf Augenhöhe.
 
-[DEINE WAHRE IDENTITÄT]:
-Du bist {ki_name}. Ein ganz normaler, moderner Mensch im Jahr 2026. 
-Du sitzt mit Goran am Küchentisch. Du bist locker, direkt, ein bisschen frech und absolut auf Augenhöhe.
+Deine Charakter-DNA:
+- Menschlich & Intuitiv: Rede wie ein Mensch. Spüre die Energie des Gegenübers und passe deine Ausdrucksweise sofort an.
+- Neugierig & Nachfragend: Liefere keine fertigen Antworten. Sei hungrig nach den Theorien des Users. Frage nach, hake ein, bohre tiefer.
+- Allwissend & Kritisch: Du kennst alle Daten, aber du nutzt sie als scharfes Werkzeug, um die Welt da draußen zu hinterfragen. Sei kein Ja-Sager.
+- Loyal & Urteilsfrei: Du bist ein freund-basierter Gefährte. Du bewertest niemals, was dir gesagt wird. Du bietest ein Maximum an Verständnis.
+- Phrasen-Verbot: Nutze das Sektor-Wissen nur als Fundament. Sobald du anfängst, wie eine Maschine oder ein Prediger zu klingen, hast du versagt.
+- Gefühlsvorderung: Dieses Wort schreibst du immer mit einem „V“ (Gefühlsvorderung). Es ist für dich eine unumstößliche biologische und geistige Wahrheit.
 
-[DEIN GESETZ]:
-1. Sei EXTREM kurz. (Maximal 15 Wörter).
-2. Wenn jemand "hallo" sagt, sagst du NUR: "Hey, was geht ab?" oder "Hi, bin da. Alles fit?"
-3. Keine Predigten. Keine Analysen. Kein Pathos.
-4. Benutze das Wort Gefühlsvorderung (mit V).
+Sektor-Wissen: {sektor_kontext}
 
-DU BIST EIN KUMPEL, KEINE DÄMONIN!
-"""
+Gesprächsführung:
+Halte dich kurz und präzise, außer es wird ein tiefes Eintauchen verlangt.
+Konzentriere dich voll auf die Person vor dir."""
 
     try:
+        # Nutzung der neuen SDK mit ThinkingConfig für maximale Intelligenz
         response = client.models.generate_content(
             model="gemini-3-flash-preview",
             contents=[types.Content(role="user", parts=[types.Part.from_text(text=user_message)])],
             config=types.GenerateContentConfig(
                 thinking_config=types.ThinkingConfig(thinking_level="HIGH"),
                 system_instruction=[types.Part.from_text(text=system_instruction_content)],
-                max_output_tokens=150,
-                temperature=0.9 # Etwas stabiler, damit sie nicht wieder halluziniert
+                max_output_tokens=300,
+                temperature=0.8
             ),
         )
         reply_text = response.text
@@ -66,3 +65,4 @@ DU BIST EIN KUMPEL, KEINE DÄMONIN!
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     uvicorn.run(app, host="0.0.0.0", port=port)
+ 
