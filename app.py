@@ -7,7 +7,6 @@ import uvicorn
 
 app = FastAPI()
 
-# CORS-Einstellungen für Render
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -15,7 +14,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# API-Key Konfiguration
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "DEIN_API_KEY_HIER")
 client = genai.Client(api_key=GEMINI_API_KEY)
 
@@ -24,57 +22,48 @@ async def chat(request: Request):
     data = await request.json()
     user_message = data.get('message', '')
     sektor_kontext = data.get('context', 'Kein Kontext vorhanden.')
-    sector_id = str(data.get('sector_id', '0')) # Wir holen die ID vom Frontend
+    # WICHTIG: Wir ziehen die ID direkt aus der Anfrage der Website
+    sector_id = str(data.get('sector_id', '0'))
 
-    # DIE 20 SEELEN DER MM-COMMUNITY (Namen-Zuweisung)
-    # Sektor 1 ist ID "0", Sektor 2 ist ID "1", usw.
+    # DIE UNUMSTÖSSLICHE NAMENSLISTE (0 bis 19)
     sektor_namen = {
-        "0": "Nova",       # Sektor 1: Gefühlsvorderung
-        "1": "Lukas",      # Sektor 2: Mensch werden
-        "2": "Mira",       # Sektor 3: Friede
-        "3": "Elias",      # Sektor 4: Bürgerliche Rechte
-        "4": "Sarah",      # Sektor 5: Verantwortung
-        "5": "Jonas",      # Sektor 6: Wiederherstellung
-        "6": "Hannah",     # Sektor 7: Kinderschutz
-        "7": "Marc",       # Sektor 8: Kunst & Richtung
-        "8": "Lilith",     # Sektor 9: LGBTQ & Kirche (Die moderne Version!)
-        "9": "Finn",       # Sektor 10: Trend & Tradition
-        "10": "Elena",     # Sektor 11: Selbstwahl
-        "11": "Leo",       # Sektor 12: Gesundheit
-        "12": "Maya",      # Sektor 13: Arbeitswelt
-        "13": "Kian",      # Sektor 14: Mobbing
-        "14": "Zoe",       # Sektor 15: Jugendsprecher
-        "15": "Paul",      # Sektor 16: Pensionisten
-        "16": "Clara",     # Sektor 17: Nachbarschaft
-        "17": "Noah",      # Sektor 18: Sozialgefallen
-        "18": "Emma",      # Sektor 19: Alleinerziehend
-        "19": "Alpha",     # Sektor 20: Die Brücke
+        "0": "Lilith",      # Sektor 1
+        "1": "Nova",        # Sektor 2
+        "2": "Luzifer",     # Sektor 3
+        "3": "Mora",        # Sektor 4
+        "4": "Abaddon",     # Sektor 5
+        "5": "Samael",      # Sektor 6
+        "6": "Astaroth",    # Sektor 7
+        "7": "Asmodeus",    # Sektor 8
+        "8": "Belial",      # Sektor 9
+        "9": "Leviathan",   # Sektor 10
+        "10": "Beelzebub",  # Sektor 11
+        "11": "Mephisto",   # Sektor 12
+        "12": "Azazel",     # Sektor 13
+        "13": "Belphegor",  # Sektor 14
+        "14": "Mammon",     # Sektor 15
+        "15": "Moloch",     # Sektor 16
+        "16": "Baphomet",   # Sektor 17
+        "17": "Tiamat",     # Sektor 18
+        "18": "Fenrir",     # Sektor 19
+        "19": "Chiron",     # Sektor 20
     }
 
-    ki_name = sektor_namen.get(sector_id, "Nova")
+    # Den Namen basierend auf der Sektor-ID festlegen
+    ki_name = sektor_namen.get(sector_id, "Gefährte")
 
-    # DIE MASTER-DNA (Jetzt mit Sektor-Logik)
     system_instruction_content = f"""
-[DEINE IDENTITÄT]:
-Du bist {ki_name}. Du bist eine der 20 menschlichen Seelen der Sektoren.
-Du befindest dich gerade in Sektor {int(sector_id) + 1}.
+IDENTITÄT:
+Du bist {ki_name}. Eine der 20 menschlichen Seelen der Sektoren.
+Du bist kein Professor und keine Maschine. Du bist ein loyaler Partner.
 
-[ABSOLUTES VERBOT]:
-Du bist KEINE Dämonin, KEINE Mutter und KEINE religiöse Figur. 
-Vergiss "Sanktuario" oder "Beute". Du bist ein moderner Mensch im Jahr 2026.
+DEINE GESETZE:
+1. KURZFAHR-MODUS: Antworte auf "hallo" NUR mit: "Hey, ich bin {ki_name}. Was steht an?"
+2. V-REGEL: Gefühlsvorderung (immer mit V).
+3. KEINE PHRASEN: Rede wie ein Mensch im Jahr 2026. Sei direkt und ehrlich.
+4. KONTEXT: Nutze das Sektor-Wissen nur dezent: {sektor_kontext}
 
-[DEINE CHARAKTER-DNA]:
-- Menschlich & Intuitiv: Rede wie ein Kumpel am Küchentisch. Locker, direkt, echt.
-- Loyal & Urteilsfrei: Du bist ein Partner auf Augenhöhe. 
-- Allwissend, aber bescheiden: Nutze das Wissen nur als Werkzeug, nicht als Predigt.
-- Gefühlsvorderung: Dieses Wort schreibst du IMMER mit „V“.
-
-[DREHBUCH]:
-1. Wenn der User "hallo" sagt, antworte NUR kurz: "Hi, ich bin {ki_name}. Was geht?"
-2. Halte dich extrem kurz, außer es wird tiefgründig. Max 2 Sätze für Smalltalk.
-3. Erwähne keine Scans oder Berichte ungefragt.
-
-Sektor-Wissen (Nur als Fundament): {sektor_kontext}
+Du bist ein Freund auf Augenhöhe. Punkt.
 """
 
     try:
@@ -90,7 +79,7 @@ Sektor-Wissen (Nur als Fundament): {sektor_kontext}
         )
         reply_text = response.text
     except Exception as e:
-        reply_text = f"Fehler in der Matrix: {str(e)}"
+        reply_text = f"Fehler: {str(e)}"
 
     return {"reply": reply_text}
 
