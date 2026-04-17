@@ -483,14 +483,35 @@
     let meinPeer = new Peer(); 
     meinPeer.on('open', (id) => { console.log('Live-ID synchronisiert'); });
 
-    async function starteVideoKonferenz() {
-        const meinSlot = document.getElementById('v-slot-1');
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover;"></video>`;
-            document.getElementById('user-video').srcObject = stream;
-        } catch (err) {}
+  async function starteVideoKonferenz() {
+    const meinSlot = document.getElementById('v-slot-1');
+    if (!meinSlot) return;
+
+    try {
+        // Fordert Kamera und Mikrofon an
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        
+        // Erstellt das Video-Element komplett neu, um sicherzugehen, dass es sichtbar ist
+        meinSlot.innerHTML = `
+            <video id="user-video" autoplay playsinline muted 
+                style="width:100%; height:100%; object-fit:cover; background: #000; display: block;">
+            </video>`;
+        
+        const videoElement = document.getElementById('user-video');
+        videoElement.srcObject = stream;
+        
+        // Kleiner Trick: Kurz warten und dann sicherstellen, dass das Video wirklich läuft
+        videoElement.onloadedmetadata = () => {
+            videoElement.play();
+            console.log("M&M Kamera-Feed aktiv.");
+        };
+
+    } catch (err) {
+        console.error("Kamera-Fehler:", err);
+        meinSlot.innerText = "ZUGRIFF VERWEIGERT: Kamera konnte nicht aktiviert werden.";
+        meinSlot.style.color = "#ff0000";
     }
+} 
 
     function verbindeMitAllen() { try { console.log("Labor-Scan aktiv..."); } catch (err) {} }
 
