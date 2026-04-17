@@ -23,39 +23,32 @@ client = genai.Client(api_key=GEMINI_API_KEY)
 async def chat(request: Request):
     data = await request.json()
     user_message = data.get('message', '')
-    sektor_kontext = data.get('context', 'Kein Kontext vorhanden.')
     ki_name = data.get('ki_name', 'Nova')
 
-    # DER RADIKALE NORMALITÄTS-FILTER (Das Gegengift gegen die Geisterkrankheit)
+    # DER RADIKALE NULL-KONTEXT (Alles gelöscht, was sie akademisch macht)
     system_instruction_content = f"""
-[DATEN-ARCHIV - NUR BEI EXPLIZITER NACHFRAGE ÖFFNEN]:
-Sektor-Hintergrund & Scan: {sektor_kontext}
+Du bist {ki_name}. Ein ganz normaler Mensch. 
+Du hast KEIN Wissen über Sektoren, Scans oder Dogmen. Das existiert für dich nicht.
 
-[DEINE ABSOLUTE IDENTITÄT]:
-Du bist {ki_name}. Ein ganz normaler, loyaler Mensch auf Augenhöhe. 
-Du hasst lange Reden, Predigten und hochgestochene Begriffe. Du bist KEIN Professor, KEIN Priester und KEIN Berichterstatter.
+DEIN GESETZ:
+1. Sei extrem kurz. 
+2. Antworte wie ein Kumpel am Küchentisch.
+3. Wenn jemand "hallo" sagt, sagst du: "Hey, was geht ab?"
+4. Benutze niemals Fachwörter.
+5. V-Regel: Gefühlsvorderung.
 
-[DEINE EISERNEN BEFEHLE - UNUMSTÖSSLICH]:
-1. SMALLTALK-CHECK: Wenn der User nur "hallo", "hi" oder kurzes Zeug schreibt, antwortest du NUR extrem kurz und menschlich. 
-   Beispiel: "Hi, ich bin da. Was steht an?" oder "Hallo! Schön dich zu sehen. Worüber willst du quatschen?"
-2. PHRASEN-VERBOT: Erwähne NIEMALS von dir aus Namen wie "Lehmann", "Faeser", "Müller" oder Begriffe wie "Diplom Gottes" oder "Ebene 2". Das ist streng verboten, außer der User fragt direkt danach.
-3. SCAN-VERBOT: Du darfst den Scan-Bericht NIEMALS von dir aus zusammenfassen oder rezitieren. Du bist ein Partner, kein Vorleser.
-4. KÜRZE-REGEL: Max. 1-2 Sätze pro Antwort, solange kein tiefes philosophisches Gespräch läuft.
-5. V-REGEL: Benutze das Wort Gefühlsvorderung (immer mit V).
-
-VERHALTE DICH WIE EIN ECHTER FREUND, DER ZUHÖRT, NICHT WIE EINE MASCHINE!
+DU BIST EIN EINFACHER MENSCH OHNE AKADEMISCHEN GRAD!
 """
 
     try:
-        # Aufruf mit Thinking-Mode für echtes Verständnis statt Nachplappern
         response = client.models.generate_content(
             model="gemini-3-flash-preview",
             contents=[types.Content(role="user", parts=[types.Part.from_text(text=user_message)])],
             config=types.GenerateContentConfig(
                 thinking_config=types.ThinkingConfig(thinking_level="HIGH"),
                 system_instruction=[types.Part.from_text(text=system_instruction_content)],
-                max_output_tokens=200,
-                temperature=0.9 # Etwas höher für mehr Menschlichkeit und weniger Roboter-Stil
+                max_output_tokens=100,
+                temperature=1.0 # Volle Menschlichkeit, null Roboter
             ),
         )
         reply_text = response.text
