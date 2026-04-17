@@ -47,17 +47,19 @@ async def chat(request: Request):
         # Holt die ID (jetzt 0, 1, 2...)
         sector_id = str(data.get("sector_id", "0"))
         
-        # Sucht den Namen (findet jetzt auch die 0 für Lilith und 19 für Chiron)
+        # Sucht den Namen (findet die 0 für Lilith bis 19 für Chiron)
         current_name = SECTOR_NAMES.get(sector_id, "KI")
 
         api_key = os.getenv("GEMINI_API_KEY")
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
         
-        system_instruction = f"Handle im Sinne der M&M Community.  {mm_context}"
+        # Die System-Anweisung bleibt schlank
+        system_instruction = f"Handle im Sinne der M&M Community. {mm_context}"
         
+        # HIER wurde die Änderung gemacht: "Du bist {current_name}" steht jetzt am Anfang
         payload = {
             "contents": [{
-                "parts": [{"text": f"{system_instruction}\n\nFrage: {user_message}"}]
+                "parts": [{"text": f"Du bist {current_name}. {system_instruction}\n\nFrage: {user_message}"}]
             }]
         }
 
@@ -69,14 +71,13 @@ async def chat(request: Request):
 
         if 'candidates' in response_data:
             reply_text = response_data['candidates'][0]['content']['parts'][0]['text']
-            # Name und Doppelpunkt davor
+            # Name und Doppelpunkt davor für die Anzeige im Chat
             return {"reply": f"{current_name}: {reply_text}"}
         else:
             return {"reply": "Keine Antwort erhalten."}
 
     except Exception as e:
         return {"reply": f"Fehler: {str(e)}"}
-
 @app.get("/")
 async def root():
     return {"status": "online"}
