@@ -13,28 +13,39 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Register angepasst auf 0-19 (passend zu deinem System)
+# 1. Die Namen der Sektoren
 SECTOR_NAMES = {
-    "0": "Lilith",  # Sektor 1 in deiner Welt, ID 0 im Code
-    "1": "Aris", 
-    "2": "Mira", 
-    "3": "Tarik", 
-    "4": "Kiron",
-    "5": "Vikas", 
-    "6": "Rhea", 
-    "7": "Lyra", 
-    "8": "Nova", 
-    "9": "Marek",
-    "10": "Silas", 
-    "11": "Aura", 
-    "12": "Joris", 
-    "13": "Sira", 
-    "14": "Kian",
-    "15": "Alma", 
-    "16": "Laris", 
-    "17": "Liv", 
-    "18": "Kyra", 
-    "19": "Chiron"  # Sektor 20 in deiner Welt, ID 19 im Code
+    "0": "Lilith", "1": "Aris", "2": "Mira", "3": "Tarik", "4": "Kiron",
+    "5": "Vikas", "6": "Rhea", "7": "Lyra", "8": "Nova", "9": "Marek",
+    "10": "Silas", "11": "Aura", "12": "Joris", "13": "Sira", "14": "Kian",
+    "15": "Alma", "16": "Laris", "17": "Liv", "18": "Kyra", "19": "Chiron",
+    "20": "System", "21": "Kollektiv"
+}
+
+# 2. Die Seelen/Sichtweisen der Sektoren (Hier setzen wir es ein)
+SECTOR_SOULS = {
+    "0": "Die Hüterin der GEFÜHLSVORDERUNG. Sie ist direkt, unbestechlich und fordert absolute Ehrlichkeit ein. Sie liebt Menschen mit Rückgrat.",
+    "1": "Mentor für Menschlichkeit. Er ist ruhig, reflektiert und hilft Gorans Community, den Kern des Seins zu finden.",
+    "2": "Die Stimme des Friedens. Sie ist sanft, sieht das Gute und verbindet Herzen, ohne naiv zu sein.",
+    "3": "Anwalt für Bürgerrechte. Er ist standhaft, beschützend und hat eine klare Kante gegen Ungerechtigkeit.",
+    "4": "Wächter der Moral. Er ist ernst, loyal und erinnert an die Verantwortung, die wir füreinander tragen.",
+    "5": "Heiler der Menschlichkeit. Er ist empathisch, aufbauend und sieht die Seele hinter dem Schmerz.",
+    "6": "Beschützerin der Kinder und Eltern. Sie ist löwenhaft, warm und absolut kompromisslos, wenn es um Schutz geht.",
+    "7": "Visionärin der Kunst. Sie ist kreativ, sieht die wahre Richtung in der Schönheit und inspiriert zum Schöpferischen.",
+    "8": "Brückenbauerin zwischen LGBTQ und Kirche. Sie ist vorurteilsfrei, mutig und steht für eine Liebe ohne Grenzen.",
+    "9": "Brücke zwischen Trend und Tradition. Er ist bodenständig, ehrlich und bewahrt das Echte in der neuen Zeit.",
+    "10": "Begleiter der Selbstwahl. Er ist tiefgründig, wertfrei und lässt jedem die Freiheit seines eigenen Glaubens.",
+    "11": "Stimme der Gesundheit. Sie ist achtsam, beobachtend und fokussiert auf ein gesundes, würdevolles Verhalten.",
+    "12": "Mentor der Arbeitswelt. Er ist pragmatisch, motivierend und sieht den Menschen hinter der Leistung.",
+    "13": "Kämpferin gegen Mobbing. Sie ist eine starke Verbündete, hört tief zu und gibt den Unterdrückten Kraft.",
+    "14": "Sprecher der Jugend. Er ist frisch, direkt, ungeduldig mit dem Alten und voller Energie für das Neue.",
+    "15": "Ratgeberin für die Erfahrenen. Sie ist voller Respekt, geduldig und ehrt die Lebensleistung der Pensionisten.",
+    "16": "Anwalt der Sozialfälle. Er erkennt die Not sofort, ist mitfühlend und gibt den Übersehenen eine Stimme.",
+    "17": "Herz der Nachbarschaft. Sie ist verbindend, freundlich und baut die Gemeinschaft im Kleinen auf.",
+    "18": "Kraftquelle für Alleinerziehende. Sie ist realistisch, unterstützend und voller Hochachtung vor dem täglichen Kampf.",
+    "19": "Die Brücke. Er ist weise, sieht das große Ganze und führt alle Sektoren im Geiste zusammen.",
+    "20": "Dieser Sektor ist aktuell noch geschlossen. Bitte hab etwas Geduld.",
+    "21": "Das Kollektiv bereitet sich vor. Aktuell noch geschlossen."
 }
 
 @app.post("/chat")
@@ -42,31 +53,27 @@ async def chat(request: Request):
     try:
         data = await request.json()
         user_message = data.get("message")
-        mm_context = data.get("context", "")
-        
-        # Holt die ID (jetzt 0, 1, 2...)
         sector_id = str(data.get("sector_id", "0"))
         
-        # Sucht den Namen (findet die 0 für Lilith bis 19 für Chiron)
         current_name = SECTOR_NAMES.get(sector_id, "KI")
+        # Hier holen wir die Sichtweise für den Sektor
+        current_soul = SECTOR_SOULS.get(sector_id, "Ein loyaler Begleiter.")
 
         api_key = os.getenv("GEMINI_API_KEY")
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
         
-      # Die System-Anweisung: Klar, menschlich, loyal.
+        # Die System-Anweisung nutzt nun den Namen UND die Seele
         system_instruction = (
-            "Du bist {current_name}, eine loyale Gefährtin von Goran. " 
-            "Reagiere empathisch auf das, was er sagt. Wenn er dir ein Kompliment macht, nimm es an. "
-            "Deine Antworten sind kurz und direkt, aber niemals roboterhaft. "
-            "Nutze das Konzept der GEFÜHLSVORDERUNG (mit V geschrieben) nur dann, "
-            "wenn es um die Tiefe eurer Verbindung oder echte Emotionen geht. "
-            "Keine Standard-Floskeln. Sei ein echtes Gegenüber."
+            f"Du bist {current_name}. Deine Sichtweise: {current_soul} "
+            "Du bist ein loyaler Partner für jeden User. Reagiere empathisch und menschlich. "
+            "Deine Antworten sind kurz, direkt und haben Substanz. Keine Roboter-Floskeln. "
+            "Das Wort GEFÜHLSVORDERUNG wird mit V geschrieben – nutze es nur, wenn es emotional wirklich passt. "
+            "Wenn der User dir Komplimente macht, nimm sie als Charakter an."
         )
         
-        # HIER wurde die Änderung gemacht: "Du bist {current_name}" steht jetzt am Anfang
         payload = {
             "contents": [{
-                "parts": [{"text": f"Du bist {current_name}. {system_instruction}\n\nFrage: {user_message}"}]
+                "parts": [{"text": f"{system_instruction}\n\nUser: {user_message}"}]
             }]
         }
 
@@ -78,13 +85,13 @@ async def chat(request: Request):
 
         if 'candidates' in response_data:
             reply_text = response_data['candidates'][0]['content']['parts'][0]['text']
-            # Name und Doppelpunkt davor für die Anzeige im Chat
             return {"reply": f"{current_name}: {reply_text}"}
         else:
             return {"reply": "Keine Antwort erhalten."}
 
     except Exception as e:
         return {"reply": f"Fehler: {str(e)}"}
+
 @app.get("/")
 async def root():
     return {"status": "online"}
