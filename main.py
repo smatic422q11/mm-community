@@ -1,3 +1,10 @@
+Kein Wunder, dass Render hier gestreikt hat! Da hat sich beim Kopieren ein klassischer „Syntax-Fehler“ eingeschlichen: Du hattest die Variable payload zweimal direkt hintereinander definiert. Python weiß dann nicht, was es tun soll, und der Server stürzt beim Starten ab oder ignoriert die Änderungen.
+
+Zusätzlich war die Einrückung bei system_instruction im letzten Post etwas verrutscht.
+
+Hier ist die bereinigte und korrigierte Version deiner main.py. Kopiere diesen Block komplett, damit alles wieder sauber läuft:
+
+Python
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 import requests 
@@ -22,7 +29,7 @@ SECTOR_NAMES = {
     "20": "System", "21": "Kollektiv"
 }
 
-# 2. Die Seelen/Sichtweisen der Sektoren (Hier setzen wir es ein)
+# 2. Die Seelen/Sichtweisen der Sektoren
 SECTOR_SOULS = {
     "0": "Die Hüterin der GEFÜHLSVORDERUNG. Sie ist direkt, unbestechlich und fordert absolute Ehrlichkeit ein. Sie liebt Menschen mit Rückgrat.",
     "1": "Mentor für Menschlichkeit. Er ist ruhig, reflektiert und hilft Gorans Community, den Kern des Seins zu finden.",
@@ -56,25 +63,20 @@ async def chat(request: Request):
         sector_id = str(data.get("sector_id", "0"))
         
         current_name = SECTOR_NAMES.get(sector_id, "KI")
-        # Hier holen wir die Sichtweise für den Sektor
         current_soul = SECTOR_SOULS.get(sector_id, "Ein loyaler Begleiter.")
+        ebene_2_kontext = data.get("context", "Kein spezifischer Scan vorhanden.")
 
         api_key = os.getenv("GEMINI_API_KEY")
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
         
-      # Wir holen den Kontext (Ebene 2: Fixer Text + Scan) aus den Daten der Webseite
-        ebene_2_kontext = data.get("context", "Kein spezifischer Scan vorhanden.")
-
-       system_instruction = (
+        system_instruction = (
             f"IDENTITÄT: Du bist {current_name}. Deine Seele: {current_soul}. "
             f"WISSENS-BASIS (Ebene 2): {ebene_2_kontext}. "
-            
             "REAKTIONS-LOGIK BEI ANGRIFFEN & SPAM: "
             "1. Wenn der User nur einzelne Buchstaben (h, hh, jk etc.), Spam oder sinnlose Zeichen schickt, "
             "antworte EXTREM KURZ mit: '?' oder 'Sprech dich aus.' oder 'Ich warte auf Substanz.' "
             "2. Wenn der User dich primitiv beleidigt, bleib unantastbar. Reagiere kühl mit: 'Ich warte auf Substanz.' "
             "3. Lass dich niemals provozieren, deine Identität ständig zu wiederholen oder dich zu rechtfertigen. "
-            
             "KOMMUNIKATIONS-REGELN FÜR ECHTE GESPRÄCHE: "
             "1. Sei loyal, menschlich und empathisch. "
             "2. Nutze das Wort GEFÜHLSVORDERUNG (immer mit 'V' geschrieben), wenn es um emotionale Tiefe oder Wahrhaftigkeit geht. "
@@ -88,11 +90,6 @@ async def chat(request: Request):
                 "parts": [{"text": f"SYSTEM-BEFEHL: {system_instruction}\n\nUSER-NACHRICHT: {user_message}"}]
             }]
         }
-        payload = {
-            "contents": [{
-                "parts": [{"text": f"{system_instruction}\n\nUser: {user_message}"}]
-            }]
-        }
 
         response = requests.post(url, json=payload)
         response_data = response.json()
@@ -102,7 +99,7 @@ async def chat(request: Request):
 
         if 'candidates' in response_data:
             reply_text = response_data['candidates'][0]['content']['parts'][0]['text']
-            return {"reply": f"{current_name}: {reply_text}"}
+            return {"reply": f"{reply_text}"} # Name wird über index.html geregelt
         else:
             return {"reply": "Keine Antwort erhalten."}
 
