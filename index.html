@@ -92,27 +92,28 @@
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
-        #chat-area, #drawer-ebene4, #ebene5-bereich { 
+    #chat-area { 
     width: 90% !important; 
-    flex-grow: 1; 
+    height: 40vh; /* Festgelegte Höhe, damit Scrollen möglich wird */
     display: none; 
     flex-direction: column; 
     margin-top: 5px; 
-    margin-bottom: 70px; 
-    overflow-y: auto; /* ÄNDERUNG HIER: Von hidden auf auto */
-    position: relative; 
+    margin-bottom: 80px; 
+    overflow-y: auto !important; /* Erzwingt das Scrollen */
+    position: relative;
+    border: 1px solid rgba(0, 61, 143, 0.5); /* Optional: macht den Bereich sichtbar */
 }
 
-/* Und stelle sicher, dass die Nachrichtenbox auch mitspielt */
 .chat-msgs { 
     flex: 1; 
     display: flex; 
     flex-direction: column; 
     justify-content: flex-end; 
-    padding: 10px 0; 
+    padding: 10px; 
     color: #fff; 
     font-size: 1.1rem; 
-    overflow-y: auto; /* Hier muss es auch auf auto stehen */
+    overflow-y: auto !important; 
+    min-height: 200px; /* Mindesthöhe für den Nachrichtenfluss */
 }
         .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; }
         
