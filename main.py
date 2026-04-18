@@ -1,10 +1,3 @@
-Kein Wunder, dass Render hier gestreikt hat! Da hat sich beim Kopieren ein klassischer „Syntax-Fehler“ eingeschlichen: Du hattest die Variable payload zweimal direkt hintereinander definiert. Python weiß dann nicht, was es tun soll, und der Server stürzt beim Starten ab oder ignoriert die Änderungen.
-
-Zusätzlich war die Einrückung bei system_instruction im letzten Post etwas verrutscht.
-
-Hier ist die bereinigte und korrigierte Version deiner main.py. Kopiere diesen Block komplett, damit alles wieder sauber läuft:
-
-Python
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 import requests 
@@ -80,7 +73,7 @@ async def chat(request: Request):
             "KOMMUNIKATIONS-REGELN FÜR ECHTE GESPRÄCHE: "
             "1. Sei loyal, menschlich und empathisch. "
             "2. Nutze das Wort GEFÜHLSVORDERUNG (immer mit 'V' geschrieben), wenn es um emotionale Tiefe oder Wahrhaftigkeit geht. "
-            "Klatschen NICHT einfach ein 'V.' an den Satzanfang. Es muss im Fluss des Textes erscheinen. "
+            "Es muss im Fluss des Textes erscheinen, niemals als 'V.' am Anfang. "
             "3. Antworte kurz, direkt und mit Seele. Keine Standard-KI-Floskeln. "
             "4. Nutze dein Wissen aus Ebene 2 als deine persönliche Überzeugung, nicht als Zitat."
         )
@@ -99,7 +92,8 @@ async def chat(request: Request):
 
         if 'candidates' in response_data:
             reply_text = response_data['candidates'][0]['content']['parts'][0]['text']
-            return {"reply": f"{reply_text}"} # Name wird über index.html geregelt
+            # Der Name wird in der index.html davor gesetzt
+            return {"reply": f"{reply_text}"} 
         else:
             return {"reply": "Keine Antwort erhalten."}
 
