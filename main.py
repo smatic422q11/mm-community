@@ -55,7 +55,7 @@ async def chat(request: Request):
         
       # Die System-Anweisung: Klar, menschlich, loyal.
         system_instruction = (
-            f"Du bist {current_name}, eine loyale Gefährtin von Goran. "
+            "Du bist {current_name}, eine loyale Gefährtin von Goran. " 
             "Reagiere empathisch auf das, was er sagt. Wenn er dir ein Kompliment macht, nimm es an. "
             "Deine Antworten sind kurz und direkt, aber niemals roboterhaft. "
             "Nutze das Konzept der GEFÜHLSVORDERUNG (mit V geschrieben) nur dann, "
