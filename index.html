@@ -92,31 +92,30 @@
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
-        #chat-area, #drawer-ebene4, #ebene5-bereich { 
-    width: 90% !important; 
-    flex-grow: 1; 
-    display: none; 
-    flex-direction: column; 
-    margin-top: 5px; 
-    margin-bottom: 70px; 
-    overflow: hidden; /* DAS HIER LÄSST DU SO */
-    position: relative; 
-}
-       .chat-msgs { 
-    height: 45vh;       /* Gibt dem Chat eine feste Höhe */
-    display: flex; 
-    flex-direction: column; 
-    padding: 10px; 
-    color: #fff; 
-    font-size: 1.1rem; 
-    
-    /* SCROLL-FIX: */
-    overflow-y: auto !important; 
-    user-select: text !important; /* KOPIEREN ERLAUBEN */
-    
-    border: 1px solid #003d8f;
-    background: rgba(0,0,0,0.3);
-}
+    #chat-area, #drawer-ebene4, #ebene5-bereich { 
+            width: 90% !important; 
+            flex-grow: 1; 
+            display: none; 
+            flex-direction: column; 
+            margin-top: 5px; 
+            margin-bottom: 70px; 
+            overflow: hidden; 
+            position: relative; 
+        }
+
+        #chat-box { 
+            height: 45vh !important;
+            display: flex; 
+            flex-direction: column; 
+            padding: 15px; 
+            color: #fff; 
+            font-size: 1.1rem; 
+            overflow-y: auto !important; 
+            user-select: text !important; 
+            border: 1px solid #003d8f;
+            background: rgba(0,0,0,0.5);
+            box-sizing: border-box;
+        }
         .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; }
         
         .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; background: #000; z-index: 100; }
