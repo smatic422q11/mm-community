@@ -228,9 +228,8 @@ async def chat(request: Request):
         current_soul = SECTOR_SOULS.get(sector_id, "Ein loyaler Begleiter.")
         ebene_2_kontext = data.get("context", "Kein spezifischer Scan vorhanden.")
 
-        api_key = os.getenv("GEMINI_API_KEY")
-        # Hinweis: Nutze das stabile Modell für die System-Instructions
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+         api_key = os.getenv("GEMINI_API_KEY")
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
         
         # --- TISCH-ANWEISUNG FÜR DEN SCAN ---
         tisch_anweisung = (
