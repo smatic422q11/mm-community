@@ -404,66 +404,58 @@
     let kollektivesGedachtnis = JSON.parse(localStorage.getItem('mm_chat_history')) || [];
     let istSendenAktiv = false;
 
-    async function registriereSenden() { 
-        if (istSendenAktiv) return; 
-        const input = document.getElementById('chat-input');
-        const chatBox = document.getElementById('chat-box');
-        const userText = input.value.trim(); 
-        if (userText === "") return; 
+ async function registriereSenden() { 
+    if (istSendenAktiv) return; 
+    
+    const input = document.getElementById('chat-input');
+    const chatBox = document.getElementById('chat-box');
+    const userText = input.value.trim(); 
+    if (userText === "") return; 
 
-        let nutzerZahl = (typeof aktuelleNutzerZahl !== 'undefined') ? aktuelleNutzerZahl : 1; 
-        let tischNummer = Math.ceil(nutzerZahl / 8); 
+    istSendenAktiv = true; 
+    chatBox.innerHTML += `<div style="margin-bottom:10px;"><strong>Du:</strong> ${userText}</div>`; 
+    input.value = ""; 
 
-        istSendenAktiv = true; 
-        chatBox.innerHTML += `<div style="margin-bottom:10px;"><strong>Du:</strong> ${userText}</div>`; 
-        input.value = ""; 
-        chatBox.scrollTop = chatBox.scrollHeight;
+    const typingId = "typing-" + Date.now();
+    chatBox.innerHTML += `<div id="${typingId}" style="color:#003d8f; font-style:italic;">M&M KI prüft...</div>`;
+    
+    try {
+        const kombiniertesWissen = `STATISCHES WISSEN: ${sektorTexte[tId]} \n\n AKTUELLER SCAN: ${aktuellerScanBericht}`;
         
-        const memoryEntry = { 
-            "role": "user", 
-            "parts": [{ "text": `[Sektor ${tId}] ${userText}` }] 
-        };
-        kollektivesGedachtnis.push(memoryEntry);
+        // --- DER FIX: Sende die HISTORY, BEVOR du die neue Nachricht reinpushst ---
+        const response = await fetch('https://mm-community.onrender.com/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                message: userText, 
+                context: kombiniertesWissen, 
+                sector_id: String(tId),
+                tisch_id: Math.ceil((typeof aktuelleNutzerZahl !== 'undefined' ? aktuelleNutzerZahl : 1) / 8),
+                history: kollektivesGedachtnis // Hier ist der neue Text noch NICHT drin
+            })
+        }); 
+
+        const data = await response.json();
+        const typingElement = document.getElementById(typingId);
+        if (typingElement) typingElement.remove();
+        
+        chatBox.innerHTML += `<div class="ki-antwort" style="...">${data.reply}</div>`; 
+
+        // --- JETZT ERST: Beides ins Gedächtnis speichern für das NÄCHSTE Mal ---
+        kollektivesGedachtnis.push({ "role": "user", "parts": [{ "text": userText }] });
+        kollektivesGedachtnis.push({ "role": "model", "parts": [{ "text": data.reply }] });
         localStorage.setItem('mm_chat_history', JSON.stringify(kollektivesGedachtnis));
-        
-        const typingId = "typing-" + Date.now();
-        chatBox.innerHTML += `<div id="${typingId}" style="color:#003d8f; font-style:italic;">M&M KI prüft GefühlsVorderung...</div>`;
-        
-        try {
-            const kombiniertesWissen = `STATISCHES WISSEN: ${sektorTexte[tId]} \n\n AKTUELLER SCAN: ${aktuellerScanBericht}`;
-            const response = await fetch('https://mm-community.onrender.com/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    message: userText, 
-                    context: kombiniertesWissen, 
-                    sector_id: String(tId),
-                    tisch_id: tischNummer,
-                    history: kollektivesGedachtnis 
-                })
-            }); 
-            const data = await response.json();
-            const typingElement = document.getElementById(typingId);
-            if (typingElement) typingElement.remove();
-            
-            chatBox.innerHTML += `<div class="ki-antwort" style="background: rgba(0, 61, 143, 0.2); padding: 10px; border-radius: 5px; margin-bottom:10px;">${data.reply}</div>`; 
-            
-            kollektivesGedachtnis.push({ 
-                "role": "model", 
-                "parts": [{ "text": data.reply }] 
-            });
-            localStorage.setItem('mm_chat_history', JSON.stringify(kollektivesGedachtnis));
-            
-            if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId] += 5; 
-            updateNumColors();
-        } catch (error) { 
-            const typingElement = document.getElementById(typingId);
-            if (typingElement) typingElement.innerText = "System-Fehler in der Sektor-Verbindung.";
-        } finally {
-            istSendenAktiv = false;
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
+
+        if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId] += 5; 
+        updateNumColors();
+
+    } catch (error) { 
+        // Fehlerbehandlung...
+    } finally {
+        istSendenAktiv = false;
+        chatBox.scrollTop = chatBox.scrollHeight;
     }
+}
 
     function updateNumColors() {
         themen.forEach((_, i) => {
