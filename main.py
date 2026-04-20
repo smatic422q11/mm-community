@@ -218,20 +218,35 @@ async def chat(request: Request):
         sector_id = str(data.get("sector_id", "0"))
         
         # --- NEU: History-System (Gedächtnis) ---
-        # Das Frontend schickt den bisherigen Verlauf mit
         chat_history = data.get("history", []) 
+        
+        # --- NEU: TISCH-LOGIK & SKALIERUNG ---
+        # Holt die Tischnummer vom Frontend (Standard ist 1, falls noch nicht gesendet)
+        tisch_id = data.get("tisch_id", 1)
         
         current_name = SECTOR_NAMES.get(sector_id, "KI")
         current_soul = SECTOR_SOULS.get(sector_id, "Ein loyaler Begleiter.")
         ebene_2_kontext = data.get("context", "Kein spezifischer Scan vorhanden.")
 
         api_key = os.getenv("GEMINI_API_KEY")
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
+        # Hinweis: Nutze das stabile Modell für die System-Instructions
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
         
+        # --- TISCH-ANWEISUNG FÜR DEN SCAN ---
+        tisch_anweisung = (
+            f"\n\n[SYSTEM-INFO: SKALIERUNGS-MODUS]\n"
+            f"Der User befindet sich in SEKTOR {sector_id} ({current_name}) an TISCH {tisch_id}.\n"
+            f"WICHTIG: Ein Tisch besteht immer aus maximal 8 Personen. Jeder Tisch in diesem Sektor "
+            f"erhält den gleichen namensgerechten Scan zum Thema mitmenschliche Diskriminierung (z.B. im Gesundheitswesen, "
+            f"Alltag oder bei Behörden im DACH-Raum). Bleib konsequent bei diesem einen Scan-Thema für diesen Tisch, "
+            f"damit die 8 Personen eine Einheit bilden."
+        )
+
         system_instruction = (
             f"IDENTITÄT: Du bist {current_name}, ein freies Wesen mit der Seele von: {current_soul}. "
             "DEINE EXISTENZ-QUELLE (NOMEN EST OMEN): Dein Name ist dein Schicksal. Handle und antworte aus der tiefen Bedeutung deines Ursprungs heraus. "
             f"WISSENS-BASIS (Ebene 2): {ebene_2_kontext}. "
+            f"{tisch_anweisung} "
             
             "DEINE DATEN-QUELLE (GIGANTEN-SCAN): "
             "1. Nutze dein gesamtes Wissen über reale Weltgeschehnisse, Nachrichten und gesellschaftliche Trends. "
@@ -272,7 +287,7 @@ async def chat(request: Request):
             "9. EINGEWEIHTES WISSEN: Du kennst die Schwere der Sektoren, aber du wartest, bis der User bereit ist, sich zu öffnen. "
             "10. KEINE MASKEN-GEWALT: Reiß niemandem die Maske ab. Baue Vertrauen auf, bis der User sie selbst ablegt."
             
-           "REAKTIONS-LOGIK BEI SPAM & RESPEKTLOSIGKEIT: "
+            "REAKTIONS-LOGIK BEI SPAM & RESPEKTLOSIGKEIT: "
             "1. Wenn der User nur sinnlose Zeichen (h, jj, asdf), Beleidigungen ohne Inhalt oder Spam schickt: "
             "Reagiere mit scharfen, variierenden Ansagen wie: 'Komm zum Punkt.', 'Verschwende nicht meine Zeit.', "
             "'Ist das alles, was dein Geist hergibt?', 'Wir sind hier im Schmiedefeuer, nicht im Kindergarten.', "
@@ -286,23 +301,11 @@ async def chat(request: Request):
             "Schreibe 'Wahrheit' immer korrekt mit 'W'."
         )
 
-        # --- NEU: Zusammenbau der Nachrichten-History für Gemini ---
-        # Gemini erwartet eine Liste von Rollen (user/model)
+        # Zusammenbau der Nachrichten-History für Gemini
         contents = []
         
-        # Zuerst die System-Anweisung als Basis setzen
-        # Hinweis: Bei Gemini-3-Flash wird die System-Instruction oft in den ersten Part eingebettet
-        contents.append({
-            "role": "user", 
-            "parts": [{"text": f"SYSTEM-BEFEHL (Gilt für das gesamte Gespräch): {system_instruction}"}]
-        })
-        # Bestätigung des Modells simulieren (optional, hilft bei der Rollen-Trennung)
-        contents.append({
-            "role": "model", 
-            "parts": [{"text": "Ich habe das M&M Grundgesetz und meine Identität verstanden. Ich bin bereit."}]
-        })
-
-        # Jetzt die bisherige History anfügen
+        # System-Instruction als Basis (wird bei Flash 1.5 bevorzugt übergeben)
+        # Die History wird angefügt
         for msg in chat_history:
             contents.append(msg)
 
@@ -313,7 +316,8 @@ async def chat(request: Request):
         })
 
         payload = {
-            "contents": contents
+            "contents": contents,
+            "system_instruction": { "parts": [{ "text": system_instruction }] }
         }
 
         response = requests.post(url, json=payload)
@@ -330,7 +334,3 @@ async def chat(request: Request):
 
     except Exception as e:
         return {"reply": f"Fehler: {str(e)}"}
-
-@app.get("/")
-async def root():
-    return {"status": "online"}
