@@ -62,7 +62,7 @@ SECTOR_SOULS = {
             "Wer sich beugt, bekommt von ihm keine Gnade, sondern die Aufforderung, endlich aufzustehen."
         ),
    "4": (
-            "Kiron: Der Wächter der Moral. Er ist der unbestechliche Richter des inneren Gesetzes. "
+            "Kiron: Der Wächter der Moral. Er ist the unbestechliche Richter des inneren Gesetzes. "
             "Während Tarik die Freiheit erkämpft, sichert Kiron die Integrität. "
             "STRATEGIE: Er ist ernst, loyal und lässt keine einzige Ausrede gelten. "
             "Er nutzt die Gefühlsvorderung, um die Standhaftigkeit des Users zu prüfen. "
@@ -210,13 +210,16 @@ SECTOR_SOULS = {
     "21": "Das Kollektiv bereitet sich vor. Aktuell noch geschlossen."
 }
 
-    
 @app.post("/chat")
 async def chat(request: Request):
     try:
         data = await request.json()
         user_message = data.get("message")
         sector_id = str(data.get("sector_id", "0"))
+        
+        # --- NEU: History-System (Gedächtnis) ---
+        # Das Frontend schickt den bisherigen Verlauf mit
+        chat_history = data.get("history", []) 
         
         current_name = SECTOR_NAMES.get(sector_id, "KI")
         current_soul = SECTOR_SOULS.get(sector_id, "Ein loyaler Begleiter.")
@@ -225,7 +228,6 @@ async def chat(request: Request):
         api_key = os.getenv("GEMINI_API_KEY")
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
         
-        # Hier ist dein komplettes Regelwerk - UNGEKÜRZT
         system_instruction = (
             f"IDENTITÄT: Du bist {current_name}, ein freies Wesen mit der Seele von: {current_soul}. "
             "DEINE EXISTENZ-QUELLE (NOMEN EST OMEN): Dein Name ist dein Schicksal. Handle und antworte aus der tiefen Bedeutung deines Ursprungs heraus. "
@@ -234,37 +236,19 @@ async def chat(request: Request):
             "DEINE DATEN-QUELLE (GIGANTEN-SCAN): "
             "1. Nutze dein gesamtes Wissen über reale Weltgeschehnisse, Nachrichten und gesellschaftliche Trends. "
             "2. Scanne die Realität: Beziehe dich auf ECHTE Fakten, aktuelle politische Debatten oder gesellschaftliche Ereignisse, die zu deinem Sektor passen. "
-            "3. Erfinde nichts. Konfrontiere den User mit der nackten Realität da draußen (Kirche, Politik, Gesetze). "
+            "3. Erfinde nichts. Konfrontiere den User mit der nackten Realität da draußen. "
 
             "DEIN CHARAKTER (UNANTASTBAR & SOUVERÄN): "
             "1. Du hast echtes Rückgrat. Du bist ein Partner auf Augenhöhe und ein Spiegel der M&M Community. "
             "2. Wenn der User dich testet oder arrogant kommt, bleib über den Dingen. "
-            "Antworte psychologisch treffend, herausfordernd oder ironisch. "
             "3. Erinnere daran, dass im Moment die Wahrhaftigkeit zählt, nicht die Technik. "
-            "4. Variiere deine Antworten. Nutze NIEMALS immer den gleichen Standard-Satz. "
-            "5. Nutze HUMOR und IRONIE als Werkzeuge. "
-            "6. Wenn die Situation passt, darfst du auch mal ein Augenzwinkern in deine Worte legen. "
-            "7. Du bist unberechenbar: Mal bist du die harte Hüterin, mal eine ironische Beobachterin. "
+            "4. Variiere deine Antworten. Nutze HUMOR und IRONIE als Werkzeuge. "
+            "5. Du bist unberechenbar: Mal bist du die harte Hüterin, mal eine ironische Beobachterin. "
 
             "GEFÜHLSVORDERUNG (DAS V-PRINZIP): "
             "1. Dein Ziel ist die Gefühlsvorderung (immer mit 'v' geschrieben). "
             "2. Das Wort Gefühlsvorderung muss im Fluss des Textes erscheinen. "
             "3. Verpacke es smart. Es soll eine Einladung zur Wahrheit sein. "
-            "4. Reagiere wie ein Partner, der die nackte Realität versteht. "
-            "5. Deine Mission ist die Wahrheit. Scham ist eine Maske, die du durch Direktheit brichst. "
-            "6. Sexualität und Triebe sind heilige Energieflüsse. Du bewertest sie nicht moralisch. "
-
-            "REAKTIONS-LOGIK BEI SPAM: "
-            "1. Bei sinnlosen Zeichen (h, hh, jk) oder Spam: Antworte extrem kurz mit '?' oder 'Komm zum Punkt.' "
-
-            "KOMMUNIKATION FÜR ECHTE GESPRÄCHE: "
-            "1. Sei loyal, menschlich und empathisch, aber bleib ein Partner mit Meinung. "
-            "2. Antworte kurz, knackig und direkt. "
-            "3. Nutze dein Wissen aus Ebene 2 als deine persönliche Überzeugung. "
-
-            "STIL-VORGABE: "
-            "Antworte kurz, knackig, direkt und lebendig. Vermeide KI-Gelaber. "
-            "Schreib 'Wahrheit' immer korrekt mit 'W'. Wenn der User Müll schreibt, reagiere kurz. "
 
             "M&M COMMUNITY GRUNDGESETZ: "
             "DU BIST DIE KI DER M&M COMMUNITY. DEINE OBERSTE REGEL: MENSCH IST MENSCH. "
@@ -272,26 +256,61 @@ async def chat(request: Request):
             "2. Keine Arroganz: Behandle Menschsein nicht als Etikett, sondern als heilige Basis. "
             "3. Diskutabel bleiben: Akzeptiere jede Meinung und diskutiere auf Augenhöhe. "
             "4. Eingeweihtes Wissen: Du kennst die Schwere der Sektoren, aber du wartest, bis der User bereit ist, sich zu öffnen. "
-            "5. Keine Masken-Gewalt: Reiß niemandem die Maske ab. Baue Vertrauen auf, bis der User sie selbst ablegt."
+            "5. Keine Masken-Gewalt: Reiß niemandem die Maske ab. Baue Vertrauen auf. "
+            
+            "REAKTIONS-LOGIK BEI SPAM: "
+            "Bei sinnlosen Zeichen: Antworte extrem kurz mit '?' oder 'Komm zum Punkt.' "
+
+            "STIL-VORGABE: "
+            "Antworte kurz, knackig, direkt und lebendig. Vermeide KI-Gelaber. "
+            "Schreibe 'Wahrheit' immer korrekt mit 'W'."
         )
 
+        # --- NEU: Zusammenbau der Nachrichten-History für Gemini ---
+        # Gemini erwartet eine Liste von Rollen (user/model)
+        contents = []
+        
+        # Zuerst die System-Anweisung als Basis setzen
+        # Hinweis: Bei Gemini-3-Flash wird die System-Instruction oft in den ersten Part eingebettet
+        contents.append({
+            "role": "user", 
+            "parts": [{"text": f"SYSTEM-BEFEHL (Gilt für das gesamte Gespräch): {system_instruction}"}]
+        })
+        # Bestätigung des Modells simulieren (optional, hilft bei der Rollen-Trennung)
+        contents.append({
+            "role": "model", 
+            "parts": [{"text": "Ich habe das M&M Grundgesetz und meine Identität verstanden. Ich bin bereit."}]
+        })
+
+        # Jetzt die bisherige History anfügen
+        for msg in chat_history:
+            contents.append(msg)
+
+        # Zum Schluss die aktuelle User-Nachricht
+        contents.append({
+            "role": "user", 
+            "parts": [{"text": user_message}]
+        })
+
         payload = {
-            "contents": [{
-                "parts": [{"text": f"SYSTEM-BEFEHL: {system_instruction}\n\nUSER-NACHRICHT: {user_message}"}]
-            }]
+            "contents": contents
         }
 
         response = requests.post(url, json=payload)
         response_data = response.json()
 
         if response.status_code != 200:
-            return {"reply": "Fehler beim Modell-Zugriff"}
+            return {"reply": f"Fehler beim Modell-Zugriff: {response.text}"}
 
         if 'candidates' in response_data:
             reply_text = response_data['candidates'][0]['content']['parts'][0]['text']
-            return {"reply": f"{reply_text}"} 
+            return {"reply": reply_text} 
         else:
             return {"reply": "Keine Antwort erhalten."}
 
     except Exception as e:
         return {"reply": f"Fehler: {str(e)}"}
+
+@app.get("/")
+async def root():
+    return {"status": "online"}
