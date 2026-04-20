@@ -122,17 +122,16 @@
 </head>
 <body>
 
+    <!-- DER GLOBALE SCHRIFTZUG (Bleibt auf Ebene 2, 3 etc.) -->
     <div id="top-label" class="global-community-label">Von M&M Community</div>
 
+    <!-- DASHBOARD -->
     <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="dashboard-header">
-            <div class="logo-ring" ondblclick="adminUnlock()">
-                <div class="logo-mm">M&M</div>
-                <div class="logo-community">COMMUNITY</div>
-            </div>
+            <div class="logo-ring" ondblclick="adminUnlock()"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
         </div>
-
         <div class="info-section">
+            <!-- SCHRIFTZUG HIER NUR AUF DEM DASHBOARD IN DER TAFEL -->
             <div class="inner-community-label">Von M&M Community</div>
             <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
             <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
@@ -140,27 +139,18 @@
                 Die M&M-Community ist das Fundament für alle. <strong>Die Wahl der Vorsitzenden erfolgt erst nach Erreichen der stillen Million.</strong>
             </p>
         </div>
-
-        <div class="grid" id="main-grid">
-            </div>
-
+        <div class="grid" id="main-grid"></div>
         <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 80px;">
-            <div class="fundament-box sektor-gesperrt" id="box-20">
-                <div class="num">21</div>
-                <div class="text">Kapital und Verwaltung</div>
-            </div>
-            <div class="fundament-box sektor-gesperrt" id="box-21">
-                <div class="num">22</div>
-                <div class="text">DAS KOLLEKTIV</div>
-            </div>
+            <div class="fundament-box" style="flex: 1;"><div class="num">21</div><div class="text">Kapital und Verwaltung</div></div>
+            <div class="fundament-box" style="flex: 1;"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div></div>
         </div>
     </div>
 
+    <!-- PAGE SKELETT (EBENE 2, 3, 4, 5) -->
     <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
         <div class="top-container">
             <h1 id="info-titel" class="page-title-white"></h1>
             <div id="ebene4-title-red" class="ebene4-header-red">DER VIDEO-BEWEIS</div>
-            
             <div class="tafel-layout">
                 <div class="buttons-links">
                     <div class="oval-side ov-schwarz" id="sig-l1"></div>
@@ -169,16 +159,11 @@
                     <div class="oval-side ov-rot" id="sig-l4" onclick="portalZuEbene4()"></div>
                     <span style="font-size: 0.5rem; color: #ff0000; font-weight: bold;">OFFENBAREN</span>
                 </div>
-
                 <div class="info-section-ebene">
                     <div class="werbe-bild-bg" id="werbe-bg"></div>
-                    <div id="counter-box">
-                        <span style="font-size:0.4rem; color:#fff; display:block;">STILLE MILLION</span>
-                        <span class="counter-value">842.336</span>
-                    </div>
+                    <div id="counter-box"><span style="font-size:0.4rem; color:#fff; display:block;">STILLE MILLION</span><span class="counter-value">842.336</span></div>
                     <div style="z-index: 5; text-align: center; font-weight: bold; color: rgba(255,255,255,0.3); letter-spacing: 5px;">PLATZ FÜR WERBUNG</div>
                 </div>
-
                 <div class="buttons-rechts">
                     <div class="oval-side ov-grun" id="sig-r1"></div>
                     <div class="oval-side ov-blau" id="sig-r2"></div>
@@ -187,30 +172,28 @@
                     <span style="font-size: 0.5rem; color: #ffff00; font-weight: bold;">SCHREIBEN</span>
                 </div>
             </div>
-
             <div id="lila-balken-container" style="display: none; width: 100%;">
-                <div class="lila-registrierung-leiste">
-                    <div class="registrierung-text">REGISTRIERUNG</div>
-                </div>
+                <div class="lila-registrierung-leiste"><div class="registrierung-text">REGISTRIERUNG</div></div>
             </div>
         </div>
 
-        <div id="ebene2-content" style="width: 85%; display: flex; flex-direction: column; gap: 20px; margin-top: 2vh;">
-            <div id="main-text-container" style="max-height: 35vh; overflow-y: auto; padding-right: 15px; border-right: 1px solid rgba(0, 61, 143, 0.3);">
-                <p id="main-text" style="text-align: justify; color: #ccc; font-size: 1.2rem; line-height: 1.7; margin: 0;"></p>
-            </div>
+       <div id="ebene2-content" style="width: 85%; display: flex; flex-direction: column; gap: 20px; margin-top: 2vh;">
+    
+    <div id="main-text-container" style="max-height: 35vh; overflow-y: auto; padding-right: 15px; border-right: 1px solid rgba(0, 61, 143, 0.3);">
+        <p id="main-text" style="text-align: justify; color: #ccc; font-size: 1.2rem; line-height: 1.7; margin: 0;"></p>
+    </div>
 
-            <div id="ki-ermittlung-ebene2" style="display: none; background: rgba(0, 0, 0, 0.6); border: 1px solid #003d8f; border-left: 5px solid #ff0000; padding: 20px; position: relative; box-shadow: 0 0 15px rgba(255, 0, 0, 0.1);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255, 0, 0, 0.2); padding-bottom: 5px;">
-                    <span style="color: #ff0000; font-weight: 900; letter-spacing: 2px; font-size: 0.8rem;">LIVE-ERMITTLUNG // WIDERSPRUCHS-ANALYSE</span>
-                    <span id="ki-zeitstempel" style="color: #666; font-size: 0.7rem;">STATUS: AKTIV</span>
-                </div>
-                <div id="ki-tagesfokus-text" style="color: #fff; font-size: 1.05rem; line-height: 1.5; font-family: 'Courier New', Courier, monospace;">
-                    <span style="color: #ffd700;">Initialisiere Scan...</span>
-                </div>
-            </div>
+    <div id="ki-ermittlung-ebene2" style="display: none; background: rgba(0, 0, 0, 0.6); border: 1px solid #003d8f; border-left: 5px solid #ff0000; padding: 20px; position: relative; box-shadow: 0 0 15px rgba(255, 0, 0, 0.1);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255, 0, 0, 0.2); padding-bottom: 5px;">
+            <span style="color: #ff0000; font-weight: 900; letter-spacing: 2px; font-size: 0.8rem;">LIVE-ERMITTLUNG // WIDERSPRUCHS-ANALYSE</span>
+            <span id="ki-zeitstempel" style="color: #666; font-size: 0.7rem;">STATUS: AKTIV</span>
         </div>
-
+        
+        <div id="ki-tagesfokus-text" style="color: #fff; font-size: 1.05rem; line-height: 1.5; font-family: 'Courier New', Courier, monospace;">
+            <span style="color: #ffd700;">Initialisiere Scan...</span>
+        </div>
+    </div>
+</div>
         <div id="chat-area">
             <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit...</i></div>
             <div class="chat-input-row">
@@ -241,6 +224,7 @@
         <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
         <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
     </div>
+
 <script>
     let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5 };
     const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Alleinerziehend", "Die Brücke"];
@@ -271,33 +255,13 @@
         "In diesem Sektor fließen alle Ströme zusammen. Die Brücke ist der Punkt der absoluten Integration, an dem Moral, Erziehung, Arbeit und Glaube zu einer Einheit verschmelzen. Hier lassen wir die Ufer der Spaltung hinter uns. Die Brücke ist der Raum, in dem das „Diplom Gottes“ zur gelebten Realität wird. Wir blicken bereits auf Sektor 21 und 22 – die noch ungeschriebenen Kapitel unserer Freiheit. Sektor 21 als Vision der neuen Erde und 22 als die endgültige Rückkehr zur Quelle. Die Brücke ist das Versprechen: Wer hier ankommt, hat aufgehört zu funktionieren und angefangen zu sein."
     ];
 
-let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
+    let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
     let bildIndex = 0; 
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
     const grid = document.getElementById('main-grid');
-
-    // INITIALISIERUNG DES GRIDS: Baut die Sektoren und setzt die Sperren
-    function initGrid() {
-        grid.innerHTML = "";
-        themen.forEach((t, i) => {
-            // Logik: Sektor 0 ist immer frei, danach nur wenn der Vorgänger fertig (20 Punkte) ist.
-            const istFreigeschaltet = (i === 0 || (interaktionsZaehler[i - 1] >= 20));
-            const sperrKlasse = istFreigeschaltet ? "sektor-aktiv" : "sektor-gesperrt";
-            
-            grid.innerHTML += `
-                <div class="box ${sperrKlasse}" id="box-${i}">
-                    <div class="num num-neutral" id="num-${i}">${i + 1}</div>
-                    <div class="text" onclick="${istFreigeschaltet ? `showInfo('${t}', ${i})` : ''}">${t}</div>
-                </div>`;
-        });
-        
-        // Sperre für Sektor 21 & 22 (Das Kollektiv) erst nach Chiron (Sektor 19)
-        const chironFertig = interaktionsZaehler[19] >= 20;
-        document.getElementById('box-20').className = `fundament-box ${chironFertig ? 'sektor-aktiv' : 'sektor-gesperrt'}`;
-        document.getElementById('box-21').className = `fundament-box ${chironFertig ? 'sektor-aktiv' : 'sektor-gesperrt'}`;
-    }
-
+    themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; });
+    
     const dots = document.getElementById('dot-holder');
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
@@ -305,10 +269,10 @@ let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = n
         themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
         userBackstage.isQualifiziert = true;
         updateNumColors();
-        initGrid(); // Grid neu bauen für sofortigen Zugriff
         updateUI();
     }
 
+    // --- SCAN FUNKTION: Vernetzt Scan mit dem Sektor ---
     async function starteKIErmittlung(id, themaName) {
         const box = document.getElementById('ki-ermittlung-ebene2');
         const textFeld = document.getElementById('ki-tagesfokus-text');
@@ -319,13 +283,22 @@ let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = n
             const response = await fetch('https://mm-community.onrender.com/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    message: `AKTUELLER SEKTOR-SCAN: '${themaName}'. Erstelle ein Dossier auf EBENE 2...`,
-                    context: sektorTexte[id],
-                    sector_id: String(id) 
-                })
+               // In der Funktion starteKIErmittlung:
+               body: JSON.stringify({ 
+               message: `AKTUELLER SEKTOR-SCAN: '${themaName}'. 
+              Nutze dein Wissen über das heutige Datum und aktuelle Weltgeschehnisse. 
+              Erstelle ein Dossier auf EBENE 2:
+              1. LAGEBERICHT: Was passiert gerade global/regional passend zu diesem Sektor?
+              2. AKTEURE: Welche Personen (Politik/Macht) beeinflussen das Thema heute?
+              3. KONTRAST: Wo klafft die Lücke zwischen System-Aussage und Menschlichkeit?
+              4. SCAN-FAZIT: Eine tiefe Erkenntnis von M&M Community.
+              Stil: Trocken, informativ, unbestechlich.`,
+    context: sektorTexte[id],
+    sector_id: String(id) 
+})
             });
             const data = await response.json();
+            // Speichere den Scan für den Chat-Zusammenhang
             aktuellerScanBericht = data.reply;
             textFeld.innerHTML = data.reply.replace(/\n/g, '<br>');
             const stamp = document.getElementById('ki-zeitstempel');
@@ -334,11 +307,6 @@ let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = n
     }
 
     function showInfo(t, id) { 
-        // Sicherheits-Check: Falls jemand versucht die Funktion via Konsole zu rufen
-        if (id > 0 && interaktionsZaehler[id - 1] < 20) {
-            alert("Du musst erst den vorherigen Sektor abschließen (GefühlsVorderung erfüllen).");
-            return;
-        }
         tId = id; aktuellesThema = t; 
         document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
         ebene = 2; geleseneThemen.add(id); 
@@ -349,6 +317,10 @@ let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = n
         updateUI(); 
     } 
 
+    function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
+    function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
+    function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
+
     function updateUI() {
         const isDashboard = (ebene === 1);
         const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
@@ -357,45 +329,62 @@ let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = n
         document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
         document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
         document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
-        
         const mainText = document.getElementById('main-text');
         const kiBox = document.getElementById('ki-ermittlung-ebene2');
         const textFeld = document.getElementById('ki-tagesfokus-text');
-        
         if (ebene === 2) {
             mainText.style.display = 'block';
-            if(kiBox) kiBox.style.display = 'block';
+            mainText.style.maxHeight = "30vh";
+            mainText.style.overflowY = "auto";
+            if(kiBox) {
+                kiBox.style.display = 'block';
+                textFeld.style.display = "block";
+                textFeld.style.maxHeight = "25vh"; 
+                textFeld.style.overflowY = "scroll"; // Scrollbar im Dossier erzwingen
+                textFeld.style.paddingRight = "10px";
+            }
         } else {
             mainText.style.display = 'none';
             if(kiBox) kiBox.style.display = 'none';
         }
-        
         document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
         document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
         document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
         document.getElementById('btn-back').style.visibility = 'visible';
         document.getElementById('info-titel').innerText = aktuellesThema;
         if (ebene === 2) { document.getElementById('main-text').innerText = sektorTexte[tId]; }
-        
         const btnNext = document.getElementById('btn-next');
         const sigGelb = document.getElementById('sig-r4');
         const sigRot = document.getElementById('sig-l4');
-        
         if (ebene === 2) {
             btnNext.style.visibility = 'hidden'; sigGelb.classList.add('signal-aktiv'); sigRot.classList.add('signal-aktiv');  
         } else if (ebene === 3) {
             sigGelb.classList.remove('signal-aktiv'); sigRot.classList.add('signal-aktiv'); 
         } else if (ebene === 4) {
             sigRot.classList.remove('signal-aktiv'); sigGelb.classList.add('signal-aktiv');
+        } else {
+            sigGelb.classList.remove('signal-aktiv'); sigRot.classList.remove('signal-aktiv');
         }
         aktiviereKandidatenLicht(); updateDots(); startRotation();
     }
 
+    function aktiviereKandidatenLicht() {
+        const sigL1 = document.getElementById('sig-l1');
+        if (ebene === 4) { sigL1.className = "oval-side ov-schwarz"; sigL1.onclick = null; } 
+        else if (userBackstage.isQualifiziert && ebene < 5) { sigL1.className = "oval-side elite-aktiv"; sigL1.onclick = () => portalZuEbene5(); } 
+        else { sigL1.className = "oval-side ov-schwarz"; sigL1.onclick = null; }
+    }
+
+    function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
+    function nextPage() { updateUI(); }
+    function showDashboard() { ebene = 1; clearInterval(wechselInterval); document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateUI(); updateNumColors(); }
+    
+   // --- CHAT: Verknüpft Sektor-Wissen und Dossier-Scan mit Unausweichlichkeits-Logik ---
     async function registriereSenden() { 
         const input = document.getElementById('chat-input');
         const chatBox = document.getElementById('chat-box');
         const userText = input.value.trim(); 
-        if (userText === "" || userText.length < 3) return; // Verhindert leere/kurze Antworten
+        if (userText === "") return; 
         
         chatBox.innerHTML += `<div style="margin-bottom:10px;"><strong>Du:</strong> ${userText}</div>`; 
         input.value = ""; 
@@ -409,33 +398,38 @@ let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = n
             const response = await fetch('https://mm-community.onrender.com/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: userText, context: kombiniertesWissen, sector_id: String(tId) })
+                body: JSON.stringify({ 
+                    message: userText, 
+                    context: kombiniertesWissen, 
+                    sector_id: String(tId) 
+                })
             }); 
+            
             const data = await response.json();
             const typingElement = document.getElementById(typingId);
             if (typingElement) typingElement.remove();
+            
             chatBox.innerHTML += `<div class="ki-antwort" style="background: rgba(0, 61, 143, 0.2); padding: 10px; border-radius: 5px; margin-bottom:10px;">${data.reply}</div>`; 
             
-            // Die GefühlsVorderung: Zähler steigt nur bei Interaktion
+            // Logik: Niemand entzieht sich dem Prozess. 
+            // Der Zähler steigt pro Interaktion um 5 Punkte. Erst bei 20 (nach 4 Nachrichten) wird es GRÜN.
             if (interaktionsZaehler[tId] < 20) {
                 interaktionsZaehler[tId] += 5; 
             }
+            
             updateNumColors();
+            
         } catch (error) { 
-            if (document.getElementById(typingId)) document.getElementById(typingId).innerText = "System-Fehler.";
+            const typingElement = document.getElementById(typingId);
+            if (typingElement) typingElement.innerText = "System-Fehler in der Sektor-Verbindung.";
         }
         chatBox.scrollTop = chatBox.scrollHeight;
     }
-
     function updateNumColors() {
         themen.forEach((_, i) => {
             const nBox = document.getElementById(`num-${i}`);
-            const boxFrame = document.getElementById(`box-${i}`);
             if (nBox) {
-                if (interaktionsZaehler[i] >= 20) {
-                    nBox.className = "num num-fertig";
-                    if(boxFrame) boxFrame.classList.add('diplom-leuchten');
-                }
+                if (interaktionsZaehler[i] >= 20) nBox.className = "num num-fertig";
                 else if (interaktionsZaehler[i] > 0) nBox.className = "num num-offen";
                 else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen";
                 else nBox.className = "num num-neutral";
@@ -454,27 +448,36 @@ let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = n
         element.classList.remove('bild-aktiv'); void element.offsetWidth; element.classList.add('bild-aktiv'); 
     }
 
-    function aktiviereKandidatenLicht() {
-        const sigL1 = document.getElementById('sig-l1');
-        if (userBackstage.isQualifiziert && ebene < 5) { sigL1.className = "oval-side elite-aktiv"; sigL1.onclick = () => portalZuEbene5(); } 
-        else { sigL1.className = "oval-side ov-schwarz"; sigL1.onclick = null; }
+    let meinPeer = new Peer(); 
+    meinPeer.on('open', (id) => { console.log('Live-ID synchronisiert'); });
+
+    // --- KAMERA FUNKTION: Stabilisiert für Ebene 4 ---
+    async function starteVideoKonferenz() {
+        const meinSlot = document.getElementById('v-slot-1');
+        if (!meinSlot) return;
+        try {
+            // Fordert Zugriff an
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            
+            // Setzt das Video-Element hart ins HTML
+            meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover; background:#000; display:block;"></video>`;
+            
+            const videoElement = document.getElementById('user-video');
+            videoElement.srcObject = stream;
+            
+            // Erzwingt das Abspielen
+            videoElement.onloadedmetadata = () => {
+                videoElement.play();
+                console.log("Kamera aktiv.");
+            };
+        } catch (err) {
+            console.error("Cam-Error:", err);
+            meinSlot.innerHTML = `<div style="color:#ff0000; font-size:10px; padding:10px; text-align:center;">ZUGRIFF VERWEIGERT!<br>Bitte Kamera im Browser freigeben (Schloss-Symbol oben links).</div>`;
+        }
     }
 
-    function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
-    function nextPage() { updateUI(); }
-    function showDashboard() { 
-        ebene = 1; 
-        clearInterval(wechselInterval); 
-        document.getElementById('page-skelett').style.display = 'none'; 
-        document.getElementById('dashboard').style.display = 'flex'; 
-        initGrid(); // Grid beim Rückkehren aktualisieren (Linearität prüfen)
-        updateNumColors(); 
-        updateUI();
-    }
-
-    window.onload = () => {
-        initGrid();
-        updateUI();
-    };
+    function verbindeMitAllen() { try { console.log("Labor-Scan aktiv..."); } catch (err) {} }
+    setInterval(() => { if (ebene === 4) { console.log("Labor-Scan für Video-Partner aktiv..."); } }, 10000);
+    window.onload = () => updateUI();
 </script>
 
