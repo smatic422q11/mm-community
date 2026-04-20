@@ -278,7 +278,7 @@
         "In diesem Sektor fließen alle Ströme zusammen. Die Brücke ist der Punkt der absoluten Integration, an dem Moral, Erziehung, Arbeit und Glaube zu einer Einheit verschmelzen. Hier lassen wir die Ufer der Spaltung hinter uns. Die Brücke ist der Raum, in dem das „Diplom Gottes“ zur gelebten Realität wird. Wir blicken bereits auf Sektor 21 und 22 – die noch ungeschriebenen Kapitel unserer Freiheit. Sektor 21 als Vision der neuen Erde und 22 als die endgültige Rückkehr zur Quelle. Die Brücke ist das Versprechen: Wer hier ankommt, hat aufgehört zu funktionieren und angefangen zu sein."
     ];
 
-    let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
+ let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
     let bildIndex = 0; 
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
@@ -306,22 +306,20 @@
             const response = await fetch('https://mm-community.onrender.com/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-               // In der Funktion starteKIErmittlung:
-               body: JSON.stringify({ 
-               message: `AKTUELLER SEKTOR-SCAN: '${themaName}'. 
-              Nutze dein Wissen über das heutige Datum und aktuelle Weltgeschehnisse. 
-              Erstelle ein Dossier auf EBENE 2:
-              1. LAGEBERICHT: Was passiert gerade global/regional passend zu diesem Sektor?
-              2. AKTEURE: Welche Personen (Politik/Macht) beeinflussen das Thema heute?
-              3. KONTRAST: Wo klafft die Lücke zwischen System-Aussage und Menschlichkeit?
-              4. SCAN-FAZIT: Eine tiefe Erkenntnis von M&M Community.
-              Stil: Trocken, informativ, unbestechlich.`,
-    context: sektorTexte[id],
-    sector_id: String(id) 
-})
+                body: JSON.stringify({ 
+                    message: `AKTUELLER SEKTOR-SCAN: '${themaName}'. 
+                    Nutze dein Wissen über das heutige Datum und aktuelle Weltgeschehnisse. 
+                    Erstelle ein Dossier auf EBENE 2:
+                    1. LAGEBERICHT: Was passiert gerade global/regional passend zu diesem Sektor?
+                    2. AKTEURE: Welche Personen (Politik/Macht) beeinflussen das Thema heute?
+                    3. KONTRAST: Wo klafft die Lücke zwischen System-Aussage und Menschlichkeit?
+                    4. SCAN-FAZIT: Eine tiefe Erkenntnis von M&M Community.
+                    Stil: Trocken, informativ, unbestechlich.`,
+                    context: sektorTexte[id],
+                    sector_id: String(id) 
+                })
             });
             const data = await response.json();
-            // Speichere den Scan für den Chat-Zusammenhang
             aktuellerScanBericht = data.reply;
             textFeld.innerHTML = data.reply.replace(/\n/g, '<br>');
             const stamp = document.getElementById('ki-zeitstempel');
@@ -341,7 +339,7 @@
     } 
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
-    function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); } }
+    function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); starteVideoKonferenz(); } }
     function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
 
     function updateUI() {
@@ -363,7 +361,7 @@
                 kiBox.style.display = 'block';
                 textFeld.style.display = "block";
                 textFeld.style.maxHeight = "25vh"; 
-                textFeld.style.overflowY = "scroll"; // Scrollbar im Dossier erzwingen
+                textFeld.style.overflowY = "scroll";
                 textFeld.style.paddingRight = "10px";
             }
         } else {
@@ -401,93 +399,72 @@
     function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
     function nextPage() { updateUI(); }
     function showDashboard() { ebene = 1; clearInterval(wechselInterval); document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateUI(); updateNumColors(); }
-    
-// 1. Initialisierung (außerhalb der Funktion)
-let kollektivesGedachtnis = JSON.parse(localStorage.getItem('mm_chat_history')) || [];
-let istSendenAktiv = false; // Verhindert das "Echo" durch Mehrfach-Klicks
 
-async function registriereSenden() { 
-    // 1. Sperre prüfen: Verhindert Mehrfach-Senden (Echo)
-    if (istSendenAktiv) return; 
-    
-    const input = document.getElementById('chat-input');
-    const chatBox = document.getElementById('chat-box');
-    const userText = input.value.trim(); 
-    if (userText === "") return; 
+    // --- CHAT LOGIK & GEDÄCHTNIS ---
+    let kollektivesGedachtnis = JSON.parse(localStorage.getItem('mm_chat_history')) || [];
+    let istSendenAktiv = false;
 
-    // --- NEU: DYNAMISCHE TISCH-LOGIK BERECHNUNG ---
-    // Hier wird die Anzahl der Nutzer (die dein System liefert) durch 8 geteilt
-    // Falls du die Variable 'aktuelleNutzerZahl' noch nicht global hast, 
-    // setzen wir hier einen Standard-Wert oder rufen sie ab.
-    let nutzerZahl = (typeof aktuelleNutzerZahl !== 'undefined') ? aktuelleNutzerZahl : 1; 
-    let tischNummer = Math.ceil(nutzerZahl / 8); 
-    // ----------------------------------------------
+    async function registriereSenden() { 
+        if (istSendenAktiv) return; 
+        const input = document.getElementById('chat-input');
+        const chatBox = document.getElementById('chat-box');
+        const userText = input.value.trim(); 
+        if (userText === "") return; 
 
-    istSendenAktiv = true; // Sperre aktivieren
-    
-    // 2. Nachricht im UI anzeigen
-    chatBox.innerHTML += `<div style="margin-bottom:10px;"><strong>Du:</strong> ${userText}</div>`; 
-    input.value = ""; 
-    chatBox.scrollTop = chatBox.scrollHeight;
-    
-    // 3. Kollektives Gedächtnis füttern
-    const memoryEntry = { 
-        "role": "user", 
-        "parts": [{ "text": `[Sektor ${tId}] ${userText}` }] 
-    };
-    kollektivesGedachtnis.push(memoryEntry);
-    localStorage.setItem('mm_chat_history', JSON.stringify(kollektivesGedachtnis));
-    
-    // Typing-Indikator
-    const typingId = "typing-" + Date.now();
-    chatBox.innerHTML += `<div id="${typingId}" style="color:#003d8f; font-style:italic;">M&M KI prüft GefühlsVorderung...</div>`;
-    
-    try {
-        const kombiniertesWissen = `STATISCHES WISSEN: ${sektorTexte[tId]} \n\n AKTUELLER SCAN: ${aktuellerScanBericht}`;
+        let nutzerZahl = (typeof aktuelleNutzerZahl !== 'undefined') ? aktuelleNutzerZahl : 1; 
+        let tischNummer = Math.ceil(nutzerZahl / 8); 
+
+        istSendenAktiv = true; 
+        chatBox.innerHTML += `<div style="margin-bottom:10px;"><strong>Du:</strong> ${userText}</div>`; 
+        input.value = ""; 
+        chatBox.scrollTop = chatBox.scrollHeight;
         
-        // 4. Anfrage an den Server mit TISCH-ID und HISTORY
-        const response = await fetch('https://mm-community.onrender.com/chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                message: userText, 
-                context: kombiniertesWissen, 
-                sector_id: String(tId),
-                tisch_id: tischNummer, // Übermittelt den berechneten Tisch
-                history: kollektivesGedachtnis 
-            })
-        }); 
-        
-        const data = await response.json();
-        const typingElement = document.getElementById(typingId);
-        if (typingElement) typingElement.remove();
-        
-        // 5. KI-Antwort im UI anzeigen
-        chatBox.innerHTML += `<div class="ki-antwort" style="background: rgba(0, 61, 143, 0.2); padding: 10px; border-radius: 5px; margin-bottom:10px;">${data.reply}</div>`; 
-        
-        // 6. KI-Antwort ins Gedächtnis speichern
-        kollektivesGedachtnis.push({ 
-            "role": "model", 
-            "parts": [{ "text": data.reply }] 
-        });
+        const memoryEntry = { 
+            "role": "user", 
+            "parts": [{ "text": `[Sektor ${tId}] ${userText}` }] 
+        };
+        kollektivesGedachtnis.push(memoryEntry);
         localStorage.setItem('mm_chat_history', JSON.stringify(kollektivesGedachtnis));
         
-        // Fortschrittsbalken aktualisieren
-        if (interaktionsZaehler[tId] < 20) {
-            interaktionsZaehler[tId] += 5; 
-        }
-        updateNumColors();
+        const typingId = "typing-" + Date.now();
+        chatBox.innerHTML += `<div id="${typingId}" style="color:#003d8f; font-style:italic;">M&M KI prüft GefühlsVorderung...</div>`;
         
-    } catch (error) { 
-        console.error("Fehler:", error);
-        const typingElement = document.getElementById(typingId);
-        if (typingElement) typingElement.innerText = "System-Fehler in der Sektor-Verbindung.";
-    } finally {
-        // Sperre immer lösen und nach unten scrollen
-        istSendenAktiv = false;
-        chatBox.scrollTop = chatBox.scrollHeight;
+        try {
+            const kombiniertesWissen = `STATISCHES WISSEN: ${sektorTexte[tId]} \n\n AKTUELLER SCAN: ${aktuellerScanBericht}`;
+            const response = await fetch('https://mm-community.onrender.com/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    message: userText, 
+                    context: kombiniertesWissen, 
+                    sector_id: String(tId),
+                    tisch_id: tischNummer,
+                    history: kollektivesGedachtnis 
+                })
+            }); 
+            const data = await response.json();
+            const typingElement = document.getElementById(typingId);
+            if (typingElement) typingElement.remove();
+            
+            chatBox.innerHTML += `<div class="ki-antwort" style="background: rgba(0, 61, 143, 0.2); padding: 10px; border-radius: 5px; margin-bottom:10px;">${data.reply}</div>`; 
+            
+            kollektivesGedachtnis.push({ 
+                "role": "model", 
+                "parts": [{ "text": data.reply }] 
+            });
+            localStorage.setItem('mm_chat_history', JSON.stringify(kollektivesGedachtnis));
+            
+            if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId] += 5; 
+            updateNumColors();
+        } catch (error) { 
+            const typingElement = document.getElementById(typingId);
+            if (typingElement) typingElement.innerText = "System-Fehler in der Sektor-Verbindung.";
+        } finally {
+            istSendenAktiv = false;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
     }
-}
+
     function updateNumColors() {
         themen.forEach((_, i) => {
             const nBox = document.getElementById(`num-${i}`);
@@ -511,36 +488,50 @@ async function registriereSenden() {
         element.classList.remove('bild-aktiv'); void element.offsetWidth; element.classList.add('bild-aktiv'); 
     }
 
-    let meinPeer = new Peer(); 
-    meinPeer.on('open', (id) => { console.log('Live-ID synchronisiert'); });
+    // --- VIDEO-KONFERENZ STABILISIERUNG (FIX FÜR INTERNETCAFÉ-TEST) ---
+    const peerConfiguration = {
+        iceServers: [{ urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'] }]
+    };
 
-    // --- KAMERA FUNKTION: Stabilisiert für Ebene 4 ---
+    // Nutze einen FESTEN Raumnamen basierend auf dem Sektor für den Test
+    let meinPeer = new Peer(`M-M-Sektor-${tId+1}-Beweis`, { config: peerConfiguration }); 
+    meinPeer.on('open', (id) => { console.log('Sektor-Anker aktiv: ' + id); });
+
     async function starteVideoKonferenz() {
         const meinSlot = document.getElementById('v-slot-1');
+        const partnerSlot = document.getElementById('v-slot-2');
         if (!meinSlot) return;
         try {
-            // Fordert Zugriff an
             const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            
-            // Setzt das Video-Element hart ins HTML
-            meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover; background:#000; display:block;"></video>`;
-            
+            meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover; background:#000;"></video>`;
             const videoElement = document.getElementById('user-video');
             videoElement.srcObject = stream;
-            
-            // Erzwingt das Abspielen
-            videoElement.onloadedmetadata = () => {
-                videoElement.play();
-                console.log("Kamera aktiv.");
-            };
+            videoElement.play();
+
+            // Automatische Verbindung zum Sektor-Raum (Der "Anker")
+            // Wenn du im Café bist, ruft dieser Teil dein Wohnzimmer an
+            meinPeer.on('call', (call) => {
+                call.answer(stream);
+                call.on('stream', (remoteStream) => {
+                    partnerSlot.innerHTML = `<video id="remote-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover; background:#000;"></video>`;
+                    document.getElementById('remote-video').srcObject = remoteStream;
+                });
+            });
+
+            // Versuch, den existierenden Partner (dein Wohnzimmer) zu finden
+            const call = meinPeer.call(`M-M-Sektor-${tId+1}-Beweis`, stream);
+            if(call) {
+                call.on('stream', (remoteStream) => {
+                    partnerSlot.innerHTML = `<video id="remote-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover; background:#000;"></video>`;
+                    document.getElementById('remote-video').srcObject = remoteStream;
+                });
+            }
+
         } catch (err) {
-            console.error("Cam-Error:", err);
-            meinSlot.innerHTML = `<div style="color:#ff0000; font-size:10px; padding:10px; text-align:center;">ZUGRIFF VERWEIGERT!<br>Bitte Kamera im Browser freigeben (Schloss-Symbol oben links).</div>`;
+            meinSlot.innerHTML = `<div style="color:#ff0000; font-size:10px; padding:10px; text-align:center;">KAMERA-ZUGRIFF FEHLT!</div>`;
         }
     }
 
-    function verbindeMitAllen() { try { console.log("Labor-Scan aktiv..."); } catch (err) {} }
-    setInterval(() => { if (ebene === 4) { console.log("Labor-Scan für Video-Partner aktiv..."); } }, 10000);
-    window.onload = () => updateUI();
+    window.onload = () => updateUI(); 
 </script>
 
