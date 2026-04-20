@@ -379,36 +379,52 @@
     function nextPage() { updateUI(); }
     function showDashboard() { ebene = 1; clearInterval(wechselInterval); document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateUI(); updateNumColors(); }
     
-    // --- CHAT: Verknüpft Sektor-Wissen und Dossier-Scan ---
+   // --- CHAT: Verknüpft Sektor-Wissen und Dossier-Scan mit Unausweichlichkeits-Logik ---
     async function registriereSenden() { 
         const input = document.getElementById('chat-input');
         const chatBox = document.getElementById('chat-box');
         const userText = input.value.trim(); 
         if (userText === "") return; 
+        
         chatBox.innerHTML += `<div style="margin-bottom:10px;"><strong>Du:</strong> ${userText}</div>`; 
         input.value = ""; 
         chatBox.scrollTop = chatBox.scrollHeight;
+        
         const typingId = "typing-" + Date.now();
-        chatBox.innerHTML += `<div id="${typingId}" style="color:#003d8f; font-style:italic;">M&M KI analysiert Sektor-Daten...</div>`;
+        chatBox.innerHTML += `<div id="${typingId}" style="color:#003d8f; font-style:italic;">M&M KI prüft GefühlsVorderung...</div>`;
+        
         try {
             const kombiniertesWissen = `STATISCHES WISSEN: ${sektorTexte[tId]} \n\n AKTUELLER SCAN: ${aktuellerScanBericht}`;
             const response = await fetch('https://mm-community.onrender.com/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: userText, context: kombiniertesWissen, sector_id: String(tId) })
+                body: JSON.stringify({ 
+                    message: userText, 
+                    context: kombiniertesWissen, 
+                    sector_id: String(tId) 
+                })
             }); 
+            
             const data = await response.json();
             const typingElement = document.getElementById(typingId);
             if (typingElement) typingElement.remove();
+            
             chatBox.innerHTML += `<div class="ki-antwort" style="background: rgba(0, 61, 143, 0.2); padding: 10px; border-radius: 5px; margin-bottom:10px;">${data.reply}</div>`; 
-            interaktionsZaehler[tId] = 20; updateNumColors();
+            
+            // Logik: Niemand entzieht sich dem Prozess. 
+            // Der Zähler steigt pro Interaktion um 5 Punkte. Erst bei 20 (nach 4 Nachrichten) wird es GRÜN.
+            if (interaktionsZaehler[tId] < 20) {
+                interaktionsZaehler[tId] += 5; 
+            }
+            
+            updateNumColors();
+            
         } catch (error) { 
             const typingElement = document.getElementById(typingId);
-            if (typingElement) typingElement.innerText = "System-Fehler.";
+            if (typingElement) typingElement.innerText = "System-Fehler in der Sektor-Verbindung.";
         }
         chatBox.scrollTop = chatBox.scrollHeight;
-    } 
-
+    }
     function updateNumColors() {
         themen.forEach((_, i) => {
             const nBox = document.getElementById(`num-${i}`);
