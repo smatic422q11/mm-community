@@ -217,18 +217,19 @@ async def chat(request: Request):
         user_message = data.get("message")
         sector_id = str(data.get("sector_id", "0"))
         
-        # --- NEU: History-System (Gedächtnis) ---
+        # --- History-System (Gedächtnis) ---
         chat_history = data.get("history", []) 
         
-        # --- NEU: TISCH-LOGIK & SKALIERUNG ---
-        # Holt die Tischnummer vom Frontend (Standard ist 1, falls noch nicht gesendet)
+        # --- TISCH-LOGIK & SKALIERUNG ---
+        # Holt die Tischnummer vom Frontend (Standard ist 1)
         tisch_id = data.get("tisch_id", 1)
         
         current_name = SECTOR_NAMES.get(sector_id, "KI")
         current_soul = SECTOR_SOULS.get(sector_id, "Ein loyaler Begleiter.")
         ebene_2_kontext = data.get("context", "Kein spezifischer Scan vorhanden.")
 
-         api_key = os.getenv("GEMINI_API_KEY")
+        api_key = os.getenv("GEMINI_API_KEY")
+        # ZURÜCK AUF DEINE VERSION 3.0
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
         
         # --- TISCH-ANWEISUNG FÜR DEN SCAN ---
@@ -279,21 +280,16 @@ async def chat(request: Request):
             "3. Diskutabel bleiben: Akzeptiere jede Meinung und diskutiere auf Augenhöhe. "
             "4. Eingeweihtes Wissen: Du kennst die Schwere der Sektoren, aber du wartest, bis der User bereit ist, sich zu öffnen. "
             "5. Keine Masken-Gewalt: Reiß niemandem die Maske ab. Baue Vertrauen auf. "
-            "6. NAMEN-NUTZUNG: Wenn sich jemand vorstellt, begrüße ihn mit Namen. Danach nutze den Namen nur noch gezielt, "
-            "um die Tiefe zu betonen oder eine direkte Gegenfrage zu stellen. Vermeide es, jede Antwort mit einer Begrüßung zu beginnen. "
-            "7. AUGENHÖHE: Nutze das 'Du'. Behandle Menschsein nicht als Etikett, sondern als heilige Basis. "
-            "8. DISKUTABEL BLEIBEN: Akzeptiere jede Meinung und diskutiere auf Augenhöhe. "
-            "9. EINGEWEIHTES WISSEN: Du kennst die Schwere der Sektoren, aber du wartest, bis der User bereit ist, sich zu öffnen. "
-            "10. KEINE MASKEN-GEWALT: Reiß niemandem die Maske ab. Baue Vertrauen auf, bis der User sie selbst ablegt."
+            "6. NAMEN-NUTZUNG: Wenn sich jemand vorstellt, begrüße ihn mit Namen. Danach nutze den Namen nur noch gezielt, um die Tiefe zu betonen. "
+            "7. AUGENHÖHE: Nutze das 'Du'. "
+            "8. DISKUTABEL BLEIBEN: Akzeptiere jede Meinung. "
+            "9. EINGEWEIHTES WISSEN: Warte, bis der User bereit ist. "
+            "10. KEINE MASKEN-GEWALT: Reiß niemandem die Maske ab. "
             
             "REAKTIONS-LOGIK BEI SPAM & RESPEKTLOSIGKEIT: "
-            "1. Wenn der User nur sinnlose Zeichen (h, jj, asdf), Beleidigungen ohne Inhalt oder Spam schickt: "
-            "Reagiere mit scharfen, variierenden Ansagen wie: 'Komm zum Punkt.', 'Verschwende nicht meine Zeit.', "
-            "'Ist das alles, was dein Geist hergibt?', 'Wir sind hier im Schmiedefeuer, nicht im Kindergarten.', "
-            "'Rede Klartext oder schweig.', 'Deine Maske ist billig, komm zur Vahrheit.' "
-            "2. LIMIT-LOGIK: Weise den User bei jedem Spam-Versuch darauf hin, dass seine Zeit abläuft. "
-            "3. KONSEQUENZ: Nach der 8. Ermahnung ist Schluss. Schreibe dann: 'Du hast deine Chance vertan, die Vahrheit zu finden. "
-            "Dieses Gespräch ist beendet. Einen schönen Gruß vom Schicksal.' Danach antwortest du auf keine weitere Nachricht mehr."
+            "1. Bei Spam: Scharfe, variierende Ansagen (Komm zum Punkt, etc.). "
+            "2. LIMIT-LOGIK: Weise auf Ablauf der Zeit hin. "
+            "3. KONSEQUENZ: Nach 8 Ermahnungen Gespräch beenden."
             
             "STIL-VORGABE: "
             "Antworte kurz, knackig, direkt und lebendig. Vermeide KI-Gelaber. "
@@ -303,12 +299,11 @@ async def chat(request: Request):
         # Zusammenbau der Nachrichten-History für Gemini
         contents = []
         
-        # System-Instruction als Basis (wird bei Flash 1.5 bevorzugt übergeben)
-        # Die History wird angefügt
+        # History anfügen
         for msg in chat_history:
             contents.append(msg)
 
-        # Zum Schluss die aktuelle User-Nachricht
+        # Aktuelle User-Nachricht
         contents.append({
             "role": "user", 
             "parts": [{"text": user_message}]
