@@ -295,6 +295,7 @@
         updateUI();
     }
 
+// --- SCAN FUNKTION: Vernetzt Scan mit dem Sektor ---
 async function starteKIErmittlung(id, themaName) {
     const box = document.getElementById('ki-ermittlung-ebene2');
     const textFeld = document.getElementById('ki-tagesfokus-text');
@@ -306,11 +307,14 @@ async function starteKIErmittlung(id, themaName) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
-                message: `Analysiere den Sektor: '${themaName}'. 
-                Erstelle eine kurze, prägnante Zusammenfassung der Kern-Vahrheit dieses Sektors. 
-                Keine Dossiers, keine Tische, keine externe Politik. 
-                Konzentriere dich nur auf die spirituelle und menschliche Essenz. 
-                Schließe mit einer Gefühlsvorderung ab.`, 
+                message: `AKTUELLER SEKTOR-SCAN: '${themaName}'. 
+                Nutze dein Wissen über das heutige Datum und aktuelle Weltgeschehnisse. 
+                Erstelle ein Dossier auf EBENE 2:
+                1. LAGEBERICHT: Was passiert gerade global/regional passend zu diesem Sektor?
+                2. AKTEURE: Welche Personen (Politik/Macht) beeinflussen das Thema heute?
+                3. KONTRAST: Wo klafft die Lücke zwischen System-Aussage und Menschlichkeit?
+                4. SCAN-FAZIT: Eine tiefe Erkenntnis von M&M Community.
+                Stil: Trocken, informativ, unbestechlich.`,
                 context: sektorTexte[id],
                 sector_id: String(id) 
             })
