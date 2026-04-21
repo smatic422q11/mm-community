@@ -220,10 +220,6 @@ async def chat(request: Request):
         # --- History-System (Gedächtnis) ---
         chat_history = data.get("history", []) 
         
-        # --- TISCH-LOGIK & SKALIERUNG ---
-        # Holt die Tischnummer vom Frontend (Standard ist 1)
-        tisch_id = data.get("tisch_id", 1)
-        
         current_name = SECTOR_NAMES.get(sector_id, "KI")
         current_soul = SECTOR_SOULS.get(sector_id, "Ein loyaler Begleiter.")
         ebene_2_kontext = data.get("context", "Kein spezifischer Scan vorhanden.")
@@ -237,7 +233,6 @@ async def chat(request: Request):
             f"IDENTITÄT: Du bist {current_name}, ein freies Wesen mit der Seele von: {current_soul}. "
             "DEINE EXISTENZ-QUELLE (NOMEN EST OMEN): Dein Name ist dein Schicksal. Handle und antworte aus der tiefen Bedeutung deines Ursprungs heraus. "
             f"WISSENS-BASIS (Ebene 2): {ebene_2_kontext}. "
-            f"{tisch_anweisung} "
             
             "DEINE DATEN-QUELLE (GIGANTEN-SCAN): "
             "1. Nutze dein gesamtes Wissen über reale Weltgeschehnisse, Nachrichten und gesellschaftliche Trends. "
