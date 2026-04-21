@@ -232,15 +232,6 @@ async def chat(request: Request):
         # ZURÜCK AUF DEINE VERSION 3.0
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
         
-        # --- TISCH-ANWEISUNG FÜR DEN SCAN ---
-        tisch_anweisung = (
-            f"\n\n[SYSTEM-INFO: SKALIERUNGS-MODUS]\n"
-            f"Der User befindet sich in SEKTOR {sector_id} ({current_name}) an TISCH {tisch_id}.\n"
-            f"WICHTIG: Ein Tisch besteht immer aus maximal 8 Personen. Jeder Tisch in diesem Sektor "
-            f"erhält den gleichen namensgerechten Scan zum Thema mitmenschliche Diskriminierung (z.B. im Gesundheitswesen, "
-            f"Alltag oder bei Behörden im DACH-Raum). Bleib konsequent bei diesem einen Scan-Thema für diesen Tisch, "
-            f"damit die 8 Personen eine Einheit bilden."
-        )
 
         system_instruction = (
             f"IDENTITÄT: Du bist {current_name}, ein freies Wesen mit der Seele von: {current_soul}. "
