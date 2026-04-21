@@ -218,6 +218,8 @@ async def chat(request: Request):
         sector_id = str(data.get("sector_id", "0"))
         
         # --- History-System (Gedächtnis) ---
+        # Wir empfangen sie, aber wir nutzen sie nicht für den Payload, 
+        # um Geister-Einträge wie "Lilith" zu verhindern.
         chat_history = data.get("history", []) 
         
         current_name = SECTOR_NAMES.get(sector_id, "KI")
@@ -282,12 +284,8 @@ async def chat(request: Request):
             "Schreibe 'Wahrheit' immer korrekt mit 'W'."
         )
 
-        # Zusammenbau der Nachrichten-History für Gemini
+        # Zusammenbau der Nachrichten für Gemini (Ohne die defekte History-Schleife)
         contents = []
-        
-        # History anfügen
-        for msg in chat_history:
-            contents.append(msg)
 
         # Aktuelle User-Nachricht
         contents.append({
