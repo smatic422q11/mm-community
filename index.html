@@ -306,14 +306,15 @@ async function starteKIErmittlung(id, themaName) {
         const response = await fetch('https://mm-community.onrender.com/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
+         // ... (Anfang der Funktion bleibt gleich)
+                body: JSON.stringify({ 
                 message: `AKTUELLER SEKTOR-SCAN: '${themaName}'. 
-                Nutze dein Wissen über das heutige Datum und aktuelle Weltgeschehnisse. 
-                Erstelle ein Dossier auf EBENE 2:
+                Erstelle ein Dossier auf EBENE 2 (OHNE JEDEN BEZUG AUF TISCHE ODER NUMMERIERTE TISCHE):
                 1. LAGEBERICHT: Was passiert gerade global/regional passend zu diesem Sektor?
                 2. AKTEURE: Welche Personen (Politik/Macht) beeinflussen das Thema heute?
                 3. KONTRAST: Wo klafft die Lücke zwischen System-Aussage und Menschlichkeit?
                 4. SCAN-FAZIT: Eine tiefe Erkenntnis von M&M Community.
+                WICHTIG: Erwähne niemals 'Tisch 1' oder andere Tisch-Nummern.
                 Stil: Trocken, informativ, unbestechlich.`,
                 context: sektorTexte[id],
                 sector_id: String(id) 
