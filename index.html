@@ -437,7 +437,7 @@ async function registriereSenden() {
     }
 
     // Anzeige im Chat (Goran Schöpfer Layout)
-    chatBox.innerHTML += `<div style="margin-bottom: 35px; padding: 10px; border-left: 3px solid #ffd700; color: #ffd700;"><strong>Goran (Schöpfer):</strong> ${userText}</div>`;
+    chatBox.innerHTML += "<div><strong style='color: #ffd700;'>User:</strong> " + userText + "</div>";
     input.value = ""; 
 
     const typingId = "typing-" + Date.now();
