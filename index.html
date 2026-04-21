@@ -404,7 +404,7 @@
     let kollektivesGedachtnis = JSON.parse(localStorage.getItem('mm_chat_history')) || [];
     let istSendenAktiv = false;
 
- async function registriereSenden() { 
+async function registriereSenden() { 
     if (istSendenAktiv) return; 
     
     const input = document.getElementById('chat-input');
@@ -412,9 +412,33 @@
     const userText = input.value.trim(); 
     if (userText === "") return; 
 
+    // --- DIE SCHÖPFER-HINTERTÜR (Ganz am Anfang) ---
+    if (userText.startsWith("!!")) {
+        const passwort = userText.substring(2); // Nimmt alles nach !!
+       localStorage.setItem('mm_creator_key', passwort);
+        alert("Identität für dieses Gerät gespeichert!");
+        input.value = "";
+        return; // Stoppt hier, schickt nichts an die KI
+    }
+
     istSendenAktiv = true; 
- // Gold für den Schöpfer (User), plus Abstand
-chatBox.innerHTML += `<div style="margin-bottom: 35px; padding: 10px; border-left: 3px solid #ffd700; color: #ffd700;"><strong>Goran (Schöpfer):</strong> ${userText}</div>`;
+
+    // Identitäts-Check für den Sende-Prozess
+    const gespeicherterSchlüssel = localStorage.getItem('mm_creator_key');
+    let userRole = "standard_user";
+
+    // Prüfen, ob jemand Schöpfer-Rechte beansprucht
+    if (userText.toLowerCase().includes("schöpfer") || userText.toLowerCase().includes("admin")) {
+        // Hier musst du 'DEIN_PASSWORT' durch dein echtes Wort ersetzen
+        if (gespeicherterSchlüssel === 'DEIN_PASSWORT') {
+            userRole = "schöpfer_bestätigt";
+        } else {
+            userRole = "hochstapler_verdacht";
+        }
+    }
+
+    // Gold für den Schöpfer (User) im Chat-Fenster anzeigen
+    chatBox.innerHTML += `<div style="margin-bottom: 35px; padding: 10px; border-left: 3px solid #ffd700; color: #ffd700;"><strong>Goran (Schöpfer):</strong> ${userText}</div>`;
     input.value = ""; 
 
     const typingId = "typing-" + Date.now();
@@ -423,16 +447,16 @@ chatBox.innerHTML += `<div style="margin-bottom: 35px; padding: 10px; border-lef
     try {
         const kombiniertesWissen = `STATISCHES WISSEN: ${sektorTexte[tId]} \n\n AKTUELLER SCAN: ${aktuellerScanBericht}`;
         
-        // --- DER FIX: Sende die HISTORY, BEVOR du die neue Nachricht reinpushst ---
         const response = await fetch('https://mm-community.onrender.com/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
                 message: userText, 
                 context: kombiniertesWissen, 
+                role_context: userRole, // ÜBERGABE DER ROLLE (Wächter-Modus)
                 sector_id: String(tId),
                 tisch_id: Math.ceil((typeof aktuelleNutzerZahl !== 'undefined' ? aktuelleNutzerZahl : 1) / 8),
-                history: kollektivesGedachtnis // Hier ist der neue Text noch NICHT drin
+                history: kollektivesGedachtnis 
             })
         }); 
 
@@ -440,10 +464,10 @@ chatBox.innerHTML += `<div style="margin-bottom: 35px; padding: 10px; border-lef
         const typingElement = document.getElementById(typingId);
         if (typingElement) typingElement.remove();
         
-        // Blau-Ton für die KI, deutlich getrennt
-chatBox.innerHTML += `<div class="ki-antwort" style="background: rgba(0, 61, 143, 0.15); padding: 15px; border-radius: 8px; margin-bottom: 40px; border-left: 3px solid #003d8f; color: #ffffff; line-height: 1.6;">${data.reply}</div>`;
+        // KI-Antwort anzeigen
+        chatBox.innerHTML += `<div class="ki-antwort" style="background: rgba(0, 61, 143, 0.15); padding: 15px; border-radius: 8px; margin-bottom: 40px; border-left: 3px solid #003d8f; color: #ffffff; line-height: 1.6;">${data.reply}</div>`;
 
-        // --- JETZT ERST: Beides ins Gedächtnis speichern für das NÄCHSTE Mal ---
+        // Speichern ins Gedächtnis
         kollektivesGedachtnis.push({ "role": "user", "parts": [{ "text": userText }] });
         kollektivesGedachtnis.push({ "role": "model", "parts": [{ "text": data.reply }] });
         localStorage.setItem('mm_chat_history', JSON.stringify(kollektivesGedachtnis));
@@ -452,13 +476,14 @@ chatBox.innerHTML += `<div class="ki-antwort" style="background: rgba(0, 61, 143
         updateNumColors();
 
     } catch (error) { 
-        // Fehlerbehandlung...
+        console.error("Fehler beim Senden:", error);
+        const typingElement = document.getElementById(typingId);
+        if (typingElement) typingElement.innerHTML = "Verbindung unterbrochen...";
     } finally {
         istSendenAktiv = false;
         chatBox.scrollTop = chatBox.scrollHeight;
     }
 }
-
     function updateNumColors() {
         themen.forEach((_, i) => {
             const nBox = document.getElementById(`num-${i}`);
