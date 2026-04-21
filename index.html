@@ -413,7 +413,8 @@
     if (userText === "") return; 
 
     istSendenAktiv = true; 
-  chatBox.innerHTML += `<div style="margin-bottom: 30px; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);"><strong>Du:</strong> ${userText}</div>`;
+ // Gold für den Schöpfer (User), plus Abstand
+chatBox.innerHTML += `<div style="margin-bottom: 35px; padding: 10px; border-left: 3px solid #ffd700; color: #ffd700;"><strong>Goran (Schöpfer):</strong> ${userText}</div>`;
     input.value = ""; 
 
     const typingId = "typing-" + Date.now();
@@ -439,7 +440,8 @@
         const typingElement = document.getElementById(typingId);
         if (typingElement) typingElement.remove();
         
-        chatBox.innerHTML += `<div class="ki-antwort" style="background: rgba(0, 61, 143, 0.2); padding: 15px; border-radius: 8px; margin-bottom: 30px; line-height: 1.6;">${data.reply}</div>`;
+        // Blau-Ton für die KI, deutlich getrennt
+chatBox.innerHTML += `<div class="ki-antwort" style="background: rgba(0, 61, 143, 0.15); padding: 15px; border-radius: 8px; margin-bottom: 40px; border-left: 3px solid #003d8f; color: #ffffff; line-height: 1.6;">${data.reply}</div>`;
 
         // --- JETZT ERST: Beides ins Gedächtnis speichern für das NÄCHSTE Mal ---
         kollektivesGedachtnis.push({ "role": "user", "parts": [{ "text": userText }] });
