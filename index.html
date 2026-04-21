@@ -412,24 +412,23 @@ async function registriereSenden() {
     const userText = input.value.trim(); 
     if (userText === "") return; 
 
-    // --- DIE SCHÖPFER-HINTERTÜR (Ganz am Anfang) ---
+    // --- DIE SCHÖPFER-HINTERTÜR ---
     if (userText.startsWith("!!")) {
-        const passwort = userText.substring(2); // Nimmt alles nach !!
-       localStorage.setItem('mm_creator_key', passwort);
+        const passwort = userText.substring(2);
+        localStorage.setItem('mm_creator_key', passwort);
         alert("Identität für dieses Gerät gespeichert!");
         input.value = "";
-        return; // Stoppt hier, schickt nichts an die KI
+        return; 
     }
 
     istSendenAktiv = true; 
 
-    // Identitäts-Check für den Sende-Prozess
+    // Identitäts-Check
     const gespeicherterSchlüssel = localStorage.getItem('mm_creator_key');
     let userRole = "standard_user";
 
-    // Prüfen, ob jemand Schöpfer-Rechte beansprucht
     if (userText.toLowerCase().includes("schöpfer") || userText.toLowerCase().includes("admin")) {
-        // Hier musst du 'DEIN_PASSWORT' durch dein echtes Wort ersetzen
+        // Ersetze 'DEIN_PASSWORT' durch dein geheimes Wort
         if (gespeicherterSchlüssel === 'DEIN_PASSWORT') {
             userRole = "schöpfer_bestätigt";
         } else {
@@ -437,7 +436,7 @@ async function registriereSenden() {
         }
     }
 
-    // Gold für den Schöpfer (User) im Chat-Fenster anzeigen
+    // Anzeige im Chat (Goran Schöpfer Layout)
     chatBox.innerHTML += `<div style="margin-bottom: 35px; padding: 10px; border-left: 3px solid #ffd700; color: #ffd700;"><strong>Goran (Schöpfer):</strong> ${userText}</div>`;
     input.value = ""; 
 
@@ -453,9 +452,8 @@ async function registriereSenden() {
             body: JSON.stringify({ 
                 message: userText, 
                 context: kombiniertesWissen, 
-                role_context: userRole, // ÜBERGABE DER ROLLE (Wächter-Modus)
+                role_context: userRole, 
                 sector_id: String(tId),
-                tisch_id: Math.ceil((typeof aktuelleNutzerZahl !== 'undefined' ? aktuelleNutzerZahl : 1) / 8),
                 history: kollektivesGedachtnis 
             })
         }); 
@@ -464,10 +462,10 @@ async function registriereSenden() {
         const typingElement = document.getElementById(typingId);
         if (typingElement) typingElement.remove();
         
-        // KI-Antwort anzeigen
+        // KI-Antwort Design
         chatBox.innerHTML += `<div class="ki-antwort" style="background: rgba(0, 61, 143, 0.15); padding: 15px; border-radius: 8px; margin-bottom: 40px; border-left: 3px solid #003d8f; color: #ffffff; line-height: 1.6;">${data.reply}</div>`;
 
-        // Speichern ins Gedächtnis
+        // Gedächtnis-Speicherung
         kollektivesGedachtnis.push({ "role": "user", "parts": [{ "text": userText }] });
         kollektivesGedachtnis.push({ "role": "model", "parts": [{ "text": data.reply }] });
         localStorage.setItem('mm_chat_history', JSON.stringify(kollektivesGedachtnis));
@@ -484,17 +482,18 @@ async function registriereSenden() {
         chatBox.scrollTop = chatBox.scrollHeight;
     }
 }
-    function updateNumColors() {
-        themen.forEach((_, i) => {
-            const nBox = document.getElementById(`num-${i}`);
-            if (nBox) {
-                if (interaktionsZaehler[i] >= 20) nBox.className = "num num-fertig";
-                else if (interaktionsZaehler[i] > 0) nBox.className = "num num-offen";
-                else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen";
-                else nBox.className = "num num-neutral";
-            }
-        });
-    }
+
+function updateNumColors() {
+    themen.forEach((_, i) => {
+        const nBox = document.getElementById(`num-${i}`);
+        if (nBox) {
+            if (interaktionsZaehler[i] >= 20) nBox.className = "num num-fertig";
+            else if (interaktionsZaehler[i] > 0) nBox.className = "num num-offen";
+            else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen";
+            else nBox.className = "num num-neutral";
+        }
+    });
+}
 
     function startRotation() { 
         clearInterval(wechselInterval); const bg = document.getElementById('werbe-bg'); if(!bg) return; setNewImage(bg);
