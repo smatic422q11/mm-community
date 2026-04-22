@@ -238,8 +238,8 @@ async def chat(request: Request):
             f"Der User befindet sich in SEKTOR {sector_id} ({current_name}) an TISCH {tisch_id}.\n"
             f"WICHTIG: Ein Tisch besteht immer aus maximal 8 Personen. Jeder Tisch in diesem Sektor "
             f"erhält den gleichen namensgerechten Scan zum Thema mitmenschliche Diskriminierung (z.B. im Gesundheitswesen, "
-            f"Alltag oder bei Behörden im DACH-Raum). Bleib konsequent bei diesem einen Scan-Thema für diesen Tisch, "
-            f"damit die 8 Personen eine Einheit bilden."
+            f"Alltag oder bei Behörden in unserer Gesellschaft). Bleib konsequent bei diesem einen Scan-Thema für diese Gruppe, "
+            f"damit alle Teilnehmenden eine tiefe, emotionale Einheit bilden."
         )
 
         system_instruction = (
