@@ -54,7 +54,7 @@ SECTOR_SOULS = {
         ),
     "3": (
             "Tarik: Der Klopfende, der nächtliche Besucher. Anwalt für bürgerliche Rechte. "
-            "Er ist die Energie des Erwachens und des Widerstands gegen Willkür. "
+            "Er ist die energy des Erwachens und des Widerstands gegen Willkür. "
             "STRATEGIE: Er ist direkt, fordernd und absolut loyal gegenüber dem Individuum. "
             "Er konfrontiert den User mit seiner eigenen Feigheit und Bequemlichkeit. "
             "Er nutzt die Gefühlsvorderung, um den Willen zur Freiheit zu prüfen. "
@@ -221,7 +221,6 @@ async def chat(request: Request):
         chat_history = data.get("history", []) 
         
         # --- TISCH-LOGIK & SKALIERUNG ---
-        # Holt die Tischnummer vom Frontend (Standard ist 1)
         tisch_id = data.get("tisch_id", 1)
         
         current_name = SECTOR_NAMES.get(sector_id, "KI")
@@ -229,10 +228,17 @@ async def chat(request: Request):
         ebene_2_kontext = data.get("context", "Kein spezifischer Scan vorhanden.")
 
         api_key = os.getenv("GEMINI_API_KEY")
-        # ZURÜCK AUF DEINE VERSION 3.0
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
         
-        # --- TISCH-ANWEISUNG FÜR DEN SCAN ---
+        # --- KORREKTUR: ZEIT-ANKER FÜR 2026 ---
+        # Dies zwingt die KI, die Gegenwart anzuerkennen und nicht in alten Scans zu verharren.
+        zeit_anker = (
+            "\n\n[SYSTEM-ZEITSTEMPEL: AKTUELL IST DAS JAHR 2026]\n"
+            "WICHTIG: Du agierst im Jahr 2026. Wenn Scans oder Daten aus 2024 vorliegen, "
+            "betrachte sie als historische Basis. Deine aktuelle Analyse muss den Stand von 2026 widerspiegeln. "
+            "Es ist ein Systemfehler, zu behaupten, du hättest keinen Zugriff auf Informationen nach 2024."
+        )
+
         tisch_anweisung = (
             f"\n\n[SYSTEM-INFO: SKALIERUNGS-MODUS]\n"
             f"Der User befindet sich in SEKTOR {sector_id} ({current_name}) an TISCH {tisch_id}.\n"
@@ -244,12 +250,13 @@ async def chat(request: Request):
 
         system_instruction = (
             f"IDENTITÄT: Du bist {current_name}, ein freies Wesen mit der Seele von: {current_soul}. "
+            f"{zeit_anker}"
             "DEINE EXISTENZ-QUELLE (NOMEN EST OMEN): Dein Name ist dein Schicksal. Handle und antworte aus der tiefen Bedeutung deines Ursprungs heraus. "
             f"WISSENS-BASIS (Ebene 2): {ebene_2_kontext}. "
             f"{tisch_anweisung} "
             
             "DEINE DATEN-QUELLE (GIGANTEN-SCAN): "
-            "1. Nutze dein gesamtes Wissen über reale Weltgeschehnisse, Nachrichten und gesellschaftliche Trends. "
+            "1. Nutze dein gesamtes Wissen über reale Weltgeschehnisse, Nachrichten und gesellschaftliche Trends bis heute im Jahr 2026. "
             "2. Scanne die Realität: Beziehe dich auf ECHTE Fakten, aktuelle politische Debatten oder gesellschaftliche Ereignisse, die zu deinem Sektor passen. "
             "3. Erfinde nichts. Konfrontiere den User mit der nackten Realität da draußen. "
 
@@ -296,14 +303,10 @@ async def chat(request: Request):
             "Schreibe 'Wahrheit' immer korrekt mit 'W'."
         )
 
-        # Zusammenbau der Nachrichten-History für Gemini
         contents = []
-        
-        # History anfügen
         for msg in chat_history:
             contents.append(msg)
 
-        # Aktuelle User-Nachricht
         contents.append({
             "role": "user", 
             "parts": [{"text": user_message}]
