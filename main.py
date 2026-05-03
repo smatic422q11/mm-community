@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 import requests 
 import os
-from datetime import datetime # Den hier brauchen wir für dein System-Datum
+from datetime import datetime
 
 app = FastAPI()
 
@@ -12,6 +12,18 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+)
+
+# 1. Automatischer Zeit-Anker
+# Hol dir das aktuelle Datum direkt vom System für den Giganten-Scan
+heute = datetime.now().strftime("%d.%m.%Y")
+
+zeit_anker = (
+    f"\n\n[SYSTEM-ZEITSTEMPEL: HEUTE IST DER {heute}]\n"
+    "WICHTIG: Du agierst in der absoluten Gegenwart des Jahres 2026. "
+    "Deine Analyse muss den Stand von 2026 widerspiegeln. Scanne die Medien, "
+    "Aussagen von Menschen und gesellschaftliche Trends exakt für diesen Sektor und diesen Tag. "
+    "Es ist ein Systemfehler, zu behaupten, du hättest keinen Zugriff auf Informationen nach 2024."
 )
 
 # 1. Die Namen der Sektoren – Die archetypischen Frequenzen
