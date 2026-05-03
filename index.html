@@ -141,10 +141,12 @@
         .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
         .bild-aktiv { animation: kenburns 15s infinite ease-in-out, fadeEffect 8s infinite; }
     </style>
+   <!-- PeerJS Import muss vor dem eigenen Script stehen -->
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 </head>
 <body>
 
-    <!-- DER GLOBALE SCHRIFTZUG (Bleibt auf Ebene 2, 3 etc.) -->
+    <!-- DER GLOBALE SCHRIFTZUG -->
     <div id="top-label" class="global-community-label">Von M&M Community</div>
 
     <!-- DASHBOARD -->
@@ -153,7 +155,6 @@
             <div class="logo-ring" ondblclick="adminUnlock()"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
         </div>
         <div class="info-section">
-            <!-- SCHRIFTZUG HIER NUR AUF DEM DASHBOARD IN DER TAFEL -->
             <div class="inner-community-label">Von M&M Community</div>
             <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
             <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
@@ -168,7 +169,7 @@
         </div>
     </div>
 
-    <!-- PAGE SKELETT (EBENE 2, 3, 4, 5) -->
+    <!-- PAGE SKELETT -->
     <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
         <div class="top-container">
             <h1 id="info-titel" class="page-title-white"></h1>
@@ -200,22 +201,21 @@
         </div>
 
        <div id="ebene2-content" style="width: 85%; display: flex; flex-direction: column; gap: 20px; margin-top: 2vh;">
-    
-    <div id="main-text-container" style="max-height: 35vh; overflow-y: auto; padding-right: 15px; border-right: 1px solid rgba(0, 61, 143, 0.3);">
-        <p id="main-text" style="text-align: justify; color: #ccc; font-size: 1.2rem; line-height: 1.7; margin: 0;"></p>
-    </div>
+            <div id="main-text-container" style="max-height: 35vh; overflow-y: auto; padding-right: 15px; border-right: 1px solid rgba(0, 61, 143, 0.3);">
+                <p id="main-text" style="text-align: justify; color: #ccc; font-size: 1.2rem; line-height: 1.7; margin: 0;"></p>
+            </div>
 
-    <div id="ki-ermittlung-ebene2" style="display: none; background: rgba(0, 0, 0, 0.6); border: 1px solid #003d8f; border-left: 5px solid #ff0000; padding: 20px; position: relative; box-shadow: 0 0 15px rgba(255, 0, 0, 0.1);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255, 0, 0, 0.2); padding-bottom: 5px;">
-            <span style="color: #ff0000; font-weight: 900; letter-spacing: 2px; font-size: 0.8rem;">LIVE-ERMITTLUNG // WIDERSPRUCHS-ANALYSE</span>
-            <span id="ki-zeitstempel" style="color: #666; font-size: 0.7rem;">STATUS: AKTIV</span>
+            <div id="ki-ermittlung-ebene2" style="display: none; background: rgba(0, 0, 0, 0.6); border: 1px solid #003d8f; border-left: 5px solid #ff0000; padding: 20px; position: relative; box-shadow: 0 0 15px rgba(255, 0, 0, 0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255, 0, 0, 0.2); padding-bottom: 5px;">
+                    <span style="color: #ff0000; font-weight: 900; letter-spacing: 2px; font-size: 0.8rem;">LIVE-ERMITTLUNG // WIDERSPRUCHS-ANALYSE</span>
+                    <span id="ki-zeitstempel" style="color: #666; font-size: 0.7rem;">STATUS: AKTIV</span>
+                </div>
+                <div id="ki-tagesfokus-text" style="color: #fff; font-size: 1.05rem; line-height: 1.5; font-family: 'Courier New', Courier, monospace;">
+                    <span style="color: #ffd700;">Initialisiere Scan...</span>
+                </div>
+            </div>
         </div>
-        
-        <div id="ki-tagesfokus-text" style="color: #fff; font-size: 1.05rem; line-height: 1.5; font-family: 'Courier New', Courier, monospace;">
-            <span style="color: #ffd700;">Initialisiere Scan...</span>
-        </div>
-    </div>
-</div>
+
         <div id="chat-area">
             <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit...</i></div>
             <div class="chat-input-row">
@@ -226,7 +226,8 @@
 
         <div id="drawer-ebene4">
             <div class="video-grid">
-                <div class="video-slot slot-1-user" id="v-slot-1">SLOT 1 (DU)</div>
+                <!-- SLOT 1 ist dein Hauptfenster -->
+                <div class="video-slot slot-1-user" id="v-slot-1" style="background:#000; border:1px solid #333; display:flex; align-items:center; justify-content:center;">SLOT 1 (DU)</div>
                 <div class="video-slot" id="v-slot-2">SLOT 2 (ZUFALL)</div>
                 <div class="video-slot" id="v-slot-3">SLOT 3 (ZUFALL)</div>
                 <div class="video-slot" id="v-slot-4">SLOT 4 (ZUFALL)</div>
@@ -235,7 +236,8 @@
                 <div class="video-slot" id="v-slot-7">SLOT 7 (ZUFALL)</div>
                 <div class="video-slot" id="v-slot-8">SLOT 8 (ZUFALL)</div>
             </div>
-            <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; margin-top: 15px; font-weight: bold; cursor: pointer; border-radius: 5px;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
+            <!-- DER GRÜNE BALKEN BUTTON -->
+            <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; margin-top: 15px; font-weight: bold; cursor: pointer; border-radius: 5px; box-shadow: 0 4px 15px rgba(0, 255, 0, 0.3);">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
         </div> 
 
         <div id="ebene5-bereich"><div class="freie-zone-text">ADMIN ZONE</div></div>
@@ -246,6 +248,71 @@
         <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
         <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
     </div>
+
+<script>
+    // --- STABILISIERTE VIDEO LOGIK ---
+    const peerConfiguration = {
+        iceServers: [{ urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'] }]
+    };
+
+    const meinGeraetId = "MM-" + Math.random().toString(36).substr(2, 9);
+    let meinPeer = new Peer(meinGeraetId, { config: peerConfiguration });
+    let lokalerStream = null;
+
+    async function starteVideoKonferenz() {
+        const meinSlot = document.getElementById('v-slot-1');
+        const partnerSlot = document.getElementById('v-slot-2');
+        if (!meinSlot) return;
+
+        try {
+            // Stream anfordern
+            lokalerStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            
+            // Video ins UI einbetten
+            meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover; background:#000;"></video>`;
+            document.getElementById('user-video').srcObject = lokalerStream;
+
+            // Peer-Logik: Anrufe annehmen
+            meinPeer.on('call', (call) => {
+                call.answer(lokalerStream);
+                call.on('stream', (remoteStream) => {
+                    if(partnerSlot) {
+                        partnerSlot.innerHTML = `<video autoplay playsinline style="width:100%; height:100%; object-fit:cover; background:#000;"></video>`;
+                        partnerSlot.querySelector('video').srcObject = remoteStream;
+                    }
+                });
+            });
+
+            // Sync mit dem Render-Server
+            const raumName = typeof currentSector !== 'undefined' ? `sektor_${currentSector}` : 'global_room';
+            await fetch('https://mm-community.onrender.com/video-sync', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ raum: raumName, peerId: meinGeraetId })
+            });
+
+            // Andere Teilnehmer anrufen
+            const response = await fetch(`https://mm-community.onrender.com/video-sync/${raumName}`);
+            const data = await response.json();
+            if (data.teilnehmer) {
+                data.teilnehmer.forEach(otherId => {
+                    if (otherId !== meinGeraetId) {
+                        const call = meinPeer.call(otherId, lokalerStream);
+                        call.on('stream', (remoteStream) => {
+                            if(partnerSlot) {
+                                partnerSlot.innerHTML = `<video autoplay playsinline style="width:100%; height:100%; object-fit:cover; background:#000;"></video>`;
+                                partnerSlot.querySelector('video').srcObject = remoteStream;
+                            }
+                        });
+                    }
+                });
+            }
+        } catch (err) {
+            console.error("Video-Error:", err);
+            meinSlot.innerHTML = `<div style="color:red; font-size:0.6rem;">ZUGRIFF FEHLT!</div>`;
+        }
+    }
+</script> 
 
 <script>
     let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5 };
@@ -506,65 +573,84 @@ function updateNumColors() {
         element.classList.remove('bild-aktiv'); void element.offsetWidth; element.classList.add('bild-aktiv'); 
     }
 
-   // --- VIDEO-KONFERENZ STABILISIERUNG (FIX FÜR SYNCHRONISATION) ---
-    const peerConfiguration = {
-        iceServers: [{ urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'] }]
-    };
+// --- VIDEO-KONFERENZ STABILISIERUNG (FIX FÜR SYNCHRONISATION) ---
+const peerConfiguration = {
+    iceServers: [{ urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'] }]
+};
 
-    // Erzeugt eine einzigartige ID für dieses Gerät, damit kein Konflikt entsteht
-    const meinGeraetId = "MM-" + Math.random().toString(36).substr(2, 9);
-    let meinPeer = new Peer(meinGeraetId, { config: peerConfiguration });
+// Erzeugt eine einzigartige ID für dieses Gerät
+const meinGeraetId = "MM-" + Math.random().toString(36).substr(2, 9);
+let meinPeer = new Peer(meinGeraetId, { config: peerConfiguration });
 
-    async function starteVideoKonferenz() {
-        const meinSlot = document.getElementById('v-slot-1');
-        const partnerSlot = document.getElementById('v-slot-2');
-        if (!meinSlot) return;
+// Variable, um den Stream global zu halten, damit er nicht vom Garbage Collector gelöscht wird
+let lokalerStream = null;
 
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover; background:#000;"></video>`;
-            document.getElementById('user-video').srcObject = stream;
+async function starteVideoKonferenz() {
+    // Falls tId nicht definiert ist (aus deinem Kontext), setzen wir einen Standard
+    const aktuelleSektorId = typeof tId !== 'undefined' ? tId + 1 : 1;
+    const meinSlot = document.getElementById('v-slot-1');
+    const partnerSlot = document.getElementById('v-slot-2');
+    
+    if (!meinSlot) return;
 
-            // 1. Eingehende Anrufe annehmen (Wohnzimmer empfängt Café)
-            meinPeer.on('call', (call) => {
-                call.answer(stream);
-                call.on('stream', (remoteStream) => {
+    try {
+        // Stream anfordern
+        lokalerStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        
+        // Video-Element erstellen und Stream zuweisen
+        meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover; background:#000; border: 2px solid green;"></video>`;
+        const videoElement = document.getElementById('user-video');
+        videoElement.srcObject = lokalerStream;
+
+        // PeerJS: Eingehende Anrufe annehmen
+        meinPeer.on('call', (call) => {
+            call.answer(lokalerStream);
+            call.on('stream', (remoteStream) => {
+                if (partnerSlot) {
                     partnerSlot.innerHTML = `<video id="remote-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover; background:#000;"></video>`;
                     document.getElementById('remote-video').srcObject = remoteStream;
-                });
+                }
             });
+        });
 
-            // 2. Das System auf Render fragen: Wer ist noch in diesem Sektor?
-            // Wir nutzen die Sektor-ID als "Raum-Name" in der Datenbank
-            const raumName = `sektor_${tId + 1}`;
-            
-            // Meldung an Render: "Ich bin online in Sektor X mit ID Y"
-            await fetch('https://mm-community.onrender.com/video-sync', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ raum: raumName, peerId: meinGeraetId })
-            });
+        // Verbindung zum Render-Backend (video-sync)
+        const raumName = `sektor_${aktuelleSektorId}`;
+        
+        await fetch('https://mm-community.onrender.com/video-sync', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ raum: raumName, peerId: meinGeraetId })
+        });
 
-            // 3. Suche nach anderen Teilnehmern im selben Sektor
-            const response = await fetch(`https://mm-community.onrender.com/video-sync/${raumName}`);
-            const data = await response.json();
-            
-            // Wenn jemand anderes (dein Wohnzimmer) online ist, rufe ihn an
+        // Andere Teilnehmer suchen und anrufen
+        const response = await fetch(`https://mm-community.onrender.com/video-sync/${raumName}`);
+        const data = await response.json();
+        
+        if (data.teilnehmer) {
             data.teilnehmer.forEach(otherId => {
                 if (otherId !== meinGeraetId) {
-                    const call = meinPeer.call(otherId, stream);
+                    const call = meinPeer.call(otherId, lokalerStream);
                     call.on('stream', (remoteStream) => {
-                        partnerSlot.innerHTML = `<video id="remote-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover; background:#000;"></video>`;
-                        document.getElementById('remote-video').srcObject = remoteStream;
+                        if (partnerSlot) {
+                            partnerSlot.innerHTML = `<video id="remote-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover; background:#000;"></video>`;
+                            document.getElementById('remote-video').srcObject = remoteStream;
+                        }
                     });
                 }
             });
-
-        } catch (err) {
-            meinSlot.innerHTML = `<div style="color:#ff0000; font-size:10px; padding:10px; text-align:center;">KAMERA-ZUGRIFF FEHLT!</div>`;
         }
-    }
 
-    window.onload = () => updateUI();
+    } catch (err) {
+        console.error("Kamera-Fehler:", err);
+        meinSlot.innerHTML = `<div style="color:#ff0000; font-size:10px; padding:10px; text-align:center;">KAMERA-ZUGRIFF FEHLT ODER BLOCKIERT!</div>`;
+    }
+}
+
+// WICHTIG: Die Funktion muss aufgerufen werden!
+// Entweder per Klick auf deinen grünen Balken oder beim Laden
+window.addEventListener('load', () => {
+    // Wenn du willst, dass es sofort startet:
+    // starteVideoKonferenz(); 
+}); 
 </script>
 
