@@ -252,10 +252,10 @@ async function sichereAnkerUndStarteScan(id, themaName) {
     const mail = mailField ? mailField.value.trim() : localStorage.getItem('mm_user_anker');
 
     if (mail && mail.includes("@")) {
-        // 1. Speichern
+        // 1. Speichern (Anker setzen)
         localStorage.setItem('mm_user_anker', mail);
         
-        // 2. Visueller Trigger (Zahl wird blau)
+        // 2. Blaues Leuchten (dein CSS .num-offen wird hier aktiv)
         const s1Num = document.getElementById('num-0');
         if(s1Num) {
             s1Num.classList.remove('num-neutral');
@@ -270,12 +270,12 @@ async function sichereAnkerUndStarteScan(id, themaName) {
             };
         });
 
-        // 4. DER ENTSCHEIDENDE SPRUNG (In dein Skelett!)
-        // Wir bleiben auf der Seite und öffnen Ebene 2
+        // 4. DIREKTER SPRUNG IN EBENE 2 (Scan/Dossier)
+        // Das Dashboard wird hier unsichtbar und das Skelett sichtbar!
         showInfo(themaName, id); 
 
     } else {
-        alert("Bitte gib eine gültige E-Mail ein.");
+        alert("Bitte gib eine gültige E-Mail Adresse ein.");
     }
 }
         
