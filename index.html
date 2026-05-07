@@ -136,24 +136,20 @@
     </style>
 </head>
 <body>
-    <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center; min-height: 100vh; position: relative;">
-        
+    <div id="top-label" class="global-community-label">Von M&M Community</div>
+
+    <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="dashboard-header">
-            <div class="logo-ring" ondblclick="adminUnlock()">
-                <div class="logo-mm">M&M</div>
-                <div class="logo-community">COMMUNITY</div>
-            </div>
+            <div class="logo-ring" ondblclick="adminUnlock()"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
         </div>
 
         <div class="info-section">
             <div class="inner-community-label">Von M&M Community</div>
-            
             <div style="display: flex; width: 95%; gap: 15px; justify-content: space-between; align-items: flex-start; z-index: 10;">
                 <div style="flex: 1; border-right: 1px solid rgba(0, 61, 143, 0.4); padding-right: 10px;">
                     <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">1. DEINE MISSION</h3>
                     <p style="font-size: 0.75rem; color: #ccc; line-height: 1.3; margin: 0;">Schreibe deine Biografie der Wahrheit. Sektor 1 ist dein Startpunkt.</p>
                 </div>
-
                 <div style="flex: 1; border-right: 1px solid rgba(0, 61, 143, 0.4); padding-right: 10px; padding-left: 5px;">
                     <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">2. ORIENTIERUNG</h3>
                     <div style="font-size: 0.7rem; color: #ccc; line-height: 1.4;">
@@ -161,7 +157,6 @@
                         <span style="color: #00ff00;">🟢 Sicher</span> | <span style="color: #ff4d4d;">🔴 Wartet</span>
                     </div>
                 </div>
-
                 <div style="flex: 1; padding-left: 5px;">
                     <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">3. DEIN ZIEL</h3>
                     <p style="font-size: 0.75rem; color: #ccc; line-height: 1.3; margin: 0;">Vollende Sektor 1-20 für dein eBook und den Video-Beweis.</p>
@@ -178,7 +173,7 @@
             </div>
         </div>
 
-       <div class="grid" id="main-grid" style="margin-top: 15px;"></div>
+        <div class="grid" id="main-grid" style="margin-top: 15px;"></div>
 
         <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 20px;">
             <div class="fundament-box" style="flex: 1;"><div class="num num-neutral">21</div><div class="text">Kapital und Verwaltung</div></div>
@@ -195,77 +190,53 @@
                 © 2026 M&M Community — JOIN THE SECRET MILLION
             </div>
         </footer>
-    </div> <script>
-        const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Alleinerziehend", "Die Brücke"];
+    </div>
 
-        // 1. BOXEN INITIALISIEREN
-        const grid = document.getElementById('main-grid');
-        if (grid) {
-            grid.innerHTML = ""; 
-            themen.forEach((t, i) => { 
-                grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" id="text-${i}" onclick="prüfeSperre(${i})">${t}</div></div>`; 
-            });
-        }
+    <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
+        <div class="top-container">
+            <h1 id="info-titel" class="page-title-white"></h1>
+            <div class="tafel-layout">
+                <div class="buttons-links">
+                    <div class="oval-side ov-schwarz" id="sig-l1"></div>
+                    <div class="oval-side ov-grun" id="sig-l2"></div>
+                    <div class="oval-side ov-blau" id="sig-l3"></div>
+                    <div class="oval-side ov-rot" id="sig-l4" onclick="portalZuEbene4()"></div>
+                </div>
+                <div class="info-section-ebene">
+                    <div class="werbe-bild-bg" id="werbe-bg"></div>
+                </div>
+                <div class="buttons-rechts">
+                    <div class="oval-side ov-grun" id="sig-r1"></div>
+                    <div class="oval-side ov-blau" id="sig-r2"></div>
+                    <div class="oval-side ov-pink" id="sig-r3"></div>
+                    <div class="oval-side ov-gelb" id="sig-r4" onclick="portalZuEbene3()"></div>
+                </div>
+            </div>
+        </div>
 
-        // 2. DIE SPERR-FUNKTION (Damit er nicht "Setze erst Anker" sagt, wenn offen ist)
-        function prüfeSperre(index) {
-            const istAnkerDa = localStorage.getItem('mm_user_anker');
-            if (istAnkerDa || index === -1) { // -1 wäre für Testzwecke
-                showInfo(themen[index], index);
-            } else {
-                alert("ZUGRIFF VERWEIGERT: Setze erst den Anker auf der Werbetafel!");
-            }
-        }
+        <div id="ebene2-content" style="width: 85%; display: flex; flex-direction: column; gap: 20px; margin-top: 2vh;">
+            <div id="main-text-container" style="max-height: 35vh; overflow-y: auto;">
+                <p id="main-text" style="color: #ccc;"></p>
+            </div>
+            <div id="ki-ermittlung-ebene2" style="display: none; background: rgba(0, 0, 0, 0.6); border: 1px solid #003d8f; padding: 20px;">
+                <div id="ki-tagesfokus-text" style="color: #fff; font-family: 'Courier New';"></div>
+            </div>
+        </div>
 
-        // 3. ANKER SETZEN & MECHANIK AKTIVIEREN
-        async function sichereAnkerUndStarteScan(id, themaName) {
-            const mailField = document.getElementById('db-anker-mail');
-            const mail = mailField ? mailField.value.trim() : "";
+        <div id="chat-area" style="display: none;">
+            <div id="chat-box" style="height: 45vh; overflow-y: auto; padding: 15px; border: 1px solid #003d8f;"></div>
+            <div class="chat-input-row">
+                <input type="text" id="chat-input" placeholder="Nachricht schreiben..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px;">
+                <button onclick="registriereSenden()" style="background:#003d8f; color:#fff; border:none; padding:0 30px;">SENDEN</button>
+            </div>
+        </div>
+    </div>
 
-            if (mail && mail.includes("@")) {
-                localStorage.setItem('mm_user_anker', mail);
-                
-                // VISUELLER EFFEKT: Sektor 1 fängt an blau zu pulsieren
-                const s1 = document.getElementById('num-0');
-                if(s1) {
-                    s1.classList.remove('num-neutral');
-                    s1.classList.add('num-offen'); // Hier greift dein neuer Style!
-                }
-
-                alert("ANKER BESTÄTIGT. Sektor 1 wurde für deine Biografie freigeschaltet.");
-
-                // Render Sync im Hintergrund
-                try {
-                    await fetch('https://mm-community.onrender.com/register_anker', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email: mail })
-                    });
-                } catch(e) { console.log("Anker lokal aktiv."); }
-
-            } else {
-                alert("Bitte gib eine gültige E-Mail Adresse ein.");
-            }
-        }
-
-        // Platzhalter für deine showInfo Funktion, falls sie noch nicht da ist
-        function showInfo(t, id) {
-            console.log("Öffne Sektor: " + t);
-            // Hier kommt dein Wechsel zum page-skelett
-            document.getElementById('dashboard').style.display = 'none';
-            document.getElementById('page-skelett').style.display = 'flex';
-            document.getElementById('info-titel').innerText = t;
-        }
-   // Prüfen, ob der Anker bereits im Speicher ist (beim Neuladen der Seite)
-window.addEventListener('DOMContentLoaded', () => {
-    if (localStorage.getItem('mm_user_anker')) {
-        const s1 = document.getElementById('num-0');
-        if (s1) {
-            s1.classList.remove('num-neutral');
-            s1.classList.add('num-offen');
-        }
-    }
-}); </script>
+    <div class="bottom-nav">
+        <button id="btn-back" class="nav-btn" onclick="showDashboard()">← Dashboard</button>
+        <div id="dot-holder" style="display: flex; gap: 8px;"></div>
+        <button id="btn-next" class="nav-btn">Weiter →</button>
+    </div>
 </body>
 </html>
     <script>
