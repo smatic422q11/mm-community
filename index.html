@@ -247,34 +247,32 @@
             grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="alert('Setze erst den Anker!')">${t}</div></div>`; 
         });
 
-     // ERSETZE DEINE AKTUELLE FUNKTION MIT DIESER:
 async function sichereAnkerUndStarteScan(id, themaName) {
     const mailField = document.getElementById('db-anker-mail');
     const mail = mailField ? mailField.value.trim() : localStorage.getItem('mm_user_anker');
 
     if (mail && mail.includes("@")) {
-        // 1. Anker setzen
         localStorage.setItem('mm_user_anker', mail);
         
-        // 2. Visuelle Freischaltung
+        // 1. Sektor 1 blau machen
         const s1Num = document.getElementById('num-0');
         if(s1Num) {
             s1Num.classList.remove('num-neutral');
             s1Num.classList.add('num-offen');
         }
 
-        // 3. DIE BRÜCKE ZU EBENE 2-4 (Das hier bringt deine Ebenen zurück!)
+        // 2. Sperre für alle Boxen aufheben
         const alleTexte = document.querySelectorAll('.text');
         alleTexte.forEach((txt, index) => {
             txt.onclick = function() {
-                showInfo(themen[index], index); // Öffnet das Skelett
+                showInfo(themen[index], index); 
             };
         });
 
-        // 4. SOFORTIGES ÖFFNEN VON SEKTOR 1
-        showInfo(themen[0], 0); 
-        
-        alert("ANKER ERFOLGREICH GESETZT. DEINE EBENEN SIND AKTIV.");
+        // --- DAS IST DER ENTSCHEIDENDE SPRUNG ---
+        // Dashboard weg, Skelett an, Sektor 1 laden!
+        showInfo(themaName, id); 
+
     } else {
         alert("Bitte gib eine gültige E-Mail ein.");
     }
