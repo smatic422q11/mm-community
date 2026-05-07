@@ -120,10 +120,7 @@
     </style>
 </head>
 <body>
-
-    <div id="top-label" class="global-community-label">Von M&M Community</div>
-
-    <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+    <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center; min-height: 100vh; position: relative;">
         
         <div class="dashboard-header">
             <div class="logo-ring" ondblclick="adminUnlock()">
@@ -138,22 +135,20 @@
             <div style="display: flex; width: 95%; gap: 15px; justify-content: space-between; align-items: flex-start; z-index: 10;">
                 <div style="flex: 1; border-right: 1px solid rgba(0, 61, 143, 0.4); padding-right: 10px;">
                     <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">1. DEINE MISSION</h3>
-                    <p style="font-size: 0.75rem; color: #ccc; line-height: 1.3; margin: 0;">Schreibe deine Biografie der Wahrheit. Diese 22 Sektoren sind die Stufen deiner Freiheit. Beginne bei Sektor 1.</p>
+                    <p style="font-size: 0.75rem; color: #ccc; line-height: 1.3; margin: 0;">Schreibe deine Biografie der Wahrheit. Sektor 1 ist dein Startpunkt.</p>
                 </div>
 
                 <div style="flex: 1; border-right: 1px solid rgba(0, 61, 143, 0.4); padding-right: 10px; padding-left: 5px;">
                     <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">2. ORIENTIERUNG</h3>
                     <div style="font-size: 0.7rem; color: #ccc; line-height: 1.4;">
-                        <span style="color: #0088ff;">🔵 Offen:</span> Nächster Schritt.<br>
-                        <span style="color: #ffd700;">🟡 Arbeit:</span> Du schreibst gerade.<br>
-                        <span style="color: #00ff00;">🟢 Versiegelt:</span> Wahrheit ist sicher.<br>
-                        <span style="color: #ff4d4d;">🔴 Wartet:</span> Fokus auf Jetzt.
+                        <span style="color: #0088ff;">🔵 Offen</span> | <span style="color: #ffd700;">🟡 Arbeit</span><br>
+                        <span style="color: #00ff00;">🟢 Sicher</span> | <span style="color: #ff4d4d;">🔴 Wartet</span>
                     </div>
                 </div>
 
                 <div style="flex: 1; padding-left: 5px;">
                     <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">3. DEIN ZIEL</h3>
-                    <p style="font-size: 0.75rem; color: #ccc; line-height: 1.3; margin: 0;">Vollende Sektor 1-20 für dein eBook. Es ist dein Schlüssel zum Video-Beweis (Ebene 4).</p>
+                    <p style="font-size: 0.75rem; color: #ccc; line-height: 1.3; margin: 0;">Vollende Sektor 1-20 für dein eBook und den Video-Beweis.</p>
                 </div>
             </div>
 
@@ -161,7 +156,7 @@
                 <input type="email" id="db-anker-mail" placeholder="E-Mail für Sicherung eingeben..." 
                     style="background: transparent; border: none; color: #fff; font-size: 0.8rem; outline: none; width: 220px;">
                 <button onclick="sichereAnkerUndStarteScan(0, themen[0])" 
-                    style="background: #003d8f; color: #fff; border: none; padding: 4px 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; border-radius: 2px; box-shadow: 0 0 10px rgba(0, 136, 255, 0.3);">
+                    style="background: #ffd700; color: #000; border: none; padding: 4px 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; border-radius: 2px; box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);">
                     ANKER SETZEN & STARTEN
                 </button>
             </div>
@@ -169,9 +164,9 @@
 
         <div class="grid" id="main-grid" style="margin-top: 5px;"></div>
 
-        <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 20px;">
-            <div class="fundament-box" style="flex: 1;"><div class="num">21</div><div class="text">Kapital und Verwaltung</div></div>
-            <div class="fundament-box" style="flex: 1;"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div></div>
+        <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 100px;">
+            <div class="fundament-box" style="flex: 1;"><div class="num num-neutral">21</div><div class="text">Verwaltung</div></div>
+            <div class="fundament-box" style="flex: 1;"><div class="num num-neutral">22</div><div class="text">DAS KOLLEKTIV</div></div>
         </div>
 
         <footer class="mm-footer">
@@ -181,61 +176,57 @@
                 <a href="datenschutz.html">Datenschutz</a>
             </div>
             <div style="color: #555; font-size: 11px; letter-spacing: 2px; text-transform: uppercase;">
-                © 2026 M&M Community — MENSCH IST MENSCH — JOIN THE SECRET MILLION
+                © 2026 M&M Community — JOIN THE SECRET MILLION
             </div>
         </footer>
     </div>
+
+    <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
+        <div class="top-container">
+            <h1 id="info-titel" class="page-title-white"></h1>
+            </div>
+    </div>
+
+    <div class="bottom-nav">
+        <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Dashboard</button>
+        <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
+        <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
+    </div>
+
     <script>
-        // --- DATEN-DEFINITION (Damit das Grid weiß, was es bauen soll) ---
         const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Alleinerziehend", "Die Brücke"];
-        let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false };
-        let aktuellerScanBericht = "";
-
-        // --- GRID INITIALISIERUNG (BOXEN BAUEN) ---
+        
+        // Initialisierung
         const grid = document.getElementById('main-grid');
-        if (grid) {
-            grid.innerHTML = ""; // Container leeren
-            themen.forEach((t, i) => { 
-                grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="sichereAnkerUndStarteScan(${i}, '${t}')">${t}</div></div>`; 
-            });
-        }
+        themen.forEach((t, i) => { 
+            grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="alert('Setze erst den Anker!')">${t}</div></div>`; 
+        });
 
-        // --- VERSCHMOLZENE MASTER-FUNKTION ---
         async function sichereAnkerUndStarteScan(id, themaName) {
-            const mailField = document.getElementById('db-anker-mail');
-            let mail = mailField ? mailField.value.trim() : "";
-            
-            // Falls Feld leer, schau im Speicher nach
-            if (!mail) mail = localStorage.getItem('mm_user_anker');
-
-            if (mail && mail.includes("@")) {
+            const mail = document.getElementById('db-anker-mail').value.trim();
+            if (mail.includes("@")) {
                 localStorage.setItem('mm_user_anker', mail);
+                alert("Anker gesetzt! Sektor 1 leuchtet jetzt.");
                 
+                // Sektor 1 aktivieren (Blaues Leuchten)
+                document.getElementById('num-0').className = "num num-offen";
+                
+                // Render Sync
                 try {
                     await fetch('https://mm-community.onrender.com/register_anker', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ email: mail })
                     });
-                } catch(e) { console.log("Anker Offline"); }
-
-                // Hier kommt dein Original-Scan-Prozess für Ebene 2
-                const box = document.getElementById('ki-ermittlung-ebene2');
-                const textFeld = document.getElementById('ki-tagesfokus-text');
-                
-                if(box && textFeld) {
-                    box.style.display = 'block';
-                    textFeld.innerHTML = "Anker bestätigt. Scan läuft...";
-                    // ... fetch Call für Scan ...
-                }
-                
-                // Navigation zur Info-Ebene (Stellt sicher, dass die Texte kommen)
-                if (typeof showInfo === "function") {
-                    showInfo(themaName, id);
-                }
+                } catch(e) { console.log("Anker lokal gesichert."); }
             } else {
-                alert("Bitte gib erst deine E-Mail ein, um deinen Fortschritt zu sichern.");
+                alert("Bitte gültige E-Mail eingeben.");
             }
+        }
+
+        function showDashboard() {
+            document.getElementById('page-skelett').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'flex';
         }
     </script>
 </body>
