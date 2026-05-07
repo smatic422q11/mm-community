@@ -7,40 +7,45 @@
     <style>
         body { background-color: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
         
+        /* Atmosphäre & Hintergrund */
         #dashboard::before {
             content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle at center, rgba(0, 61, 143, 0.15) 0%, transparent 70%);
             pointer-events: none; z-index: 1;
         }
 
-        /* ANIMATIONEN */
-        @keyframes pulseBlue { 0% { box-shadow: 0 0 5px #0088ff; } 50% { box-shadow: 0 0 25px #0088ff; } 100% { box-shadow: 0 0 5px #0088ff; } }
-        @keyframes scanLine { 0% { top: 0; } 100% { top: 100%; } }
-
-        .num-offen { background-color: #0088ff !important; box-shadow: 0 0 20px #0088ff, inset 0 0 10px #ffffff; border: 1px solid #fff !important; animation: pulseBlue 2s infinite; }
+        /* Status-Farben */
         .num-neutral { background-color: #003d8f; }
-        .num-gelesen { background-color: #00ff00 !important; box-shadow: 0 0 15px #00ff00; } 
-        .num-arbeit { background-color: #ffd700 !important; color: #000 !important; box-shadow: 0 0 15px #ffd700; } 
+        .num-offen { background-color: #0088ff !important; box-shadow: 0 0 20px #0088ff; animation: pulse 2s infinite; }
+        .num-arbeit { background-color: #ffd700 !important; color: #000 !important; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
 
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 10px; width: 95%; max-width: 1450px; margin-top: 15px; border: 3px solid #00ff00; padding: 15px; border-radius: 10px; flex-shrink: 0; z-index: 2; }
-        .box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; overflow: hidden; }
-        .num { width: 38px; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
-        .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
+        /* Dashboard-Grid */
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 10px; width: 95%; max-width: 1450px; margin-top: 15px; border: 3px solid #00ff00; padding: 15px; border-radius: 10px; z-index: 2; }
+        .box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; overflow: hidden; }
+        .num { width: 38px; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+        .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; }
 
+        /* Skelett & Ebenen */
         #page-skelett { display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh; }
-        .info-section-ebene { width: 90% !important; height: 26vh; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; margin-top: 1vh; }
+        .info-section-ebene { width: 90%; height: 26vh; border: 2px solid #003d8f; background: #000; position: relative; margin-top: 1vh; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        
+        /* Video-Gitter 8 Slots */
+        .video-grid-8 { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr); gap: 10px; width: 100%; height: 100%; padding: 10px; box-sizing: border-box; background: #000; }
+        .v-slot { border: 1px solid #003d8f; background: #0a0a0a; position: relative; display: flex; align-items: center; justify-content: center; }
+        .v-label { position: absolute; bottom: 2px; left: 5px; color: #00ff00; font-size: 0.4rem; z-index: 10; }
 
-        /* VIDEO GRID 8 SLOTS */
-        .video-grid-8 { display: none; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr); gap: 10px; width: 100%; height: 100%; background: #000; padding: 5px; box-sizing: border-box; }
-        .video-slot { border: 1px solid #003d8f; background: #0a0a0a; display: flex; align-items: center; justify-content: center; font-size: 0.5rem; color: #333; position: relative; overflow: hidden; }
-        .slot-user { border: 2px solid #00ff00 !important; box-shadow: 0 0 15px #00ff00; }
-        .slot-label { position: absolute; bottom: 2px; left: 5px; color: #00ff00; font-size: 0.4rem; z-index: 10; }
+        /* Barrieren */
+        .gesperrt { opacity: 0.2; pointer-events: none; filter: grayscale(1); }
+        .aktiv { opacity: 1; cursor: pointer; animation: pulse 1.5s infinite; }
 
-        /* BARRIEREN */
-        .gesperrt { opacity: 0.2 !important; cursor: not-allowed !important; filter: grayscale(1); pointer-events: none; }
-        .freigeschaltet { opacity: 1 !important; animation: pulseBlue 1.5s infinite; pointer-events: auto; }
-
-        #chat-box { height: 40vh !important; padding: 15px; border: 1px solid #003d8f; background: rgba(0,0,0,0.5); overflow-y: auto; width: 90%; }
+        /* Chat & Dossier */
+        #chat-box { height: 35vh; width: 90%; border: 1px solid #003d8f; overflow-y: auto; padding: 15px; background: rgba(0,0,0,0.5); margin-top: 10px; }
+        .chat-input-row { display: flex; width: 90%; border: 1px solid #003d8f; background: #000; margin-top: 5px; }
+        
+        /* Footer & Rechtliches */
+        .mm-footer { text-align: center; padding: 20px 0; background: #000; width: 100%; border-top: 1px solid #1a1a1a; position: fixed; bottom: 50px; }
+        .legal-links a { color: #0088ff; text-decoration: none; font-size: 12px; margin: 0 10px; }
         .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; background: #000; z-index: 100; border-top: 1px solid #333; }
         .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
     </style>
@@ -49,39 +54,47 @@
 
     <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="grid" id="main-grid"></div>
-        <div style="margin-top: 20px;">
-            <input type="email" id="db-anker-mail" placeholder="E-Mail Anker..." style="background: transparent; border: 1px solid #003d8f; color: #fff; padding: 10px; width: 250px;">
-            <button onclick="sichereAnkerUndStarteScan(0, themen[0])" class="nav-btn">ANKER SETZEN</button>
+        <div style="margin-top: 20px; z-index: 2; display: flex; gap: 10px;">
+            <input type="email" id="db-anker-mail" placeholder="E-Mail für Sicherung..." style="background: transparent; border: 1px solid #003d8f; color: #fff; padding: 10px; width: 250px; outline: none;">
+            <button onclick="sichereAnker()" class="nav-btn">ANKER SETZEN</button>
         </div>
+        <footer class="mm-footer">
+            <div class="legal-links">
+                <a href="#">Impressum</a> | <a href="#">Datenschutz</a> | <a href="#">Nutzungsbedingungen</a>
+            </div>
+            <div style="color: #555; font-size: 10px; margin-top: 10px;">© 2026 M&M COMMUNITY — JOIN THE SECRET MILLION</div>
+        </footer>
     </div>
 
     <div id="page-skelett">
-        <h1 id="info-titel" style="text-transform: uppercase; font-size: 1.5rem;"></h1>
+        <h2 id="info-titel" style="text-transform: uppercase; font-size: 1.2rem; margin: 10px 0;"></h2>
         <div class="info-section-ebene">
-            <div id="werbe-bg" style="position:absolute; width:100%; height:100%; background-size:cover; opacity:0.4;"></div>
-            <div id="v-grid-area" class="video-grid-8"></div>
+            <div id="werbe-bg" style="position: absolute; width: 100%; height: 100%; background-size: cover; opacity: 0.4;"></div>
+            <div id="v-grid-area" class="video-grid-8" style="display: none;"></div>
+            <div id="scan-status" style="z-index: 5; font-family: monospace; color: red;">SCAN AKTIV...</div>
         </div>
 
-        <div style="display:flex; gap:50px; margin: 10px 0;">
-            <div onclick="ebene=4; updateUI(); starteVideoKonferenz();" id="sig-l4" class="gesperrt" style="text-align:center;">
-                <div style="width:40px; height:20px; background:red; border-radius:10px; margin:auto;"></div>
-                <span style="font-size:0.5rem; color:red;">OFFENBAREN</span>
+        <div style="display: flex; gap: 40px; margin: 15px;">
+            <div id="sig-l4" class="gesperrt" onclick="portalEbene(4)">
+                <div style="width: 45px; height: 22px; background: red; border-radius: 12px; border: 1px solid #fff; margin: auto;"></div>
+                <span style="font-size: 0.5rem; color: red; font-weight: bold;">OFFENBAREN</span>
             </div>
-            <div onclick="ebene=3; updateUI();" id="sig-r4" class="gesperrt" style="text-align:center;">
-                <div style="width:40px; height:20px; background:yellow; border-radius:10px; margin:auto;"></div>
-                <span style="font-size:0.5rem; color:yellow;">SCHREIBEN</span>
+            <div id="sig-r4" class="gesperrt" onclick="portalEbene(3)">
+                <div style="width: 45px; height: 22px; background: yellow; border-radius: 12px; border: 1px solid #fff; margin: auto;"></div>
+                <span style="font-size: 0.5rem; color: yellow; font-weight: bold;">SCHREIBEN</span>
             </div>
         </div>
 
-        <div id="ebene2-content" style="width:90%; color:#ccc; font-size:0.9rem; text-align:justify; margin-bottom:10px;">
-            <div id="ki-scan-box" style="border-left: 3px solid red; padding-left:10px; font-family:monospace; margin-bottom:10px;"></div>
+        <div id="ebene2-content" style="width: 90%; color: #ccc; font-size: 0.9rem; text-align: justify;">
             <p id="main-text"></p>
         </div>
 
-        <div id="chat-box"></div>
-        <div style="width:90%; display:flex; margin-top:5px;">
-            <input type="text" id="chat-input" placeholder="Wahrheit..." style="flex:1; background:#111; border:1px solid #003d8f; color:#fff; padding:10px;">
-            <button onclick="registriereSenden()" class="nav-btn">SENDEN</button>
+        <div id="chat-area" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+            <div id="chat-box"></div>
+            <div class="chat-input-row">
+                <input type="text" id="chat-input" placeholder="Nachricht schreiben..." style="flex: 1; background: transparent; border: none; color: #fff; padding: 15px; outline: none;">
+                <button onclick="registriereSenden()" style="background: #003d8f; color: #fff; border: none; padding: 0 30px; cursor: pointer; font-weight: bold;">SENDEN</button>
+            </div>
         </div>
     </div>
 
@@ -91,98 +104,77 @@
     </div>
 
 <script>
-    const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Alleinerziehend", "Die Brücke"];
-    const sektorTexte = [
-        "Sektor 1: Das Vordern von Gefühlen ist das Fundament der Freiheit...",
-        "Sektor 2: Wahrhaftigkeit ist der einzige Kompass im Chaos...",
-        "Sektor 3: Heilung beginnt dort, wo der Hass endet...",
-        "Sektor 4: Souveränität ist ein innerer Prozess..."
-    ];
+    const themen = ["Gefühlsvorderung", "Mensch werden", "Friede", "Bürgerrechte", "Verantwortung", "Menschlichkeit", "Kinderschutz", "Wahre Kunst", "LGBTQ & Kirche", "Tradition", "Selbstwahl", "Gesundheit", "Arbeitswelt", "Mobbing", "Jugend", "Senioren", "Gemeinschaft", "Sozialgefallen", "Alleinerziehend", "Die Brücke"];
+    let ebene = 1, tId = 0, chatCounter = 0, scanFertig = false;
 
-    let ebene = 1, tId = 0, interaktionsZaehler = Array(20).fill(0), scanAbgeschlossen = false;
-
+    // Grid füllen
     const grid = document.getElementById('main-grid');
     themen.forEach((t, i) => { 
-        grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text">${t}</div></div>`; 
+        grid.innerHTML += `<div class="box"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="alert('Bitte erst Anker setzen!')">${t}</div></div>`; 
     });
 
+    function sichereAnker() {
+        const mail = document.getElementById('db-anker-mail').value;
+        if(mail.includes("@")) {
+            localStorage.setItem('mm_user_anker', mail);
+            document.getElementById('num-0').className = "num num-offen";
+            document.querySelectorAll('.text').forEach((txt, i) => { txt.onclick = () => showInfo(i); });
+            showInfo(0);
+        } else { alert("E-Mail ungültig!"); }
+    }
+
     function showInfo(id) {
-        tId = id; ebene = 2; scanAbgeschlossen = false;
+        tId = id; ebene = 2; scanFertig = false; chatCounter = 0;
         document.getElementById('dashboard').style.display = 'none';
         document.getElementById('page-skelett').style.display = 'flex';
         document.getElementById('info-titel').innerText = themen[id];
-        document.getElementById('main-text').innerText = sektorTexte[id] || "Analysiere Sektor-Daten...";
+        document.getElementById('main-text').innerText = "Initialisiere Sektor-Wissen " + (id+1) + "...";
         updateUI();
-        simulateScan();
-    }
-
-    function simulateScan() {
-        const box = document.getElementById('ki-scan-box');
-        box.innerHTML = "INITIALISIERE SCAN... BARRIERE AKTIV.";
+        
+        // Scan-Simulation
         setTimeout(() => {
-            box.innerHTML = "DATEN GEFUNDEN. ANALYSE LÄUFT...";
-            setTimeout(() => {
-                box.innerHTML = "SCAN ABGESCHLOSSEN. SCHREIB-MODUS FREIGESCHALTET.";
-                scanAbgeschlossen = true;
-                updateUI();
-            }, 2000);
-        }, 1500);
+            scanFertig = true;
+            document.getElementById('scan-status').innerText = "SCAN ABGESCHLOSSEN";
+            document.getElementById('main-text').innerText = "Sektor " + (id+1) + " Daten bereit. Öffne den Schreib-Modus für den Dialog.";
+            updateUI();
+        }, 2000);
     }
 
-    function baueVideoGrid() {
+    function portalEbene(e) { ebene = e; updateUI(); if(e === 4) starteVideo(); }
+
+    function starteVideo() {
         const area = document.getElementById('v-grid-area');
         area.innerHTML = "";
+        area.style.display = "grid";
         for(let i=1; i<=8; i++) {
-            area.innerHTML += `
-                <div class="video-slot ${i===1?'slot-user':''}" id="v-slot-${i}">
-                    <span class="slot-label">SLOT ${i} ${i===1?'(DU)':''}</span>
-                    <div id="status-${i}" style="color:#222; font-size:0.3rem;">${i===1?'SUCHE...':'WARTEN...'}</div>
-                </div>`;
+            area.innerHTML += `<div class="v-slot" id="vs-${i}"><span class="v-label">SLOT ${i}</span></div>`;
         }
-    }
-
-    async function starteVideoKonferenz() {
-        const meinSlot = document.getElementById('v-slot-1');
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            meinSlot.innerHTML = `<video autoplay playsinline muted style="width:100%; height:100%; object-fit:cover;"></video>`;
-            meinSlot.querySelector('video').srcObject = stream;
-        } catch (err) { alert("Kamera blockiert."); }
+        navigator.mediaDevices.getUserMedia({video: true}).then(s => {
+            const v = document.createElement('video'); v.srcObject = s; v.autoplay = true; v.style.width="100%";
+            document.getElementById('vs-1').appendChild(v);
+        });
     }
 
     function registriereSenden() {
-        const input = document.getElementById('chat-input');
-        if(!input.value) return;
-        document.getElementById('chat-box').innerHTML += `<div class="chat-msg-user"><strong>Schwein:</strong> ${input.value}</div>`;
-        input.value = "";
-        interaktionsZaehler[tId] += 5;
+        const inp = document.getElementById('chat-input');
+        if(!inp.value) return;
+        document.getElementById('chat-box').innerHTML += `<div style="border-left:3px solid #ffd700; padding:10px; margin-bottom:10px;"><b>Schwein:</b> ${inp.value}</div>`;
+        inp.value = ""; chatCounter++;
         updateUI();
     }
 
     function updateUI() {
         document.getElementById('ebene2-content').style.display = (ebene === 2) ? 'block' : 'none';
-        document.getElementById('chat-box').style.display = (ebene === 3) ? 'block' : 'none';
+        document.getElementById('chat-area').style.display = (ebene === 3) ? 'flex' : 'none';
         document.getElementById('v-grid-area').style.display = (ebene === 4) ? 'grid' : 'none';
         document.getElementById('werbe-bg').style.display = (ebene === 4) ? 'none' : 'block';
 
-        const sigGelb = document.getElementById('sig-r4');
-        const sigRot = document.getElementById('sig-l4');
-
-        if(scanAbgeschlossen) sigGelb.className = "freigeschaltet";
-        else sigGelb.className = "gesperrt";
-
-        if(interaktionsZaehler[tId] >= 15) sigRot.className = "freigeschaltet";
-        else sigRot.className = "gesperrt";
+        document.getElementById('sig-r4').className = scanFertig ? "aktiv" : "gesperrt";
+        document.getElementById('sig-l4').className = (chatCounter >= 2) ? "aktiv" : "gesperrt";
     }
 
-    function sichereAnkerUndStarteScan(id, name) {
-        document.querySelectorAll('.text').forEach((txt, i) => { txt.onclick = () => showInfo(i); });
-        document.getElementById('num-0').className = "num num-offen";
-        showInfo(0);
-    }
-
-    function nextEbene() { ebene++; if(ebene>4) ebene=2; updateUI(); if(ebene===4) baueVideoGrid(); }
     function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; }
+    function nextEbene() { ebene++; if(ebene>4) ebene=2; updateUI(); if(ebene===4) starteVideo(); }
 </script>
 </body>
 </html>
