@@ -268,15 +268,16 @@ async function sichereAnkerUndStarteScan(id, themaName) {
                 showInfo(themen[index], index); 
             };
         });
-
-        // --- DAS IST DER ENTSCHEIDENDE SPRUNG ---
-        // Dashboard weg, Skelett an, Sektor 1 laden!
-        showInfo(themaName, id); 
-
+function geheZuSektor1() {
+    // Wir prüfen, ob der Anker im Speicher gesetzt wurde
+    if (localStorage.getItem('ankerGesetzt') === 'true' || document.getElementById('emailInput').value !== "") {
+        // DIREKTE WEITERLEITUNG ZUR WAHRHEIT (Ebene 3)
+        window.location.href = 'sektor1_wahrheit.html'; 
     } else {
-        alert("Bitte gib eine gültige E-Mail ein.");
+        alert('Bitte erst den Anker mit deiner E-Mail setzen!');
     }
 }
+        
         function showDashboard() {
             document.getElementById('page-skelett').style.display = 'none';
             document.getElementById('dashboard').style.display = 'flex';
