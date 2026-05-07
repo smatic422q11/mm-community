@@ -252,29 +252,30 @@ async function sichereAnkerUndStarteScan(id, themaName) {
     const mail = mailField ? mailField.value.trim() : localStorage.getItem('mm_user_anker');
 
     if (mail && mail.includes("@")) {
+        // 1. Speichern
         localStorage.setItem('mm_user_anker', mail);
         
-        // 1. Sektor 1 blau machen
+        // 2. Visueller Trigger (Zahl wird blau)
         const s1Num = document.getElementById('num-0');
         if(s1Num) {
             s1Num.classList.remove('num-neutral');
             s1Num.classList.add('num-offen');
         }
 
-        // 2. Sperre für alle Boxen aufheben
+        // 3. Sperre für alle Boxen aufheben
         const alleTexte = document.querySelectorAll('.text');
         alleTexte.forEach((txt, index) => {
             txt.onclick = function() {
                 showInfo(themen[index], index); 
             };
         });
-function geheZuSektor1() {
-    // Wir prüfen, ob der Anker im Speicher gesetzt wurde
-    if (localStorage.getItem('ankerGesetzt') === 'true' || document.getElementById('emailInput').value !== "") {
-        // DIREKTE WEITERLEITUNG ZUR WAHRHEIT (Ebene 3)
-        window.location.href = 'sektor1_wahrheit.html'; 
+
+        // 4. DER ENTSCHEIDENDE SPRUNG (In dein Skelett!)
+        // Wir bleiben auf der Seite und öffnen Ebene 2
+        showInfo(themaName, id); 
+
     } else {
-        alert('Bitte erst den Anker mit deiner E-Mail setzen!');
+        alert("Bitte gib eine gültige E-Mail ein.");
     }
 }
         
