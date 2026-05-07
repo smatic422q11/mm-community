@@ -136,7 +136,6 @@
     </style>
 </head>
 <body>
-    <div id="top-label" class="global-community-label">Von M&M Community</div>
 
     <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="dashboard-header">
@@ -248,43 +247,36 @@
             grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="alert('Setze erst den Anker!')">${t}</div></div>`; 
         });
 
-      async function sichereAnkerUndStarteScan(id, themaName) {
+     // ERSETZE DEINE AKTUELLE FUNKTION MIT DIESER:
+async function sichereAnkerUndStarteScan(id, themaName) {
     const mailField = document.getElementById('db-anker-mail');
-    const mail = mailField.value.trim();
+    const mail = mailField ? mailField.value.trim() : localStorage.getItem('mm_user_anker');
 
-    if (mail.includes("@")) {
-        // 1. Speichern
+    if (mail && mail.includes("@")) {
+        // 1. Anker setzen
         localStorage.setItem('mm_user_anker', mail);
         
-        // 2. VISUELLER TRIGGER: Sektor 1 sofort freischalten
-        const sektor1Num = document.getElementById('num-0');
-        if(sektor1Num) {
-            sektor1Num.classList.remove('num-neutral');
-            sektor1Num.classList.add('num-offen'); // Das blaue Leuchten
+        // 2. Visuelle Freischaltung
+        const s1Num = document.getElementById('num-0');
+        if(s1Num) {
+            s1Num.classList.remove('num-neutral');
+            s1Num.classList.add('num-offen');
         }
 
-        // 3. DIE SPERRE LÖSCHEN: Allen Text-Boxen die echte Funktion geben
+        // 3. DIE BRÜCKE ZU EBENE 2-4 (Das hier bringt deine Ebenen zurück!)
         const alleTexte = document.querySelectorAll('.text');
         alleTexte.forEach((txt, index) => {
             txt.onclick = function() {
-                // Hier wird jetzt die echte showInfo Funktion aufgerufen statt des Alerts
-                showInfo(themen[index], index);
+                showInfo(themen[index], index); // Öffnet das Skelett
             };
         });
 
-        alert("ANKER ERFOLGREICH GESETZT. Sektor 1 ist jetzt für dich geöffnet.");
+        // 4. SOFORTIGES ÖFFNEN VON SEKTOR 1
+        showInfo(themen[0], 0); 
         
-        // 4. Datenbank-Sync im Hintergrund
-        try {
-            await fetch('https://mm-community.onrender.com/register_anker', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: mail })
-            });
-        } catch(e) { console.log("Anker lokal aktiv."); }
-        
+        alert("ANKER ERFOLGREICH GESETZT. DEINE EBENEN SIND AKTIV.");
     } else {
-        alert("Bitte gib eine gültige E-Mail Adresse ein.");
+        alert("Bitte gib eine gültige E-Mail ein.");
     }
 }
         function showDashboard() {
@@ -518,15 +510,20 @@ async function sichereAnkerUndStarteScan(id, themaName) {
 }
 
     function showInfo(t, id) { 
-        tId = id; aktuellesThema = t; 
-        document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
-        ebene = 2; geleseneThemen.add(id); 
-        starteKIErmittlung(id, t);
-        updateNumColors(); 
-        document.getElementById('dashboard').style.display = 'none'; 
-        document.getElementById('page-skelett').style.display = 'flex'; 
-        updateUI(); 
-    } 
+    tId = id; 
+    aktuellesThema = t; 
+    document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
+    ebene = 2; 
+    geleseneThemen.add(id); 
+    
+    // DAS HIER IST DIE TÜR:
+    document.getElementById('dashboard').style.display = 'none'; // Dashboard aus
+    document.getElementById('page-skelett').style.display = 'flex'; // Skelett an
+    
+    starteKIErmittlung(id, t);
+    updateNumColors(); 
+    updateUI(); 
+}
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
     function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); starteVideoKonferenz(); } }
