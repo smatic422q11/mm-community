@@ -241,20 +241,24 @@
         <div id="ebene5-bereich"><div class="freie-zone-text">ADMIN ZONE</div></div>
     </div>
 
-<div class="bottom-nav">
-        <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Dashboard</button>
-        <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
-        <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
+<div class="bottom-nav" style="position: fixed; bottom: 0; width: 100%; background: #000; z-index: 100; padding: 10px 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 90%; margin: 0 auto;">
+            <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Dashboard</button>
+            <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
+            <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
+        </div>
     </div>
 
-    <footer style="text-align: center; padding: 20px 0; border-top: 1px solid #1a1a1a; margin-top: 10px; width: 100%; background: #000; position: relative; z-index: 50;">
-        <div class="legal-links" style="font-size: 0.8rem; color: #888;">
+    <footer style="text-align: center; padding: 20px 0; margin-bottom: 70px; border-top: 1px solid #1a1a1a; width: 100%; background: #000; position: relative; z-index: 50;">
+        <div class="legal-links" style="font-size: 0.8rem; color: #888; margin-bottom: 5px;">
             <a href="impressum.html" style="color: #888; text-decoration: none; margin: 0 10px;">Impressum</a> | 
             <a href="nutzungsbedingungen.html" style="color: #888; text-decoration: none; margin: 0 10px;">Nutzungsbedingungen</a> | 
             <a href="datenschutz.html" style="color: #888; text-decoration: none; margin: 0 10px;">Datenschutz</a>
         </div>
-        <p style="font-size: 0.7rem; color: #555; margin-top: 5px;">&copy; 2026 M&M Community – Mensch ist Mensch</p>
+        <p style="font-size: 0.7rem; color: #555; margin: 0;">&copy; 2026 M&M Community – Mensch ist Mensch</p>
     </footer>
+
+<script>
 <script>
     let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5 };
     let chatVerlauf = []; // Hier wird das Gedächtnis gespeichert
