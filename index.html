@@ -140,6 +140,54 @@
 
         .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
         .bild-aktiv { animation: kenburns 15s infinite ease-in-out, fadeEffect 8s infinite; }
+       /* DEIN NEUES FOOTER STYLING */
+    .mm-footer {
+        text-align: center;
+        padding: 60px 20px;
+        background-color: #000;
+        width: 100%;
+        clear: both;
+        box-sizing: border-box;
+        border-top: 1px solid #1a1a1a;
+    }
+
+    .legal-links {
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .legal-links a {
+        color: #0088ff;
+        text-decoration: none;
+        font-size: 15px;
+        letter-spacing: 0.5px;
+        transition: color 0.3s ease;
+    }
+
+    .legal-links a:hover { color: #fff; }
+    .legal-separator { color: #333; display: inline; }
+
+    .copyright-text {
+        color: #666;
+        font-size: 12px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        font-family: sans-serif;
+    }
+
+    .mobile-spacer { height: 0; }
+
+    @media (max-width: 767px) {
+        .legal-links { flex-direction: column; gap: 10px; }
+        .legal-separator { display: none; }
+        .legal-links a { font-size: 16px; }
+        .mobile-spacer { height: 80px; }
+        .mm-footer { padding: 40px 15px; }
+    } 
     </style>
 </head>
 <body>
@@ -249,13 +297,18 @@
         </div>
     </div>
 
-    <footer style="text-align: center; padding: 20px 0; margin-bottom: 70px; border-top: 1px solid #1a1a1a; width: 100%; background: #000; position: relative; z-index: 50;">
-        <div class="legal-links" style="font-size: 0.8rem; color: #888; margin-bottom: 5px;">
-            <a href="impressum.html" style="color: #888; text-decoration: none; margin: 0 10px;">Impressum</a> | 
-            <a href="nutzungsbedingungen.html" style="color: #888; text-decoration: none; margin: 0 10px;">Nutzungsbedingungen</a> | 
-            <a href="datenschutz.html" style="color: #888; text-decoration: none; margin: 0 10px;">Datenschutz</a>
+   <footer class="mm-footer" style="position: relative; z-index: 50; margin-bottom: 50px;">
+        <div class="legal-links">
+            <a href="impressum.html">Impressum</a>
+            <span class="legal-separator">|</span>
+            <a href="nutzungsbedingungen.html">Nutzungsbedingungen</a>
+            <span class="legal-separator">|</span>
+            <a href="datenschutz.html">Datenschutz</a>
         </div>
-        <p style="font-size: 0.7rem; color: #555; margin: 0;">&copy; 2026 M&M Community – Mensch ist Mensch</p>
+        <div class="copyright-text">
+            © 2026 M&M Community — MENSCH IST MENSCH — JOIN THE SECRET MILLION
+        </div>
+        <div class="mobile-spacer"></div>
     </footer>
 
 <script>
