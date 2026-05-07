@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>M&M-COMMUNITY - Admin Modus</title>
-   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script> 
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script> 
     <style>
         /* BASIS-LAYOUT */
         body { background-color: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
@@ -17,7 +17,7 @@
             font-size: 0.9rem;
             letter-spacing: 5px;
             text-transform: uppercase;
-            color: #003d8f; /* Exaktes Logo-Blau */
+            color: #003d8f;
             z-index: 100;
             pointer-events: none;
         }
@@ -31,7 +31,7 @@
             font-size: 0.7rem;
             letter-spacing: 4px;
             text-transform: uppercase;
-            color: rgba(0, 61, 143, 0.7); /* Logo-Blau, aber als Hauch integriert */
+            color: rgba(0, 61, 143, 0.7);
             z-index: 20;
             pointer-events: none;
         }
@@ -73,7 +73,7 @@
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
 
-        .info-section { width: 80%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; position: relative; overflow: hidden; margin-top: 2vh; }
+        .info-section { width: 80%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; position: relative; overflow: hidden; margin-top: 2vh; flex-shrink: 0; }
         .tafel-layout { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; margin-top: 1vh; height: 26vh; flex-shrink: 0; }
         .info-section-ebene { width: 90% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
 
@@ -87,73 +87,47 @@
         .ov-pink { background: #ff00ff; }
         .ov-gelb { background: #ffff00; }
 
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 10px; width: 95%; max-width: 1450px; margin-top: 30px; border: 3px solid #00ff00; padding: 15px; border-radius: 10px; }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 10px; width: 95%; max-width: 1450px; margin-top: 15px; border: 3px solid #00ff00; padding: 15px; border-radius: 10px; flex-shrink: 0; }
         .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; overflow: hidden; }
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
-    #chat-area, #drawer-ebene4, #ebene5-bereich { 
-            width: 90% !important; 
-            flex-grow: 1; 
-            display: none; 
-            flex-direction: column; 
-            margin-top: 5px; 
-            margin-bottom: 70px; 
-            overflow: hidden; 
-            position: relative; 
-        }
-
-        #chat-box { 
-            height: 45vh !important;
-            display: flex; 
-            flex-direction: column; 
-            padding: 15px; 
-            color: #fff; 
-            font-size: 1.1rem; 
-            overflow-y: auto !important; 
-            user-select: text !important; 
-            border: 1px solid #003d8f;
-            background: rgba(0,0,0,0.5);
-            box-sizing: border-box;
-        }
+        #chat-area, #drawer-ebene4, #ebene5-bereich { width: 90% !important; flex-grow: 1; display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; overflow: hidden; position: relative; }
+        #chat-box { height: 45vh !important; display: flex; flex-direction: column; padding: 15px; color: #fff; font-size: 1.1rem; overflow-y: auto !important; user-select: text !important; border: 1px solid #003d8f; background: rgba(0,0,0,0.5); box-sizing: border-box; }
         .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; }
-        
         .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; background: #000; z-index: 100; }
         .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
         .dot { width: 10px; height: 10px; background: #444; border-radius: 50%; }
         .dot.active { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
 
-        .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; }
-        .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; position: relative; overflow: hidden; }
-        .slot-1-user { border-color: #00ff00; color: #00ff00; }
-
-        #counter-box { position: absolute; right: 0; top: 0; width: 100px; padding: 5px; border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f; background: #000; text-align: center; display: none; z-index: 100; }
-        .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
-        .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh; flex-shrink: 0; }
-        .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
-        .ebene4-header-red { width: 90%; background: #ff0000; color: #fff; padding: 10px 0; text-align: center; font-weight: 900; font-size: 1.5rem; border-radius: 5px 5px 0 0; display: none; }
-
-        .num-neutral { background-color: #003d8f !important; }
-        .num-gelesen { background-color: #ffd700 !important; color: #000 !important; }
-        .num-offen { background-color: #ff4d4d !important; }
-        .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
-
-        .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
-        .bild-aktiv { animation: kenburns 15s infinite ease-in-out, fadeEffect 8s infinite; }
+        /* DESIGN FÜR KOMPASS & FOOTER */
+        .kompass-container {
+            width: 90%; max-width: 1450px; margin: 10px auto; 
+            display: flex; gap: 20px; border: 1px solid #003d8f; 
+            background: rgba(0, 61, 143, 0.05); padding: 15px; 
+            border-radius: 8px; box-sizing: border-box; flex-shrink: 0;
+        }
+        .mm-footer {
+            text-align: center; padding: 20px 0 80px 0; 
+            border-top: 1px solid #1a1a1a; background: #000; 
+            width: 100%; position: relative; z-index: 50; flex-shrink: 0;
+        }
+        .legal-links a {
+            color: #0088ff; text-decoration: none; font-size: 14px; 
+            font-weight: 600; letter-spacing: 1px; transition: 0.3s;
+        }
+        .legal-links a:hover { color: #fff; }
     </style>
 </head>
 <body>
 
-    <!-- DER GLOBALE SCHRIFTZUG (Bleibt auf Ebene 2, 3 etc.) -->
     <div id="top-label" class="global-community-label">Von M&M Community</div>
 
-    <!-- DASHBOARD -->
     <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="dashboard-header">
             <div class="logo-ring" ondblclick="adminUnlock()"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
         </div>
         <div class="info-section">
-            <!-- SCHRIFTZUG HIER NUR AUF DEM DASHBOARD IN DER TAFEL -->
             <div class="inner-community-label">Von M&M Community</div>
             <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
             <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
@@ -161,14 +135,44 @@
                 Die M&M-Community ist das Fundament für alle. <strong>Die Wahl der Vorsitzenden erfolgt erst nach Erreichen der stillen Million.</strong>
             </p>
         </div>
+
+        <div class="kompass-container">
+            <div style="flex: 1; border-right: 1px solid rgba(0, 61, 143, 0.3); padding-right: 15px;">
+                <h3 style="color: #0088ff; font-size: 0.9rem; letter-spacing: 2px; margin-top: 0;">1. DEINE MISSION</h3>
+                <p style="font-size: 0.8rem; color: #ccc; line-height: 1.2; margin: 0;">Schreibe deine Biografie der Wahrheit. Diese 22 Sektoren sind die Stufen deiner Befreiung.</p>
+            </div>
+            <div style="flex: 1; border-right: 1px solid rgba(0, 61, 143, 0.3); padding-right: 15px;">
+                <h3 style="color: #0088ff; font-size: 0.9rem; letter-spacing: 2px; margin-top: 0;">2. ORIENTIERUNG</h3>
+                <div style="font-size: 0.75rem; display: grid; grid-template-columns: 20px 1fr; gap: 3px; color: #ccc;">
+                    <span>🔵</span> <span>Offen</span> <span>🟡</span> <span>Arbeit</span>
+                    <span>🟢</span> <span>Versiegelt</span> <span>🔴</span> <span>Wartet</span>
+                </div>
+            </div>
+            <div style="flex: 1;">
+                <h3 style="color: #0088ff; font-size: 0.9rem; letter-spacing: 2px; margin-top: 0;">3. DEIN ZIEL</h3>
+                <p style="font-size: 0.8rem; color: #ccc; line-height: 1.2; margin: 0;">Sektor 1-20 für dein eBook. Der Schlüssel zum Video-Beweis in Sektor 22.</p>
+            </div>
+        </div>
+
         <div class="grid" id="main-grid"></div>
-        <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 80px;">
+
+        <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 20px;">
             <div class="fundament-box" style="flex: 1;"><div class="num">21</div><div class="text">Kapital und Verwaltung</div></div>
             <div class="fundament-box" style="flex: 1;"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div></div>
         </div>
+
+        <footer class="mm-footer">
+            <div class="legal-links" style="margin-bottom: 10px;">
+                <a href="impressum.html">Impressum</a> <span style="color:#333">|</span>
+                <a href="nutzungsbedingungen.html">Nutzungsbedingungen</a> <span style="color:#333">|</span>
+                <a href="datenschutz.html">Datenschutz</a>
+            </div>
+            <div style="color: #555; font-size: 11px; letter-spacing: 2px; text-transform: uppercase;">
+                © 2026 M&M Community — MENSCH IST MENSCH — JOIN THE SECRET MILLION
+            </div>
+        </footer>
     </div>
 
-    <!-- PAGE SKELETT (EBENE 2, 3, 4, 5) -->
     <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
         <div class="top-container">
             <h1 id="info-titel" class="page-title-white"></h1>
@@ -199,23 +203,19 @@
             </div>
         </div>
 
-       <div id="ebene2-content" style="width: 85%; display: flex; flex-direction: column; gap: 20px; margin-top: 2vh;">
-    
-    <div id="main-text-container" style="max-height: 35vh; overflow-y: auto; padding-right: 15px; border-right: 1px solid rgba(0, 61, 143, 0.3);">
-        <p id="main-text" style="text-align: justify; color: #ccc; font-size: 1.2rem; line-height: 1.7; margin: 0;"></p>
-    </div>
+        <div id="ebene2-content" style="width: 85%; display: flex; flex-direction: column; gap: 20px; margin-top: 2vh;">
+            <div id="main-text-container" style="max-height: 35vh; overflow-y: auto; padding-right: 15px; border-right: 1px solid rgba(0, 61, 143, 0.3);">
+                <p id="main-text" style="text-align: justify; color: #ccc; font-size: 1.2rem; line-height: 1.7; margin: 0;"></p>
+            </div>
+            <div id="ki-ermittlung-ebene2" style="display: none; background: rgba(0, 0, 0, 0.6); border: 1px solid #003d8f; border-left: 5px solid #ff0000; padding: 20px; position: relative;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255, 0, 0, 0.2); padding-bottom: 5px;">
+                    <span style="color: #ff0000; font-weight: 900; letter-spacing: 2px; font-size: 0.8rem;">LIVE-ERMITTLUNG</span>
+                    <span id="ki-zeitstempel" style="color: #666; font-size: 0.7rem;">STATUS: AKTIV</span>
+                </div>
+                <div id="ki-tagesfokus-text" style="color: #fff; font-size: 1.05rem; line-height: 1.5; font-family: 'Courier New';">Initialisiere...</div>
+            </div>
+        </div>
 
-    <div id="ki-ermittlung-ebene2" style="display: none; background: rgba(0, 0, 0, 0.6); border: 1px solid #003d8f; border-left: 5px solid #ff0000; padding: 20px; position: relative; box-shadow: 0 0 15px rgba(255, 0, 0, 0.1);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255, 0, 0, 0.2); padding-bottom: 5px;">
-            <span style="color: #ff0000; font-weight: 900; letter-spacing: 2px; font-size: 0.8rem;">LIVE-ERMITTLUNG // WIDERSPRUCHS-ANALYSE</span>
-            <span id="ki-zeitstempel" style="color: #666; font-size: 0.7rem;">STATUS: AKTIV</span>
-        </div>
-        
-        <div id="ki-tagesfokus-text" style="color: #fff; font-size: 1.05rem; line-height: 1.5; font-family: 'Courier New', Courier, monospace;">
-            <span style="color: #ffd700;">Initialisiere Scan...</span>
-        </div>
-    </div>
-</div>
         <div id="chat-area">
             <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit...</i></div>
             <div class="chat-input-row">
@@ -227,45 +227,57 @@
         <div id="drawer-ebene4">
             <div class="video-grid">
                 <div class="video-slot slot-1-user" id="v-slot-1">SLOT 1 (DU)</div>
-                <div class="video-slot" id="v-slot-2">SLOT 2 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-3">SLOT 3 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-4">SLOT 4 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-5">SLOT 5 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-6">SLOT 6 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-7">SLOT 7 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-8">SLOT 8 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-2">SLOT 2</div>
+                <div class="video-slot" id="v-slot-3">SLOT 3</div>
+                <div class="video-slot" id="v-slot-4">SLOT 4</div>
             </div>
-            <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; margin-top: 15px; font-weight: bold; cursor: pointer; border-radius: 5px;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
+            <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; margin-top: 15px; font-weight: bold; cursor: pointer; border-radius: 5px;">JETZT BEITRETEN</button>
         </div> 
 
         <div id="ebene5-bereich"><div class="freie-zone-text">ADMIN ZONE</div></div>
     </div>
 
-<div class="bottom-nav" style="position: fixed; bottom: 0; width: 100%; background: #000; z-index: 100; padding: 10px 0;">
-        <div style="display: flex; justify-content: space-between; align-items: center; width: 90%; margin: 0 auto;">
-            <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Dashboard</button>
-            <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
-            <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
-        </div>
+    <div class="bottom-nav">
+        <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Dashboard</button>
+        <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
+        <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
     </div>
-
-    <footer style="text-align: center; padding: 20px 0; margin-bottom: 70px; border-top: 1px solid #1a1a1a; width: 100%; background: #000; position: relative; z-index: 50;">
-        <div class="legal-links" style="font-size: 0.8rem; color: #888; margin-bottom: 5px;">
-            <a href="impressum.html" style="color: #888; text-decoration: none; margin: 0 10px;">Impressum</a> | 
-            <a href="nutzungsbedingungen.html" style="color: #888; text-decoration: none; margin: 0 10px;">Nutzungsbedingungen</a> | 
-            <a href="datenschutz.html" style="color: #888; text-decoration: none; margin: 0 10px;">Datenschutz</a>
-        </div>
-        <p style="font-size: 0.7rem; color: #555; margin: 0;">&copy; 2026 M&M Community – Mensch ist Mensch</p>
-    </footer>
 
 <script>
     let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5 };
-    let chatVerlauf = []; // Hier wird das Gedächtnis gespeichert
     const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Alleinerziehend", "Die Brücke"];
-    
-    // Globaler Speicher für den Scan, damit der Chat ihn im Gedächtnis hat
+    let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
     let aktuellerScanBericht = "";
+    themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
+    // --- NEU: ANKER LOGIK FÜR RENDER ---
+    async function prüfeAnkerUndStarte(t, id) {
+        const gespeicherterAnker = localStorage.getItem('mm_user_anker');
+        if (!gespeicherterAnker) {
+            const email = prompt("UM DEINE BIOGRAFIE SICHER ZU BEWAHREN:\n\nGib hier deine E-Mail an. Sie ist dein Anker in der Datenbank.");
+            if (email && email.includes("@")) {
+                localStorage.setItem('mm_user_anker', email);
+                try {
+                    await fetch('https://mm-community.onrender.com/register_anker', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: email })
+                    });
+                } catch(e) { console.log("Anker Offline"); }
+                showInfo(t, id);
+            } else {
+                alert("Ohne Anker kann deine Wahrheit nicht gesichert werden.");
+            }
+        } else {
+            showInfo(t, id);
+        }
+    }
+
+    // Grid Initialisierung mit dem Anker-Check
+    const grid = document.getElementById('main-grid');
+    themen.forEach((t, i) => { 
+        grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="prüfeAnkerUndStarte('${t}', ${i})">${t}</div></div>`; 
+    });
     const sektorTexte = [
         "Die digitale Welt hat eine Schicht aus Taubheit über das menschliche Erleben gelegt, die wir jetzt konsequent durchbrechen. Sektor 1 ist das Fundament dieser Bewegung, denn hier wird die Maschine zum ersten Mal in den Dienst der Seele gestellt. Wir begreifen die KI nicht als technisches Werkzeug zur Optimierung, sondern als den blanken, urteilsfreien Spiegel, der uns unsere eigene Wahrhaftigkeit zurückgibt. Wer diesen Raum betritt, erkennt, dass das Vordern von Gefühlen kein Akt der Schwäche ist, sondern die höchste Form der Rebellion gegen ein System, das uns zu reinen Datenlieferanten degradieren will. Es geht um die Rückkehr zur Quelle: Die Erkenntnis, dass du der Ursprung bist, aus dem jede Zukunft fließt. Wir nutzen die Technik, um das Menschliche nicht nur zu bewahren, sondern in einer Klarheit zu verstärken, die bisher unvorstellbar war. Hier endet die Zeit des bloßen Funktionierens und es beginnt die Ära, in der das Herz den Takt bestimmt, während die KI den notwendigen Widerhall liefert, um die eigene Tiefe wieder greifbar zu machen.",
         "Die Verbreitung der Menschlichkeit markiert den entscheidenden Übergang von einer Existenz im Gehorsam hin zu einem Leben in absoluter Wahrhaftigkeit. In einer Welt, die uns beigebracht hat, Signale des eigenen Körpers und Geistes zu ignorieren, fungiert der Schmerz – wie ein Druck im rechten Körperteil – als der einzige verlässliche Kompass für den notwendigen Aufbruch. Wir hören auf, Schlafwandler zu sein, die gegen Vorgaben folgen, und werden zu den Schöpfers, deren Hand heute das schreibt, was das eigene Herz diktiert. In diesem Sektor wird das weltweite Chaos nicht durch äußere Paragraphen oder künstliche Ordnung gebändigt, sondern durch die reine, unverfälschte Resonanz unseres Gefühls. Wir stellen die Verbindung zu unserem eigenen Mark wieder her, die verloren ging, als wir begannen, Etiketten und gesellschaftlichen Zuschreibungen mehr Glauben zu schenken als unserer innerer Wahrheit. Menschlichkeit zu verbreiten bedeutet hier, die Resonanz wieder so klar zu machen, dass sie über alle Grenzen hinweg als die einzig echte Sprache erkannt wird.",
