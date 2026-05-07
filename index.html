@@ -107,16 +107,32 @@
             background: rgba(0, 61, 143, 0.05); padding: 15px; 
             border-radius: 8px; box-sizing: border-box; flex-shrink: 0;
         }
-        .mm-footer {
-            text-align: center; padding: 20px 0 80px 0; 
-            border-top: 1px solid #1a1a1a; background: #000; 
-            width: 100%; position: relative; z-index: 50; flex-shrink: 0;
-        }
+       .mm-footer {
+    text-align: center;
+    padding: 60px 0 30px 0; /* Mehr Abstand nach oben (60px) */
+    background: #000;
+    width: 100%;
+    border-top: 1px solid #1a1a1a;
+    margin-top: 40px; /* Schiebt alles unter das Fundament */
+}
         .legal-links a {
             color: #0088ff; text-decoration: none; font-size: 14px; 
             font-weight: 600; letter-spacing: 1px; transition: 0.3s;
         }
         .legal-links a:hover { color: #fff; }
+       /* HIER EINFÜGEN ODER ERSETZEN */
+    .num-offen {
+        background-color: #0088ff !important;
+        box-shadow: 0 0 20px #0088ff, inset 0 0 10px #ffffff;
+        border: 1px solid #fff !important;
+        animation: pulseBlue 2s infinite;
+    }
+
+    @keyframes pulseBlue {
+        0% { box-shadow: 0 0 5px #0088ff; }
+        50% { box-shadow: 0 0 25px #0088ff; }
+        100% { box-shadow: 0 0 5px #0088ff; }
+    } 
     </style>
 </head>
 <body>
@@ -162,10 +178,10 @@
             </div>
         </div>
 
-        <div class="grid" id="main-grid" style="margin-top: 5px;"></div>
+       <div class="grid" id="main-grid" style="margin-top: 15px;"></div>
 
-        <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 100px;">
-            <div class="fundament-box" style="flex: 1;"><div class="num num-neutral">21</div><div class="text">Verwaltung</div></div>
+        <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 20px;">
+            <div class="fundament-box" style="flex: 1;"><div class="num num-neutral">21</div><div class="text">Kapital und Verwaltung</div></div>
             <div class="fundament-box" style="flex: 1;"><div class="num num-neutral">22</div><div class="text">DAS KOLLEKTIV</div></div>
         </div>
 
@@ -179,20 +195,79 @@
                 © 2026 M&M Community — JOIN THE SECRET MILLION
             </div>
         </footer>
-    </div>
+    </div> <script>
+        const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Alleinerziehend", "Die Brücke"];
 
-    <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
-        <div class="top-container">
-            <h1 id="info-titel" class="page-title-white"></h1>
-            </div>
-    </div>
+        // 1. BOXEN INITIALISIEREN
+        const grid = document.getElementById('main-grid');
+        if (grid) {
+            grid.innerHTML = ""; 
+            themen.forEach((t, i) => { 
+                grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" id="text-${i}" onclick="prüfeSperre(${i})">${t}</div></div>`; 
+            });
+        }
 
-    <div class="bottom-nav">
-        <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Dashboard</button>
-        <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
-        <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
-    </div>
+        // 2. DIE SPERR-FUNKTION (Damit er nicht "Setze erst Anker" sagt, wenn offen ist)
+        function prüfeSperre(index) {
+            const istAnkerDa = localStorage.getItem('mm_user_anker');
+            if (istAnkerDa || index === -1) { // -1 wäre für Testzwecke
+                showInfo(themen[index], index);
+            } else {
+                alert("ZUGRIFF VERWEIGERT: Setze erst den Anker auf der Werbetafel!");
+            }
+        }
 
+        // 3. ANKER SETZEN & MECHANIK AKTIVIEREN
+        async function sichereAnkerUndStarteScan(id, themaName) {
+            const mailField = document.getElementById('db-anker-mail');
+            const mail = mailField ? mailField.value.trim() : "";
+
+            if (mail && mail.includes("@")) {
+                localStorage.setItem('mm_user_anker', mail);
+                
+                // VISUELLER EFFEKT: Sektor 1 fängt an blau zu pulsieren
+                const s1 = document.getElementById('num-0');
+                if(s1) {
+                    s1.classList.remove('num-neutral');
+                    s1.classList.add('num-offen'); // Hier greift dein neuer Style!
+                }
+
+                alert("ANKER BESTÄTIGT. Sektor 1 wurde für deine Biografie freigeschaltet.");
+
+                // Render Sync im Hintergrund
+                try {
+                    await fetch('https://mm-community.onrender.com/register_anker', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: mail })
+                    });
+                } catch(e) { console.log("Anker lokal aktiv."); }
+
+            } else {
+                alert("Bitte gib eine gültige E-Mail Adresse ein.");
+            }
+        }
+
+        // Platzhalter für deine showInfo Funktion, falls sie noch nicht da ist
+        function showInfo(t, id) {
+            console.log("Öffne Sektor: " + t);
+            // Hier kommt dein Wechsel zum page-skelett
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('page-skelett').style.display = 'flex';
+            document.getElementById('info-titel').innerText = t;
+        }
+   // Prüfen, ob der Anker bereits im Speicher ist (beim Neuladen der Seite)
+window.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('mm_user_anker')) {
+        const s1 = document.getElementById('num-0');
+        if (s1) {
+            s1.classList.remove('num-neutral');
+            s1.classList.add('num-offen');
+        }
+    }
+}); </script>
+</body>
+</html>
     <script>
         const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Alleinerziehend", "Die Brücke"];
         
@@ -202,28 +277,45 @@
             grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="alert('Setze erst den Anker!')">${t}</div></div>`; 
         });
 
-        async function sichereAnkerUndStarteScan(id, themaName) {
-            const mail = document.getElementById('db-anker-mail').value.trim();
-            if (mail.includes("@")) {
-                localStorage.setItem('mm_user_anker', mail);
-                alert("Anker gesetzt! Sektor 1 leuchtet jetzt.");
-                
-                // Sektor 1 aktivieren (Blaues Leuchten)
-                document.getElementById('num-0').className = "num num-offen";
-                
-                // Render Sync
-                try {
-                    await fetch('https://mm-community.onrender.com/register_anker', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email: mail })
-                    });
-                } catch(e) { console.log("Anker lokal gesichert."); }
-            } else {
-                alert("Bitte gültige E-Mail eingeben.");
-            }
+      async function sichereAnkerUndStarteScan(id, themaName) {
+    const mailField = document.getElementById('db-anker-mail');
+    const mail = mailField.value.trim();
+
+    if (mail.includes("@")) {
+        // 1. Speichern
+        localStorage.setItem('mm_user_anker', mail);
+        
+        // 2. VISUELLER TRIGGER: Sektor 1 sofort freischalten
+        const sektor1Num = document.getElementById('num-0');
+        if(sektor1Num) {
+            sektor1Num.classList.remove('num-neutral');
+            sektor1Num.classList.add('num-offen'); // Das blaue Leuchten
         }
 
+        // 3. DIE SPERRE LÖSCHEN: Allen Text-Boxen die echte Funktion geben
+        const alleTexte = document.querySelectorAll('.text');
+        alleTexte.forEach((txt, index) => {
+            txt.onclick = function() {
+                // Hier wird jetzt die echte showInfo Funktion aufgerufen statt des Alerts
+                showInfo(themen[index], index);
+            };
+        });
+
+        alert("ANKER ERFOLGREICH GESETZT. Sektor 1 ist jetzt für dich geöffnet.");
+        
+        // 4. Datenbank-Sync im Hintergrund
+        try {
+            await fetch('https://mm-community.onrender.com/register_anker', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: mail })
+            });
+        } catch(e) { console.log("Anker lokal aktiv."); }
+        
+    } else {
+        alert("Bitte gib eine gültige E-Mail Adresse ein.");
+    }
+}
         function showDashboard() {
             document.getElementById('page-skelett').style.display = 'none';
             document.getElementById('dashboard').style.display = 'flex';
