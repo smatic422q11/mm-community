@@ -13,115 +13,75 @@
             pointer-events: none; z-index: 1;
         }
 
-        .global-community-label { position: absolute; top: 10px; width: 100%; text-align: center; font-size: 0.9rem; letter-spacing: 5px; text-transform: uppercase; color: #003d8f; z-index: 100; pointer-events: none; }
-        .inner-community-label { position: absolute; top: 8px; width: 100%; text-align: center; font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase; color: rgba(0, 61, 143, 0.7); z-index: 20; pointer-events: none; }
-
+        /* ANIMATIONEN */
         @keyframes pulseBlue { 0% { box-shadow: 0 0 5px #0088ff; } 50% { box-shadow: 0 0 25px #0088ff; } 100% { box-shadow: 0 0 5px #0088ff; } }
+        @keyframes scanLine { 0% { top: 0; } 100% { top: 100%; } }
+
         .num-offen { background-color: #0088ff !important; box-shadow: 0 0 20px #0088ff, inset 0 0 10px #ffffff; border: 1px solid #fff !important; animation: pulseBlue 2s infinite; }
         .num-neutral { background-color: #003d8f; }
         .num-gelesen { background-color: #00ff00 !important; box-shadow: 0 0 15px #00ff00; } 
         .num-arbeit { background-color: #ffd700 !important; color: #000 !important; box-shadow: 0 0 15px #ffd700; } 
 
-        .dashboard-header { width: 100%; position: absolute; top: 3%; display: flex; justify-content: flex-start; padding: 0 2%; z-index: 20; }
-        .logo-ring { width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; }
-        .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
-        .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
-
-        .info-section { width: 80%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; position: relative; margin-top: 2vh; flex-shrink: 0; z-index: 2; }
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 10px; width: 95%; max-width: 1450px; margin-top: 15px; border: 3px solid #00ff00; padding: 15px; border-radius: 10px; flex-shrink: 0; z-index: 2; }
-        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; overflow: hidden; }
+        .box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; overflow: hidden; }
         .num { width: 38px; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
         #page-skelett { display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh; }
-        .tafel-layout { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; margin-top: 1vh; height: 26vh; flex-shrink: 0; }
-        .info-section-ebene { width: 90% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
-        .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; transition: 1s; z-index: 1; opacity: 0.4; }
+        .info-section-ebene { width: 90% !important; height: 26vh; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; margin-top: 1vh; }
 
         /* VIDEO GRID 8 SLOTS */
-        .video-grid-8 { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr); gap: 10px; width: 100%; height: 100%; background: #000; padding: 5px; box-sizing: border-box; }
+        .video-grid-8 { display: none; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr); gap: 10px; width: 100%; height: 100%; background: #000; padding: 5px; box-sizing: border-box; }
         .video-slot { border: 1px solid #003d8f; background: #0a0a0a; display: flex; align-items: center; justify-content: center; font-size: 0.5rem; color: #333; position: relative; overflow: hidden; }
         .slot-user { border: 2px solid #00ff00 !important; box-shadow: 0 0 15px #00ff00; }
         .slot-label { position: absolute; bottom: 2px; left: 5px; color: #00ff00; font-size: 0.4rem; z-index: 10; }
 
         /* BARRIEREN */
-        .gesperrt { opacity: 0.2 !important; cursor: not-allowed !important; filter: grayscale(1); }
-        .freigeschaltet { opacity: 1 !important; animation: pulseBlue 1.5s infinite; }
+        .gesperrt { opacity: 0.2 !important; cursor: not-allowed !important; filter: grayscale(1); pointer-events: none; }
+        .freigeschaltet { opacity: 1 !important; animation: pulseBlue 1.5s infinite; pointer-events: auto; }
 
-        #chat-area { width: 90% !important; flex-grow: 1; display: none; flex-direction: column; margin-bottom: 70px; }
-        #chat-box { height: 45vh !important; padding: 15px; border: 1px solid #003d8f; background: rgba(0,0,0,0.5); overflow-y: auto; }
-        .chat-msg-user { margin-bottom: 20px; padding: 12px; border-left: 4px solid #ffd700; background: rgba(255, 215, 0, 0.05); }
-        .chat-msg-ki { margin-bottom: 25px; padding: 15px; border-right: 4px solid #003d8f; background: rgba(0, 61, 143, 0.1); text-align: right; }
-        
+        #chat-box { height: 40vh !important; padding: 15px; border: 1px solid #003d8f; background: rgba(0,0,0,0.5); overflow-y: auto; width: 90%; }
         .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; background: #000; z-index: 100; border-top: 1px solid #333; }
         .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
-        .oval-side { width: 45px; height: 22px; border-radius: 12px; border: 1px solid #fff; cursor: pointer; }
-        .ov-rot { background: #ff0000; } .ov-gelb { background: #ffff00; }
     </style>
 </head>
 <body>
 
-    <div id="top-label" class="global-community-label" style="display:none;">Von M&M Community</div>
-
     <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-        <div class="dashboard-header"><div class="logo-ring" ondblclick="adminUnlock()"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div></div>
-        <div class="info-section">
-            <div class="inner-community-label">Von M&M Community</div>
-            <div style="display: flex; width: 95%; gap: 15px; justify-content: space-between;">
-                <div style="flex: 1; border-right: 1px solid rgba(0, 61, 143, 0.4);">
-                    <h3 style="color: #0088ff; font-size: 0.8rem; margin: 0;">1. MISSION</h3>
-                    <p style="font-size: 0.75rem; color: #ccc;">Biografie der Wahrheit.</p>
-                </div>
-                <div style="flex: 1; border-right: 1px solid rgba(0, 61, 143, 0.4); padding-left: 5px;">
-                    <h3 style="color: #0088ff; font-size: 0.8rem; margin: 0;">2. ORIENTIERUNG</h3>
-                    <p style="font-size: 0.7rem; color: #ccc;">🔵 Offen | 🟢 Sicher | 🟡 Arbeit</p>
-                </div>
-                <div style="flex: 1; padding-left: 5px;">
-                    <h3 style="color: #0088ff; font-size: 0.8rem; margin: 0;">3. DEIN ZIEL</h3>
-                    <p style="font-size: 0.75rem; color: #ccc;">Video-Beweis freischalten.</p>
-                </div>
-            </div>
-            <div style="margin-top: 15px; display: flex; gap: 10px; background: rgba(0, 61, 143, 0.1); padding: 8px; border: 1px solid #003d8f;">
-                <input type="email" id="db-anker-mail" placeholder="E-Mail für Sicherung..." style="background: transparent; border: none; color: #fff; width: 220px; outline: none;">
-                <button onclick="sichereAnkerUndStarteScan(0, themen[0])" style="background: #ffd700; color: #000; border: none; padding: 4px 12px; font-weight: bold; cursor: pointer;">ANKER SETZEN</button>
-            </div>
-        </div>
         <div class="grid" id="main-grid"></div>
+        <div style="margin-top: 20px;">
+            <input type="email" id="db-anker-mail" placeholder="E-Mail Anker..." style="background: transparent; border: 1px solid #003d8f; color: #fff; padding: 10px; width: 250px;">
+            <button onclick="sichereAnkerUndStarteScan(0, themen[0])" class="nav-btn">ANKER SETZEN</button>
+        </div>
     </div>
 
     <div id="page-skelett">
-        <h1 id="info-titel" style="text-transform: uppercase; font-size: 1.8rem; margin: 10px 0;"></h1>
-        <div class="tafel-layout">
-            <div style="position: absolute; left: 1.5%; display: flex; flex-direction: column; gap: 15px;">
-                <div class="oval-side ov-rot gesperrt" id="sig-l4" onclick="portalZuEbene4()"></div>
-                <span style="font-size: 0.4rem; color: #ff0000; font-weight: bold;">OFFENBAREN</span>
-            </div>
-            
-            <div class="info-section-ebene" id="screen-main">
-                <div id="werbe-bg" class="werbe-bild-bg"></div>
-                <div id="v-grid-area" style="display:none; width:100%; height:100%;" class="video-grid-8"></div>
-                <div id="scan-status" style="z-index: 5; color: rgba(255,255,255,0.3); letter-spacing: 5px;">SCAN AKTIV</div>
-            </div>
+        <h1 id="info-titel" style="text-transform: uppercase; font-size: 1.5rem;"></h1>
+        <div class="info-section-ebene">
+            <div id="werbe-bg" style="position:absolute; width:100%; height:100%; background-size:cover; opacity:0.4;"></div>
+            <div id="v-grid-area" class="video-grid-8"></div>
+        </div>
 
-            <div style="position: absolute; right: 1.5%; display: flex; flex-direction: column; gap: 15px;">
-                <div class="oval-side ov-gelb gesperrt" id="sig-r4" onclick="ebene=3; updateUI();"></div>
-                <span style="font-size: 0.4rem; color: #ffff00; font-weight: bold;">SCHREIBEN</span>
+        <div style="display:flex; gap:50px; margin: 10px 0;">
+            <div onclick="ebene=4; updateUI(); starteVideoKonferenz();" id="sig-l4" class="gesperrt" style="text-align:center;">
+                <div style="width:40px; height:20px; background:red; border-radius:10px; margin:auto;"></div>
+                <span style="font-size:0.5rem; color:red;">OFFENBAREN</span>
+            </div>
+            <div onclick="ebene=3; updateUI();" id="sig-r4" class="gesperrt" style="text-align:center;">
+                <div style="width:40px; height:20px; background:yellow; border-radius:10px; margin:auto;"></div>
+                <span style="font-size:0.5rem; color:yellow;">SCHREIBEN</span>
             </div>
         </div>
 
-        <div id="ebene2-content" style="width: 85%; margin-top: 2vh;">
-            <div id="ki-ermittlung-ebene2" style="background: rgba(0, 0, 0, 0.6); border-left: 5px solid #ff0000; padding: 20px;">
-                <div id="ki-tagesfokus-text" style="color: #fff; font-family: 'Courier New';"></div>
-            </div>
-            <p id="main-text" style="color: #ccc; margin-top: 15px; text-align: justify; line-height: 1.6;"></p>
+        <div id="ebene2-content" style="width:90%; color:#ccc; font-size:0.9rem; text-align:justify; margin-bottom:10px;">
+            <div id="ki-scan-box" style="border-left: 3px solid red; padding-left:10px; font-family:monospace; margin-bottom:10px;"></div>
+            <p id="main-text"></p>
         </div>
 
-        <div id="chat-area">
-            <div id="chat-box"></div>
-            <div class="chat-input-row">
-                <input type="text" id="chat-input" placeholder="Wahrheit schreiben..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px; outline:none;" onkeypress="if(event.key==='Enter') registriereSenden()">
-                <button onclick="registriereSenden()" style="background:#003d8f; color:#fff; border:none; padding:0 30px; cursor:pointer;">SENDEN</button>
-            </div>
+        <div id="chat-box"></div>
+        <div style="width:90%; display:flex; margin-top:5px;">
+            <input type="text" id="chat-input" placeholder="Wahrheit..." style="flex:1; background:#111; border:1px solid #003d8f; color:#fff; padding:10px;">
+            <button onclick="registriereSenden()" class="nav-btn">SENDEN</button>
         </div>
     </div>
 
@@ -132,126 +92,97 @@
 
 <script>
     const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Alleinerziehend", "Die Brücke"];
-    const sektorTexte = ["Die digitale Welt... Sektor 1.", "Wie werde ich Mensch? Sektor 2."]; 
-    
-    let ebene = 1, tId = 0, aktuellesThema = "", interaktionsZaehler = Array(20).fill(0);
-    let scanAbgeschlossen = false;
+    const sektorTexte = [
+        "Sektor 1: Das Vordern von Gefühlen ist das Fundament der Freiheit...",
+        "Sektor 2: Wahrhaftigkeit ist der einzige Kompass im Chaos...",
+        "Sektor 3: Heilung beginnt dort, wo der Hass endet...",
+        "Sektor 4: Souveränität ist ein innerer Prozess..."
+    ];
+
+    let ebene = 1, tId = 0, interaktionsZaehler = Array(20).fill(0), scanAbgeschlossen = false;
 
     const grid = document.getElementById('main-grid');
     themen.forEach((t, i) => { 
-        grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="alert('Anker setzen!')">${t}</div></div>`; 
+        grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text">${t}</div></div>`; 
     });
 
-    async function sichereAnkerUndStarteScan(id, themaName) {
-        const mail = document.getElementById('db-anker-mail').value.trim();
-        if (mail.includes("@")) {
-            localStorage.setItem('mm_user_anker', mail);
-            aktiviereSektoren();
-            showInfo(themaName, id);
-        } else { alert("E-Mail ungültig!"); }
-    }
-
-    function aktiviereSektoren() {
-        document.getElementById('num-0').className = "num num-offen";
-        document.querySelectorAll('.text').forEach((txt, i) => { txt.onclick = () => showInfo(themen[i], i); });
-    }
-
-    function showInfo(t, id) {
-        tId = id; aktuellesThema = t; ebene = 2;
+    function showInfo(id) {
+        tId = id; ebene = 2; scanAbgeschlossen = false;
         document.getElementById('dashboard').style.display = 'none';
         document.getElementById('page-skelett').style.display = 'flex';
-        document.getElementById('top-label').style.display = 'block';
+        document.getElementById('info-titel').innerText = themen[id];
+        document.getElementById('main-text').innerText = sektorTexte[id] || "Analysiere Sektor-Daten...";
         updateUI();
-        starteKIErmittlung(id, t);
+        simulateScan();
     }
 
-    async function starteKIErmittlung(id, themaName) {
-        scanAbgeschlossen = false;
-        const textFeld = document.getElementById('ki-tagesfokus-text');
-        textFeld.innerHTML = "SCAN LÄUFT... BARRIERE AKTIV.";
-        document.getElementById('sig-r4').classList.add('gesperrt');
-
-        try {
-            const response = await fetch('https://mm-community.onrender.com/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: "SCAN START: " + themaName, sector_id: String(id) })
-            });
-            const data = await response.json();
-            textFeld.innerHTML = data.reply.replace(/\n/g, '<br>');
-            scanAbgeschlossen = true;
-            document.getElementById('sig-r4').classList.remove('gesperrt');
-            document.getElementById('sig-r4').classList.add('freigeschaltet');
-        } catch (e) { textFeld.innerHTML = "Fehler im System."; }
-    }
-
-    function portalZuEbene4() {
-        if (interaktionsZaehler[tId] >= 10) {
-            ebene = 4;
-            updateUI();
-            baueVideoGrid();
-            starteVideoKonferenz();
-        } else {
-            alert("BARRIERE: Schreibe erst mehr im Chat, um dich für den Video-Beweis zu qualifizieren!");
-        }
+    function simulateScan() {
+        const box = document.getElementById('ki-scan-box');
+        box.innerHTML = "INITIALISIERE SCAN... BARRIERE AKTIV.";
+        setTimeout(() => {
+            box.innerHTML = "DATEN GEFUNDEN. ANALYSE LÄUFT...";
+            setTimeout(() => {
+                box.innerHTML = "SCAN ABGESCHLOSSEN. SCHREIB-MODUS FREIGESCHALTET.";
+                scanAbgeschlossen = true;
+                updateUI();
+            }, 2000);
+        }, 1500);
     }
 
     function baueVideoGrid() {
         const area = document.getElementById('v-grid-area');
         area.innerHTML = "";
         for(let i=1; i<=8; i++) {
-            area.innerHTML += `<div class="video-slot ${i===1?'slot-user':''}" id="v-slot-${i}">
-                <span class="slot-label">SLOT ${i} ${i===1?'(DU)':''}</span>
-                <div style="color:#222;">BEREIT...</div>
-            </div>`;
+            area.innerHTML += `
+                <div class="video-slot ${i===1?'slot-user':''}" id="v-slot-${i}">
+                    <span class="slot-label">SLOT ${i} ${i===1?'(DU)':''}</span>
+                    <div id="status-${i}" style="color:#222; font-size:0.3rem;">${i===1?'SUCHE...':'WARTEN...'}</div>
+                </div>`;
         }
     }
 
     async function starteVideoKonferenz() {
         const meinSlot = document.getElementById('v-slot-1');
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover;"></video>`;
-            document.getElementById('user-video').srcObject = stream;
-        } catch (err) { alert("Kamera-Zugriff verweigert."); }
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            meinSlot.innerHTML = `<video autoplay playsinline muted style="width:100%; height:100%; object-fit:cover;"></video>`;
+            meinSlot.querySelector('video').srcObject = stream;
+        } catch (err) { alert("Kamera blockiert."); }
     }
 
-    async function registriereSenden() {
+    function registriereSenden() {
         const input = document.getElementById('chat-input');
-        const userText = input.value.trim();
-        if (!userText) return;
-        document.getElementById('chat-box').innerHTML += `<div class="chat-msg-user"><strong>Goran:</strong> ${userText}</div>`;
+        if(!input.value) return;
+        document.getElementById('chat-box').innerHTML += `<div class="chat-msg-user"><strong>Schwein:</strong> ${input.value}</div>`;
         input.value = "";
         interaktionsZaehler[tId] += 5;
-        updateUI(); // Check if barrier for Ebene 4 can be removed
-        
-        try {
-            const response = await fetch('https://mm-community.onrender.com/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: userText, sector_id: String(tId) })
-            });
-            const data = await response.json();
-            document.getElementById('chat-box').innerHTML += `<div class="chat-msg-ki"><strong>KI:</strong> ${data.reply}</div>`;
-            document.getElementById('chat-box').scrollTop = document.getElementById('chat-box').scrollHeight;
-        } catch (e) {}
+        updateUI();
     }
 
     function updateUI() {
         document.getElementById('ebene2-content').style.display = (ebene === 2) ? 'block' : 'none';
-        document.getElementById('chat-area').style.display = (ebene === 3) ? 'flex' : 'none';
+        document.getElementById('chat-box').style.display = (ebene === 3) ? 'block' : 'none';
         document.getElementById('v-grid-area').style.display = (ebene === 4) ? 'grid' : 'none';
         document.getElementById('werbe-bg').style.display = (ebene === 4) ? 'none' : 'block';
-        
+
+        const sigGelb = document.getElementById('sig-r4');
         const sigRot = document.getElementById('sig-l4');
-        if (interaktionsZaehler[tId] >= 10) {
-            sigRot.classList.remove('gesperrt'); sigRot.classList.add('freigeschaltet');
-        }
+
+        if(scanAbgeschlossen) sigGelb.className = "freigeschaltet";
+        else sigGelb.className = "gesperrt";
+
+        if(interaktionsZaehler[tId] >= 15) sigRot.className = "freigeschaltet";
+        else sigRot.className = "gesperrt";
     }
 
-    function nextEbene() { ebene++; if(ebene>4)ebene=2; updateUI(); }
+    function sichereAnkerUndStarteScan(id, name) {
+        document.querySelectorAll('.text').forEach((txt, i) => { txt.onclick = () => showInfo(i); });
+        document.getElementById('num-0').className = "num num-offen";
+        showInfo(0);
+    }
+
+    function nextEbene() { ebene++; if(ebene>4) ebene=2; updateUI(); if(ebene===4) baueVideoGrid(); }
     function showDashboard() { ebene = 1; document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; }
-    function adminUnlock() { aktiviereSektoren(); interaktionsZaehler.fill(20); updateUI(); }
 </script>
 </body>
 </html>
