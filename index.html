@@ -506,7 +506,7 @@ async function registriereSenden() {
     let userRole = "standard_user";
 
     if (userText.toLowerCase().includes("schöpfer") || userText.toLowerCase().includes("admin")) {
-        // Ersetze 'DEIN_PASSWORT' durch dein geheimes Wort
+        // Hier dein Passwort abgleichen
         if (gespeicherterSchlüssel === 'DEIN_PASSWORT') {
             userRole = "schöpfer_bestätigt";
         } else {
@@ -514,8 +514,8 @@ async function registriereSenden() {
         }
     }
 
-    // Anzeige im Chat (Goran Schöpfer Layout)
-    chatBox.innerHTML += `<div style="margin-bottom: 35px; padding: 10px; border-left: 3px solid #ffd700; color: #ffd700;">${userText}</div>`;
+    // --- BEREINIGTE ANZEIGE (OHNE ATTRAPPE) ---
+    chatBox.innerHTML += `<div style="margin-bottom: 35px; padding: 10px; border-left: 3px solid #ffd700; color: #ffd700; background: rgba(255, 215, 0, 0.05);">${userText}</div>`;
     input.value = ""; 
 
     const typingId = "typing-" + Date.now();
