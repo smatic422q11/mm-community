@@ -230,7 +230,7 @@
                 <a href="datenschutz.html">Datenschutz</a>
             </div>
             <div style="color: #555; font-size: 11px; letter-spacing: 2px; text-transform: uppercase;">
-                © 2026 M&M Community — JOIN THE SECRET MILLION
+                © 2026 M&M Community — Mensch = Mensch
             </div>
         </footer>
     </div>
@@ -515,7 +515,7 @@ async function registriereSenden() {
     }
 
     // Anzeige im Chat (Goran Schöpfer Layout)
-    chatBox.innerHTML += `<div style="margin-bottom: 35px; padding: 10px; border-left: 3px solid #ffd700; color: #ffd700;"><strong>Goran (Schöpfer):</strong> ${userText}</div>`;
+    chatBox.innerHTML += `<div style="margin-bottom: 35px; padding: 10px; border-left: 3px solid #ffd700; color: #ffd700;">${userText}</div>`;
     input.value = ""; 
 
     const typingId = "typing-" + Date.now();
