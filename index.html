@@ -501,10 +501,18 @@ async function registriereSenden() {
 
     istSendenAktiv = true; 
 
-   // Identitäts-Check (Live aus dem Feld statt aus dem Speicher)
-    const email = document.getElementById('db-anker-mail').value.trim();
-    let userRole = "standard_user"; 
+  // In der Funktion registriereSenden():
+const email = document.getElementById('db-anker-mail').value.trim();
 
+// Wir fügen die Identität direkt in den Kontext für die KI ein
+const userRole = (email.toLowerCase() === "mmcommunity22@gmail.com") ? "SCHÖPFER (Goran)" : "USER";
+
+// ... im fetch-Aufruf unter 'message' oder 'context':
+body: JSON.stringify({ 
+    message: userText, 
+    context: `IDENTITÄT: ${userRole}. \n SEKTOR: ${tId+1}. \n WISSEN: ${sektorTexte[tId]}`,
+    // ...
+})
     if (userText.toLowerCase().includes("schöpfer") || userText.toLowerCase().includes("admin")) {
         // Wir prüfen live die E-Mail im Feld
         if (email.toLowerCase().includes("goran")) { 
