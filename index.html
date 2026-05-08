@@ -394,22 +394,21 @@ async function sichereAnkerUndStarteScan(id, themaName) {
     const mail = mailField ? mailField.value.trim() : localStorage.getItem('mm_user_anker');
 
     if (mail && mail.includes("@")) {
-        // 1. ANKER-SICHERUNG (Lokal & Server)
+        // --- 1. DEIN ANKER & FREISCHALTUNG (Damit du sofort reinkommst) ---
         localStorage.setItem('mm_user_anker', mail);
         
-        try {
-            // Registrierung bei Render
-            await fetch('https://mm-community.onrender.com/register_anker', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: mail })
-            });
-            console.log("Anker live auf Render gesichert.");
-        } catch(e) { 
-            console.log("Anker nur lokal gesichert (Server verzögert)."); 
-        }
+        // Zähler für Sektor 1 erhöhen, damit er blau leuchtet
+        if(interaktionsZaehler[0] === 0) interaktionsZaehler[0] = 5; 
+        
+        // Alle Boxen im Grid "scharf" schalten, damit der Alert verschwindet
+        const alleTexte = document.querySelectorAll('.grid .text');
+        themen.forEach((t, i) => {
+            alleTexte[i].onclick = () => showInfo(t, i);
+        });
 
-        // 2. SOFORTIGER ÜBERGANG ZUM SEKTOR-SCAN (Deine Original-Logik)
+        updateNumColors();
+        
+        // --- 2. DEIN LIVE-SCAN ABLAUF (Render Kommunikation) ---
         const box = document.getElementById('ki-ermittlung-ebene2');
         const textFeld = document.getElementById('ki-tagesfokus-text');
         
@@ -418,6 +417,14 @@ async function sichereAnkerUndStarteScan(id, themaName) {
             textFeld.innerHTML = "<span style='color: #ffd700; font-family: Courier New;'>Anker bestätigt. Initialisiere Sektor-Scan " + (id + 1) + "...</span>";
             
             try {
+                // Register Anker auf Server
+                fetch('https://mm-community.onrender.com/register_anker', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: mail })
+                }).catch(e => console.log("Anker-Sync im Hintergrund"));
+
+                // Der eigentliche KI-Scan
                 const response = await fetch('https://mm-community.onrender.com/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -442,29 +449,32 @@ async function sichereAnkerUndStarteScan(id, themaName) {
                 const stamp = document.getElementById('ki-zeitstempel');
                 if(stamp) stamp.innerText = "STAND: " + new Date().toLocaleTimeString() + " // SEKTOR " + (id + 1);
                 
-                // Wechsel zur Sektor-Ansicht (Ebene 2)
+                // Übergang zur Sektor-Ansicht
                 showInfo(themaName, id); 
 
             } catch (error) { 
                 textFeld.innerText = "Fehler: Scan-Verbindung unterbrochen."; 
+                // Trotz Fehler in die Info gehen, damit man den Sektor sieht
+                showInfo(themaName, id);
             }
+        } else {
+            // Falls die Felder nicht da sind, trotzdem reinlassen
+            showInfo(themaName, id);
         }
     } else {
         alert("Bitte gib erst deine E-Mail in das Anker-Feld ein, um deine Biografie zu sichern.");
     }
 }
-
-    function showInfo(t, id) { 
+   function showInfo(t, id) { 
         tId = id; aktuellesThema = t; 
         document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
         ebene = 2; geleseneThemen.add(id); 
-        starteKIErmittlung(id, t);
+        // Die Zeile hier drunter wurde gelöscht, damit es funktioniert
         updateNumColors(); 
         document.getElementById('dashboard').style.display = 'none'; 
         document.getElementById('page-skelett').style.display = 'flex'; 
         updateUI(); 
-    } 
-
+    }
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
     function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); starteVideoKonferenz(); } }
     function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
@@ -642,11 +652,11 @@ function updateNumColors() {
     let meinPeer = new Peer(`M-M-Sektor-${tId+1}-Beweis`, { config: peerConfiguration }); 
     meinPeer.on('open', (id) => { console.log('Sektor-Anker aktiv: ' + id); });
 
-    async function starteVideoKonferenz() {
-        const meinSlot = document.getElementById('v-slot-1');
-        const partnerSlot = document.getElementById('v-slot-2');
-        if (!meinSlot) return;
-        try {
+    function starteVideoKonferenz() {
+    if (meinPeer) meinPeer.destroy(); // Alten Peer schließen
+    meinPeer = new Peer(`MM-Sektor-${tId+1}-Room`, { config: peerConfiguration });
+    // ... Rest der Kamera-Logik
+}
             const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
             meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover; background:#000;"></video>`;
             const videoElement = document.getElementById('user-video');
