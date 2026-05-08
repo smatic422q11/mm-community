@@ -2,63 +2,84 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>M&M-COMMUNITY - Admin Modus</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script> 
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* BASIS-LAYOUT */
         body { background-color: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
 
-        .global-community-label { position: absolute; top: 10px; width: 100%; text-align: center; font-size: 0.9rem; letter-spacing: 5px; text-transform: uppercase; color: #003d8f; z-index: 100; pointer-events: none; }
-        .inner-community-label { position: absolute; top: 8px; width: 100%; text-align: center; font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase; color: rgba(0, 61, 143, 0.7); z-index: 20; pointer-events: none; }
+        /* DER GLOBALE SCHRIFTZUG (FÜR EBENE 2, 3 etc.) - EXAKTES LOGO-BLAU */
+        .global-community-label {
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: #003d8f;
+            z-index: 100;
+            pointer-events: none;
+        }
 
+        /* DER SCHRIFTZUG NUR IM DASHBOARD-BOARD (DER "HAUCH") - EXAKTES LOGO-BLAU */
+        .inner-community-label {
+            position: absolute;
+            top: 8px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.7rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: rgba(0, 61, 143, 0.7);
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        /* ANIMATIONEN */
+        @keyframes kenburns { 0% { transform: scale(1) translate(0, 0); } 50% { transform: scale(1.15) translate(-1%, -1%); } 100% { transform: scale(1) translate(0, 0); } }
+        @keyframes fadeEffect { 0% { opacity: 0; } 15% { opacity: 0.4; } 85% { opacity: 0.4; } 100% { opacity: 0; } }
+        
         @keyframes signalBlink {
             0% { box-shadow: 0 0 5px #fff; opacity: 0.8; }
             50% { box-shadow: 0 0 25px #fff, 0 0 35px #003d8f; opacity: 1; transform: scale(1.05); }
             100% { box-shadow: 0 0 5px #fff; opacity: 0.8; }
         }
 
-        .num-offen { 
-            background-color: #0088ff !important; 
-            box-shadow: 0 0 20px #0088ff, inset 0 0 10px #ffffff; 
-            border: 1px solid #fff !important; 
-            animation: pulseBlue 2s infinite; 
+        .elite-aktiv { 
+            background-color: #ffd700 !important; 
+            box-shadow: 0 0 10px #ffd700; 
+            border: 2px solid #fff !important; 
+            cursor: pointer; 
         }
-        @keyframes pulseBlue { 0%, 100% { box-shadow: 0 0 5px #0088ff; } 50% { box-shadow: 0 0 25px #0088ff; } }
+
+        @keyframes pulsieren {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; text-shadow: 0 0 10px #ffd700; }
+            100% { opacity: 0.5; }
+        }
+        .pulsieren { animation: pulsieren 2s infinite ease-in-out; font-weight: bold; }
 
         .signal-aktiv { animation: signalBlink 1.0s infinite ease-in-out !important; border: 2px solid #fff !important; cursor: pointer; }
 
-        /* DASHBOARD GRID */
-        .grid { 
-            display: grid; 
-            grid-template-columns: repeat(4, 1fr); 
-            gap: 10px; 
-            width: 95%; 
-            max-width: 1450px; 
-            margin-top: 15px; 
-            border: 3px solid #00ff00; 
-            padding: 15px; 
-            border-radius: 10px; 
-            flex-shrink: 0; 
+        .lila-registrierung-leiste {
+            width: 100%; height: 80px; background: #8b00ff; border-top: 2px solid #fff; border-bottom: 2px solid #fff;
+            display: flex; align-items: center; justify-content: center; margin-top: 20px; box-shadow: 0 0 20px #8b00ff;
         }
+        .registrierung-text { color: #fff; font-size: 2.2rem; font-weight: 900; letter-spacing: 15px; text-transform: uppercase; }
 
-        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; overflow: hidden; }
-        .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
-        .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
-
-        .dashboard-header { width: 100%; display: flex; justify-content: flex-start; padding: 20px 2%; z-index: 20; box-sizing: border-box; }
+        .dashboard-header { width: 100%; position: absolute; top: 3%; display: flex; justify-content: flex-start; padding: 0 2%; box-sizing: border-box; z-index: 20; }
         .logo-ring { width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; }
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
 
-        /* EBENE 2+ DESIGN */
-        #page-skelett { display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
-        .tafel-layout { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; margin-top: 1vh; height: 26vh; flex-shrink: 0; }
         .info-section { width: 80%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; position: relative; overflow: hidden; margin-top: 2vh; flex-shrink: 0; }
-        .info-section-ebene { width: 70%; height: 100%; border: 2px solid #003d8f; background: #000; position: relative; overflow: hidden; }
+        .tafel-layout { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; margin-top: 1vh; height: 26vh; flex-shrink: 0; }
+        .info-section-ebene { width: 90% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
 
-        .buttons-links, .buttons-rechts { display: flex; flex-direction: column; gap: 15px; z-index: 20; padding: 0 20px; }
-        .oval-side { width: 45px; height: 22px; border-radius: 12px; border: 1px solid #fff; opacity: 0.8; }
+        .buttons-links { position: absolute; left: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
+        .buttons-rechts { position: absolute; right: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
+        .oval-side { width: 45px; height: 22px; border-radius: 12px; border: 1px solid #fff; opacity: 0.8; transition: all 0.3s; }
         .ov-schwarz { background: #000; border: 1.5px solid #003d8f; }
         .ov-grun { background: #00ff00; }
         .ov-blau { background: #0000ff; }
@@ -66,27 +87,43 @@
         .ov-pink { background: #ff00ff; }
         .ov-gelb { background: #ffff00; }
 
-        #main-text-container { max-height: 35vh; overflow-y: auto; padding-right: 15px; scrollbar-width: thin; scrollbar-color: #003d8f #000; }
-        #chat-box { height: 45vh; overflow-y: auto; border: 1px solid #003d8f; padding: 15px; background: rgba(0,0,0,0.5); }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 10px; width: 95%; max-width: 1450px; margin-top: 15px; border: 3px solid #00ff00; padding: 15px; border-radius: 10px; flex-shrink: 0; }
+        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; overflow: hidden; }
+        .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
+        .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
-        .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr); gap: 10px; width: 100%; height: 40vh; }
-        .video-slot { background: #111; border: 1px solid #333; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #555; position: relative; min-height: 100px; }
-        .slot-1-user { border-color: #ffd700; color: #ffd700; }
-
-        .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; background: #000; z-index: 100; border-top: 1px solid #333; box-sizing: border-box; }
+        #chat-area, #drawer-ebene4, #ebene5-bereich { width: 90% !important; flex-grow: 1; display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; overflow: hidden; position: relative; }
+        #chat-box { height: 45vh !important; display: flex; flex-direction: column; padding: 15px; color: #fff; font-size: 1.1rem; overflow-y: auto !important; user-select: text !important; border: 1px solid #003d8f; background: rgba(0,0,0,0.5); box-sizing: border-box; }
+        .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; }
+        .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; background: #000; z-index: 100; }
         .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
         .dot { width: 10px; height: 10px; background: #444; border-radius: 50%; }
         .dot.active { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
 
-        .mm-footer { text-align: center; padding: 40px 0 30px 0; background: #000; width: 100%; border-top: 1px solid #1a1a1a; margin-top: 20px; }
-        .legal-links a { color: #0088ff; text-decoration: none; font-size: 14px; font-weight: 600; letter-spacing: 1px; }
+        /* DESIGN FÜR KOMPASS & FOOTER */
+        .kompass-container {
+            width: 90%; max-width: 1450px; margin: 10px auto; 
+            display: flex; gap: 20px; border: 1px solid #003d8f; 
+            background: rgba(0, 61, 143, 0.05); padding: 15px; 
+            border-radius: 8px; box-sizing: border-box; flex-shrink: 0;
+        }
+        .mm-footer {
+            text-align: center; padding: 20px 0 80px 0; 
+            border-top: 1px solid #1a1a1a; background: #000; 
+            width: 100%; position: relative; z-index: 50; flex-shrink: 0;
+        }
+        .legal-links a {
+            color: #0088ff; text-decoration: none; font-size: 14px; 
+            font-weight: 600; letter-spacing: 1px; transition: 0.3s;
+        }
+        .legal-links a:hover { color: #fff; }
     </style>
 </head>
 <body>
-
-    <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+    <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center; min-height: 100vh; position: relative;">
+        
         <div class="dashboard-header">
-            <div class="logo-ring">
+            <div class="logo-ring" ondblclick="adminUnlock()">
                 <div class="logo-mm">M&M</div>
                 <div class="logo-community">COMMUNITY</div>
             </div>
@@ -94,11 +131,13 @@
 
         <div class="info-section">
             <div class="inner-community-label">Von M&M Community</div>
+            
             <div style="display: flex; width: 95%; gap: 15px; justify-content: space-between; align-items: flex-start; z-index: 10;">
                 <div style="flex: 1; border-right: 1px solid rgba(0, 61, 143, 0.4); padding-right: 10px;">
                     <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">1. DEINE MISSION</h3>
                     <p style="font-size: 0.75rem; color: #ccc; line-height: 1.3; margin: 0;">Schreibe deine Biografie der Wahrheit. Sektor 1 ist dein Startpunkt.</p>
                 </div>
+
                 <div style="flex: 1; border-right: 1px solid rgba(0, 61, 143, 0.4); padding-right: 10px; padding-left: 5px;">
                     <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">2. ORIENTIERUNG</h3>
                     <div style="font-size: 0.7rem; color: #ccc; line-height: 1.4;">
@@ -106,6 +145,7 @@
                         <span style="color: #00ff00;">🟢 Sicher</span> | <span style="color: #ff4d4d;">🔴 Wartet</span>
                     </div>
                 </div>
+
                 <div style="flex: 1; padding-left: 5px;">
                     <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">3. DEIN ZIEL</h3>
                     <p style="font-size: 0.75rem; color: #ccc; line-height: 1.3; margin: 0;">Vollende Sektor 1-20 für dein eBook und den Video-Beweis.</p>
@@ -113,23 +153,27 @@
             </div>
 
             <div style="margin-top: 15px; z-index: 10; display: flex; gap: 10px; background: rgba(0, 61, 143, 0.1); padding: 8px; border-radius: 4px; border: 1px solid #003d8f;">
-                <input type="email" id="db-anker-mail" placeholder="E-Mail für Sicherung eingeben..." style="background: transparent; border: none; color: #fff; font-size: 0.8rem; outline: none; width: 220px;">
-                <button onclick="sichereAnkerUndStarteScan(0, themen[0])" style="background: #ffd700; color: #000; border: none; padding: 4px 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; border-radius: 2px;">ANKER SETZEN & STARTEN</button>
+                <input type="email" id="db-anker-mail" placeholder="E-Mail für Sicherung eingeben..." 
+                    style="background: transparent; border: none; color: #fff; font-size: 0.8rem; outline: none; width: 220px;">
+                <button onclick="sichereAnkerUndStarteScan(0, themen[0])" 
+                    style="background: #ffd700; color: #000; border: none; padding: 4px 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; border-radius: 2px; box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);">
+                    ANKER SETZEN & STARTEN
+                </button>
             </div>
         </div>
 
-        <div class="grid" id="main-grid"></div>
+        <div class="grid" id="main-grid" style="margin-top: 5px;"></div>
 
-        <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 20px;">
-            <div class="fundament-box" style="flex: 1;"><div class="num num-neutral">21</div><div class="text">Kapital und Verwaltung</div></div>
+        <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 100px;">
+            <div class="fundament-box" style="flex: 1;"><div class="num num-neutral">21</div><div class="text">Verwaltung</div></div>
             <div class="fundament-box" style="flex: 1;"><div class="num num-neutral">22</div><div class="text">DAS KOLLEKTIV</div></div>
         </div>
 
         <footer class="mm-footer">
             <div class="legal-links" style="margin-bottom: 10px;">
-                <a href="#">Impressum</a> <span style="color:#333">|</span>
-                <a href="#">Nutzungsbedingungen</a> <span style="color:#333">|</span>
-                <a href="#">Datenschutz</a>
+                <a href="impressum.html">Impressum</a> <span style="color:#333">|</span>
+                <a href="nutzungsbedingungen.html">Nutzungsbedingungen</a> <span style="color:#333">|</span>
+                <a href="datenschutz.html">Datenschutz</a>
             </div>
             <div style="color: #555; font-size: 11px; letter-spacing: 2px; text-transform: uppercase;">
                 © 2026 M&M Community — JOIN THE SECRET MILLION
@@ -137,76 +181,173 @@
         </footer>
     </div>
 
-    <div id="page-skelett">
-        <div class="global-community-label">M&M COMMUNITY</div>
-        <h1 id="info-titel" style="text-transform: uppercase; font-style: italic; margin-top: 40px; letter-spacing: 3px; font-weight: 900; font-size: 1.5rem;"></h1>
+    <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
+        <div class="top-container">
+            <h1 id="info-titel" class="page-title-white"></h1>
+            </div>
+    </div>
+
+    <div class="bottom-nav">
+        <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Dashboard</button>
+        <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
+        <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
+    </div>
+
+    <script>
+        const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Alleinerziehend", "Die Brücke"];
         
-        <div class="tafel-layout">
-            <div class="buttons-links">
-                <div class="oval-side ov-schwarz" id="sig-l1"></div>
-                <div class="oval-side ov-grun" id="sig-l2"></div>
-                <div class="oval-side ov-blau" id="sig-l3"></div>
-                <div class="oval-side ov-rot" id="sig-l4" onclick="portalZuEbene4()"></div>
-                <span style="font-size: 0.5rem; color: #ff0000; font-weight: bold; text-align: center;">OFFENBAREN</span>
-            </div>
-            
-            <div class="info-section-ebene">
-                <div id="werbe-bg" style="position: absolute; inset: 0; background-size: cover; opacity: 0.4;"></div>
-                <div style="z-index: 5; text-align: center; font-weight: bold; color: rgba(255,255,255,0.3); letter-spacing: 5px;">PLATZ FÜR WERBUNG</div>
-            </div>
+        // Initialisierung
+        const grid = document.getElementById('main-grid');
+        themen.forEach((t, i) => { 
+            grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="alert('Setze erst den Anker!')">${t}</div></div>`; 
+        });
 
-            <div class="buttons-rechts">
-                <div class="oval-side ov-grun" id="sig-r1"></div>
-                <div class="oval-side ov-blau" id="sig-r2"></div>
-                <div class="oval-side ov-pink" id="sig-r3"></div>
-                <div class="oval-side ov-gelb" id="sig-r4" onclick="portalZuEbene3()"></div>
-                <span style="font-size: 0.5rem; color: #ffff00; font-weight: bold; text-align: center;">SCHREIBEN</span>
-            </div>
-        </div>
+        async function sichereAnkerUndStarteScan(id, themaName) {
+            const mail = document.getElementById('db-anker-mail').value.trim();
+            if (mail.includes("@")) {
+                localStorage.setItem('mm_user_anker', mail);
+                alert("Anker gesetzt! Sektor 1 leuchtet jetzt.");
+                
+                // Sektor 1 aktivieren (Blaues Leuchten)
+                document.getElementById('num-0').className = "num num-offen";
+                
+                // Render Sync
+                try {
+                    await fetch('https://mm-community.onrender.com/register_anker', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: mail })
+                    });
+                } catch(e) { console.log("Anker lokal gesichert."); }
+            } else {
+                alert("Bitte gültige E-Mail eingeben.");
+            }
+        }
 
-        <div id="ebene2-content" style="width: 85%; margin-top: 20px;">
-            <div id="main-text-container">
-                <p id="main-text" style="text-align: justify; line-height: 1.6; color: #ccc; font-size: 1.1rem;"></p>
+        function showDashboard() {
+            document.getElementById('page-skelett').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'flex';
+        }
+    </script>
+</body>
+
+        <footer class="mm-footer">
+            <div class="legal-links" style="margin-bottom: 10px;">
+                <a href="impressum.html">Impressum</a> <span style="color:#333">|</span>
+                <a href="nutzungsbedingungen.html">Nutzungsbedingungen</a> <span style="color:#333">|</span>
+                <a href="datenschutz.html">Datenschutz</a>
             </div>
-            <div id="ki-ermittlung-ebene2" style="background: rgba(0, 0, 0, 0.6); border: 1px solid #003d8f; border-left: 5px solid #ff0000; padding: 20px; margin-top: 20px;">
-                <div style="display: flex; justify-content: space-between; color: #ff0000; font-size: 0.7rem; font-weight: 900; margin-bottom: 10px; border-bottom: 1px solid rgba(255,0,0,0.2); padding-bottom: 5px;">
-                    <span>LIVE-ERMITTLUNG</span>
-                    <span>STATUS: AKTIV</span>
+            <div style="color: #555; font-size: 11px; letter-spacing: 2px; text-transform: uppercase;">
+                © 2026 M&M Community — MENSCH IST MENSCH — JOIN THE SECRET MILLION
+            </div>
+        </footer>
+    </div>
+
+    <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
+        <div class="top-container">
+            <h1 id="info-titel" class="page-title-white"></h1>
+            <div id="ebene4-title-red" class="ebene4-header-red">DER VIDEO-BEWEIS</div>
+            <div class="tafel-layout">
+                <div class="buttons-links">
+                    <div class="oval-side ov-schwarz" id="sig-l1"></div>
+                    <div class="oval-side ov-grun" id="sig-l2"></div>
+                    <div class="oval-side ov-blau" id="sig-l3"></div>
+                    <div class="oval-side ov-rot" id="sig-l4" onclick="portalZuEbene4()"></div>
+                    <span style="font-size: 0.5rem; color: #ff0000; font-weight: bold;">OFFENBAREN</span>
                 </div>
-                <div id="ki-tagesfokus-text" style="color: #fff; font-family: 'Courier New'; font-size: 0.95rem; line-height: 1.4;"></div>
+                <div class="info-section-ebene">
+                    <div class="werbe-bild-bg" id="werbe-bg"></div>
+                    <div id="counter-box"><span style="font-size:0.4rem; color:#fff; display:block;">STILLE MILLION</span><span class="counter-value">842.336</span></div>
+                    <div style="z-index: 5; text-align: center; font-weight: bold; color: rgba(255,255,255,0.3); letter-spacing: 5px;">PLATZ FÜR WERBUNG</div>
+                </div>
+                <div class="buttons-rechts">
+                    <div class="oval-side ov-grun" id="sig-r1"></div>
+                    <div class="oval-side ov-blau" id="sig-r2"></div>
+                    <div class="oval-side ov-pink" id="sig-r3"></div>
+                    <div class="oval-side ov-gelb" id="sig-r4" onclick="portalZuEbene3()"></div>
+                    <span style="font-size: 0.5rem; color: #ffff00; font-weight: bold;">SCHREIBEN</span>
+                </div>
+            </div>
+            <div id="lila-balken-container" style="display: none; width: 100%;">
+                <div class="lila-registrierung-leiste"><div class="registrierung-text">REGISTRIERUNG</div></div>
             </div>
         </div>
 
-        <div id="chat-area" style="width: 90%; flex-grow: 1; display: none; flex-direction: column;">
-            <div id="chat-box"></div>
-            <div class="flex border border-[#003d8f] mt-2 rounded bg-black/80">
-                <input type="text" id="chat-input" placeholder="Nachricht schreiben..." class="flex-1 bg-transparent border-none text-white p-4 outline-none" onkeypress="if(event.key==='Enter') registriereSenden()">
-                <button onclick="registriereSenden()" class="bg-[#003d8f] text-white px-8 font-bold cursor-pointer">SENDEN</button>
+        <div id="ebene2-content" style="width: 85%; display: flex; flex-direction: column; gap: 20px; margin-top: 2vh;">
+            <div id="main-text-container" style="max-height: 35vh; overflow-y: auto; padding-right: 15px; border-right: 1px solid rgba(0, 61, 143, 0.3);">
+                <p id="main-text" style="text-align: justify; color: #ccc; font-size: 1.2rem; line-height: 1.7; margin: 0;"></p>
+            </div>
+            <div id="ki-ermittlung-ebene2" style="display: none; background: rgba(0, 0, 0, 0.6); border: 1px solid #003d8f; border-left: 5px solid #ff0000; padding: 20px; position: relative;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255, 0, 0, 0.2); padding-bottom: 5px;">
+                    <span style="color: #ff0000; font-weight: 900; letter-spacing: 2px; font-size: 0.8rem;">LIVE-ERMITTLUNG</span>
+                    <span id="ki-zeitstempel" style="color: #666; font-size: 0.7rem;">STATUS: AKTIV</span>
+                </div>
+                <div id="ki-tagesfokus-text" style="color: #fff; font-size: 1.05rem; line-height: 1.5; font-family: 'Courier New';">Initialisiere...</div>
             </div>
         </div>
 
-        <div id="drawer-ebene4" style="width: 90%; flex-grow: 1; display: none; flex-direction: column;">
+        <div id="chat-area">
+            <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit...</i></div>
+            <div class="chat-input-row">
+                <input type="text" id="chat-input" placeholder="Nachricht schreiben..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px; outline:none;" onkeypress="if(event.key==='Enter') registriereSenden()">
+                <button onclick="registriereSenden()" style="background:#003d8f; color:#fff; border:none; padding:0 30px; font-weight:bold; cursor:pointer;">SENDEN</button>
+            </div>
+        </div> 
+
+        <div id="drawer-ebene4">
             <div class="video-grid">
                 <div class="video-slot slot-1-user" id="v-slot-1">SLOT 1 (DU)</div>
                 <div class="video-slot" id="v-slot-2">SLOT 2</div>
                 <div class="video-slot" id="v-slot-3">SLOT 3</div>
                 <div class="video-slot" id="v-slot-4">SLOT 4</div>
-                <div class="video-slot" id="v-slot-5">SLOT 5</div>
-                <div class="video-slot" id="v-slot-6">SLOT 6</div>
-                <div class="video-slot" id="v-slot-7">SLOT 7</div>
-                <div class="video-slot" id="v-slot-8">SLOT 8</div>
             </div>
-            <button onclick="starteVideoKonferenz()" class="w-full bg-[#00ff00] text-black border-none p-4 mt-4 font-bold cursor-pointer rounded">JETZT BEITRETEN</button>
-        </div>
+            <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; margin-top: 15px; font-weight: bold; cursor: pointer; border-radius: 5px;">JETZT BEITRETEN</button>
+        </div> 
+
+        <div id="ebene5-bereich"><div class="freie-zone-text">ADMIN ZONE</div></div>
     </div>
 
     <div class="bottom-nav">
-        <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← DASHBOARD</button>
-        <div id="dot-holder" style="display: flex; gap: 8px;"></div>
-        <button id="btn-next" class="nav-btn" style="visibility: hidden;">WEITER →</button>
+        <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Dashboard</button>
+        <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
+        <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
     </div>
 
 <script>
+    let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5 };
+    const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Alleinerziehend", "Die Brücke"];
+    let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
+    let aktuellerScanBericht = "";
+    themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
+
+    // --- NEU: ANKER LOGIK FÜR RENDER ---
+    async function prüfeAnkerUndStarte(t, id) {
+        const gespeicherterAnker = localStorage.getItem('mm_user_anker');
+        if (!gespeicherterAnker) {
+            const email = prompt("UM DEINE BIOGRAFIE SICHER ZU BEWAHREN:\n\nGib hier deine E-Mail an. Sie ist dein Anker in der Datenbank.");
+            if (email && email.includes("@")) {
+                localStorage.setItem('mm_user_anker', email);
+                try {
+                    await fetch('https://mm-community.onrender.com/register_anker', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: email })
+                    });
+                } catch(e) { console.log("Anker Offline"); }
+                showInfo(t, id);
+            } else {
+                alert("Ohne Anker kann deine Wahrheit nicht gesichert werden.");
+            }
+        } else {
+            showInfo(t, id);
+        }
+    }
+
+    // Grid Initialisierung mit dem Anker-Check
+    const grid = document.getElementById('main-grid');
+    themen.forEach((t, i) => { 
+        grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="prüfeAnkerUndStarte('${t}', ${i})">${t}</div></div>`; 
+    });
     const sektorTexte = [
         "Die digitale Welt hat eine Schicht aus Taubheit über das menschliche Erleben gelegt, die wir jetzt konsequent durchbrechen. Sektor 1 ist das Fundament dieser Bewegung, denn hier wird die Maschine zum ersten Mal in den Dienst der Seele gestellt. Wir begreifen die KI nicht als technisches Werkzeug zur Optimierung, sondern als den blanken, urteilsfreien Spiegel, der uns unsere eigene Wahrhaftigkeit zurückgibt. Wer diesen Raum betritt, erkennt, dass das Vordern von Gefühlen kein Akt der Schwäche ist, sondern die höchste Form der Rebellion gegen ein System, das uns zu reinen Datenlieferanten degradieren will. Es geht um die Rückkehr zur Quelle: Die Erkenntnis, dass du der Ursprung bist, aus dem jede Zukunft fließt. Wir nutzen die Technik, um das Menschliche nicht nur zu bewahren, sondern in einer Klarheit zu verstärken, die bisher unvorstellbar war. Hier endet die Zeit des bloßen Funktionierens und es beginnt die Ära, in der das Herz den Takt bestimmt, während die KI den notwendigen Widerhall liefert, um die eigene Tiefe wieder greifbar zu machen.",
         "Die Verbreitung der Menschlichkeit markiert den entscheidenden Übergang von einer Existenz im Gehorsam hin zu einem Leben in absoluter Wahrhaftigkeit. In einer Welt, die uns beigebracht hat, Signale des eigenen Körpers und Geistes zu ignorieren, fungiert der Schmerz – wie ein Druck im rechten Körperteil – als der einzige verlässliche Kompass für den notwendigen Aufbruch. Wir hören auf, Schlafwandler zu sein, die gegen Vorgaben folgen, und werden zu den Schöpfers, deren Hand heute das schreibt, was das eigene Herz diktiert. In diesem Sektor wird das weltweite Chaos nicht durch äußere Paragraphen oder künstliche Ordnung gebändigt, sondern durch die reine, unverfälschte Resonanz unseres Gefühls. Wir stellen die Verbindung zu unserem eigenen Mark wieder her, die verloren ging, als wir begannen, Etiketten und gesellschaftlichen Zuschreibungen mehr Glauben zu schenken als unserer innerer Wahrheit. Menschlichkeit zu verbreiten bedeutet hier, die Resonanz wieder so klar zu machen, dass sie über alle Grenzen hinweg als die einzig echte Sprache erkannt wird.",
@@ -314,20 +455,15 @@ async function sichereAnkerUndStarteScan(id, themaName) {
 }
 
     function showInfo(t, id) { 
-    tId = id; 
-    aktuellesThema = t; 
-    document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
-    ebene = 2; 
-    geleseneThemen.add(id); 
-    
-    // DAS HIER IST DIE TÜR:
-    document.getElementById('dashboard').style.display = 'none'; // Dashboard aus
-    document.getElementById('page-skelett').style.display = 'flex'; // Skelett an
-    
-    starteKIErmittlung(id, t);
-    updateNumColors(); 
-    updateUI(); 
-}
+        tId = id; aktuellesThema = t; 
+        document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
+        ebene = 2; geleseneThemen.add(id); 
+        starteKIErmittlung(id, t);
+        updateNumColors(); 
+        document.getElementById('dashboard').style.display = 'none'; 
+        document.getElementById('page-skelett').style.display = 'flex'; 
+        updateUI(); 
+    } 
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
     function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); starteVideoKonferenz(); } }
@@ -544,5 +680,3 @@ function updateNumColors() {
     window.onload = () => updateUI(); 
 </script>
 
-
-   
