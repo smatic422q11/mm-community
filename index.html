@@ -185,19 +185,54 @@
         <div class="dashboard-header">
             <div class="logo-ring" ondblclick="adminUnlock()"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
         </div>
+
         <div class="info-section">
-            <!-- SCHRIFTZUG HIER NUR AUF DEM DASHBOARD IN DER TAFEL -->
             <div class="inner-community-label">Von M&M Community</div>
-            <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
-            <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
-            <p style="max-width: 85%; color: #ccc; font-size: 1.1rem; margin: 10px 0 0 0; text-align: center;">
-            </p>
+            <div style="display: flex; width: 95%; gap: 15px; justify-content: space-between; align-items: flex-start; z-index: 10;">
+                <div style="flex: 1; border-right: 1px solid rgba(0, 61, 143, 0.4); padding-right: 10px;">
+                    <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">1. DEINE MISSION</h3>
+                    <p style="font-size: 0.75rem; color: #ccc; line-height: 1.3; margin: 0;">Schreibe deine Biografie der Wahrheit. Sektor 1 ist dein Startpunkt.</p>
+                </div>
+                <div style="flex: 1; border-right: 1px solid rgba(0, 61, 143, 0.4); padding-right: 10px; padding-left: 5px;">
+                    <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">2. ORIENTIERUNG</h3>
+                    <div style="font-size: 0.7rem; color: #ccc; line-height: 1.4;">
+                        <span style="color: #0088ff;">🔵 Offen</span> | <span style="color: #ffd700;">🟡 Arbeit</span><br>
+                        <span style="color: #00ff00;">🟢 Sicher</span> | <span style="color: #ff4d4d;">🔴 Wartet</span>
+                    </div>
+                </div>
+                <div style="flex: 1; padding-left: 5px;">
+                    <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">3. DEIN ZIEL</h3>
+                    <p style="font-size: 0.75rem; color: #ccc; line-height: 1.3; margin: 0;">Vollende Sektor 1-20 für dein eBook und den Video-Beweis.</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 15px; z-index: 10; display: flex; gap: 10px; background: rgba(0, 61, 143, 0.1); padding: 8px; border-radius: 4px; border: 1px solid #003d8f;">
+                <input type="email" id="db-anker-mail" placeholder="E-Mail für Sicherung eingeben..." 
+                    style="background: transparent; border: none; color: #fff; font-size: 0.8rem; outline: none; width: 220px;">
+                <button onclick="sichereAnkerUndStarteScan(0, themen[0])" 
+                    style="background: #ffd700; color: #000; border: none; padding: 4px 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; border-radius: 2px; box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);">
+                    ANKER SETZEN & STARTEN
+                </button>
+            </div>
         </div>
-        <div class="grid" id="main-grid"></div>
-        <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 80px;">
-            <div class="fundament-box" style="flex: 1;"><div class="num">21</div><div class="text">Kapital und Verwaltung</div></div>
-            <div class="fundament-box" style="flex: 1;"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div></div>
+
+        <div class="grid" id="main-grid" style="margin-top: 15px;"></div>
+
+        <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 20px;">
+            <div class="fundament-box" style="flex: 1;"><div class="num num-neutral">21</div><div class="text">Kapital und Verwaltung</div></div>
+            <div class="fundament-box" style="flex: 1;"><div class="num num-neutral">22</div><div class="text">DAS KOLLEKTIV</div></div>
         </div>
+
+        <footer class="mm-footer">
+            <div class="legal-links" style="margin-bottom: 10px;">
+                <a href="impressum.html">Impressum</a> <span style="color:#333">|</span>
+                <a href="nutzungsbedingungen.html">Nutzungsbedingungen</a> <span style="color:#333">|</span>
+                <a href="datenschutz.html">Datenschutz</a>
+            </div>
+            <div style="color: #555; font-size: 11px; letter-spacing: 2px; text-transform: uppercase;">
+                © 2026 M&M Community — JOIN THE SECRET MILLION
+            </div>
+        </footer>
     </div>
 
     <!-- PAGE SKELETT (EBENE 2, 3, 4, 5) -->
