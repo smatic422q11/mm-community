@@ -629,5 +629,51 @@ function updateNumColors() {
     }
 
     window.onload = () => updateUI(); 
+async function sichereAnkerUndStarteScan() {
+    const emailInput = document.getElementById('db-anker-mail');
+    const email = emailInput.value.trim();
+
+    if (!email || !email.includes('@')) {
+        alert("Bitte eine gültige E-Mail für deine Biografie eingeben.");
+        return;
+    }
+
+    // Button optisch sperren
+    const btn = event.target;
+    btn.innerText = "VERIFIZIERE...";
+    btn.disabled = true;
+
+    try {
+        const response = await fetch('https://deine-render-url.onrender.com/anker', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email })
+        });
+
+        const result = await response.json();
+
+        if (result.status === "bekannt" || result.status === "neu") {
+            // Email lokal im Browser merken für den Chat
+            localStorage.setItem('mm_user_email', email);
+            
+            // Fortschritt laden (falls vorhanden)
+            if (result.data && result.data.sektoren_fortschritt) {
+                // Hier kannst du die Logik einbauen, um Sektoren grün zu färben
+                console.log("Fortschritt geladen:", result.data);
+            }
+
+            alert(result.message);
+            
+            // Starte direkt mit Sektor 1
+            showInfo(themen[0], 0);
+        }
+    } catch (error) {
+        console.error("Fehler beim Anker setzen:", error);
+        alert("Verbindung zum Server fehlgeschlagen.");
+    } finally {
+        btn.innerText = "ANKER SETZEN & STARTEN";
+        btn.disabled = false;
+    }
+}
 </script>
 
