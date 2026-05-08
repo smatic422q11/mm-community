@@ -575,24 +575,26 @@ async function registriereSenden() {
     const typingId = "typing-" + Date.now();
     chatBox.innerHTML += `<div id="${typingId}" style="color:#003d8f; font-style:italic;">M&M KI prüft...</div>`;
     
-    try {
-        // Wir sagen der KI bei jeder Nachricht, wer der User ist
-        const identitaet = (email === "mmcommunity22@gmail.com") ? "Goran (Schöpfer)" : aktiverNutzerName;
+   try {
+        // Wir holen die E-Mail live für den Check
+        const emailCheck = document.getElementById('db-anker-mail').value.trim().toLowerCase();
         
-        const kombiniertesWissen = `IDENTITÄT: ${identitaet} \n STATISCHES WISSEN: ${sektorTexte[tId]} \n\n AKTUELLER SCAN: ${aktuellerScanBericht}`;
+        // Wer spricht hier? (Entweder du als Schöpfer oder der Name von Render)
+        const nameFuerKI = (emailCheck === "mmcommunity22@gmail.com") ? "Goran (Schöpfer)" : (window.userNameVonRender || "Ein Mensch");
+
+        const kombiniertesWissen = `IDENTITÄT DES GEGENÜBERS: ${nameFuerKI} \n STATISCHES WISSEN: ${sektorTexte[tId]} \n\n AKTUELLER SCAN: ${aktuellerScanBericht}`;
         
         const response = await fetch('https://mm-community.onrender.com/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
                 message: userText, 
-                context: kombiniertesWissen, // Hier steht jetzt der Name drin!
+                context: kombiniertesWissen, // HIER erfährt die KI jetzt JEDES MAL deinen Namen
                 role_context: userRole, 
                 sector_id: String(tId),
                 history: kollektivesGedachtnis 
             })
         });
-        // ... restlicher Code
 
         const data = await response.json();
         const typingElement = document.getElementById(typingId);
