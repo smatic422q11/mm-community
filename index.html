@@ -688,10 +688,20 @@ async function sichereAnkerUndStarteScan(id, thema) {
             throw new Error('Server antwortet nicht korrekt');
         }
 
-        const result = await response.json();
-
-       if (result.status === "bekannt" || result.status === "neu") {
-            // KEIN localStorage mehr – Die Identität bleibt LIVE im Eingabefeld
+       const result = await response.json();
+     if (result.status === "bekannt" || result.status === "neu") {
+    // Wir speichern den Namen LIVE in einer globalen Variable für den Chat
+    // Render muss uns dafür das Feld 'name' oder 'username' mitschicken
+    window.aktiverNutzerName = result.username || "Mensch"; 
+    
+    // Wir laden den Fortschritt (Sektor-Stand) direkt in die Ampel
+    const aktuellerStand = result.current_sector || 0;
+    updateNumColors(aktuellerStand);
+    
+    alert(`Willkommen zurück, ${window.aktiverNutzerName}! Deine Wahrheit ist sicher.`);
+    showInfo(themen[0], 0);
+}
+      
             
             // Erfolg melden
             alert(result.message);
