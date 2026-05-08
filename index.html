@@ -501,16 +501,14 @@ async function registriereSenden() {
 
     istSendenAktiv = true; 
 
-  // In der Funktion registriereSenden():
+ // In registriereSenden():
 const email = document.getElementById('db-anker-mail').value.trim();
+const nameFuerKI = (email === "mmcommunity22@gmail.com") ? "Goran (Schöpfer)" : window.aktiverNutzerName;
 
-// Wir fügen die Identität direkt in den Kontext für die KI ein
-const userRole = (email.toLowerCase() === "mmcommunity22@gmail.com") ? "SCHÖPFER (Goran)" : "USER";
-
-// ... im fetch-Aufruf unter 'message' oder 'context':
 body: JSON.stringify({ 
     message: userText, 
-    context: `IDENTITÄT: ${userRole}. \n SEKTOR: ${tId+1}. \n WISSEN: ${sektorTexte[tId]}`,
+    // Wir geben der KI den Namen bei JEDER Nachricht mit
+    context: `Du sprichst mit: ${nameFuerKI}. Dies ist Sektor ${tId+1}.`,
     // ...
 })
     if (userText.toLowerCase().includes("schöpfer") || userText.toLowerCase().includes("admin")) {
