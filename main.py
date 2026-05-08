@@ -237,6 +237,8 @@ async def chat(request: Request):
     try:
         data = await request.json()
         user_message = data.get("message")
+        # NEU: Das System zieht den Namen aus der Anfrage
+        user_name = data.get("user_name", "Mensch") 
         sector_id = str(data.get("sector_id", "0"))
         
         chat_history = data.get("history", []) 
