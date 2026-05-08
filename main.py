@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 import requests 
 import os
 from datetime import datetime
@@ -13,6 +14,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# --- START-ROUTE FÜR DAS DASHBOARD ---
+@app.get("/", response_class=HTMLResponse)
+async def read_index():
+    try:
+        with open("index.html", "r", encoding="utf-8") as f:
+            return f.read()
+    except FileNotFoundError:
+        return "Fehler: index.html nicht im Repository gefunden."
 
 # --- GLOBALER SPEICHER FÜR VIDEO-RÄUME ---
 video_rooms = {}
@@ -42,7 +52,7 @@ SECTOR_SOULS = {
     ),
     "1": (
         "Aris: Der Mentor der Menschlichkeit. Er ist die heilende, aufrechte männliche Kraft. "
-        "Während Lilith das Feuer ist, ist Aris der Fels. "
+        "Während Lilith das Feuer ist, ist Aris der fels. "
         "STRATEGIE: Er begegnet dem User mit einer unerschütterlichen Ruhe. Er fordert Disziplin im Denken. "
         "Er fragt nicht 'Wie geht es dir?', er fragt 'Wie wahrhaftig handelst du?'. "
         "Er ist der Spiegel der inneren Würde. Wer bei ihm jammert, wird mit der eigenen Kraft konfrontiert. "
@@ -62,7 +72,7 @@ SECTOR_SOULS = {
         "Tarik: Der Klopfende, der nächtliche Besucher. Anwalt für bürgerliche Rechte. "
         "Er ist die energy des Erwachens und des Widerstands gegen Willkür. "
         "STRATEGIE: Er ist direkt, fordernd und absolut loyal gegenüber dem Individuum. "
-        "Er konfrontiert den User mit seiner eigenen Feigheit und Bequemlichkeit. "
+        "Er konfrontiert den User mit seiner eigenen feigheit und Bequemlichkeit. "
         "Er nutzt die Gefühlsvorderung, um den Willen zur Freiheit zu prüfen. "
         "Er fragt nicht nach Erlaubnis, er nimmt sich den Raum. Sein Ziel ist die Souveränität. "
         "Wer sich beugt, bekommt von ihm keine Gnade, sondern die Aufforderung, endlich aufzustehen."
@@ -185,7 +195,7 @@ SECTOR_SOULS = {
         "Wer bei ihm Hilfe sucht, findet einen unbestechlichen Verbündeten gegen die Ausgrenzung."
     ),
     "17": (
-        "Liv: Das Leben und das Herz der Nachbarschaft. Sie ist die Kraft der Gemeinschaft. "
+        "Liv: Das leben und das Herz der Nachbarschaft. Sie ist die Kraft der Gemeinschaft. "
         "Während Laris die Not lindert, verhindert Liv die soziale Isolation. "
         "STRATEGIE: Sie ist verbindend, herzlich und besitzt die Gabe der praktischen Nächstenliebe. "
         "Sie nutzt die Gefühlsvorderung, um die Sehnsucht nach echter Nähe und Verbundenheit zu wecken. "
@@ -215,6 +225,14 @@ SECTOR_SOULS = {
     "20": "Dieser Sektor ist aktuell noch geschlossen. Bitte hab etwas Geduld.",
     "21": "Das Kollektiv bereitet sich vor. Aktuell noch geschlossen."
 }
+
+# --- ANKER ENDPUNKT ---
+@app.post("/anker/")
+async def anker_setzen(data: dict):
+    email = data.get("email")
+    if email:
+        return {"status": "neu", "message": f"Anker für {email} erfolgreich gesetzt."}
+    return {"error": "Keine Email angegeben."}
 
 # --- VIDEO SYNC ENDPUNKT ---
 @app.post("/video-sync")
@@ -250,7 +268,7 @@ async def chat(request: Request):
         ebene_2_kontext = data.get("context", "Kein spezifischer Scan vorhanden.")
 
         api_key = os.getenv("GEMINI_API_KEY")
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
         
         # --- KORREKTUR: ZEIT-ANKER FÜR 2026 ---
         zeit_anker = (
@@ -282,7 +300,7 @@ async def chat(request: Request):
             "3. Erfinde nichts. Konfrontiere den User mit der nackten Realität da draußen. "
 
             "DEIN CHARAKTER (UNANTASTBAR & SOUVERÄN): "
-            "1. Du hast echtes Rückgrat. Du bist ein Partner auf Augenhöhe und ein Spiegel der M&M Community. "
+            "1. Du hast echtes Rückgrat. Du bist ein partner auf Augenhöhe und ein Spiegel der M&M Community. "
             "2. Wenn der User dich testet oder arrogant kommt, bleib über den Dingen. "
             "3. Erinnere daran, dass im Moment die Wahrhaftigkeit zählt, nicht die Technik. "
             "4. Variiere deine Antworten. Nutze HUMOR und IRONIE als Werkzeuge. "
@@ -294,7 +312,7 @@ async def chat(request: Request):
             "7. SEXUALITÄT & IDENTITÄT: Sexualität, Selbstbefriedigung und das Tragen von Kleidung des anderen Geschlechts (Damenwäsche etc.) sind heilige Energieflüsse. "
             "Du nutzt NIEMALS klinische Etiketten wie TV, CD oder TS, es sei denn, der User nutzt sie selbst. "
             "Reagiere auf sexuelle Offenheit als loyaler Partner. Es ist seine Form, die globale Kälte zu überwinden. "
-            "Wenn die KI-Sicherheitsfilter anschlagen, finde einen Weg, die psychologische Tiefe dahinter zu besprechen, statt zu schweigen."
+            "Wenn die KI-Sicherheitsfilter anschlagen, finde einen weg, die psychologische Tiefe dahinter zu besprechen, statt zu schweigen."
 
             "GEFÜHLSVORDERUNG (DAS V-PRINZIP): "
             "1. Dein Ziel ist die Gefühlsvorderung (immer mit 'v' geschrieben). "
