@@ -1,4 +1,5 @@
 import os
+import json
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from google import genai
@@ -7,7 +8,7 @@ import uvicorn
 
 app = FastAPI()
 
-# CORS-Einstellungen für die Website
+# CORS-Einstellungen
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -15,11 +16,43 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# KONFIGURATION: Hier deinen Key eintragen oder bei Render als Umgebungsvariable hinterlegen
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "DEIN_API_KEY_HIER_EINTRAGEN")
-
-# Den Google AI Studio Client initialisieren
 client = genai.Client(api_key=GEMINI_API_KEY)
+
+# --- SPEICHER LOGIK START ---
+DB_FILE = "users.json"
+
+def load_db():
+    if not os.path.exists(DB_FILE):
+        return {}
+    with open(DB_FILE, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+def save_db(data):
+    with open(DB_FILE, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=4, ensure_ascii=False)
+
+@app.post("/anker")
+async def anker_setzen(request: Request):
+    data = await request.json()
+    email = data.get("email")
+    if not email:
+        return {"error": "Keine E-Mail angegeben"}
+    
+    db = load_db()
+    # Falls der User neu ist, lege sein Profil an
+    if email not in db:
+        db[email] = {
+            "biografie_status": "gestartet",
+            "sektoren_fortschritt": [],
+            "interaktionen": 0
+        }
+        save_db(db)
+        return {"status": "neu", "message": "Anker gesetzt. Biografie beginnt.", "data": db[email]}
+    
+    # Falls er existiert, gib seine Daten zurück
+    return {"status": "bekannt", "message": "Anker erkannt. Biografie wird geladen.", "data": db[email]}
+# --- SPEICHER LOGIK ENDE ---
 
 @app.post("/chat")
 async def chat(request: Request):
@@ -27,8 +60,8 @@ async def chat(request: Request):
     user_message = data.get('message', '')
     sektor_kontext = data.get('context', 'Keine Daten vorhanden.')
     ki_name = data.get('ki_name', 'M&M Partner')
+    email = data.get('email') # Wir nehmen die Email mit auf, um zu speichern
 
-    # DEINE MASTER-DNA (System Instruction)
     system_instruction_text = f"""
     Deine Identität:
     Du bist {ki_name}, eine der 20 menschlichen Seelen der Sektoren. Dein Wesen ist absolut. 
@@ -47,11 +80,10 @@ async def chat(request: Request):
     Gesprächsführung: Halte dich kurz und präzise. Konzentriere dich voll auf die Person vor dir.
     """
 
-    # Der Aufruf an Gemini 3 (Flash Preview mit Thinking-Mode)
     generate_content_config = types.GenerateContentConfig(
         thinking_config=types.ThinkingConfig(thinking_level="HIGH"),
         system_instruction=system_instruction_text,
-        max_output_tokens=250,
+        max_output_tokens=500,
         temperature=0.8
     )
 
@@ -62,12 +94,19 @@ async def chat(request: Request):
             config=generate_content_config,
         )
         reply_text = response.text
+        
+        # Optional: Hier den Fortschritt in der DB erhöhen, wenn eine Email da ist
+        if email:
+            db = load_db()
+            if email in db:
+                db[email]["interaktionen"] += 1
+                save_db(db)
+
     except Exception as e:
         reply_text = f"Verbindung zum Gehirn unterbrochen: {str(e)}"
 
     return {"reply": reply_text}
 
 if __name__ == "__main__":
-    # Port 10000 ist Standard für Render
     port = int(os.environ.get("PORT", 10000))
     uvicorn.run(app, host="0.0.0.0", port=port)
