@@ -422,7 +422,16 @@
     } 
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
-    function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); starteVideoKonferenz(); } }
+   function portalZuEbene4() { 
+    const knopf = document.getElementById('sig-l4');
+    if (knopf && knopf.classList.contains('signal-aktiv')) { 
+        ebene = 4; 
+        updateUI(); 
+        starteVideoKonferenz(); 
+    } else {
+        alert("HALT: Der Video-Beweis öffnet sich erst, wenn alle 22 Sektoren der Wahrheit versiegelt (Grün) sind.");
+    }
+}
     function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
 
     function updateUI() {
@@ -459,7 +468,32 @@
         if (ebene === 2) { document.getElementById('main-text').innerText = sektorTexte[tId]; }
         const btnNext = document.getElementById('btn-next');
         const sigGelb = document.getElementById('sig-r4');
-        const sigRot = document.getElementById('sig-l4');
+       const sigRot = document.getElementById('sig-l4');
+        const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
+        
+        // Prüfung: Sind ALLE 22 Sektoren auf GRÜN?
+        let alle22SektorenSicher = true;
+        for(let i=0; i<22; i++) {
+            const nBox = document.getElementById(`num-${i}`);
+            // Wenn eine Kachel nicht existiert oder nicht grün ist -> Sperre
+            if (!nBox || !nBox.classList.contains('num-fertig')) {
+                alle22SektorenSicher = false;
+                break;
+            }
+        }
+
+        // Sonderregel für deine Schöpfer-E-Mail
+        if (email === "mmcommunity22@gmail.com") alle22SektorenSicher = true;
+
+        if (alle22SektorenSicher && (ebene === 2 || ebene === 3)) {
+            sigRot.classList.add('signal-aktiv'); 
+            sigRot.style.opacity = "1";
+            sigRot.style.cursor = "pointer";
+        } else {
+            sigRot.classList.remove('signal-aktiv');
+            sigRot.style.opacity = "0.2"; 
+            sigRot.style.cursor = "not-allowed";
+        }
         if (ebene === 2) {
             btnNext.style.visibility = 'hidden'; sigGelb.classList.add('signal-aktiv'); sigRot.classList.add('signal-aktiv');  
         } else if (ebene === 3) {
