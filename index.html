@@ -423,13 +423,33 @@
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
    function portalZuEbene4() { 
-    const knopf = document.getElementById('sig-l4');
-    if (knopf && knopf.classList.contains('signal-aktiv')) { 
+    const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
+    
+    // 1. Schöpfer-Check: Du darfst immer durch
+    if (email === "mmcommunity22@gmail.com") {
+        ebene = 4; 
+        updateUI(); 
+        starteVideoKonferenz(); 
+        return;
+    }
+
+    // 2. Wächter für alle anderen: Prüfung der 22 Sektoren
+    let alleSektorenSicher = true;
+    for(let i=0; i<22; i++) {
+        const nBox = document.getElementById(`num-${i}`);
+        if (!nBox || !nBox.classList.contains('num-fertig')) {
+            alleSektorenSicher = false;
+            break;
+        }
+    }
+
+    if (alleSektorenSicher) {
         ebene = 4; 
         updateUI(); 
         starteVideoKonferenz(); 
     } else {
-        alert("HALT: Der Video-Beweis öffnet sich erst, wenn alle 22 Sektoren der Wahrheit versiegelt (Grün) sind.");
+        // Hier wird der User gestoppt
+        alert("ZUGRIFF VERWEIGERT: Die Offenbarung im Video-Beweis ist erst nach Abschluss aller 22 Sektoren der Wahrheit möglich.");
     }
 }
     function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
