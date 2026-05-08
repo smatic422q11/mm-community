@@ -618,10 +618,9 @@ async function registriereSenden() {
     }
 }
 
-function updateNumColors() {
-    // 1. Der Anker: Wir holen die Mail direkt aus dem Eingabefeld
+function updateNumColors(aktuellerSektor = 0) {
     const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
-    
+    // ... rest bleibt gleich
     // 2. Der Status: Wo steht der User? 
     // (Diese Zahl kommt später LIVE von Render zurück)
     let aktuellerSektor = 0; 
