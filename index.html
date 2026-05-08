@@ -629,7 +629,7 @@ function updateNumColors() {
     }
 
     window.onload = () => updateUI(); 
-async function sichereAnkerUndStarteScan() {
+async function sichereAnkerUndStarteScan(id, thema) {
     const emailInput = document.getElementById('db-anker-mail');
     const email = emailInput.value.trim();
 
@@ -638,13 +638,13 @@ async function sichereAnkerUndStarteScan() {
         return;
     }
 
-    // Button optisch sperren
-    const btn = event.target;
-    btn.innerText = "VERIFIZIERE...";
-    btn.disabled = true;
+    // Wir speichern die ID und das Thema, damit wir wissen, wo der User gestartet ist
+    console.log("Start-Sektor ID:", id);
+    console.log("Start-Thema:", thema);
 
     try {
-        const response = await fetch('https://deine-render-url.onrender.com/anker', {
+        // HIER DEINE ECHTE RENDER-URL EINTRAGEN
+        const response = await fetch('https://deine-app-name.onrender.com/anker', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: email })
@@ -653,26 +653,15 @@ async function sichereAnkerUndStarteScan() {
         const result = await response.json();
 
         if (result.status === "bekannt" || result.status === "neu") {
-            // Email lokal im Browser merken für den Chat
             localStorage.setItem('mm_user_email', email);
-            
-            // Fortschritt laden (falls vorhanden)
-            if (result.data && result.data.sektoren_fortschritt) {
-                // Hier kannst du die Logik einbauen, um Sektoren grün zu färben
-                console.log("Fortschritt geladen:", result.data);
-            }
-
             alert(result.message);
             
-            // Starte direkt mit Sektor 1
-            showInfo(themen[0], 0);
+            // Da der Anker jetzt fest ist, öffnen wir sofort Sektor 1
+            showInfo(themen[id], id);
         }
     } catch (error) {
-        console.error("Fehler beim Anker setzen:", error);
-        alert("Verbindung zum Server fehlgeschlagen.");
-    } finally {
-        btn.innerText = "ANKER SETZEN & STARTEN";
-        btn.disabled = false;
+        console.error("Verbindung fehlgeschlagen:", error);
+        alert("Server nicht erreichbar. Hast du die URL in der index.html angepasst?");
     }
 }
 </script>
