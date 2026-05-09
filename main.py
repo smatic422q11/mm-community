@@ -2,7 +2,25 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 import requests 
 import os
+# Diese beiden müssen dabei sein für Mango:
+from pymongo import MongoClient
+from pymongo.server_api import ServerApi
 
+# 1. Datenbank-Verbindung (Der Moment der Wahrheit)
+# Stelle sicher, dass MONGO_URI in Render dein Passwort statt <db_password> enthält!
+uri = os.environ.get('MONGO_URI')
+client = MongoClient(uri, server_api=ServerApi('1'))
+
+try:
+    client.admin.command('ping')
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+except Exception as e:
+    # Das wird in den Render-Logs stehen, wenn es nicht klappt
+    print(f"Verbindungsfehler: {e}")
+
+db = client['MM-Community'] 
+
+# 2. App-Initialisierung
 app = FastAPI()
 
 app.add_middleware(
