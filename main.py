@@ -1,11 +1,21 @@
 from fastapi import FastAPI
 import os
+from pymongo import MongoClient
 
 app = FastAPI()
 
+# Wir versuchen die Verbindung ganz vorsichtig
+try:
+    uri = os.environ.get('MONGO_URI')
+    client = MongoClient(uri, serverSelectionTimeoutMS=5000)
+    db = client['mm-community']
+    # Wir testen die Verbindung noch NICHT beim Start, damit es GRÜN bleibt
+except Exception as e:
+    print(f"Fehler: {e}")
+
 @app.get("/")
 async def root():
-    return {"message": "Testlauf: Wenn du das siehst, ist Render bereit!"}
+    return {"message": "Die Community-Seite ist mit der Datenbank verbunden!"
 # 1. Die Namen der Sektoren – Die archetypischen Frequenzen
 SECTOR_NAMES = {
     "0": "Lilith", "1": "Aris", "2": "Mira", "3": "Tarik", "4": "Kiron",
