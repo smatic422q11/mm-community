@@ -7,27 +7,21 @@ from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 
 # 1. DATENBANK-VERBINDUNG
-# Wir holen die URI aus den Render-Einstellungen
 MONGO_URI = os.environ.get('MONGO_URI')
-
-# SSL-Zertifikat laden, damit die "Handshake-Fehler" aufhören
 ca = certifi.where()
 
-# Den Client nur EINMAL erstellen (mit allen Sicherheits-Extras)
 client = MongoClient(
     MONGO_URI, 
     server_api=ServerApi('1'), 
     tlsCAFile=ca
 )
 
-# Testen, ob die Leitung steht
 try:
     client.admin.command('ping')
     print("MongoDB-Verbindung steht!")
 except Exception as e:
     print(f"Verbindungsfehler: {e}")
 
-# Die Datenbank auswählen
 db = client['mm-community'] 
 
 # 2. APP-INITIALISIERUNG
@@ -41,6 +35,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# 3. START-BEFEHL (Damit Render dich LIVE schaltet)
+if __name__ == "__main__":
+    import uvicorn
+    # Render braucht diesen Port, um die App zu finden
+    port = int(os.environ.get("PORT", 10000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
+    
 # 3. Deine Endpunkte (Beispiel)
 @app.get("/")
 async def root():
