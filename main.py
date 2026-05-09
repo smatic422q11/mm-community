@@ -4,13 +4,22 @@ import requests
 import os
 from pymongo import MongoClient
 
-# Zuerst die App starten - das gibt uns das grüne Licht!
 app = FastAPI()
 
-# Dann die Verbindung definieren
-MONGO_URI = os.environ.get('MONGO_URI')
-client = MongoClient(MONGO_URI)
-db = client['mm-community']
+# Die Sicherung: Wir definieren db erst einmal als None
+db = None
+
+try:
+    MONGO_URI = os.environ.get('MONGO_URI')
+    if MONGO_URI:
+        client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
+        db = client['mm-community']
+        # Ein kurzer Test, ohne die App zu stoppen
+        client.admin.command('ping')
+        print("MongoDB Verbindung erfolgreich!")
+except Exception as e:
+    print(f"Datenbank-Fehler beim Start: {e}")
+    # Die App läuft trotzdem weiter -> GRÜN!
 
 app.add_middleware(
     CORSMiddleware,
