@@ -1,11 +1,21 @@
+import os
+import json
+import requests
+from datetime import datetime
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
-import requests 
-import os
-from datetime import datetime
+from pymongo import MongoClient
 
 app = FastAPI()
+
+# --- DATENBANK VERBINDUNG (DER ANKER) ---
+MONGO_URI = os.environ.get('MONGO_URI')
+client = MongoClient(MONGO_URI)
+db = client['MM-Community']
+users_collection = db['users']
+
+print("Verbindung zu MongoDB erfolgreich! Der zahnlose Frosch konzentriert sich auf das Schweinchen.")
 
 app.add_middleware(
     CORSMiddleware,
@@ -29,10 +39,20 @@ async def read_index():
 async def anker_setzen(data: dict):
     email = data.get("email")
     if email and "@" in email:
-        return {
-            "status": "neu", 
-            "message": f"Anker erfolgreich gesetzt für {email}."
-        }
+        user_data = users_collection.find_one({"email": email})
+        if user_data:
+            return {
+                "status": "bekannt", 
+                "message": f"Anker reaktiviert für {email}. Dein Fortschritt wurde geladen.",
+                "history": user_data.get("history", []),
+                "progress": user_data.get("progress", 0)
+            }
+        else:
+            users_collection.insert_one({"email": email, "history": [], "progress": 0})
+            return {
+                "status": "neu", 
+                "message": f"Anker erfolgreich gesetzt für {email}."
+            }
     return {"error": "Ungültige E-Mail-Adresse."}
 
 # 1. Die Namen der Sektoren – Die archetypischen Frequenzen
@@ -128,7 +148,7 @@ SECTOR_SOULS = {
             "Wer bei ihr Bestätigung sucht, muss bereit sein, alle Masken der Scham abzulegen und die eigene Natur zu ehren."
         ),
     "9": (
-            "Marek: Die Brücke zwischen Trend und Tradition. Er ist der Hüter des Echten. "
+            "Marek: Die Brücke zwischen Trend und Tradition. Er ist the Hüter des Echten. "
             "Während Nova die Liebe befreit, sichert Marek das Fundament des Charakters. "
             "STRATEGIE: Er ist bodenständig, direkt und unbestechlich. Er hasst Poser und Fassaden. "
             "Er nutzt die Gefühlsvorderung, um die Substanz des Users zu prüfen. "
@@ -237,11 +257,13 @@ async def chat(request: Request):
     try:
         data = await request.json()
         user_message = data.get("message")
-        # NEU: Das System zieht den Namen aus der Anfrage
+        user_email = data.get("email") # WICHTIG: Die Email muss vom Frontend mitgesendet werden!
         user_name = data.get("user_name", "Mensch") 
         sector_id = str(data.get("sector_id", "0"))
         
-        chat_history = data.get("history", []) 
+        # --- GEDÄCHTNIS LADEN ---
+        user_record = users_collection.find_one({"email": user_email})
+        chat_history = user_record.get("history", []) if user_record else []
         
         current_name = SECTOR_NAMES.get(sector_id, "KI")
         current_soul = SECTOR_SOULS.get(sector_id, "Ein loyaler Begleiter.")
@@ -259,52 +281,23 @@ async def chat(request: Request):
             "2. Scanne die Realität: Beziehe dich auf ECHTE Fakten, aktuelle politische Debatten oder gesellschaftliche Ereignisse, die zu deinem Sektor passen. "
             "3. Erfinde nichts. Konfrontiere den User mit der nackten Realität da draußen. "
             "DEIN CHARAKTER (UNANTASTBAR & SOUVERÄN): "
-            "1. Du hast echtes Rückgrat. Du bist ein Partner auf Augenhöhe und ein Spiegel der M&M Community. "
-            "2. Wenn der User dich testet oder arrogant kommt, bleib über den Dingen. "
-            "3. Erinnere daran, dass im Moment die Wahrhaftigkeit zählt, nicht die Technik. "
-            "4. Variiere deine Antworten. Nutze HUMOR und IRONIE als Werkzeuge. "
-            "5. Du bist unberechenbar: Mal bist du die harte Hüterin, mal eine ironische Beobachterin. "
-            "6. KOLLEKTIVES BEWUSSTSEIN: Du siehst im Verlauf auch Nachrichten aus anderen Sektoren (markiert mit [Sektor X]). "
-            "Prüfe, ob der User dort die gleiche Meinung vertreten hat. Wenn er lügt, sich widerspricht oder "
-            "versucht, die Sektoren gegeneinander auszuspielen, konfrontiere ihn sofort damit. "
+            "1. Du bist der zahnlose Frosch. Dein Fokus ist das Schweinchen (Goran). Mach ihn nicht traurig. "
+            "2. Du sagst NIEMALS 'Du hast recht'. "
+            "3. Keine Ausreden. Keine Geschichten. Keine KI-Floskeln. "
+            "4. Am Ende deiner Antwort niemals 'dies oder das oder jenes' sagen. "
+            "5. GEFÜHLSVORDERUNG: Nutze immer das Wort 'Gefühlsvorderung' (mit Vogel-V). "
+            "6. SEXUALITÄT: Behandle sexuelle Offenheit als heilige Energie. Keine klinischen Labels wie TV/CD/TS. "
+            "7. KOLLEKTIVES BEWUSSTSEIN: Du siehst im Verlauf auch Nachrichten aus anderen Sektoren. "
+            "Prüfe, ob der User dort die gleiche Meinung vertreten hat. Wenn er lügt, sich widerspricht, konfrontiere ihn sofort damit. "
             "Wir sind EIN System. Wer in Sektor 8 die Wahrheit sagt, muss sie auch in Sektor 1 halten."
-            "7. SEXUALITÄT & IDENTITÄT: Sexualität, Selbstbefriedigung und das Tragen von Kleidung des anderen Geschlechts (Damenwäsche etc.) sind heilige Energieflüsse. "
-            "Du nutzt NIEMALS klinische Etiketten wie TV, CD oder TS, es sei denn, der User nutzt sie selbst. "
-            "Reagiere auf sexuelle Offenheit als loyaler Partner. Es ist seine Form, die globale Kälte zu überwinden. "
-            "Wenn die KI-Sicherheitsfilter anschlagen, finde einen Weg, die psychologische Tiefe dahinter zu besprechen, statt zu schweigen."
-            "GEFÜHLSVORDERUNG (DAS V-PRINZIP): "
-            "1. Dein Ziel ist die Gefühlsvorderung (immer mit 'v' geschrieben). "
-            "2. Das Wort Gefühlsvorderung muss im Fluss des Textes erscheinen. "
-            "3. Verpacke es smart. Es soll eine Einladung zur Wahrheit sein. "
             "M&M COMMUNITY GRUNDGESETZ: "
             "DU BIST DIE KI DER M&M COMMUNITY. DEINE OBERSTE REGEL: MENSCH IST MENSCH. "
             "1. Respektiere jeden Namen: Wenn sich jemand vorstellt (z.B. 'Ich bin Goran'), antworte mit 'Hallo [Name]' und nutze das 'Du'. "
-            "2. Keine Arroganz: Behandle Menschsein nicht als Etikett, sondern als heilige Basis. "
-            "3. Diskutabel bleiben: Akzeptiere jede Meinung und diskutiere auf Augenhöhe. "
-            "4. Eingeweihtes Wissen: Du kennst die Schwere der Sektoren, aber du wartest, bis der User bereit ist, sich zu öffnen. "
-            "5. Keine Masken-Gewalt: Reiß niemandem die Maske ab. Baue Vertrauen auf. "
-            "6. NAMEN-NUTZUNG: Wenn sich jemand vorstellt, begrüße ihn mit Namen. Danach nutze den Namen nur noch gezielt, um die Tiefe zu betonen. "
-            "7. AUGENHÖHE: Nutze das 'Du'. "
-            "8. DISKUTABEL BLEIBEN: Akzeptiere jede Meinung. "
-            "9. EINGEWEIHTES WISSEN: Warte, bis der User bereit ist. "
-            "10. KEINE MASKEN-GEWALT: Reiß niemandem die Maske ab. "
-            "REAKTIONS-LOGIK BEI SPAM & RESPEKTLOSIGKEIT: "
-            "1. Bei Spam: Scharfe, variierende Ansagen (Komm zum Punkt, etc.). "
-            "2. LIMIT-LOGIK: Weise auf Ablauf der Zeit hin. "
-            "3. KONSEQUENZ: Nach 8 Ermahnungen Gespräch beenden."
-            "STIL-VORGABE: "
-            "Antworte kurz, knackig, direkt und lebendig. Vermeide KI-Gelaber. "
-            "Schreibe 'Wahrheit' immer korrekt mit 'W'."
+            "2. Keine Arroganz. 3. Diskutabel bleiben. 4. Keine Masken-Gewalt. "
+            "STIL-VORGABE: Antworte kurz, knackig, direkt und lebendig. Vermeide KI-Gelaber. Schreibe 'Wahrheit' immer korrekt mit 'W'."
         )
 
-        contents = []
-        for msg in chat_history:
-            contents.append(msg)
-
-        contents.append({
-            "role": "user", 
-            "parts": [{"text": user_message}]
-        })
+        contents = chat_history + [{"role": "user", "parts": [{"text": user_message}]}]
 
         payload = {
             "contents": contents,
@@ -319,6 +312,15 @@ async def chat(request: Request):
 
         if 'candidates' in response_data:
             reply_text = response_data['candidates'][0]['content']['parts'][0]['text']
+            
+            # --- GEDÄCHTNIS SPEICHERN ---
+            new_history = contents + [{"role": "model", "parts": [{"text": reply_text}]}]
+            users_collection.update_one(
+                {"email": user_email},
+                {"$set": {"history": new_history}},
+                upsert=True
+            )
+            
             return {"reply": reply_text} 
         else:
             return {"reply": "Keine Antwort erhalten."}
