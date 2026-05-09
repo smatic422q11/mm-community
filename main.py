@@ -2,7 +2,6 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 import requests 
 import os
-from pymongo import MongoClient # Das lassen wir drin, das ist nur das Werkzeug
 
 app = FastAPI()
 
