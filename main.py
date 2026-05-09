@@ -13,9 +13,6 @@ client = MongoClient(uri, serverSelectionTimeoutMS=5000)
 except Exception as e:
     print(f"Fehler: {e}")
 
-@app.get("/")
-async def root():
-    return {"message": "Die Community-Seite ist mit der Datenbank verbunden!"
 # 1. Die Namen der Sektoren – Die archetypischen Frequenzen
 SECTOR_NAMES = {
     "0": "Lilith", "1": "Aris", "2": "Mira", "3": "Tarik", "4": "Kiron",
