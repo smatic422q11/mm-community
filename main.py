@@ -5,11 +5,11 @@ from pymongo import MongoClient
 app = FastAPI()
 
 # Wir versuchen die Verbindung ganz vorsichtig
-try:
-    uri = os.environ.get('MONGO_URI')
-    client = MongoClient(uri, serverSelectionTimeoutMS=5000)
-    db = client['mm-community']
-    # Wir testen die Verbindung noch NICHT beim Start, damit es GRÜN bleibt
+try: 
+uri = os.environ.get('MONGO_URI')
+client = MongoClient(uri, serverSelectionTimeoutMS=5000)
+ db = client['mm-community']
+ # Wir testen die Verbindung noch NICHT beim Start, damit es GRÜN bleibt
 except Exception as e:
     print(f"Fehler: {e}")
 
