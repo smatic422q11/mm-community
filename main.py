@@ -31,6 +31,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# 3. Deine Endpunkte (Beispiel)
+@app.get("/")
+async def root():
+    return {"message": "Die Community-Seite ist LIVE und die Datenbank-Leitung steht!"}
+
 # 1. Die Namen der Sektoren – Die archetypischen Frequenzen
 SECTOR_NAMES = {
     "0": "Lilith", "1": "Aris", "2": "Mira", "3": "Tarik", "4": "Kiron",
@@ -332,6 +337,3 @@ async def chat(request: Request):
 
     except Exception as e:
         return {"reply": f"Fehler: {str(e)}"}
-@app.get("/")
-async def root():
-      return {"message": "Die Community-Seite ist mit der Datenbank verbunden!"}
