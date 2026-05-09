@@ -1,33 +1,11 @@
-from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
-import requests 
+from fastapi import FastAPI
 import os
-from pymongo import MongoClient
 
 app = FastAPI()
 
-# Die Sicherung: Wir definieren db erst einmal als None
-db = None
-
-try:
-    MONGO_URI = os.environ.get('MONGO_URI')
-    if MONGO_URI:
-        client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
-        db = client['mm-community']
-        # Ein kurzer Test, ohne die App zu stoppen
-        client.admin.command('ping')
-        print("MongoDB Verbindung erfolgreich!")
-except Exception as e:
-    print(f"Datenbank-Fehler beim Start: {e}")
-    # Die App läuft trotzdem weiter -> GRÜN!
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+@app.get("/")
+async def root():
+    return {"message": "Testlauf: Wenn du das siehst, ist Render bereit!"}
 # 1. Die Namen der Sektoren – Die archetypischen Frequenzen
 SECTOR_NAMES = {
     "0": "Lilith", "1": "Aris", "2": "Mira", "3": "Tarik", "4": "Kiron",
