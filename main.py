@@ -1,5 +1,6 @@
 import os
 import certifi
+import requests
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pymongo import MongoClient
@@ -10,17 +11,18 @@ MONGO_URI = os.environ.get('MONGO_URI')
 ca = certifi.where()
 
 client = MongoClient(
-    MONGO_URI, 
-    server_api=ServerApi('1'), 
+    MONGO_URI,
+    server_api=ServerApi('1'),
     tlsCAFile=ca
 )
+
 try:
     client.admin.command('ping')
     print("MongoDB-Verbindung steht!")
 except Exception as e:
     print(f"Verbindungsfehler: {e}")
 
-db = client['mm-community'] 
+db = client['mm-community']
 
 # 2. APP-INITIALISIERUNG
 app = FastAPI()
