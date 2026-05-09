@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -674,6 +674,7 @@ async function sichereAnkerUndStarteScan(id, thema) {
         return;
     }
 
+    // Wir holen uns den Button direkt über seine ID oder lassen die Sperre kurz weg
     console.log("Verifiziere für Email:", email);
 
     try {
@@ -689,31 +690,23 @@ async function sichereAnkerUndStarteScan(id, thema) {
 
         const result = await response.json();
 
-        // Der entscheidende Teil für das Gedächtnis
-        if (result.status === "bekannt" || result.status === "neu") {
+       if (result.status === "bekannt" || result.status === "neu") {
+            // KEIN localStorage mehr – Die Identität bleibt LIVE im Eingabefeld
             
-            // 1. Das Gedächtnis aus der Datenbank laden
-            if (result.history && Array.isArray(result.history)) {
-                kollektivesGedachtnis = result.history; 
-                console.log("Gedächtnis erfolgreich aus Datenbank geladen!");
-            } else {
-                kollektivesGedachtnis = []; // Falls ganz neu oder keine History
-            }
-
-            // 2. Den aktuellen Sektor-Fortschritt setzen (für die Ampel)
-            window.aktuellerUserSektor = result.progress || 0; 
-            
+            // Erfolg melden
             alert(result.message);
+            
+            // Sektor öffnen (id ist 0 oder die gewählte ID)
             showInfo(themen[id], id);
-            updateNumColors();
+        } else {
+            alert("Hinweis: " + result.error);
         }
     } catch (error) {
         console.error("Fehler beim Anker setzen:", error);
-        alert("Verbindung zum Gedächtnis fehlgeschlagen. Prüfe deine Internetverbindung.");
+        alert("Verbindung fehlgeschlagen. Ist der Server auf Render schon 'Live'?");
     }
 }
-
-function pruefeZugang(thema, id) {
+   function pruefeZugang(thema, id) {
     const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
     
     // 1. Ohne Mail kommt niemand rein
@@ -739,6 +732,5 @@ function pruefeZugang(thema, id) {
             alert("Dieser Sektor ist noch nicht für dich bereit. Folge der Reihenfolge der Wahrheit (Sektor 1 bis 20).");
         }
     }
-}
+} 
 </script>
-
