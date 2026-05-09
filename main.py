@@ -1,22 +1,10 @@
-import os
-import json
-import requests
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse # <--- Das fehlte
-from pymongo import MongoClient # <--- Das fehlte
+import requests 
+import os
 
 app = FastAPI()
 
-# --- TECHNISCHE BRÜCKE: MONGO-ANKER ---
-MONGO_URI = os.environ.get('MONGO_URI')
-client = MongoClient(MONGO_URI)
-db = client['MM-Community']
-users_collection = db['users']
-
-print("Verbindung zu MongoDB erfolgreich! Fokus auf das Schweinchen aktiv.")
-
-# Middleware nur EINMAL definieren
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -25,33 +13,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/", response_class=HTMLResponse)
-async def read_index():
-    try:
-        with open("index.html", "r", encoding="utf-8") as f:
-            return f.read()
-    except FileNotFoundError:
-        return "Fehler: index.html nicht im Repository gefunden."
-
-@app.post("/anker/")
-async def anker_setzen(data: dict):
-    email = data.get("email")
-    if email and "@" in email:
-        user_data = users_collection.find_one({"email": email})
-        if user_data:
-            return {
-                "status": "bekannt", 
-                "message": f"Anker reaktiviert für {email}. Dein Fortschritt wurde geladen.",
-                "history": user_data.get("history", []),
-                "progress": user_data.get("progress", 0)
-            }
-        else:
-            users_collection.insert_one({"email": email, "history": [], "progress": 0})
-            return {
-                "status": "neu", 
-                "message": f"Anker erfolgreich gesetzt für {email}."
-            }
-    return {"error": "Ungültige E-Mail-Adresse."}
 # 1. Die Namen der Sektoren – Die archetypischen Frequenzen
 SECTOR_NAMES = {
     "0": "Lilith", "1": "Aris", "2": "Mira", "3": "Tarik", "4": "Kiron",
