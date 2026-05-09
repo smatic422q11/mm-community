@@ -2,6 +2,12 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 import requests 
 import os
+from pymongo import MongoClient  # Das Werkzeug für die Datenbank
+
+ # Hier holen wir uns den "Schlüssel" aus den Umgebungsvariablen
+ MONGO_URI = os.environ.get('MONGO_URI')
+ client = MongoClient(MONGO_URI)
+ db = client['mm-community'] # So heißt deine Datenbank
 
 app = FastAPI()
 
