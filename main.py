@@ -2,9 +2,12 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 import requests 
 import os
+from pymongo import MongoClient
 
+# 1. Zuerst die App erschaffen (Ganz wichtig!)
 app = FastAPI()
 
+# 2. Dann die Middleware (Die Erlaubnis für den Zugriff)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -13,6 +16,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# 3. Dann die Funktionen (Die Antworten der Seite)
+@app.get("/")
+async def root():
+    return {"message": "Die Community-Seite ist mit der Datenbank verbunden!"}
+
+# 4. Und hier kommt jetzt der neue Test-Teil für die Datenbank rein
+@app.get("/db-test")
+async def test_db():
+    try:
+        uri = os.environ.get('MONGO_URI')
+        client = MongoClient(uri)
+        db = client['mm-community']
+        client.admin.command('ping')
+        return {"status": "Erfolg", "database": "Verbunden!"}
+    except Exception as e:
+        return {"status": "Fehler", "details": str(e)}
 # 1. Die Namen der Sektoren – Die archetypischen Frequenzen
 SECTOR_NAMES = {
     "0": "Lilith", "1": "Aris", "2": "Mira", "3": "Tarik", "4": "Kiron",
@@ -314,6 +333,4 @@ async def chat(request: Request):
 
     except Exception as e:
         return {"reply": f"Fehler: {str(e)}"}
-@app.get("/")
-async def root():
-      return {"message": "Die Community-Seite ist mit der Datenbank verbunden!"}
+
