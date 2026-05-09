@@ -2,20 +2,28 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 import requests 
 import os
-import certifi
+import certifi # Wichtig für den SSL-Fix
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 
-# 1. DATENBANK-VERBINDUNG (Mit SSL-Handshake Fix)
+# 1. DATENBANK-VERBINDUNG (Jetzt mit integriertem SSL-Zertifikat)
 uri = os.environ.get('MONGO_URI')
-# Wir fügen tlsCAFile hinzu, um den SSL-Fehler zu beheben
+
+# Hier ist der entscheidende Teil: Wir laden das Zertifikat
 ca = certifi.where()
-client = MongoClient(uri, server_api=ServerApi('1'), tlsCAFile=ca)
+
+# Wir füttern den Client direkt mit tlsCAFile=ca
+client = MongoClient(
+    uri, 
+    server_api=ServerApi('1'), 
+    tlsCAFile=ca
+)
 
 try:
     client.admin.command('ping')
     print("Pinged your deployment. You successfully connected to MongoDB!")
 except Exception as e:
+    # Falls es doch hakt, sehen wir hier die ehrliche Antwort
     print(f"Verbindungsfehler: {e}")
 
 db = client['MM-Community'] 
