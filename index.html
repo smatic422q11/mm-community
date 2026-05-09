@@ -690,21 +690,22 @@ async function sichereAnkerUndStarteScan(id, thema) {
 
         const result = await response.json();
 
-       if (result.status === "bekannt" || result.status === "neu") {
-            // KEIN localStorage mehr – Die Identität bleibt LIVE im Eingabefeld
-            
-            // Erfolg melden
-            alert(result.message);
-            
-            // Sektor öffnen (id ist 0 oder die gewählte ID)
-            showInfo(themen[id], id);
-        } else {
-            alert("Hinweis: " + result.error);
-        }
-    } catch (error) {
-        console.error("Fehler beim Anker setzen:", error);
-        alert("Verbindung fehlgeschlagen. Ist der Server auf Render schon 'Live'?");
+       // Dieser Teil muss in deine Funktion 'sichereAnkerUndStarteScan'
+        if (result.status === "bekannt" || result.status === "neu") {
+      // 1. Falls der Server einen Chatverlauf mitschickt, laden wir ihn sofort ins Gedächtnis
+      if (result.history) {
+        kollektivesGedachtnis = result.history; 
+        console.log("Gedächtnis geladen!");
+     } else {
+        kollektivesGedachtnis = []; // Falls ganz neu
     }
+
+    // 2. Den aktuellen Sektor-Fortschritt setzen (für die Ampel)
+    window.aktuellerUserSektor = result.progress || 0; 
+    
+    alert(result.message);
+    showInfo(themen[id], id);
+    updateNumColors();
 }
    function pruefeZugang(thema, id) {
     const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
