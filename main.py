@@ -1,7 +1,6 @@
-import requests 
 import os
 import certifi
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
@@ -15,7 +14,6 @@ client = MongoClient(
     server_api=ServerApi('1'), 
     tlsCAFile=ca
 )
-
 try:
     client.admin.command('ping')
     print("MongoDB-Verbindung steht!")
