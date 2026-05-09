@@ -569,12 +569,14 @@ body: JSON.stringify({
 }
 
 function updateNumColors() {
+    // 1. Der Anker: Wir holen die Mail direkt aus dem Eingabefeld
     const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
     
-    // Wir nehmen den Sektor, den uns die Datenbank gerade geschickt hat
-    // Wenn nichts da ist, starten wir bei 0
-    let aktuellerSektor = window.aktuellerUserSektor || 0; 
+    // 2. Der Status: Wo steht der User? 
+    // (Diese Zahl kommt später LIVE von Render zurück)
+    let aktuellerSektor = 0; 
 
+    // SCHÖPFER-FREIGABE: Nur diese E-Mail hat freien Zugang
     const isSchöpfer = (email === "mmcommunity22@gmail.com");
 
     themen.forEach((_, i) => {
@@ -582,21 +584,22 @@ function updateNumColors() {
         if (!nBox) return;
 
         if (isSchöpfer) {
-            nBox.className = "num num-neutral"; // Blau für den Schöpfer
+            // SCHÖPFER-MODUS: Alles auf BLAU (Offen für Arbeit/Kontrolle)
+            nBox.className = "num num-neutral"; 
         } else {
-            // Die eiserne Ampel basierend auf dem Datenbank-Wert
+            // DIE EISERNE AMPEL-REGEL (1 bis 20):
             if (i < aktuellerSektor) {
-                nBox.className = "num num-fertig";  // GRÜN
+                nBox.className = "num num-fertig";  // GRÜN: Sicher (Abgeschlossen)
             } else if (i === aktuellerSektor) {
-                nBox.className = "num num-gelesen"; // GELB
+                nBox.className = "num num-gelesen"; // GELB: Arbeit (Aktueller Fokus)
             } else if (i === aktuellerSektor + 1) {
-                nBox.className = "num num-offen";   // ROT
+                nBox.className = "num num-offen";   // ROT: Wartet (Nächste Hürde)
             } else {
-                nBox.className = "num num-neutral"; // BLAU
+                nBox.className = "num num-neutral"; // BLAU: Offen (Zukunft)
             }
         }
     });
-}
+    
     // Auch die Fundamente (21 & 22) für den Schöpfer freischalten
     const num21 = document.getElementById('num-20'); // Index 20 ist Sektor 21
     const num22 = document.getElementById('num-21'); // Index 21 ist Sektor 22
@@ -687,21 +690,8 @@ async function sichereAnkerUndStarteScan(id, thema) {
 
         const result = await response.json();
 
-       // In deiner Funktion: sichereAnkerUndStarteScan
-if (result.status === "bekannt" || result.status === "neu") {
-    // 1. Die Datenbank liefert uns den Fortschritt (z.B. Sektor 5)
-    // Wir speichern das NUR in einer Variable im Arbeitsspeicher (flüchtig!)
-    window.aktuellerUserSektor = result.progress || 0; 
-    window.identitaetBestätigt = true;
-
-    alert(result.message);
-    
-    // 2. UI sofort aktualisieren, damit die Ampel umschaltet
-    updateNumColors();
-    
-    // 3. Den Sektor öffnen
-    showInfo(themen[id], id);
-}
+       if (result.status === "bekannt" || result.status === "neu") {
+            // KEIN localStorage mehr – Die Identität bleibt LIVE im Eingabefeld
             
             // Erfolg melden
             alert(result.message);
