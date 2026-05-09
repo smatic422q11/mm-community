@@ -40,19 +40,21 @@ async def anker_setzen(request: Request):
         return {"error": "Keine E-Mail angegeben"}
     
     db = load_db()
-    # Falls der User neu ist, lege sein Profil an
     if email not in db:
         db[email] = {
             "biografie_status": "gestartet",
-            "sektoren_fortschritt": [],
+            "progress": 0,  # Wir nennen es jetzt 'progress'
             "interaktionen": 0
         }
         save_db(db)
-        return {"status": "neu", "message": "Anker gesetzt. Biografie beginnt.", "data": db[email]}
+        return {"status": "neu", "message": "Anker gesetzt. Biografie beginnt.", "progress": 0}
     
-    # Falls er existiert, gib seine Daten zurück
-    return {"status": "bekannt", "message": "Anker erkannt. Biografie wird geladen.", "data": db[email]}
-# --- SPEICHER LOGIK ENDE ---
+    # Falls er existiert, schicke den echten Wert aus der JSON
+    return {
+        "status": "bekannt", 
+        "message": "Anker erkannt. Biografie geladen.", 
+        "progress": db[email].get("progress", 0) # Hier ist die wichtige Zahl!
+    }
 
 @app.post("/chat")
 async def chat(request: Request):
