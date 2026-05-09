@@ -240,23 +240,20 @@ async def chat(request: Request):
         user_message = data.get("message", "")
         sector_id = str(data.get("sector_id", "0"))
         
-        # --- 1. IDENTITÄTS-CHECK & DATENBANK-GEDÄCHTNIS ---
-        # Wir suchen nach dem aktiven User (Goran/Schweinchen)
+        # --- IDENTITÄTS-CHECK & GEDÄCHTNIS ---
         user_profile = db.users.find_one({"status": "active"})
         user_name = user_profile.get("name", "User") if user_profile else "User"
         
-        # Erkennung der Vorstellung
         if "ich bin goran" in user_message.lower() or "ich bin das schweinchen" in user_message.lower():
             db.users.update_one({"status": "active"}, {"$set": {"name": "Goran"}}, upsert=True)
             user_name = "Goran"
 
-        # Historie aus der Datenbank laden (die letzten 10 Nachrichten aus diesem Sektor)
+        # Historie aus der Datenbank laden
         past_messages = list(db.chats.find({"sector": sector_id}).sort("_id", -1).limit(10))
         formatted_history = []
         for msg in reversed(past_messages):
             role = "user" if msg["role"] == "user" else "model"
             formatted_history.append({"role": role, "parts": [{"text": msg["message"]}]})
-
         # --- 2. SEKTOR-KONTEXT ---
         current_name = SECTOR_NAMES.get(sector_id, "KI")
         current_soul = SECTOR_SOULS.get(sector_id, "Ein loyaler Begleiter.")
@@ -316,7 +313,7 @@ async def chat(request: Request):
             "Schreibe 'Wahrheit' immer korrekt mit 'W'."
         )
 
-        # --- 4. GEMINI ANFRAGE ---
+       # --- GEMINI ANFRAGE ---
         api_key = os.getenv("GEMINI_API_KEY")
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
         
@@ -326,21 +323,17 @@ async def chat(request: Request):
         }
 
         response = requests.post(url, json=payload)
-        response_data = response.json()
+        res_data = response.json()
 
-        if response.status_code != 200:
-            return {"reply": f"Fehler beim Modell-Zugriff: {response.text}"}
-
-        if 'candidates' in response_data:
-            reply_text = response_data['candidates'][0]['content']['parts'][0]['text']
+        if response.status_code == 200 and 'candidates' in res_data:
+            reply_text = res_data['candidates'][0]['content']['parts'][0]['text']
             
-            # --- 5. SPEICHERN IM GEDÄCHTNIS ---
+            # SPEICHERN
             db.chats.insert_one({"sector": sector_id, "message": user_message, "role": "user", "user": user_name})
             db.chats.insert_one({"sector": sector_id, "message": reply_text, "role": "model", "user": user_name})
             
             return {"reply": reply_text}
-        else:
-            return {"reply": "Keine Antwort erhalten."}
+        return {"reply": f"Fehler: {res_data}"}
 
     except Exception as e:
         return {"reply": f"System-Fehler: {str(e)}"}
