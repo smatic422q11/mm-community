@@ -2,7 +2,6 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 import requests 
 import os
-from pymongo import MongoClient  # Das ist neu
 
 app = FastAPI()
 
@@ -13,12 +12,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# --- HIER LEGEN WIR JETZT DIE LEITUNG ---
-MONGO_URI = os.environ.get('MONGO_URI')
-client = MongoClient(MONGO_URI)
-db = client.get_database() 
-# ----------------------------------------
 # 1. Die Namen der Sektoren – Die archetypischen Frequenzen
 SECTOR_NAMES = {
     "0": "Lilith", "1": "Aris", "2": "Mira", "3": "Tarik", "4": "Kiron",
