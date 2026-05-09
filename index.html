@@ -674,64 +674,40 @@ async function sichereAnkerUndStarteScan(id, thema) {
         return;
     }
 
-    // Wir holen uns den Button direkt über seine ID oder lassen die Sperre kurz weg
+    // Wir entfernen den fetch-Versuch zur gelöschten Mongo-Datenbank, 
+    // damit die Fehlermeldung "Verbindung fehlgeschlagen" verschwindet.
     console.log("Verifiziere für Email:", email);
 
-    try {
-        const response = await fetch('https://mm-community.onrender.com/anker/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: email })
-        });
-
-        if (!response.ok) {
-            throw new Error('Server antwortet nicht korrekt');
-        }
-
-        const result = await response.json();
-
-       if (result.status === "bekannt" || result.status === "neu") {
-            // KEIN localStorage mehr – Die Identität bleibt LIVE im Eingabefeld
-            
-            // Erfolg melden
-            alert(result.message);
-            
-            // Sektor öffnen (id ist 0 oder die gewählte ID)
-            showInfo(themen[id], id);
-        } else {
-            alert("Hinweis: " + result.error);
-        }
-    } catch (error) {
-        console.error("Fehler beim Anker setzen:", error);
-        alert("Verbindung fehlgeschlagen. Ist der Server auf Render schon 'Live'?");
-    }
-}
-   function pruefeZugang(thema, id) {
-    const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
+    // Die Identität bleibt LIVE im Eingabefeld (KEIN localStorage)
+    alert("Anker gesetzt für: " + email);
     
-    // 1. Ohne Mail kommt niemand rein
+    // Sektor direkt öffnen
+    showInfo(themen[id], id);
+}
+
+function pruefeZugang(thema, id) {
+    // Wir holen die Email LIVE aus dem Feld, nicht aus dem Speicher
+    const emailInput = document.getElementById('db-anker-mail');
+    const email = emailInput.value.trim().toLowerCase();
+    
     if (!email || !email.includes('@')) {
         alert("Zugriff verweigert: Bitte zuerst den ANKER mit deiner E-Mail setzen!");
         return;
     }
 
-    // 2. Schöpfer-Check: Die "22" darf überall rein
     if (email === "mmcommunity22@gmail.com") {
         showInfo(thema, id);
         return;
     }
 
-    // 3. User-Check: Nur Gelbe (Arbeit) oder Grüne (Sicher) Sektoren öffnen
     const nBox = document.getElementById(`num-${id}`);
     if (nBox) {
         if (nBox.classList.contains('num-gelesen') || nBox.classList.contains('num-fertig')) {
-            // Gelb oder Grün -> Einlass gewährt
             showInfo(thema, id);
         } else {
-            // Blau oder Rot -> Tür bleibt zu
-            alert("Dieser Sektor ist noch nicht für dich bereit. Folge der Reihenfolge der Wahrheit (Sektor 1 bis 20).");
+            alert("Dieser Sektor ist noch nicht für dich bereit.");
         }
     }
-} 
+}
 </script>
 
