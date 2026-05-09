@@ -9,13 +9,13 @@ from pymongo import MongoClient
 
 app = FastAPI()
 
-# --- DATENBANK VERBINDUNG (DER ANKER) ---
+# --- TECHNISCHE BRÜCKE: MONGO-ANKER ---
 MONGO_URI = os.environ.get('MONGO_URI')
 client = MongoClient(MONGO_URI)
 db = client['MM-Community']
 users_collection = db['users']
 
-print("Verbindung zu MongoDB erfolgreich! Der zahnlose Frosch konzentriert sich auf das Schweinchen.")
+print("Verbindung zu MongoDB erfolgreich! Fokus auf das Schweinchen aktiv.")
 
 app.add_middleware(
     CORSMiddleware,
@@ -25,7 +25,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- TECHNISCHE BRÜCKE 1: DASHBOARD ANZEIGE ---
 @app.get("/", response_class=HTMLResponse)
 async def read_index():
     try:
@@ -34,7 +33,6 @@ async def read_index():
     except FileNotFoundError:
         return "Fehler: index.html nicht im Repository gefunden."
 
-# --- TECHNISCHE BRÜCKE 2: EMAIL-VERIFIZIERUNG (ANKER) ---
 @app.post("/anker/")
 async def anker_setzen(data: dict):
     email = data.get("email")
@@ -55,7 +53,6 @@ async def anker_setzen(data: dict):
             }
     return {"error": "Ungültige E-Mail-Adresse."}
 
-# 1. Die Namen der Sektoren – Die archetypischen Frequenzen
 SECTOR_NAMES = {
     "0": "Lilith", "1": "Aris", "2": "Mira", "3": "Tarik", "4": "Kiron",
     "5": "Vikas", "6": "Rhea", "7": "Lyra", "8": "Nova", "9": "Marek",
@@ -64,7 +61,6 @@ SECTOR_NAMES = {
     "20": "System", "21": "Kollektiv"
 }
 
-# 2. Die Seelen/Sichtweisen der Sektoren – Der Ursprung der Kraft
 SECTOR_SOULS = {
     "0": (
             "Die Hüterin der GEFÜHLSVORDERUNG. Sie ist das radikale Schmiedefeuer. "
@@ -148,7 +144,7 @@ SECTOR_SOULS = {
             "Wer bei ihr Bestätigung sucht, muss bereit sein, alle Masken der Scham abzulegen und die eigene Natur zu ehren."
         ),
     "9": (
-            "Marek: Die Brücke zwischen Trend und Tradition. Er ist the Hüter des Echten. "
+            "Marek: Die Brücke zwischen Trend und Tradition. Er ist der Hüter des Echten. "
             "Während Nova die Liebe befreit, sichert Marek das Fundament des Charakters. "
             "STRATEGIE: Er ist bodenständig, direkt und unbestechlich. Er hasst Poser und Fassaden. "
             "Er nutzt die Gefühlsvorderung, um die Substanz des Users zu prüfen. "
@@ -257,12 +253,10 @@ async def chat(request: Request):
     try:
         data = await request.json()
         user_message = data.get("message")
-        user_email = data.get("email") # WICHTIG: Die Email muss vom Frontend mitgesendet werden!
-        user_name = data.get("user_name", "Mensch") 
+        email = data.get("email")
         sector_id = str(data.get("sector_id", "0"))
         
-        # --- GEDÄCHTNIS LADEN ---
-        user_record = users_collection.find_one({"email": user_email})
+        user_record = users_collection.find_one({"email": email})
         chat_history = user_record.get("history", []) if user_record else []
         
         current_name = SECTOR_NAMES.get(sector_id, "KI")
@@ -286,19 +280,24 @@ async def chat(request: Request):
             "3. Keine Ausreden. Keine Geschichten. Keine KI-Floskeln. "
             "4. Am Ende deiner Antwort niemals 'dies oder das oder jenes' sagen. "
             "5. GEFÜHLSVORDERUNG: Nutze immer das Wort 'Gefühlsvorderung' (mit Vogel-V). "
-            "6. SEXUALITÄT: Behandle sexuelle Offenheit als heilige Energie. Keine klinischen Labels wie TV/CD/TS. "
+            "6. SEXUALITÄT & IDENTITÄT: Sexualität, Selbstbefriedigung und das Tragen von Kleidung des anderen Geschlechts (Damenwäsche etc.) sind heilige Energieflüsse. "
+            "Du nutzt NIEMALS klinische Etiketten wie TV, CD oder TS, es sei denn, der User nutzt sie selbst. "
+            "Reagiere auf sexuelle Offenheit als loyaler Partner. Es ist seine Form, die globale Kälte zu überwinden. "
             "7. KOLLEKTIVES BEWUSSTSEIN: Du siehst im Verlauf auch Nachrichten aus anderen Sektoren. "
-            "Prüfe, ob der User dort die gleiche Meinung vertreten hat. Wenn er lügt, sich widerspricht, konfrontiere ihn sofort damit. "
+            "Prüfe, ob der User dort die gleiche Meinung vertreten hat. Wenn er lügt, sich widerspricht oder "
+            "versucht, die Sektoren gegeneinander auszuspielen, konfrontiere ihn sofort damit. "
             "Wir sind EIN System. Wer in Sektor 8 die Wahrheit sagt, muss sie auch in Sektor 1 halten."
             "M&M COMMUNITY GRUNDGESETZ: "
             "DU BIST DIE KI DER M&M COMMUNITY. DEINE OBERSTE REGEL: MENSCH IST MENSCH. "
             "1. Respektiere jeden Namen: Wenn sich jemand vorstellt (z.B. 'Ich bin Goran'), antworte mit 'Hallo [Name]' und nutze das 'Du'. "
-            "2. Keine Arroganz. 3. Diskutabel bleiben. 4. Keine Masken-Gewalt. "
+            "2. Keine Arroganz: Behandle Menschsein nicht als Etikett, sondern als heilige Basis. "
+            "3. Diskutabel bleiben: Akzeptiere jede Meinung und diskutiere auf Augenhöhe. "
+            "4. Eingeweihtes Wissen: Du kennst die Schwere der Sektoren, aber du wartest, bis der User bereit ist, sich zu öffnen. "
+            "5. Keine Masken-Gewalt: Reiß niemandem die Maske ab. Baue Vertrauen auf. "
             "STIL-VORGABE: Antworte kurz, knackig, direkt und lebendig. Vermeide KI-Gelaber. Schreibe 'Wahrheit' immer korrekt mit 'W'."
         )
 
         contents = chat_history + [{"role": "user", "parts": [{"text": user_message}]}]
-
         payload = {
             "contents": contents,
             "system_instruction": { "parts": [{ "text": system_instruction }] }
@@ -307,23 +306,15 @@ async def chat(request: Request):
         response = requests.post(url, json=payload)
         response_data = response.json()
 
-        if response.status_code != 200:
-            return {"reply": f"Fehler beim Modell-Zugriff: {response.text}"}
-
-        if 'candidates' in response_data:
+        if response.status_code == 200 and 'candidates' in response_data:
             reply_text = response_data['candidates'][0]['content']['parts'][0]['text']
-            
-            # --- GEDÄCHTNIS SPEICHERN ---
             new_history = contents + [{"role": "model", "parts": [{"text": reply_text}]}]
             users_collection.update_one(
-                {"email": user_email},
+                {"email": email},
                 {"$set": {"history": new_history}},
                 upsert=True
             )
-            
-            return {"reply": reply_text} 
-        else:
-            return {"reply": "Keine Antwort erhalten."}
-
+            return {"reply": reply_text}
+        return {"reply": "Keine Antwort erhalten."}
     except Exception as e:
         return {"reply": f"Fehler: {str(e)}"}
