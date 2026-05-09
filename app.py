@@ -5,8 +5,17 @@ from fastapi.middleware.cors import CORSMiddleware
 from google import genai
 from google.genai import types
 import uvicorn
+from pymongo import MongoClient  # Neu hinzugefügt
 
 app = FastAPI()
+
+# Verbindung zu MongoDB (der Anker im Umfeld)
+MONGO_URI = os.environ.get('MONGO_URI')
+client = MongoClient(MONGO_URI)
+db = client['MM-Community']
+users_collection = db['users']
+
+print("Verbindung zu MongoDB erfolgreich!")
 
 # CORS-Einstellungen
 app.add_middleware(
