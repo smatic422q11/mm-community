@@ -244,7 +244,7 @@
                     <div class="oval-side ov-schwarz" id="sig-l1"></div>
                     <div class="oval-side ov-grun" id="sig-l2"></div>
                     <div class="oval-side ov-blau" id="sig-l3"></div>
-                    <div class="oval-side ov-rot" id="sig-l4" onclick="portalZuEbene4()"></div>
+                    <div class="oval-side ov-rot" id="sig-l4" onclick="portalZuEbene4()" style="cursor: not-allowed; opacity: 0.5;"></div>
                     <span style="font-size: 0.5rem; color: #ff0000; font-weight: bold;">OFFENBAREN</span>
                 </div>
                 <div class="info-section-ebene">
@@ -422,7 +422,22 @@
     } 
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
-    function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); starteVideoKonferenz(); } }
+   function portalZuEbene4() { 
+    const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
+    
+    // SOFORT-SPERRE: Nur du (Goran) darfst rein, alle anderen werden blockiert.
+    if (email !== "mmcommunity22@gmail.com") {
+        alert("Ebene 4 (Video-Beweis) ist wegen Wartungsarbeiten vorübergehend stummgeschaltet.");
+        return; 
+    }
+
+    // Wenn du es bist, geht es weiter wie bisher
+    if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { 
+        ebene = 4; 
+        updateUI(); 
+        starteVideoKonferenz(); 
+    } 
+}
     function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
 
     function updateUI() {
