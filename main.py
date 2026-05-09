@@ -4,11 +4,13 @@ import requests
 import os
 from pymongo import MongoClient
 
+# Zuerst die App starten - das gibt uns das grüne Licht!
+app = FastAPI()
+
+# Dann die Verbindung definieren
 MONGO_URI = os.environ.get('MONGO_URI')
 client = MongoClient(MONGO_URI)
 db = client['mm-community']
-
-app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
