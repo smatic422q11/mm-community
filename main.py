@@ -1,17 +1,18 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+import requests 
 import os
-from pymongo import MongoClient
+from pymongo import MongoClient # Das lassen wir drin, das ist nur das Werkzeug
 
 app = FastAPI()
 
-# Wir versuchen die Verbindung ganz vorsichtig
-try: 
-uri = os.environ.get('MONGO_URI')
-client = MongoClient(uri, serverSelectionTimeoutMS=5000)
- db = client['mm-community']
- # Wir testen die Verbindung noch NICHT beim Start, damit es GRÜN bleibt
-except Exception as e:
-    print(f"Fehler: {e}")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # 1. Die Namen der Sektoren – Die archetypischen Frequenzen
 SECTOR_NAMES = {
