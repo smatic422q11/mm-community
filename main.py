@@ -313,3 +313,6 @@ async def chat(request: Request):
 
     except Exception as e:
         return {"reply": f"Fehler: {str(e)}"}
+@app.get("/")
+async def root():
+      return {"message": "Die Community-Seite ist mit der Datenbank verbunden!"}
