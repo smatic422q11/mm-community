@@ -1,17 +1,13 @@
+import os
+import json
+import requests
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-import requests 
-import os
+from fastapi.responses import HTMLResponse # <--- Das fehlte
+from pymongo import MongoClient # <--- Das fehlte
 
 app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 # --- TECHNISCHE BRÜCKE: MONGO-ANKER ---
 MONGO_URI = os.environ.get('MONGO_URI')
 client = MongoClient(MONGO_URI)
@@ -20,6 +16,7 @@ users_collection = db['users']
 
 print("Verbindung zu MongoDB erfolgreich! Fokus auf das Schweinchen aktiv.")
 
+# Middleware nur EINMAL definieren
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -55,7 +52,6 @@ async def anker_setzen(data: dict):
                 "message": f"Anker erfolgreich gesetzt für {email}."
             }
     return {"error": "Ungültige E-Mail-Adresse."}
-    
 # 1. Die Namen der Sektoren – Die archetypischen Frequenzen
 SECTOR_NAMES = {
     "0": "Lilith", "1": "Aris", "2": "Mira", "3": "Tarik", "4": "Kiron",
