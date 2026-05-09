@@ -7,7 +7,7 @@ import uvicorn
 
 app = FastAPI()
 
-# CORS-Einstellungen für die Website
+# CORS-Einstellungen für die Website 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
