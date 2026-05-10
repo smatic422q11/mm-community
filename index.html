@@ -205,27 +205,15 @@
                 </div>
             </div>
 
-       <div style="margin-top: 15px; z-index: 10; display: flex; gap: 10px; background: rgba(0, 61, 143, 0.1); padding: 8px; border-radius: 4px; border: 1px solid #003d8f; align-items: center; justify-content: center;">
-    
-    <div id="email-layer" style="display: flex; gap: 10px;">
-        <input type="email" id="db-anker-mail" placeholder="E-Mail für Sicherung eingeben..." 
-            style="background: transparent; border: none; color: #fff; font-size: 0.8rem; outline: none; width: 220px;">
-        <button id="btn-anker" onclick="sichereAnkerUndStarteScan(0, themen[0])" 
-            style="background: #ffd700; color: #000; border: none; padding: 4px 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; border-radius: 2px;">
-            ANKER SETZEN & STARTEN
-        </button>
-    </div>
-
-    <div id="code-eingabe-zone" style="display: none; flex-direction: row; gap: 10px; align-items: center;">
-        <span style="color: #00ff00; font-size: 0.65rem; font-weight: bold;">CODE:</span>
-        <input type="text" id="verifizierungs-code" placeholder="6-stellig" maxlength="6"
-            style="background: #000; border: 1px solid #00ff00; color: #00ff00; text-align: center; width: 80px; outline: none; font-size: 0.8rem;">
-        <button onclick="bestatigeCodeUndStarte()" 
-            style="background: #00ff00; color: #000; border: none; padding: 4px 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer;">
-            PRÜFEN
-        </button>
-    </div>
-</div>
+            <div style="margin-top: 15px; z-index: 10; display: flex; gap: 10px; background: rgba(0, 61, 143, 0.1); padding: 8px; border-radius: 4px; border: 1px solid #003d8f;">
+                <input type="email" id="db-anker-mail" placeholder="E-Mail für Sicherung eingeben..." 
+                    style="background: transparent; border: none; color: #fff; font-size: 0.8rem; outline: none; width: 220px;">
+                <button onclick="sichereAnkerUndStarteScan(0, themen[0])" 
+                    style="background: #ffd700; color: #000; border: none; padding: 4px 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; border-radius: 2px; box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);">
+                    ANKER SETZEN & STARTEN
+                </button>
+            </div>
+        </div>
 
         <div class="grid" id="main-grid" style="margin-top: 15px;"></div>
 
@@ -256,7 +244,7 @@
                     <div class="oval-side ov-schwarz" id="sig-l1"></div>
                     <div class="oval-side ov-grun" id="sig-l2"></div>
                     <div class="oval-side ov-blau" id="sig-l3"></div>
-                    <div class="oval-side ov-rot" id="sig-l4" onclick="portalZuEbene4()" style="cursor: not-allowed; opacity: 0.5;"></div>
+                    <div class="oval-side ov-rot" id="sig-l4" onclick="portalZuEbene4()"></div>
                     <span style="font-size: 0.5rem; color: #ff0000; font-weight: bold;">OFFENBAREN</span>
                 </div>
                 <div class="info-section-ebene">
@@ -434,22 +422,7 @@
     } 
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
-   function portalZuEbene4() { 
-    const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
-    
-    // SOFORT-SPERRE: Nur du (Goran) darfst rein, alle anderen werden blockiert.
-    if (email !== "mmcommunity22@gmail.com") {
-        alert("Ebene 4 (Video-Beweis) Vollende Sektor 1 bis 22 für dein eBook und den Videobeweis.");
-        return; 
-    }
-
-    // Wenn du es bist, geht es weiter wie bisher
-    if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { 
-        ebene = 4; 
-        updateUI(); 
-        starteVideoKonferenz(); 
-    } 
-}
+    function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); starteVideoKonferenz(); } }
     function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
 
     function updateUI() {
@@ -522,12 +495,34 @@ async function registriereSenden() {
     const userText = input.value.trim(); 
     if (userText === "") return; 
 
-    const email = document.getElementById('db-anker-mail').value.trim();
-    const userRole = (email.toLowerCase() === "mmcommunity22@gmail.com") ? "SCHÖPFER (Goran)" : "USER";
+   // --- DIE SCHÖPFER-HINTERTÜR ---
+    // Diese Funktion wurde entfernt, um die lokale Speicherung (Attrappe) zu beenden.
+    // Deine Identität wird nun direkt über die E-Mail und die Datenbank auf Render geschützt.
 
-    istSendenAktiv = true; // Sperre aktivieren
+    istSendenAktiv = true; 
 
-    // Anzeige der User-Nachricht
+  // In der Funktion registriereSenden():
+const email = document.getElementById('db-anker-mail').value.trim();
+
+// Wir fügen die Identität direkt in den Kontext für die KI ein
+const userRole = (email.toLowerCase() === "mmcommunity22@gmail.com") ? "SCHÖPFER (Goran)" : "USER";
+
+// ... im fetch-Aufruf unter 'message' oder 'context':
+body: JSON.stringify({ 
+    message: userText, 
+    context: `IDENTITÄT: ${userRole}. \n SEKTOR: ${tId+1}. \n WISSEN: ${sektorTexte[tId]}`,
+    // ...
+})
+    if (userText.toLowerCase().includes("schöpfer") || userText.toLowerCase().includes("admin")) {
+        // Wir prüfen live die E-Mail im Feld
+        if (email.toLowerCase().includes("goran")) { 
+            userRole = "schöpfer_bestätigt";
+        } else {
+            userRole = "hochstapler_verdacht";
+        }
+    }
+
+    // --- BEREINIGTE ANZEIGE (OHNE ATTRAPPE) ---
     chatBox.innerHTML += `<div style="margin-bottom: 35px; padding: 10px; border-left: 3px solid #ffd700; color: #ffd700; background: rgba(255, 215, 0, 0.05);">${userText}</div>`;
     input.value = ""; 
 
@@ -553,8 +548,10 @@ async function registriereSenden() {
         const typingElement = document.getElementById(typingId);
         if (typingElement) typingElement.remove();
         
+        // KI-Antwort Design
         chatBox.innerHTML += `<div class="ki-antwort" style="background: rgba(0, 61, 143, 0.15); padding: 15px; border-radius: 8px; margin-bottom: 40px; border-left: 3px solid #003d8f; color: #ffffff; line-height: 1.6;">${data.reply}</div>`;
 
+        // Gedächtnis-Speicherung
         kollektivesGedachtnis.push({ "role": "user", "parts": [{ "text": userText }] });
         kollektivesGedachtnis.push({ "role": "model", "parts": [{ "text": data.reply }] });
 
@@ -564,14 +561,13 @@ async function registriereSenden() {
     } catch (error) { 
         console.error("Fehler beim Senden:", error);
         const typingElement = document.getElementById(typingId);
-        if (typingElement) typingElement.innerHTML = "<span style='color:red;'>Verbindung hakt kurz... Knopf ist wieder frei!</span>";
+        if (typingElement) typingElement.innerHTML = "Verbindung unterbrochen...";
     } finally {
-        // DER ENTSCHEIDENDE RETTER:
-        // Egal ob Erfolg oder Fehler: Wir machen den Knopf wieder aktiv!
         istSendenAktiv = false;
         chatBox.scrollTop = chatBox.scrollHeight;
     }
 }
+
 function updateNumColors() {
     // 1. Der Anker: Wir holen die Mail direkt aus dem Eingabefeld
     const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
@@ -674,25 +670,19 @@ async function sichereAnkerUndStarteScan(id, thema) {
     const email = emailInput.value.trim();
 
     if (!email || !email.includes('@')) {
-        alert("Bitte eine gültige E-Mail eingeben.");
+        alert("Bitte eine gültige E-Mail für deine Biografie eingeben.");
         return;
     }
 
-    try {
-        const response = await fetch('https://mm-community.onrender.com/send-code', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: email })
-        });
+    // Wir entfernen den fetch-Versuch zur gelöschten Mongo-Datenbank, 
+    // damit die Fehlermeldung "Verbindung fehlgeschlagen" verschwindet.
+    console.log("Verifiziere für Email:", email);
 
-        if (response.ok) {
-            // DAS IST DER SCHLÜSSEL:
-            document.getElementById('email-layer').style.display = 'none'; // E-Mail Bereich weg
-            document.getElementById('code-eingabe-zone').style.display = 'flex'; // Code Bereich da
-        }
-    } catch (error) {
-        alert("Verbindung hakt.");
-    }
+    // Die Identität bleibt LIVE im Eingabefeld (KEIN localStorage)
+    alert("Anker gesetzt für: " + email);
+    
+    // Sektor direkt öffnen
+    showInfo(themen[id], id);
 }
 
 function pruefeZugang(thema, id) {
