@@ -193,11 +193,41 @@
     <!-- DER GLOBALE SCHRIFTZUG (Bleibt auf Ebene 2, 3 etc.) -->
     <div id="top-label" class="global-community-label">Von M&M Community</div>
 
-    <!-- DASHBOARD -->
-    <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-        <div class="dashboard-header">
-            <div class="logo-ring" ondblclick="adminUnlock()"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
+    <div style="display: flex; justify-content: space-between; padding: 20px; color: white; border-bottom: 2px solid #00ff00; margin-bottom: 30px;">
+    <div style="flex: 1;">
+        <h3>1. DEINE MISSION</h3>
+        <p>Schreibe deine Biografie der Wahrheit.</p>
+    </div>
+
+    <div style="flex: 1; text-align: center;">
+        <h3>2. ORIENTIERUNG</h3>
+        <div id="auth-container" style="display: flex; gap: 10px; justify-content: center; align-items: center;">
+            <input type="email" id="user-email" placeholder="E-Mail für Sicherung..." 
+                   style="background: black; color: white; border: 1px solid #0044ff; padding: 5px;">
+            
+            <button onclick="sendCode()" id="anchor-btn" 
+                    style="background: #ffcc00; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold;">
+                ANKER SETZEN & STARTEN
+            </button>
+
+            <input type="text" id="verification-code" placeholder="CODE" maxlength="6" 
+                   style="display: none; width: 60px; background: #00ff00; color: black; border: none; padding: 5px; font-weight: bold;">
+            
+            <button onclick="verifyCode()" id="ok-btn" 
+                    style="display: none; background: #00ff00; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold;">
+                OK
+            </button>
         </div>
+    </div>
+
+    <div style="flex: 1; text-align: right;">
+        <h3>3. DEIN ZIEL</h3>
+        <p>Vollende Sektor 1-20 für dein eBook.</p>
+    </div>
+</div>
+
+<div class="sectors-grid" style="margin-top: 20px;">
+    </div>
 
         <div class="info-section">
             <div class="inner-community-label">Von M&M Community</div>
