@@ -205,15 +205,23 @@
                 </div>
             </div>
 
-            <div style="margin-top: 15px; z-index: 10; display: flex; gap: 10px; background: rgba(0, 61, 143, 0.1); padding: 8px; border-radius: 4px; border: 1px solid #003d8f;">
-                <input type="email" id="db-anker-mail" placeholder="E-Mail für Sicherung eingeben..." 
-                    style="background: transparent; border: none; color: #fff; font-size: 0.8rem; outline: none; width: 220px;">
-                <button onclick="sichereAnkerUndStarteScan(0, themen[0])" 
-                    style="background: #ffd700; color: #000; border: none; padding: 4px 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; border-radius: 2px; box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);">
-                    ANKER SETZEN & STARTEN
-                </button>
-            </div>
-        </div>
+          <div style="margin-top: 15px; z-index: 10; display: flex; width: 95%; gap: 6px; background: rgba(0, 61, 143, 0.1); padding: 8px; border-radius: 4px; border: 1px solid #003d8f; align-items: center; justify-content: center; box-sizing: border-box;">
+    <input type="email" id="db-anker-mail" placeholder="E-Mail für Sicherung..." 
+        style="background: transparent; border: none; color: #fff; font-size: 0.8rem; outline: none; width: 160px; flex-shrink: 1;">
+    
+    <button onclick="sichereAnkerUndStarteScan(0, themen[0])" 
+        style="background: #ffd700; color: #000; border: none; padding: 4px 8px; font-size: 0.65rem; font-weight: bold; cursor: pointer; border-radius: 2px; white-space: nowrap; flex-shrink: 0;">
+        ANKER SETZEN & STARTEN
+    </button>
+
+    <input type="text" id="verifizierungs-code" placeholder="CODE" maxlength="6" 
+        style="background: rgba(0,0,0,0.5); border: 1px solid #00ff00; color: #00ff00; font-size: 0.8rem; outline: none; width: 45px; text-align: center; border-radius: 2px; font-weight: bold; flex-shrink: 0;">
+    
+    <button onclick="bestatigeCode()" 
+        style="background: #00ff00; color: #000; border: none; padding: 4px 8px; font-size: 0.65rem; font-weight: bold; cursor: pointer; border-radius: 2px; flex-shrink: 0;">
+        OK
+    </button>
+</div> 
 
         <div class="grid" id="main-grid" style="margin-top: 15px;"></div>
 
