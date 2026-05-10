@@ -73,7 +73,21 @@
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
 
-        .info-section { width: 80%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; position: relative; overflow: hidden; margin-top: 2vh; }
+       .info-section { 
+    width: 80%; 
+    min-height: 26vh; /* min-height statt fester height */
+    height: auto;     /* Erlaubt der Box, mit dem Inhalt zu wachsen */
+    border: 2px solid #003d8f; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+    background-color: #000; 
+    position: relative; 
+    overflow: hidden; 
+    margin-top: 2vh; 
+    padding: 10px 0; /* Ein bisschen Platz für das neue Kastel */
+}
         .tafel-layout { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; margin-top: 1vh; height: 26vh; flex-shrink: 0; }
         .info-section-ebene { width: 90% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
 
