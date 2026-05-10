@@ -57,10 +57,10 @@ def send_verification_email(user_email, code):
     msg['To'] = user_email
 
     try:
-        # Wir versuchen es mit dem Standard-Port 587 (oft stabiler bei Render)
-        server = smtplib.SMTP('smtp.gmail.com', 587)
-        server.starttls() # Verschlüsselung starten
-        server.login(sender_email, sender_password)
+       # Benutze diesen Code für Render:
+server = smtplib.SMTP('smtp.gmail.com', 587)
+server.starttls() # Das ist wichtig für die Sicherheit auf Port 587
+server.login(sender_email, sender_password)
         server.sendmail(sender_email, user_email, msg.as_string())
         server.quit()
         print(f"E-Mail erfolgreich an {user_email} gesendet!")
