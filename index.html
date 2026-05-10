@@ -205,15 +205,18 @@
                 </div>
             </div>
 
-            <div style="margin-top: 15px; z-index: 10; display: flex; gap: 10px; background: rgba(0, 61, 143, 0.1); padding: 8px; border-radius: 4px; border: 1px solid #003d8f;">
-                <input type="email" id="db-anker-mail" placeholder="E-Mail für Sicherung eingeben..." 
-                    style="background: transparent; border: none; color: #fff; font-size: 0.8rem; outline: none; width: 220px;">
-                <button onclick="sichereAnkerUndStarteScan(0, themen[0])" 
-                    style="background: #ffd700; color: #000; border: none; padding: 4px 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; border-radius: 2px; box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);">
-                    ANKER SETZEN & STARTEN
-                </button>
-            </div>
-        </div>
+         <div style="margin-top: 15px; z-index: 10; display: flex; gap: 10px; background: rgba(0, 61, 143, 0.1); padding: 8px; border-radius: 4px; border: 1px solid #003d8f; align-items: center;">
+    <input type="email" id="db-anker-mail" placeholder="E-Mail eingeben..." 
+        style="background: transparent; border: none; color: #fff; font-size: 0.8rem; outline: none; width: 180px;">
+    
+    <button onclick="sichereAnkerUndStarteScan(0, themen[0])" 
+        style="background: #ffd700; color: #000; border: none; padding: 4px 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; border-radius: 2px;">
+        ANKER SETZEN & STARTEN
+    </button>
+
+    <input type="text" id="verifizierungs-code" placeholder="CODE" maxlength="6"
+        style="background: rgba(255,255,255,0.1); border: 1px solid #0088ff; color: #00ff00; font-size: 0.8rem; outline: none; width: 60px; text-align: center; border-radius: 2px;">
+</div>
 
         <div class="grid" id="main-grid" style="margin-top: 15px;"></div>
 
