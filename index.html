@@ -205,24 +205,24 @@
                 </div>
             </div>
 
-          <div style="margin-top: 15px; z-index: 10; display: flex; flex-direction: column; align-items: center; gap: 10px; background: rgba(0, 61, 143, 0.1); padding: 15px; border-radius: 4px; border: 1px solid #003d8f;">
-    <div style="display: flex; gap: 10px;">
+        <div style="margin-top: 10px; z-index: 100; position: relative; background: rgba(0, 61, 143, 0.1); padding: 8px; border-radius: 4px; border: 1px solid #003d8f; display: flex; flex-direction: column; align-items: center;">
+    <div style="display: flex; gap: 10px; align-items: center;">
         <input type="email" id="db-anker-mail" placeholder="E-Mail für Sicherung eingeben..." 
-            style="background: transparent; border: none; color: #fff; font-size: 0.8rem; outline: none; width: 220px;">
+            style="background: transparent; border: none; color: #fff; font-size: 0.8rem; outline: none; width: 200px;">
         <button id="btn-anker" onclick="sichereAnkerUndStarteScan(0, themen[0])" 
-            style="background: #ffd700; color: #000; border: none; padding: 4px 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; border-radius: 2px; box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);">
+            style="background: #ffd700; color: #000; border: none; padding: 4px 10px; font-size: 0.65rem; font-weight: bold; cursor: pointer; border-radius: 2px;">
             ANKER SETZEN & STARTEN
         </button>
     </div>
 
-    <div id="code-eingabe-zone" style="display: none; border-top: 1px solid rgba(0, 61, 143, 0.5); padding-top: 10px; width: 100%; text-align: center;">
-        <p style="color: #ffd700; font-size: 0.7rem; margin-bottom: 5px; letter-spacing: 1px;">CODE AUS DEINER E-MAIL EINGEBEN:</p>
-        <div style="display: flex; justify-content: center; gap: 10px;">
+    <div id="code-eingabe-zone" style="display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); background: #000; border: 2px solid #00ff00; padding: 10px; z-index: 200; width: 250px; margin-top: 5px; box-shadow: 0 0 20px #000;">
+        <p style="color: #ffd700; font-size: 0.6rem; margin: 0 0 5px 0; letter-spacing: 1px;">CODE AUS DEINER E-MAIL:</p>
+        <div style="display: flex; justify-content: center; gap: 5px;">
             <input type="text" id="verifizierungs-code" placeholder="6-stellig" maxlength="6"
-                style="background: #000; border: 1px solid #fff; color: #00ff00; text-align: center; font-weight: bold; width: 100px; outline: none;">
+                style="background: #000; border: 1px solid #fff; color: #00ff00; text-align: center; width: 80px; outline: none; font-size: 0.8rem;">
             <button onclick="bestatigeCodeUndStarte()" 
-                style="background: #00ff00; color: #000; border: none; padding: 4px 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; border-radius: 2px;">
-                CODE PRÜFEN
+                style="background: #00ff00; color: #000; border: none; padding: 2px 8px; font-size: 0.6rem; font-weight: bold; cursor: pointer;">
+                PRÜFEN
             </button>
         </div>
     </div>
