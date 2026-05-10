@@ -42,9 +42,13 @@ app.add_middleware(
 # --- NEU: E-MAIL LOGIK (ANKER-SYSTEM) ---
 def send_verification_email(user_email, code):
     sender_email = "m&mcommunity22@gmail.com"
-    # Passwort wird aus den Render-Umgebungsvariablen gezogen (MAIL_PW)
+    # WICHTIG: Stelle sicher, dass die Variable bei Render exakt MAIL_PW heißt!
     sender_password = os.environ.get('MAIL_PW') 
     
+    if not sender_password:
+        print("FEHLER: Variable MAIL_PW wurde bei Render nicht gefunden!")
+        return False
+
     content = f"Willkommen in der M&M Community.\n\nDein sechsstelliger Verifizierungscode lautet: {code}\n\nGib diesen Code jetzt im Dashboard ein."
     
     msg = MIMEText(content)
@@ -53,12 +57,16 @@ def send_verification_email(user_email, code):
     msg['To'] = user_email
 
     try:
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
-            server.login(sender_email, sender_password)
-            server.sendmail(sender_email, user_email, msg.as_string())
+        # Wir versuchen es mit dem Standard-Port 587 (oft stabiler bei Render)
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls() # Verschlüsselung starten
+        server.login(sender_email, sender_password)
+        server.sendmail(sender_email, user_email, msg.as_string())
+        server.quit()
+        print(f"E-Mail erfolgreich an {user_email} gesendet!")
         return True
     except Exception as e:
-        print(f"E-Mail Fehler: {e}")
+        print(f"Google-E-Mail-Fehler: {e}")
         return False
 
 @app.post("/send-code")
