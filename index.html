@@ -205,15 +205,28 @@
                 </div>
             </div>
 
-            <div style="margin-top: 15px; z-index: 10; display: flex; gap: 10px; background: rgba(0, 61, 143, 0.1); padding: 8px; border-radius: 4px; border: 1px solid #003d8f;">
-                <input type="email" id="db-anker-mail" placeholder="E-Mail für Sicherung eingeben..." 
-                    style="background: transparent; border: none; color: #fff; font-size: 0.8rem; outline: none; width: 220px;">
-                <button onclick="sichereAnkerUndStarteScan(0, themen[0])" 
-                    style="background: #ffd700; color: #000; border: none; padding: 4px 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; border-radius: 2px; box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);">
-                    ANKER SETZEN & STARTEN
-                </button>
-            </div>
+          <div style="margin-top: 15px; z-index: 10; display: flex; flex-direction: column; align-items: center; gap: 10px; background: rgba(0, 61, 143, 0.1); padding: 15px; border-radius: 4px; border: 1px solid #003d8f;">
+    <div style="display: flex; gap: 10px;">
+        <input type="email" id="db-anker-mail" placeholder="E-Mail für Sicherung eingeben..." 
+            style="background: transparent; border: none; color: #fff; font-size: 0.8rem; outline: none; width: 220px;">
+        <button id="btn-anker" onclick="sichereAnkerUndStarteScan(0, themen[0])" 
+            style="background: #ffd700; color: #000; border: none; padding: 4px 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; border-radius: 2px; box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);">
+            ANKER SETZEN & STARTEN
+        </button>
+    </div>
+
+    <div id="code-eingabe-zone" style="display: none; border-top: 1px solid rgba(0, 61, 143, 0.5); padding-top: 10px; width: 100%; text-align: center;">
+        <p style="color: #ffd700; font-size: 0.7rem; margin-bottom: 5px; letter-spacing: 1px;">CODE AUS DEINER E-MAIL EINGEBEN:</p>
+        <div style="display: flex; justify-content: center; gap: 10px;">
+            <input type="text" id="verifizierungs-code" placeholder="6-stellig" maxlength="6"
+                style="background: #000; border: 1px solid #fff; color: #00ff00; text-align: center; font-weight: bold; width: 100px; outline: none;">
+            <button onclick="bestatigeCodeUndStarte()" 
+                style="background: #00ff00; color: #000; border: none; padding: 4px 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; border-radius: 2px;">
+                CODE PRÜFEN
+            </button>
         </div>
+    </div>
+</div> 
 
         <div class="grid" id="main-grid" style="margin-top: 15px;"></div>
 
