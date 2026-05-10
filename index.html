@@ -461,52 +461,80 @@
     function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
 
     function updateUI() {
-        const isDashboard = (ebene === 1);
-        const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
-        document.getElementById('top-label').style.display = isDashboard ? 'none' : 'block';
-        document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
-        document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
-        document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
-        document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
-        const mainText = document.getElementById('main-text');
-        const kiBox = document.getElementById('ki-ermittlung-ebene2');
-        const textFeld = document.getElementById('ki-tagesfokus-text');
-        if (ebene === 2) {
-            mainText.style.display = 'block';
-            mainText.style.maxHeight = "30vh";
-            mainText.style.overflowY = "auto";
-            if(kiBox) {
-                kiBox.style.display = 'block';
-                textFeld.style.display = "block";
-                textFeld.style.maxHeight = "25vh"; 
-                textFeld.style.overflowY = "scroll";
-                textFeld.style.paddingRight = "10px";
-            }
-        } else {
-            mainText.style.display = 'none';
-            if(kiBox) kiBox.style.display = 'none';
+    const isDashboard = (ebene === 1);
+    const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
+    
+    document.getElementById('top-label').style.display = isDashboard ? 'none' : 'block';
+    document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
+    document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
+    document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
+    document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
+    
+    const mainText = document.getElementById('main-text');
+    const kiBox = document.getElementById('ki-ermittlung-ebene2');
+    const textFeld = document.getElementById('ki-tagesfokus-text');
+
+    if (ebene === 2) {
+        mainText.style.display = 'block';
+        mainText.style.maxHeight = "30vh";
+        mainText.style.overflowY = "auto";
+        if(kiBox) {
+            kiBox.style.display = 'block';
+            textFeld.style.display = "block";
+            textFeld.style.maxHeight = "25vh"; 
+            textFeld.style.overflowY = "scroll";
+            textFeld.style.paddingRight = "10px";
         }
-        document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
-        document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
-        document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
-        document.getElementById('btn-back').style.visibility = 'visible';
-        document.getElementById('info-titel').innerText = aktuellesThema;
-        if (ebene === 2) { document.getElementById('main-text').innerText = sektorTexte[tId]; }
-        const btnNext = document.getElementById('btn-next');
-        const sigGelb = document.getElementById('sig-r4');
-        const sigRot = document.getElementById('sig-l4');
-        if (ebene === 2) {
-            btnNext.style.visibility = 'hidden'; sigGelb.classList.add('signal-aktiv'); sigRot.classList.add('signal-aktiv');  
-        } else if (ebene === 3) {
-            sigGelb.classList.remove('signal-aktiv'); sigRot.classList.add('signal-aktiv'); 
-        } else if (ebene === 4) {
-            sigRot.classList.remove('signal-aktiv'); sigGelb.classList.add('signal-aktiv');
-        } else {
-            sigGelb.classList.remove('signal-aktiv'); sigRot.classList.remove('signal-aktiv');
-        }
-        aktiviereKandidatenLicht(); updateDots(); startRotation();
+    } else {
+        mainText.style.display = 'none';
+        if(kiBox) kiBox.style.display = 'none';
     }
 
+    document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
+    document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
+    document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
+    document.getElementById('btn-back').style.visibility = 'visible';
+    document.getElementById('info-titel').innerText = aktuellesThema;
+    
+    if (ebene === 2) { document.getElementById('main-text').innerText = sektorTexte[tId]; }
+
+    const btnNext = document.getElementById('btn-next');
+    const sigGelb = document.getElementById('sig-r4');
+    const sigRot = document.getElementById('sig-l4');
+
+    // --- NEUE LOGIK FÜR DEN STUMMSCHALTER ---
+    let fertigeSektoren = 0;
+    for (let i = 0; i < 22; i++) {
+        const nBox = document.getElementById(`num-${i}`);
+        if (nBox && (nBox.classList.contains('num-fertig') || nBox.classList.contains('num-gelesen'))) {
+            fertigeSektoren++;
+        }
+    }
+
+    // Gelber Knopf (Schreiben) bleibt wie er war
+    if (ebene === 2) {
+        btnNext.style.visibility = 'hidden'; 
+        sigGelb.classList.add('signal-aktiv'); 
+    } else {
+        sigGelb.classList.remove('signal-aktiv');
+    }
+
+    // ROTER KNOPF (Video-Beweis) - Nur aktiv wenn 22 Boxen voll sind
+    if (fertigeSektoren >= 22) {
+        sigRot.classList.add('signal-aktiv');
+        sigRot.style.opacity = "1";
+        sigRot.style.cursor = "pointer";
+    } else {
+        sigRot.classList.remove('signal-aktiv');
+        sigRot.style.opacity = "0.2"; // Ganz blass, weil stumm
+        sigRot.style.cursor = "default";
+    }
+    // ---------------------------------------
+
+    aktiviereKandidatenLicht(); 
+    updateDots(); 
+    startRotation();
+}
     function aktiviereKandidatenLicht() {
         const sigL1 = document.getElementById('sig-l1');
         if (ebene === 4) { sigL1.className = "oval-side ov-schwarz"; sigL1.onclick = null; } 
