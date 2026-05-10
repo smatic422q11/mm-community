@@ -42,31 +42,25 @@ app.add_middleware(
 # --- E-MAIL LOGIK (ANKER-SYSTEM) ---
 def send_verification_email(user_email, code):
     sender_email = "mmcommunity22@gmail.com"
+    # Stelle sicher, dass bei Render MAIL_PW als Name steht!
     sender_password = os.environ.get('MAIL_PW') 
-    
-    print(f"Versuch E-Mail zu senden an: {user_email}")
-    
-    if not sender_password:
-        print("FEHLER: Variable MAIL_PW fehlt bei Render!")
-        return False
 
-    msg = MIMEText(f"Willkommen in der M&M Community.\n\nDein sechsstelliger Verifizierungscode lautet: {code}\n\nGib diesen Code jetzt im Dashboard ein.")
-    msg['Subject'] = 'M&M Community - Dein Code'
+    msg = MIMEText(f"Dein 6-stelliger Code: {code}")
+    msg['Subject'] = 'Verifizierung M&M Community'
     msg['From'] = sender_email
     msg['To'] = user_email
-    
+
     try:
-        server = smtplib.SMTP('smtp.gmail.com', 587, timeout=10)
-        server.set_debuglevel(1)
+        # Wir nutzen Port 587 mit expliziter Begrüßung
+        server = smtplib.SMTP('smtp.gmail.com', 587, timeout=20)
+        server.set_debuglevel(1) # Das zeigt uns ALLES im Render-Log
         server.starttls()
         server.login(sender_email, sender_password)
         server.sendmail(sender_email, user_email, msg.as_string())
         server.quit()
-        print("E-Mail wurde erfolgreich vom Server abgeliefert!")
-        return True
+        print(f"ERFOLG: Code {code} an {user_email} gesendet.")
     except Exception as e:
-        print(f"KRITISCHER FEHLER beim Senden: {e}")
-        return False
+        print(f"GOOGLE-BLOCKADE: {e}")
 
 @app.post("/send-code")
 async def handle_send_code(request: Request):
