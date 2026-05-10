@@ -436,25 +436,26 @@
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
     function portalZuEbene4() {
-    // Wir zählen, wie viele Boxen grün (fertig) oder gelb (in arbeit) sind
+    // 1. Wer will hier rein?
+    const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
+    const isSchöpfer = (email === "mmcommunity22@gmail.com");
+
+    // 2. Wie viele Boxen sind aktiv?
     let fertigeSektoren = 0;
     for (let i = 0; i < 22; i++) {
         const nBox = document.getElementById(`num-${i}`);
-        // Wenn die Box grün (num-fertig) oder gelb (num-gelesen) ist, zählt sie
         if (nBox && (nBox.classList.contains('num-fertig') || nBox.classList.contains('num-gelesen'))) {
             fertigeSektoren++;
         }
     }
 
-    // GEFÜHLSVORDERUNG (mit V):
-    // Nur wenn alle 22 Sektoren aktiv sind, darf das Portal öffnen
-    if (fertigeSektoren >= 22) {
+    // 3. ZUGANGS-LOGIK
+    if (isSchöpfer || fertigeSektoren >= 22) {
         ebene = 4; 
         updateUI(); 
         starteVideoKonferenz();
     } else {
-        // Der Knopf ist stumm – er macht einfach gar nichts.
-        console.log("Videobeweis gesperrt: Es leuchten erst " + fertigeSektoren + " von 22 Boxen.");
+        console.log("Videobeweis gesperrt für User: Es leuchten erst " + fertigeSektoren + " Boxen.");
         alert("Der Videobeweis ist noch gesperrt. Alle 22 Sektoren müssen aktiv sein!");
     }
 }
