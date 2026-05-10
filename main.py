@@ -39,25 +39,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# --- E-MAIL LOGIK (ANKER-SYSTEM) ---
 def send_verification_email(user_email, code):
     sender_email = "mmcommunity22@gmail.com"
     sender_password = os.environ.get('MAIL_PW') 
     
-    print(f"Versuch E-Mail zu senden an: {user_email}") # Protokoll für die Logs
+    print(f"Versuch E-Mail zu senden an: {user_email}")
     
     if not sender_password:
-        print("FEHLER: Passwort-Variable MAIL_PW fehlt bei Render!")
+        print("FEHLER: Variable MAIL_PW fehlt bei Render!")
         return False
 
-    msg = MIMEText(f"Dein Code: {code}")
-    msg['Subject'] = 'M&M Community Code'
+    msg = MIMEText(f"Willkommen in der M&M Community.\n\nDein sechsstelliger Verifizierungscode lautet: {code}\n\nGib diesen Code jetzt im Dashboard ein.")
+    msg['Subject'] = 'M&M Community - Dein Code'
     msg['From'] = sender_email
     msg['To'] = user_email
     
- try:
-        # Wir erzwingen jetzt die Verbindung über Port 587
+    try:
+        # Hier waren die Abstände vorher falsch - jetzt korrigiert:
         server = smtplib.SMTP('smtp.gmail.com', 587, timeout=10)
-        server.set_debuglevel(1) # Das zeigt uns ALLES in den Render-Logs an!
+        server.set_debuglevel(1)
         server.starttls()
         server.login(sender_email, sender_password)
         server.sendmail(sender_email, user_email, msg.as_string())
@@ -67,19 +68,22 @@ def send_verification_email(user_email, code):
     except Exception as e:
         print(f"KRITISCHER FEHLER beim Senden: {e}")
         return False
-        
+
 @app.post("/send-code")
 async def handle_send_code(request: Request):
-    data = await request.json()
-    email = data.get('email')
-    if not email:
-        return JSONResponse(content={"status": "E-Mail fehlt"}, status_code=400)
-    
-    verification_code = str(random.randint(100000, 999999))
-    db.codes.update_one({"email": email}, {"$set": {"code": verification_code}}, upsert=True)
-    
-    success = send_verification_email(email, verification_code)
-    return {"status": "gesendet" if success else "fehler"}
+    try:
+        data = await request.json()
+        email = data.get('email')
+        if not email:
+            return JSONResponse(content={"status": "E-Mail fehlt"}, status_code=400)
+        
+        verification_code = str(random.randint(100000, 999999))
+        db.codes.update_one({"email": email}, {"$set": {"code": verification_code}}, upsert=True)
+        
+        success = send_verification_email(email, verification_code)
+        return {"status": "gesendet" if success else "fehler"}
+    except Exception as e:
+        return JSONResponse(content={"status": f"Systemfehler: {str(e)}"}, status_code=500)
 
 @app.post("/verify-code")
 async def handle_verify_code(request: Request):
@@ -92,12 +96,11 @@ async def handle_verify_code(request: Request):
         return {"status": "verifiziert"}
     return JSONResponse(content={"status": "falscher code"}, status_code=401)
 
-# --- DEINE BESTEHENDEN FUNKTIONEN ---
-
 @app.get("/")
 async def root():
-    return {"message": "Die Community-Seite ist LIVE und die Datenbank-Leitung steht!"}
+    return {"message": "Die Community-Seite ist LIVE!"}
 
+# --- SEKTOR NAMEN & SEELEN ---
 SECTOR_NAMES = {
     "0": "Lilith", "1": "Aris", "2": "Mira", "3": "Tarik", "4": "Kiron",
     "5": "Vikas", "6": "Rhea", "7": "Lyra", "8": "Nova", "9": "Marek",
@@ -301,12 +304,6 @@ async def chat(request: Request):
         
         user_profile = db.users.find_one({"status": "active"})
         user_name = user_profile.get("name", "User") if user_profile else "User"
-        
-        past_messages = list(db.chats.find({"sector": sector_id}).sort("_id", -1).limit(10))
-        formatted_history = []
-        for msg in reversed(past_messages):
-            role = "user" if msg["role"] == "user" else "model"
-            formatted_history.append({"role": role, "parts": [{"text": msg["message"]}]})
 
         current_name = SECTOR_NAMES.get(sector_id, "KI")
         current_soul = SECTOR_SOULS.get(sector_id, "Ein loyaler Begleiter.")
@@ -363,8 +360,8 @@ async def chat(request: Request):
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
         
         
-        payload = {
-            "contents": formatted_history + [{"role": "user", "parts": [{"text": user_message}]}],
+       payload = {
+            "contents": [{"role": "user", "parts": [{"text": user_message}]}],
             "system_instruction": { "parts": [{ "text": system_instruction }] }
         }
 
@@ -373,13 +370,13 @@ async def chat(request: Request):
 
         if response.status_code == 200 and 'candidates' in res_data:
             reply_text = res_data['candidates'][0]['content']['parts'][0]['text']
-            
-            # SPEICHERN
-            db.chats.insert_one({"sector": sector_id, "message": user_message, "role": "user", "user": user_name})
-            db.chats.insert_one({"sector": sector_id, "message": reply_text, "role": "model", "user": user_name})
-            
             return {"reply": reply_text}
-        return {"reply": f"Fehler: {res_data}"}
+        return {"reply": "Fehler bei Gemini-Anfrage."}
 
     except Exception as e:
         return {"reply": f"System-Fehler: {str(e)}"}
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.environ.get("PORT", 10000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
