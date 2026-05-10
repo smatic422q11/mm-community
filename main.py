@@ -39,29 +39,47 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- E-MAIL LOGIK (ANKER-SYSTEM) ---
+# --- E-MAIL LOGIK (SENDGRID SYSTEM) ---
 def send_verification_email(user_email, code):
-    # DAS IST DER ABSENDER (Die Poststation)
-    ABSENDER_EMAIL = "mmcommunity22@gmail.com"
-    # Das Passwort für mmcommunity22 (aus den Render-Umgebungsvariablen)
-    ABSENDER_PASSWORT = os.environ.get('MAIL_PW') 
+    # Dein neuer API Key aus den Render-Umgebungsvariablen
+    SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
+    
+    # Deine verifizierte Absender-Adresse (muss exakt so bei SendGrid stehen)
+    ABSENDER_EMAIL = "info@mm-community.online" 
 
-    # Erstellung der Nachricht
-    msg = MIMEText(f"Dein 6-stelliger Code für die M&M Community lautet: {code}")
-    msg['Subject'] = 'Dein Verifizierungscode'
-    msg['From'] = f"M&M Community <{ABSENDER_EMAIL}>"
-    msg['To'] = user_email # Hier geht die Mail HIN (an den User)
+    url = "https://api.sendgrid.com/v3/mail/send"
+    
+    headers = {
+        "Authorization": f"Bearer {SENDGRID_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    
+    payload = {
+        "personalizations": [{
+            "to": [{"email": user_email}]
+        }],
+        "from": {
+            "email": ABSENDER_EMAIL,
+            "name": "M&M Community"
+        },
+        "subject": "Dein Verifizierungscode",
+        "content": [{
+            "type": "text/plain",
+            "value": f"Dein 6-stelliger Code für die M&M Community lautet: {code}"
+        }]
+    }
 
     try:
-        # Verbindung zum Google-Server
-        server = smtplib.SMTP('smtp.gmail.com', 587, timeout=15)
-        server.starttls() 
-        server.login(ABSENDER_EMAIL, ABSENDER_PASSWORT)
-        server.sendmail(ABSENDER_EMAIL, user_email, msg.as_string())
-        server.quit()
-        print(f"ERFOLG: Mail wurde VON {ABSENDER_EMAIL} GESENDET.")
+        response = requests.post(url, json=payload, headers=headers)
+        if response.status_code in [200, 201, 202]:
+            print(f"ERFOLG: Mail wurde via SendGrid an {user_email} gesendet.")
+            return True
+        else:
+            print(f"SendGrid Fehler: {response.status_code} - {response.text}")
+            return False
     except Exception as e:
-        print(f"FEHLER: Der Absender {ABSENDER_EMAIL} konnte nicht senden: {e}")
+        print(f"Systemfehler beim Mail-Versand: {e}")
+        return False
 
 @app.post("/send-code")
 async def handle_send_code(request: Request):
