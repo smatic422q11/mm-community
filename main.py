@@ -53,8 +53,8 @@ def send_verification_email(user_email, code):
     msg['Subject'] = 'M&M Community Code'
     msg['From'] = sender_email
     msg['To'] = user_email
-
-  try:
+    
+ try:
         # Wir erzwingen jetzt die Verbindung über Port 587
         server = smtplib.SMTP('smtp.gmail.com', 587, timeout=10)
         server.set_debuglevel(1) # Das zeigt uns ALLES in den Render-Logs an!
@@ -67,7 +67,7 @@ def send_verification_email(user_email, code):
     except Exception as e:
         print(f"KRITISCHER FEHLER beim Senden: {e}")
         return False
-
+        
 @app.post("/send-code")
 async def handle_send_code(request: Request):
     data = await request.json()
