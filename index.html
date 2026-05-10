@@ -702,13 +702,18 @@ async function sichereAnkerUndStarteScan() {
 }
 
 async function bestatigeCode() {
-    const code = document.getElementById('verification-code').value;
-    const email = document.getElementById('db-anker-mail').value;
+    const codeInput = document.getElementById('verification-code');
+    const code = codeInput.value;
 
-    // Das ist der Moment, in dem der User reingelassen wird
     if (code.length === 6) {
-        // Später prüfen wir das gegen die Datenbank, jetzt lassen wir dich rein
+        // Hier deine Logik (z.B. Sektor öffnen)
         showInfo(themen[0], 0); 
+
+        // GEFÜHLSVORDERUNG: Alles wieder auf neutral stellen
+        codeInput.value = ""; // Feld leeren
+        document.getElementById('code-step').style.display = 'none'; // Code-Teil weg
+        document.getElementById('email-step').style.display = 'flex'; // E-Mail-Teil wieder her
+        
     } else {
         alert("Bitte den 6-stelligen Code eingeben.");
     }
