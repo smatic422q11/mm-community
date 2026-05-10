@@ -363,6 +363,7 @@ async def chat(request: Request):
         api_key = os.getenv("GEMINI_API_KEY")
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
         
+        
         payload = {
             "contents": formatted_history + [{"role": "user", "parts": [{"text": user_message}]}],
             "system_instruction": { "parts": [{ "text": system_instruction }] }
