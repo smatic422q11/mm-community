@@ -41,7 +41,7 @@ app.add_middleware(
 
 # --- NEU: E-MAIL LOGIK (ANKER-SYSTEM) ---
 def send_verification_email(user_email, code):
-    sender_email = "m&mcommunity22@gmail.com"
+    sender_email = "mmcommunity22@gmail.com"
     # WICHTIG: Stelle sicher, dass die Variable bei Render exakt MAIL_PW heißt!
     sender_password = os.environ.get('MAIL_PW') 
     
