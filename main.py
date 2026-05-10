@@ -45,7 +45,7 @@ def send_verification_email(user_email, code):
     SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
     
     # Das ist dein offizieller Absendername - kein extra Account nötig!
-    ABSENDER_EMAIL = "community@mm-community.online" 
+    ABSENDER_EMAIL = "info@mm-community.online" 
 
     url = "https://api.sendgrid.com/v3/mail/send"
     
