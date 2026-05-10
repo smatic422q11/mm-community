@@ -435,7 +435,29 @@
     } 
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
-    function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); starteVideoKonferenz(); } }
+    function portalZuEbene4() {
+    // Wir zählen, wie viele Boxen grün (fertig) oder gelb (in arbeit) sind
+    let fertigeSektoren = 0;
+    for (let i = 0; i < 22; i++) {
+        const nBox = document.getElementById(`num-${i}`);
+        // Wenn die Box grün (num-fertig) oder gelb (num-gelesen) ist, zählt sie
+        if (nBox && (nBox.classList.contains('num-fertig') || nBox.classList.contains('num-gelesen'))) {
+            fertigeSektoren++;
+        }
+    }
+
+    // GEFÜHLSVORDERUNG (mit V):
+    // Nur wenn alle 22 Sektoren aktiv sind, darf das Portal öffnen
+    if (fertigeSektoren >= 22) {
+        ebene = 4; 
+        updateUI(); 
+        starteVideoKonferenz();
+    } else {
+        // Der Knopf ist stumm – er macht einfach gar nichts.
+        console.log("Videobeweis gesperrt: Es leuchten erst " + fertigeSektoren + " von 22 Boxen.");
+        alert("Der Videobeweis ist noch gesperrt. Alle 22 Sektoren müssen aktiv sein!");
+    }
+}
     function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
 
     function updateUI() {
