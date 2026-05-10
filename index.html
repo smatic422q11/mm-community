@@ -186,47 +186,47 @@
         </div>
 
         <div class="info-section">
-            <div class="inner-community-label">Von M&M Community</div>
-            <div style="display: flex; width: 95%; gap: 15px; justify-content: space-between; align-items: flex-start; z-index: 10;">
-                <div style="flex: 1; border-right: 1px solid rgba(0, 61, 143, 0.4); padding-right: 10px;">
-                    <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">1. DEINE MISSION</h3>
-                    <p style="font-size: 0.75rem; color: #ccc; line-height: 1.3; margin: 0;">Schreibe deine Biografie der Wahrheit. Sektor 1 ist dein Startpunkt.</p>
-                </div>
-                <div style="flex: 1; border-right: 1px solid rgba(0, 61, 143, 0.4); padding-right: 10px; padding-left: 5px;">
-                    <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">2. ORIENTIERUNG</h3>
-                    <div style="font-size: 0.7rem; color: #ccc; line-height: 1.4;">
-                        <span style="color: #0088ff;">🔵 Offen</span> | <span style="color: #ffd700;">🟡 Arbeit</span><br>
-                        <span style="color: #00ff00;">🟢 Sicher</span> | <span style="color: #ff4d4d;">🔴 Wartet</span>
-                    </div>
-                </div>
-                <div style="flex: 1; padding-left: 5px;">
-                    <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">3. DEIN ZIEL</h3>
-                    <p style="font-size: 0.75rem; color: #ccc; line-height: 1.3; margin: 0;">Vollende Sektor 1-20 für dein eBook und den Video-Beweis.</p>
-                </div>
-            </div>
-
-            <div id="auth-wrapper" style="margin-top: 15px; z-index: 10; display: flex; gap: 10px; background: rgba(0, 61, 143, 0.1); padding: 8px; border-radius: 4px; border: 1px solid #003d8f; min-width: 350px; justify-content: center;">
-                
-                <div id="email-step" style="display: flex; gap: 10px; align-items: center;">
-                    <input type="email" id="db-anker-mail" placeholder="E-Mail für Sicherung eingeben..." 
-                        style="background: transparent; border: none; color: #fff; font-size: 0.8rem; outline: none; width: 220px;">
-                    <button onclick="sichereAnkerUndStarteScan()" 
-                        style="background: #ffd700; color: #000; border: none; padding: 6px 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; border-radius: 2px;">
-                        ANKER SETZEN & STARTEN
-                    </button>
-                </div>
-
-                <div id="code-step" style="display: none; gap: 10px; align-items: center;">
-                    <span style="color: #00ff00; font-size: 0.7rem; font-weight: bold;">CODE:</span>
-                    <input type="text" id="verification-code" placeholder="6-stellig" maxlength="6"
-                        style="background: #00ff00; border: none; color: #000; font-size: 0.8rem; font-weight: bold; width: 80px; text-align: center; outline: none;">
-                    <button onclick="bestatigeCode()" 
-                        style="background: #fff; color: #000; border: none; padding: 6px 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; border-radius: 2px;">
-                        OK
-                    </button>
-                </div>
+    <div class="inner-community-label">Von M&M Community</div>
+    
+    <div style="display: flex; width: 95%; gap: 15px; justify-content: space-between; align-items: flex-start; z-index: 10;">
+        <div style="flex: 1; border-right: 1px solid rgba(0, 61, 143, 0.4); padding-right: 10px;">
+            <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">1. DEINE MISSION</h3>
+            <p style="font-size: 0.75rem; color: #ccc; line-height: 1.3; margin: 0;">Schreibe deine Biografie der Wahrheit. Sektor 1 ist dein Startpunkt.</p>
+        </div>
+        <div style="flex: 1; border-right: 1px solid rgba(0, 61, 143, 0.4); padding-right: 10px; padding-left: 5px;">
+            <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">2. ORIENTIERUNG</h3>
+            <div style="font-size: 0.7rem; color: #ccc; line-height: 1.4;">
+                <span style="color: #0088ff;">🔵 Offen</span> | <span style="color: #ffd700;">🟡 Arbeit</span><br>
+                <span style="color: #00ff00;">🟢 Sicher</span> | <span style="color: #ff4d4d;">🔴 Wartet</span>
             </div>
         </div>
+        <div style="flex: 1; padding-left: 5px;">
+            <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">3. DEIN ZIEL</h3>
+            <p style="font-size: 0.75rem; color: #ccc; line-height: 1.3; margin: 0;">Vollende Sektor 1-20 für dein eBook und den Video-Beweis.</p>
+        </div>
+    </div>
+
+    <div id="auth-wrapper" style="margin-top: 15px; z-index: 10; display: flex; gap: 0; background: rgba(0, 61, 143, 0.1); border: 1px solid #003d8f; border-radius: 4px; width: 95%; max-width: 600px; height: 45px; overflow: hidden; align-items: stretch;">
+        
+        <div id="email-step" style="display: flex; flex: 2; align-items: center; padding-left: 10px; border-right: 1px solid #003d8f;">
+            <input type="email" id="db-anker-mail" placeholder="E-Mail eingeben..." 
+                style="background: transparent; border: none; color: #fff; font-size: 0.8rem; outline: none; width: 100%;">
+            <button onclick="sichereAnkerUndStarteScan()" 
+                style="background: #ffd700; color: #000; border: none; height: 100%; padding: 0 15px; font-size: 0.65rem; font-weight: bold; cursor: pointer; white-space: nowrap;">
+                ANKER SETZEN
+            </button>
+        </div>
+
+        <div id="code-step" style="display: flex; flex: 1; align-items: center; background: rgba(0,0,0,0.4);">
+            <input type="text" id="verification-code" placeholder="CODE" maxlength="6"
+                style="background: #00ff00; border: none; color: #000; font-size: 0.8rem; font-weight: bold; width: 70px; height: 100%; text-align: center; outline: none;">
+            <button onclick="bestatigeCode()" 
+                style="background: #fff; color: #000; border: none; height: 100%; flex-grow: 1; font-size: 0.7rem; font-weight: bold; cursor: pointer;">
+                OK
+            </button>
+        </div>
+    </div>
+</div>
 
         <div class="grid" id="main-grid" style="margin-top: 15px;"></div>
 
