@@ -205,12 +205,13 @@
                 </div>
             </div>
 
-            <div style="margin-top: 15px; z-index: 10; display: flex; gap: 5px; background: rgba(0, 61, 143, 0.1); padding: 8px; border-radius: 4px; border: 1px solid #003d8f; align-items: center; justify-content: center; width: 98%; max-width: 1400px; white-space: nowrap;">
-    <input type="email" id="db-anker-mail" placeholder="E-Mail..." style="background: transparent; border: none; color: #fff; font-size: 0.8rem; outline: none; width: 150px; flex-shrink: 1;">
-    <button onclick="sichereAnkerUndStarteScan(0, themen[0])" style="background: #ffd700; color: #000; border: none; padding: 4px 8px; font-size: 0.65rem; font-weight: bold; cursor: pointer; border-radius: 2px; flex-shrink: 0;">ANKER SETZEN & STARTEN</button>
-    <input type="text" id="verifizierungs-code" placeholder="CODE" maxlength="6" style="background: rgba(0,0,0,0.5); border: 1px solid #00ff00; color: #00ff00; font-size: 0.8rem; outline: none; width: 45px; text-align: center; border-radius: 2px; font-weight: bold; flex-shrink: 0;">
-    <button onclick="bestatigeCode()" style="background: #00ff00; color: #000; border: none; padding: 4px 8px; font-size: 0.65rem; font-weight: bold; cursor: pointer; border-radius: 2px; flex-shrink: 0;">OK</button>
-</div>
+            <div style="margin-top: 15px; z-index: 10; display: flex; gap: 10px; background: rgba(0, 61, 143, 0.1); padding: 8px; border-radius: 4px; border: 1px solid #003d8f;">
+                <input type="email" id="db-anker-mail" placeholder="E-Mail für Sicherung eingeben..." 
+                    style="background: transparent; border: none; color: #fff; font-size: 0.8rem; outline: none; width: 220px;">
+                <button onclick="sichereAnkerUndStarteScan(0, themen[0])" 
+                    style="background: #ffd700; color: #000; border: none; padding: 4px 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; border-radius: 2px; box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);">
+                    ANKER SETZEN & STARTEN
+                </button>
             </div>
         </div>
 
@@ -669,19 +670,47 @@ async function sichereAnkerUndStarteScan(id, thema) {
     const email = emailInput.value.trim();
 
     if (!email || !email.includes('@')) {
-        alert("Bitte eine gültige E-Mail für deine Biografie eingeben.");
+        alert("Bitte eine gültige E-Mail eingeben.");
         return;
     }
 
-    // Wir entfernen den fetch-Versuch zur gelöschten Mongo-Datenbank, 
-    // damit die Fehlermeldung "Verbindung fehlgeschlagen" verschwindet.
-    console.log("Verifiziere für Email:", email);
+    // Sendet den Code über Render/Python
+    try {
+        const response = await fetch('https://mm-community.onrender.com/send-code', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email })
+        });
+        if (response.ok) {
+            alert("Code wurde an " + email + " gesendet!");
+        }
+    } catch (error) {
+        console.error("Fehler:", error);
+    }
+}
 
-    // Die Identität bleibt LIVE im Eingabefeld (KEIN localStorage)
-    alert("Anker gesetzt für: " + email);
-    
-    // Sektor direkt öffnen
-    showInfo(themen[id], id);
+async function bestatigeCode() {
+    const email = document.getElementById('db-anker-mail').value.trim();
+    const code = document.getElementById('verifizierungs-code').value.trim();
+
+    if (!code) { alert("Bitte Code eingeben!"); return; }
+
+    try {
+        const response = await fetch('https://mm-community.onrender.com/verify-code', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email, code: code })
+        });
+
+        if (response.ok) {
+            alert("Verifizierung erfolgreich!");
+            showInfo(themen[0], 0); // Öffnet Sektor 1
+        } else {
+            alert("Falscher Code!");
+        }
+    } catch (error) {
+        alert("Verbindung zum System hakt.");
+    }
 }
 
 function pruefeZugang(thema, id) {
