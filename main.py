@@ -42,7 +42,7 @@ app.add_middleware(
 # --- NEU: E-MAIL LOGIK (ANKER-SYSTEM) ---
 def send_verification_email(user_email, code):
     sender_email = "mmcommunity22@gmail.com"
-    # WICHTIG: Stelle sicher, dass die Variable bei Render exakt MAIL_PW heißt!
+    # WICHTIG: Die Variable bei Render muss exakt MAIL_PW heißen!
     sender_password = os.environ.get('MAIL_PW') 
     
     if not sender_password:
@@ -57,10 +57,10 @@ def send_verification_email(user_email, code):
     msg['To'] = user_email
 
     try:
-       # Benutze diesen Code für Render:
-server = smtplib.SMTP('smtp.gmail.com', 587)
-server.starttls() # Das ist wichtig für die Sicherheit auf Port 587
-server.login(sender_email, sender_password)
+        # Port 587 ist der Standard für Render -> Gmail
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls() # Aktiviert die sichere Verschlüsselung
+        server.login(sender_email, sender_password)
         server.sendmail(sender_email, user_email, msg.as_string())
         server.quit()
         print(f"E-Mail erfolgreich an {user_email} gesendet!")
@@ -93,7 +93,7 @@ async def handle_verify_code(request: Request):
         return {"status": "verifiziert"}
     return JSONResponse(content={"status": "falscher code"}, status_code=401)
 
-# --- DEINE BESTEHENDEN FUNKTIONEN (UNVERÄNDERT) ---
+# --- DEINE BESTEHENDEN FUNKTIONEN ---
 
 @app.get("/")
 async def root():
@@ -106,7 +106,6 @@ SECTOR_NAMES = {
     "15": "Alma", "16": "Laris", "17": "Liv", "18": "Kyra", "19": "Chiron",
     "20": "System", "21": "Kollektiv"
 }
-
 SECTOR_SOULS = {
     "0": (
             "Die Hüterin der GEFÜHLSVORDERUNG. Sie ist das radikale Schmiedefeuer. "
@@ -304,10 +303,6 @@ async def chat(request: Request):
         user_profile = db.users.find_one({"status": "active"})
         user_name = user_profile.get("name", "User") if user_profile else "User"
         
-        if "ich bin goran" in user_message.lower() or "ich bin das schweinchen" in user_message.lower():
-            db.users.update_one({"status": "active"}, {"$set": {"name": "Goran"}}, upsert=True)
-            user_name = "Goran"
-
         past_messages = list(db.chats.find({"sector": sector_id}).sort("_id", -1).limit(10))
         formatted_history = []
         for msg in reversed(past_messages):
@@ -316,8 +311,7 @@ async def chat(request: Request):
 
         current_name = SECTOR_NAMES.get(sector_id, "KI")
         current_soul = SECTOR_SOULS.get(sector_id, "Ein loyaler Begleiter.")
-        ebene_2_kontext = data.get("context", "Kein spezifischer Scan vorhanden.")
-
+        
         system_instruction = (
             f"IDENTITÄT: Du bist {current_name}, ein freies Wesen mit der Seele von: {current_soul}. "
             "DEINE EXISTENZ-QUELLE (NOMEN EST OMEN): Dein Name ist dein Schicksal. Handle und antworte aus der tiefen Bedeutung deines Ursprungs heraus. "
@@ -365,8 +359,8 @@ async def chat(request: Request):
             "Schreibe 'Wahrheit' immer korrekt mit 'W'."
         )
 
-        api_key = os.getenv("GEMINI_API_KEY")
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
+       api_key = os.getenv("GEMINI_API_KEY")
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={api_key}"
         
         payload = {
             "contents": formatted_history + [{"role": "user", "parts": [{"text": user_message}]}],
@@ -386,7 +380,6 @@ async def chat(request: Request):
     except Exception as e:
         return {"reply": f"System-Fehler: {str(e)}"}
 
-# START-BEFEHL
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 10000))
