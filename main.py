@@ -41,11 +41,11 @@ app.add_middleware(
 
 # --- E-MAIL LOGIK (SENDGRID SYSTEM) ---
 def send_verification_email(user_email, code):
-    # Dein neuer API Key aus den Render-Umgebungsvariablen
+    # Den API Key holt sich der Code automatisch von Render (Environment Variable)
     SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
     
-    # Deine verifizierte Absender-Adresse (muss exakt so bei SendGrid stehen)
-    ABSENDER_EMAIL = "info@mm-community.online" 
+    # Das ist dein offizieller Absendername - kein extra Account nötig!
+    ABSENDER_EMAIL = "community@mm-community.online" 
 
     url = "https://api.sendgrid.com/v3/mail/send"
     
@@ -80,7 +80,7 @@ def send_verification_email(user_email, code):
     except Exception as e:
         print(f"Systemfehler beim Mail-Versand: {e}")
         return False
-
+        
 @app.post("/send-code")
 async def handle_send_code(request: Request):
     try:
