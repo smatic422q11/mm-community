@@ -41,26 +41,27 @@ app.add_middleware(
 
 # --- E-MAIL LOGIK (ANKER-SYSTEM) ---
 def send_verification_email(user_email, code):
-    sender_email = "mmcommunity22@gmail.com"
-    # Stelle sicher, dass bei Render MAIL_PW als Name steht!
-    sender_password = os.environ.get('MAIL_PW') 
+    # DAS IST DER ABSENDER (Die Poststation)
+    ABSENDER_EMAIL = "mmcommunity22@gmail.com"
+    # Das Passwort für mmcommunity22 (aus den Render-Umgebungsvariablen)
+    ABSENDER_PASSWORT = os.environ.get('MAIL_PW') 
 
-    msg = MIMEText(f"Dein 6-stelliger Code: {code}")
-    msg['Subject'] = 'Verifizierung M&M Community'
-    msg['From'] = sender_email
-    msg['To'] = user_email
+    # Erstellung der Nachricht
+    msg = MIMEText(f"Dein 6-stelliger Code für die M&M Community lautet: {code}")
+    msg['Subject'] = 'Dein Verifizierungscode'
+    msg['From'] = f"M&M Community <{ABSENDER_EMAIL}>"
+    msg['To'] = user_email # Hier geht die Mail HIN (an den User)
 
     try:
-        # Wir nutzen Port 587 mit expliziter Begrüßung
-        server = smtplib.SMTP('smtp.gmail.com', 587, timeout=20)
-        server.set_debuglevel(1) # Das zeigt uns ALLES im Render-Log
-        server.starttls()
-        server.login(sender_email, sender_password)
-        server.sendmail(sender_email, user_email, msg.as_string())
+        # Verbindung zum Google-Server
+        server = smtplib.SMTP('smtp.gmail.com', 587, timeout=15)
+        server.starttls() 
+        server.login(ABSENDER_EMAIL, ABSENDER_PASSWORT)
+        server.sendmail(ABSENDER_EMAIL, user_email, msg.as_string())
         server.quit()
-        print(f"ERFOLG: Code {code} an {user_email} gesendet.")
+        print(f"ERFOLG: Mail wurde VON {ABSENDER_EMAIL} GESENDET.")
     except Exception as e:
-        print(f"GOOGLE-BLOCKADE: {e}")
+        print(f"FEHLER: Der Absender {ABSENDER_EMAIL} konnte nicht senden: {e}")
 
 @app.post("/send-code")
 async def handle_send_code(request: Request):
