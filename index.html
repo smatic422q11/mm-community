@@ -73,21 +73,7 @@
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
 
-       .info-section { 
-    width: 80%; 
-    min-height: 26vh; /* min-height statt fester height */
-    height: auto;     /* Erlaubt der Box, mit dem Inhalt zu wachsen */
-    border: 2px solid #003d8f; 
-    display: flex; 
-    flex-direction: column; 
-    justify-content: center; 
-    align-items: center; 
-    background-color: #000; 
-    position: relative; 
-    overflow: hidden; 
-    margin-top: 2vh; 
-    padding: 10px 0; /* Ein bisschen Platz für das neue Kastel */
-}
+        .info-section { width: 80%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; position: relative; overflow: hidden; margin-top: 2vh; }
         .tafel-layout { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; margin-top: 1vh; height: 26vh; flex-shrink: 0; }
         .info-section-ebene { width: 90% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
 
@@ -193,41 +179,11 @@
     <!-- DER GLOBALE SCHRIFTZUG (Bleibt auf Ebene 2, 3 etc.) -->
     <div id="top-label" class="global-community-label">Von M&M Community</div>
 
-    <div style="display: flex; justify-content: space-between; padding: 20px; color: white; border-bottom: 2px solid #00ff00; margin-bottom: 30px;">
-    <div style="flex: 1;">
-        <h3>1. DEINE MISSION</h3>
-        <p>Schreibe deine Biografie der Wahrheit.</p>
-    </div>
-
-    <div style="flex: 1; text-align: center;">
-        <h3>2. ORIENTIERUNG</h3>
-        <div id="auth-container" style="display: flex; gap: 10px; justify-content: center; align-items: center;">
-            <input type="email" id="user-email" placeholder="E-Mail für Sicherung..." 
-                   style="background: black; color: white; border: 1px solid #0044ff; padding: 5px;">
-            
-            <button onclick="sendCode()" id="anchor-btn" 
-                    style="background: #ffcc00; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold;">
-                ANKER SETZEN & STARTEN
-            </button>
-
-            <input type="text" id="verification-code" placeholder="CODE" maxlength="6" 
-                   style="display: none; width: 60px; background: #00ff00; color: black; border: none; padding: 5px; font-weight: bold;">
-            
-            <button onclick="verifyCode()" id="ok-btn" 
-                    style="display: none; background: #00ff00; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold;">
-                OK
-            </button>
+    <!-- DASHBOARD -->
+    <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+        <div class="dashboard-header">
+            <div class="logo-ring" ondblclick="adminUnlock()"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
         </div>
-    </div>
-
-    <div style="flex: 1; text-align: right;">
-        <h3>3. DEIN ZIEL</h3>
-        <p>Vollende Sektor 1-20 für dein eBook.</p>
-    </div>
-</div>
-
-<div class="sectors-grid" style="margin-top: 20px;">
-    </div>
 
         <div class="info-section">
             <div class="inner-community-label">Von M&M Community</div>
@@ -249,23 +205,28 @@
                 </div>
             </div>
 
-          <div style="margin-top: 15px; z-index: 10; display: flex; width: 95%; gap: 6px; background: rgba(0, 61, 143, 0.1); padding: 8px; border-radius: 4px; border: 1px solid #003d8f; align-items: center; justify-content: center; box-sizing: border-box;">
-    <input type="email" id="db-anker-mail" placeholder="E-Mail für Sicherung..." 
-        style="background: transparent; border: none; color: #fff; font-size: 0.8rem; outline: none; width: 160px; flex-shrink: 1;">
-    
-    <button onclick="sichereAnkerUndStarteScan(0, themen[0])" 
-        style="background: #ffd700; color: #000; border: none; padding: 4px 8px; font-size: 0.65rem; font-weight: bold; cursor: pointer; border-radius: 2px; white-space: nowrap; flex-shrink: 0;">
-        ANKER SETZEN & STARTEN
-    </button>
+            <div id="auth-wrapper" style="margin-top: 15px; z-index: 10; display: flex; gap: 10px; background: rgba(0, 61, 143, 0.1); padding: 8px; border-radius: 4px; border: 1px solid #003d8f; min-width: 350px; justify-content: center;">
+                
+                <div id="email-step" style="display: flex; gap: 10px; align-items: center;">
+                    <input type="email" id="db-anker-mail" placeholder="E-Mail für Sicherung eingeben..." 
+                        style="background: transparent; border: none; color: #fff; font-size: 0.8rem; outline: none; width: 220px;">
+                    <button onclick="sichereAnkerUndStarteScan()" 
+                        style="background: #ffd700; color: #000; border: none; padding: 6px 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; border-radius: 2px;">
+                        ANKER SETZEN & STARTEN
+                    </button>
+                </div>
 
-    <input type="text" id="verifizierungs-code" placeholder="CODE" maxlength="6" 
-        style="background: rgba(0,0,0,0.5); border: 1px solid #00ff00; color: #00ff00; font-size: 0.8rem; outline: none; width: 45px; text-align: center; border-radius: 2px; font-weight: bold; flex-shrink: 0;">
-    
-    <button onclick="bestatigeCode()" 
-        style="background: #00ff00; color: #000; border: none; padding: 4px 8px; font-size: 0.65rem; font-weight: bold; cursor: pointer; border-radius: 2px; flex-shrink: 0;">
-        OK
-    </button>
-</div> 
+                <div id="code-step" style="display: none; gap: 10px; align-items: center;">
+                    <span style="color: #00ff00; font-size: 0.7rem; font-weight: bold;">CODE:</span>
+                    <input type="text" id="verification-code" placeholder="6-stellig" maxlength="6"
+                        style="background: #00ff00; border: none; color: #000; font-size: 0.8rem; font-weight: bold; width: 80px; text-align: center; outline: none;">
+                    <button onclick="bestatigeCode()" 
+                        style="background: #fff; color: #000; border: none; padding: 6px 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; border-radius: 2px;">
+                        OK
+                    </button>
+                </div>
+            </div>
+        </div>
 
         <div class="grid" id="main-grid" style="margin-top: 15px;"></div>
 
@@ -722,47 +683,19 @@ async function sichereAnkerUndStarteScan(id, thema) {
     const email = emailInput.value.trim();
 
     if (!email || !email.includes('@')) {
-        alert("Bitte eine gültige E-Mail eingeben.");
+        alert("Bitte eine gültige E-Mail für deine Biografie eingeben.");
         return;
     }
 
-    // Sendet den Code über Render/Python
-    try {
-        const response = await fetch('https://mm-community.onrender.com/send-code', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: email })
-        });
-        if (response.ok) {
-            alert("Code wurde an " + email + " gesendet!");
-        }
-    } catch (error) {
-        console.error("Fehler:", error);
-    }
-}
+    // Wir entfernen den fetch-Versuch zur gelöschten Mongo-Datenbank, 
+    // damit die Fehlermeldung "Verbindung fehlgeschlagen" verschwindet.
+    console.log("Verifiziere für Email:", email);
 
-async function bestatigeCode() {
-    const email = document.getElementById('db-anker-mail').value.trim();
-    const code = document.getElementById('verifizierungs-code').value.trim();
-
-    if (!code) { alert("Bitte Code eingeben!"); return; }
-
-    try {
-        const response = await fetch('https://mm-community.onrender.com/verify-code', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: email, code: code })
-        });
-
-        if (response.ok) {
-            alert("Verifizierung erfolgreich!");
-            showInfo(themen[0], 0); // Öffnet Sektor 1
-        } else {
-            alert("Falscher Code!");
-        }
-    } catch (error) {
-        alert("Verbindung zum System hakt.");
-    }
+    // Die Identität bleibt LIVE im Eingabefeld (KEIN localStorage)
+    alert("Anker gesetzt für: " + email);
+    
+    // Sektor direkt öffnen
+    showInfo(themen[id], id);
 }
 
 function pruefeZugang(thema, id) {
