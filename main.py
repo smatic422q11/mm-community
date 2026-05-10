@@ -359,8 +359,9 @@ async def chat(request: Request):
             "Schreibe 'Wahrheit' immer korrekt mit 'W'."
         )
 
-       api_key = os.getenv("GEMINI_API_KEY")
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={api_key}"
+       # --- GEMINI ANFRAGE ---
+        api_key = os.getenv("GEMINI_API_KEY")
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
         
         payload = {
             "contents": formatted_history + [{"role": "user", "parts": [{"text": user_message}]}],
@@ -372,15 +373,13 @@ async def chat(request: Request):
 
         if response.status_code == 200 and 'candidates' in res_data:
             reply_text = res_data['candidates'][0]['content']['parts'][0]['text']
+            
+            # SPEICHERN
             db.chats.insert_one({"sector": sector_id, "message": user_message, "role": "user", "user": user_name})
             db.chats.insert_one({"sector": sector_id, "message": reply_text, "role": "model", "user": user_name})
+            
             return {"reply": reply_text}
         return {"reply": f"Fehler: {res_data}"}
 
     except Exception as e:
         return {"reply": f"System-Fehler: {str(e)}"}
-
-if __name__ == "__main__":
-    import uvicorn
-    port = int(os.environ.get("PORT", 10000))
-    uvicorn.run(app, host="0.0.0.0", port=port)
