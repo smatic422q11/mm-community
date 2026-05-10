@@ -205,22 +205,29 @@
                 </div>
             </div>
 
-          <div id="auth-wrapper" style="margin-top: 15px; z-index: 10; display: flex; background: rgba(0, 61, 143, 0.2); border: 2px solid #003d8f; border-radius: 4px; width: 400px; height: 45px; overflow: hidden; align-items: stretch;">
-    
-    <div id="email-step" style="flex: 1.5; display: flex; align-items: center; padding-left: 10px; border-right: 1px solid #003d8f; background: rgba(0,0,0,0.3);">
-        <input type="email" id="db-anker-mail" value="info@mm-community.online" readonly
-            style="background: transparent; border: none; color: #888; font-size: 0.75rem; outline: none; width: 100%; cursor: default;">
-    </div>
+            <div id="auth-wrapper" style="margin-top: 15px; z-index: 10; display: flex; gap: 10px; background: rgba(0, 61, 143, 0.1); padding: 8px; border-radius: 4px; border: 1px solid #003d8f; min-width: 350px; justify-content: center;">
+                
+                <div id="email-step" style="display: flex; gap: 10px; align-items: center;">
+                    <input type="email" id="db-anker-mail" placeholder="E-Mail für Sicherung eingeben..." 
+                        style="background: transparent; border: none; color: #fff; font-size: 0.8rem; outline: none; width: 220px;">
+                    <button onclick="sichereAnkerUndStarteScan()" 
+                        style="background: #ffd700; color: #000; border: none; padding: 6px 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; border-radius: 2px;">
+                        ANKER SETZEN & STARTEN
+                    </button>
+                </div>
 
-    <div id="code-step" style="flex: 1; display: flex; align-items: center; background: #000;">
-        <input type="text" id="verification-code" placeholder="CODE" maxlength="6"
-            style="background: #00ff00; border: none; color: #000; font-size: 0.9rem; font-weight: 900; width: 100%; height: 100%; text-align: center; outline: none; letter-spacing: 2px;">
-        <button onclick="bestatigeCode()" 
-            style="background: #fff; color: #000; border: none; height: 100%; padding: 0 15px; font-size: 0.7rem; font-weight: bold; cursor: pointer; transition: 0.2s;">
-            OK
-        </button>
-    </div>
-</div>
+                <div id="code-step" style="display: none; gap: 10px; align-items: center;">
+                    <span style="color: #00ff00; font-size: 0.7rem; font-weight: bold;">CODE:</span>
+                    <input type="text" id="verification-code" placeholder="6-stellig" maxlength="6"
+                        style="background: #00ff00; border: none; color: #000; font-size: 0.8rem; font-weight: bold; width: 80px; text-align: center; outline: none;">
+                    <button onclick="bestatigeCode()" 
+                        style="background: #fff; color: #000; border: none; padding: 6px 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; border-radius: 2px;">
+                        OK
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <div class="grid" id="main-grid" style="margin-top: 15px;"></div>
 
         <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 20px;">
