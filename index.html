@@ -510,34 +510,12 @@ async function registriereSenden() {
     const userText = input.value.trim(); 
     if (userText === "") return; 
 
-   // --- DIE SCHÖPFER-HINTERTÜR ---
-    // Diese Funktion wurde entfernt, um die lokale Speicherung (Attrappe) zu beenden.
-    // Deine Identität wird nun direkt über die E-Mail und die Datenbank auf Render geschützt.
+    const email = document.getElementById('db-anker-mail').value.trim();
+    const userRole = (email.toLowerCase() === "mmcommunity22@gmail.com") ? "SCHÖPFER (Goran)" : "USER";
 
-    istSendenAktiv = true; 
+    istSendenAktiv = true; // Sperre aktivieren
 
-  // In der Funktion registriereSenden():
-const email = document.getElementById('db-anker-mail').value.trim();
-
-// Wir fügen die Identität direkt in den Kontext für die KI ein
-const userRole = (email.toLowerCase() === "mmcommunity22@gmail.com") ? "SCHÖPFER (Goran)" : "USER";
-
-// ... im fetch-Aufruf unter 'message' oder 'context':
-body: JSON.stringify({ 
-    message: userText, 
-    context: `IDENTITÄT: ${userRole}. \n SEKTOR: ${tId+1}. \n WISSEN: ${sektorTexte[tId]}`,
-    // ...
-})
-    if (userText.toLowerCase().includes("schöpfer") || userText.toLowerCase().includes("admin")) {
-        // Wir prüfen live die E-Mail im Feld
-        if (email.toLowerCase().includes("goran")) { 
-            userRole = "schöpfer_bestätigt";
-        } else {
-            userRole = "hochstapler_verdacht";
-        }
-    }
-
-    // --- BEREINIGTE ANZEIGE (OHNE ATTRAPPE) ---
+    // Anzeige der User-Nachricht
     chatBox.innerHTML += `<div style="margin-bottom: 35px; padding: 10px; border-left: 3px solid #ffd700; color: #ffd700; background: rgba(255, 215, 0, 0.05);">${userText}</div>`;
     input.value = ""; 
 
@@ -563,10 +541,8 @@ body: JSON.stringify({
         const typingElement = document.getElementById(typingId);
         if (typingElement) typingElement.remove();
         
-        // KI-Antwort Design
         chatBox.innerHTML += `<div class="ki-antwort" style="background: rgba(0, 61, 143, 0.15); padding: 15px; border-radius: 8px; margin-bottom: 40px; border-left: 3px solid #003d8f; color: #ffffff; line-height: 1.6;">${data.reply}</div>`;
 
-        // Gedächtnis-Speicherung
         kollektivesGedachtnis.push({ "role": "user", "parts": [{ "text": userText }] });
         kollektivesGedachtnis.push({ "role": "model", "parts": [{ "text": data.reply }] });
 
@@ -576,13 +552,14 @@ body: JSON.stringify({
     } catch (error) { 
         console.error("Fehler beim Senden:", error);
         const typingElement = document.getElementById(typingId);
-        if (typingElement) typingElement.innerHTML = "Verbindung unterbrochen...";
+        if (typingElement) typingElement.innerHTML = "<span style='color:red;'>Verbindung hakt kurz... Knopf ist wieder frei!</span>";
     } finally {
+        // DER ENTSCHEIDENDE RETTER:
+        // Egal ob Erfolg oder Fehler: Wir machen den Knopf wieder aktiv!
         istSendenAktiv = false;
         chatBox.scrollTop = chatBox.scrollHeight;
     }
 }
-
 function updateNumColors() {
     // 1. Der Anker: Wir holen die Mail direkt aus dem Eingabefeld
     const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
