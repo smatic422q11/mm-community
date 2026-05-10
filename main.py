@@ -8,7 +8,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse 
 
 # 1. DATENBANK-VERBINDUNG
 MONGO_URI = os.environ.get('MONGO_URI')
