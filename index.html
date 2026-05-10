@@ -678,24 +678,40 @@ function updateNumColors() {
     }
 
     window.onload = () => updateUI(); 
-async function sichereAnkerUndStarteScan(id, thema) {
+async function sichereAnkerUndStarteScan() {
     const emailInput = document.getElementById('db-anker-mail');
     const email = emailInput.value.trim();
 
     if (!email || !email.includes('@')) {
-        alert("Bitte eine gültige E-Mail für deine Biografie eingeben.");
+        alert("Bitte eine gültige E-Mail eingeben.");
         return;
     }
 
-    // Wir entfernen den fetch-Versuch zur gelöschten Mongo-Datenbank, 
-    // damit die Fehlermeldung "Verbindung fehlgeschlagen" verschwindet.
-    console.log("Verifiziere für Email:", email);
+    // Umschalten zur "Kasse" (Code-Eingabe)
+    document.getElementById('email-step').style.display = 'none';
+    document.getElementById('code-step').style.display = 'flex';
 
-    // Die Identität bleibt LIVE im Eingabefeld (KEIN localStorage)
-    alert("Anker gesetzt für: " + email);
-    
-    // Sektor direkt öffnen
-    showInfo(themen[id], id);
+    // Hier senden wir den Befehl an dein Backend auf Render
+    try {
+        fetch('https://mm-community.onrender.com/send-code', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email })
+        });
+    } catch (e) { console.log("Backend noch nicht bereit"); }
+}
+
+async function bestatigeCode() {
+    const code = document.getElementById('verification-code').value;
+    const email = document.getElementById('db-anker-mail').value;
+
+    // Das ist der Moment, in dem der User reingelassen wird
+    if (code.length === 6) {
+        // Später prüfen wir das gegen die Datenbank, jetzt lassen wir dich rein
+        showInfo(themen[0], 0); 
+    } else {
+        alert("Bitte den 6-stelligen Code eingeben.");
+    }
 }
 
 function pruefeZugang(thema, id) {
