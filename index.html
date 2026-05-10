@@ -461,7 +461,7 @@
 }
     function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
 
-    function updateUI() {
+function updateUI() {
     const isDashboard = (ebene === 1);
     const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
     
@@ -503,7 +503,11 @@
     const sigGelb = document.getElementById('sig-r4');
     const sigRot = document.getElementById('sig-l4');
 
-    // --- NEUE LOGIK FÜR DEN STUMMSCHALTER ---
+    // --- SCHÖPFER-CHECK & STUMMSCHALTER ---
+    const emailInput = document.getElementById('db-anker-mail');
+    const email = emailInput ? emailInput.value.trim().toLowerCase() : "";
+    const isSchöpfer = (email === "mmcommunity22@gmail.com");
+
     let fertigeSektoren = 0;
     for (let i = 0; i < 22; i++) {
         const nBox = document.getElementById(`num-${i}`);
@@ -512,7 +516,7 @@
         }
     }
 
-    // Gelber Knopf (Schreiben) bleibt wie er war
+    // Gelber Knopf (Schreiben)
     if (ebene === 2) {
         btnNext.style.visibility = 'hidden'; 
         sigGelb.classList.add('signal-aktiv'); 
@@ -520,15 +524,17 @@
         sigGelb.classList.remove('signal-aktiv');
     }
 
-    // ROTER KNOPF (Video-Beweis) - Nur aktiv wenn 22 Boxen voll sind
-    if (fertigeSektoren >= 22) {
+    // ROTER KNOPF (Video-Beweis) - SCHÖPFER HAT FREIE BEWEGUNG
+    if (isSchöpfer || fertigeSektoren >= 22) {
         sigRot.classList.add('signal-aktiv');
         sigRot.style.opacity = "1";
         sigRot.style.cursor = "pointer";
+        sigRot.onclick = portalZuEbene4; // Sicherstellen, dass er klickbar ist
     } else {
         sigRot.classList.remove('signal-aktiv');
-        sigRot.style.opacity = "0.2"; // Ganz blass, weil stumm
+        sigRot.style.opacity = "0.2"; 
         sigRot.style.cursor = "default";
+        sigRot.onclick = function() { alert("Der Videobeweis ist erst nach 22 Sektoren offen."); };
     }
     // ---------------------------------------
 
