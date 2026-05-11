@@ -309,7 +309,7 @@
             <div id="ebene4-title-red" class="ebene4-header-red">DER VIDEO-BEWEIS</div>
             <div class="tafel-layout">
                 <div class="buttons-links">
-                    <div class="oval-side ov-schwarz" id="sig-l1"></div>
+                    <div class="oval-side ov-schwarz" id="sig-l1" onclick="toggleAdminPanel()" style="cursor:pointer;"></div>
                     <div class="oval-side ov-grun" id="sig-l2"></div>
                     <div class="oval-side ov-blau" id="sig-l3"></div>
                     <div class="oval-side ov-rot" id="sig-l4" onclick="portalZuEbene4()"></div>
@@ -1004,5 +1004,23 @@ function aktiviereAdminPanel() {
     document.getElementById('admin-panel-haut').style.display = 'block';
     ladeAdminStats();
     erstelleSektorenSteuerung();
+}
+function toggleAdminPanel() {
+    const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
+    const panel = document.getElementById('admin-panel-haut');
+
+    // Nur die Community-E-Mail darf das Panel mit dem schwarzen Knopf rufen
+    if (email === "mmcommunity22@gmail.com") {
+        if (panel.style.display === 'none' || panel.style.display === '') {
+            panel.style.display = 'block';
+            ladeAdminStats(); // Lädt direkt die User-Zahlen
+            erstelleSektorenSteuerung(); // Baut die Schalter auf
+            console.log("Admin-Zentrale fixiert.");
+        } else {
+            panel.style.display = 'none';
+        }
+    } else {
+        console.log("Zugriff verweigert: Nur für den Schöpfer.");
+    }
 }
 </script>
