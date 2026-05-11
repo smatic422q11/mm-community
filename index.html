@@ -246,19 +246,19 @@
         </div>
     </div>
 
-    <div id="admin-panel-haut" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 800px; background: rgba(0, 0, 0, 0.98); border: 2px solid #ffd700; box-shadow: 0 0 100px #000; z-index: 9999; border-radius: 15px; padding: 30px;">
-        <div style="text-align: right; color: #ff0000; cursor: pointer; font-weight: bold; font-size: 1.5rem;" onclick="document.getElementById('admin-panel-haut').style.display='none'">×</div>
-        <h2 style="color: #ffd700; text-align: center; letter-spacing: 8px; margin-bottom: 30px;">ADMIN-ZENTRALE</h2>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-            <div style="border: 1px solid #003d8f; padding: 15px; background: rgba(0,61,143,0.1);">
-                <h3 style="color: #0088ff; font-size: 0.9rem;">SYSTEM-STEUERUNG</h3>
-                <p style="font-size: 0.7rem; color: #888;">Hier kannst du später Sektoren für alle freischalten oder sperren.</p>
+   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+    <div style="border: 1px solid #003d8f; padding: 15px; background: rgba(0,61,143,0.1);">
+        <h3 style="color: #0088ff; font-size: 0.9rem;">SYSTEM-STEUERUNG</h3>
+        <p style="font-size: 0.6rem; color: #888; margin-bottom: 10px;">Globale Sektor-Sperre:</p>
+        <div id="admin-sektor-kontrolle" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px;">
             </div>
-            <div style="border: 1px solid #003d8f; padding: 15px; background: rgba(0,61,143,0.1);">
-                <h3 style="color: #0088ff; font-size: 0.9rem;">USER-VERWALTUNG</h3>
-                <p style="font-size: 0.7rem; color: #888;">Anzahl der gesetzten Anker: (Wird geladen...)</p>
-            </div>
-        </div>
+    </div>
+
+    <div style="border: 1px solid #003d8f; padding: 15px; background: rgba(0,61,143,0.1);">
+        <h3 style="color: #0088ff; font-size: 0.9rem;">USER-VERWALTUNG</h3>
+        <p id="admin-user-count" style="font-size: 1.2rem; color: #ffd700; font-weight: bold; margin-top: 10px;">
+            Anker: <span id="anker-zahl">Lädt...</span>
+        </p>
     </div>
 </div>
         <div class="grid" id="main-grid" style="margin-top: 15px;"></div>
@@ -767,7 +767,7 @@ function updateNumColors() {
         }
     }
 
- async function sichereAnkerUndStarteScan() {
+async function sichereAnkerUndStarteScan() {
     const emailInput = document.getElementById('db-anker-mail');
     const email = emailInput.value.trim().toLowerCase();
 
@@ -776,7 +776,8 @@ function updateNumColors() {
         return;
     }
 
-    // Wir schicken einfach den Code – keine Fragen, keine Umwege.
+    // SICHERHEITS-STOPP: Hier wird KEIN showInfo() oder admin-Panel aufgerufen!
+    // Egal welche Email, wir schalten NUR zum Code-Eingabefeld um.
     try {
         await fetch('https://mm-community.onrender.com/send-code', {
             method: 'POST',
@@ -787,7 +788,7 @@ function updateNumColors() {
         console.log("Server wird geweckt...");
     }
 
-    // Sofort zum Code-Feld umschalten
+    // NUR das Feld umschalten. Die Tür bleibt zu, bis der Code kommt.
     document.getElementById('email-step').style.display = 'none';
     document.getElementById('code-step').style.display = 'flex';
 }
@@ -870,5 +871,42 @@ function zeigeHeiligeSchrift(typ) {
     
     // Nach 10 Sekunden verschwindet die Blase wieder
     setTimeout(() => { if(infoBlase) infoBlase.remove(); }, 12000);
-}</script>
+}
+// --- HIER EINBAUEN: DIE ADMIN-LOGIK ---
+
+async function befuellenAdminZentrale() {
+    try {
+        const res = await fetch('https://mm-community.onrender.com/admin/stats');
+        const data = await res.json();
+        const ankerAnzeige = document.getElementById('anker-zahl');
+        if(ankerAnzeige) ankerAnzeige.innerText = data.anzahl_anker;
+
+        const kontrolle = document.getElementById('admin-sektor-kontrolle');
+        if(!kontrolle) return;
+        
+        kontrolle.innerHTML = ""; 
+        for (let i = 1; i <= 20; i++) {
+            kontrolle.innerHTML += `
+                <div style="display: flex; flex-direction: column; align-items: center; border: 1px solid #003d8f; padding: 5px; background: rgba(0,0,0,0.3);">
+                    <span style="font-size: 0.6rem; color: #ffd700;">S${i}</span>
+                    <input type="checkbox" onchange="toggleSektor(${i}, this.checked)">
+                </div>
+            `;
+        }
+    } catch (e) {
+        console.error("Fehler beim Befüllen der Zentrale.");
+    }
+}
+
+async function toggleSektor(nummer, status) {
+    await fetch('https://mm-community.onrender.com/admin/toggle-sektor', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ sektor: nummer, offen: status })
+    });
+    console.log(`Sektor ${nummer} ist jetzt ${status ? 'OFFEN' : 'GESPERRT'}`);
+}
+
+// --- ENDE DER ADMIN-LOGIK ---
+</script>
 
