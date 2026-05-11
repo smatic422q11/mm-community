@@ -741,50 +741,47 @@ function updateNumColors() {
         element.classList.remove('bild-aktiv'); void element.offsetWidth; element.classList.add('bild-aktiv'); 
     }
 
-    // --- VIDEO-KONFERENZ STABILISIERUNG (FIX FÜR INTERNETCAFÉ-TEST) ---
-    const peerConfiguration = {
-        iceServers: [{ urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'] }]
-    };
+   // --- VIDEO-KONFERENZ REPARATUR ---
+const peerConfiguration = {
+    iceServers: [{ urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'] }]
+};
 
-    // Nutze einen FESTEN Raumnamen basierend auf dem Sektor für den Test
-    let meinPeer = new Peer(`M-M-Sektor-${tId+1}-Beweis`, { config: peerConfiguration }); 
-    meinPeer.on('open', (id) => { console.log('Sektor-Anker aktiv: ' + id); });
-
-    async function starteVideoKonferenz() {
-        const meinSlot = document.getElementById('v-slot-1');
-        const partnerSlot = document.getElementById('v-slot-2');
-        if (!meinSlot) return;
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover; background:#000;"></video>`;
-            const videoElement = document.getElementById('user-video');
-            videoElement.srcObject = stream;
-            videoElement.play();
-
-            // Automatische Verbindung zum Sektor-Raum (Der "Anker")
-            // Wenn du im Café bist, ruft dieser Teil dein Wohnzimmer an
-            meinPeer.on('call', (call) => {
+// Wir erstellen den Peer nur, wenn er noch nicht da ist
+let meinPeer;
+function initialisierePeer() {
+    if (!meinPeer) {
+        meinPeer = new Peer(`M-M-Community-User-${Math.floor(Math.random()*1000)}`, { config: peerConfiguration });
+        meinPeer.on('open', (id) => { console.log('Kamera-ID aktiv: ' + id); });
+        
+        meinPeer.on('call', (call) => {
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
                 call.answer(stream);
                 call.on('stream', (remoteStream) => {
-                    partnerSlot.innerHTML = `<video id="remote-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover; background:#000;"></video>`;
-                    document.getElementById('remote-video').srcObject = remoteStream;
+                    const partnerSlot = document.getElementById('v-slot-2');
+                    if (partnerSlot) {
+                        partnerSlot.innerHTML = `<video autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>`;
+                        partnerSlot.querySelector('video').srcObject = remoteStream;
+                    }
                 });
             });
-
-            // Versuch, den existierenden Partner (dein Wohnzimmer) zu finden
-            const call = meinPeer.call(`M-M-Sektor-${tId+1}-Beweis`, stream);
-            if(call) {
-                call.on('stream', (remoteStream) => {
-                    partnerSlot.innerHTML = `<video id="remote-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover; background:#000;"></video>`;
-                    document.getElementById('remote-video').srcObject = remoteStream;
-                });
-            }
-
-        } catch (err) {
-            meinSlot.innerHTML = `<div style="color:#ff0000; font-size:10px; padding:10px; text-align:center;">KAMERA-ZUGRIFF FEHLT!</div>`;
-        }
+        });
     }
+}
 
+async function starteVideoKonferenz() {
+    initialisierePeer(); // Sicherstellen, dass Peer aktiv ist
+    const meinSlot = document.getElementById('v-slot-1');
+    if (!meinSlot) return;
+
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover; border: 2px solid #00ff00;"></video>`;
+        document.getElementById('user-video').srcObject = stream;
+    } catch (err) {
+        console.error("Kamera-Fehler:", err);
+        meinSlot.innerHTML = `<div style="color:#ff0000; font-size:10px; padding:10px; text-align:center;">KAMERA BLOCKIERT!</div>`;
+    }
+}
  async function sichereAnkerUndStarteScan() {
     const emailInput = document.getElementById('db-anker-mail');
     const email = emailInput.value.trim().toLowerCase();
