@@ -898,37 +898,71 @@ async function ladeAdminStats() {
 }
 
 function erstelleSektorenSteuerung() {
-    const steuerungsBox = document.querySelector("#admin-panel-haut div div:first-child");
-    steuerungsBox.innerHTML = `<h3 style="color: #0088ff; font-size: 0.9rem;">SEKTOR-REGLER (BETA)</h3>`;
+    const adminPanel = document.getElementById('admin-panel-haut');
+    const linksOben = adminPanel.querySelector("div div:first-child");
     
-    const btnContainer = document.createElement('div');
-    btnContainer.style = "display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 15px;";
-    
+    linksOben.innerHTML = `
+        <h3 style="color: #0088ff; font-size: 0.9rem; letter-spacing: 2px;">SYSTEM-REGLER (1-22)</h3>
+        <div id="admin-grid-full" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 10px;"></div>
+        
+        <h3 style="color: #ffd700; font-size: 0.9rem; letter-spacing: 2px; margin-top: 20px;">WELT-BOTSCHAFT</h3>
+        <textarea id="admin-broadcast" placeholder="Was sollen die Seelen wissen?" style="width:100%; height:60px; background:#111; color:#00ff00; border:1px solid #00ff00; font-family:Courier; font-size:0.7rem; padding:5px; margin-top:5px;"></textarea>
+        <button onclick="sendeBotschaft()" style="width:100%; background:#00ff00; color:#000; border:none; padding:5px; font-weight:bold; cursor:pointer; margin-top:5px;">BOTSCHAFT SENDEN</button>
+    `;
+
+    const grid = document.getElementById('admin-grid-full');
     for (let i = 0; i < 22; i++) {
         const btn = document.createElement('button');
         btn.id = `admin-btn-${i}`;
-        btn.innerText = `${i+1}`;
+        btn.innerText = i + 1;
+        const isFundament = i >= 20;
         
-        // Das Design: Blau = Offen / Sicher
-        btn.style = "background: #003d8f; color: #fff; border: 1px solid #fff; padding: 10px; font-size: 0.8rem; cursor: pointer; font-weight: bold; border-radius: 4px; transition: 0.3s;";
+        // Wir speichern den Status direkt am Button
+        btn.dataset.status = "open"; 
+        btn.style = `background: ${isFundament ? '#ffd700' : '#003d8f'}; color: ${isFundament ? '#000' : '#fff'}; border: 1px solid #fff; padding: 8px; font-size: 0.7rem; cursor: pointer; font-weight: bold; border-radius: 3px;`;
         
-        btn.onclick = function() {
-            // Check: Ist er gerade Rot (gesperrt)?
-            const istGesperrt = btn.style.backgroundColor === 'rgb(255, 0, 0)';
-            const neuerStatus = istGesperrt ? 'open' : 'closed';
+        btn.onclick = async function() {
+            const neuerStatus = btn.dataset.status === "open" ? "closed" : "open";
+            const erfolg = await schalteSektor(i, neuerStatus);
             
-            // Befehl an das MyPI senden
-            schalteSektor(i, neuerStatus);
-            
-            // Visueller Wechsel im Panel
-            btn.style.backgroundColor = istGesperrt ? '#003d8f' : '#ff0000';
-            btn.style.boxShadow = istGesperrt ? 'none' : '0 0 15px #ff0000';
-            btn.style.borderColor = istGesperrt ? '#fff' : '#ff0000';
+            if(erfolg) {
+                btn.dataset.status = neuerStatus;
+                if (neuerStatus === "closed") {
+                    btn.style.backgroundColor = "#ff0000";
+                    btn.style.color = "#fff";
+                } else {
+                    btn.style.backgroundColor = isFundament ? '#ffd700' : '#003d8f';
+                    btn.style.color = isFundament ? '#000' : '#fff';
+                }
+            }
         };
-        
-        btnContainer.appendChild(btn);
+        grid.appendChild(btn);
     }
-    steuerungsBox.appendChild(btnContainer);
+}
+
+// Diese Funktion spricht jetzt wirklich mit deinem MyPI
+async function sendeBotschaft() {
+    const msg = document.getElementById('admin-broadcast').value;
+    const email = document.getElementById('db-anker-mail').value.trim();
+    
+    if(!msg) return alert("Keine Botschaft eingegeben!");
+
+    try {
+        const response = await fetch('https://mm-community.onrender.com/admin/broadcast', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email, message: msg })
+        });
+        const res = await response.json();
+        if (res.success) {
+            alert("Die Botschaft wurde an alle Seelen gesendet!");
+            document.getElementById('admin-broadcast').value = "";
+        } else {
+            alert("Fehler: " + res.error);
+        }
+    } catch (e) {
+        alert("Server nicht erreichbar.");
+    }
 }
 async function schalteSektor(id, status) {
     const email = document.getElementById('db-anker-mail').value.trim();
