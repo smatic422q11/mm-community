@@ -417,13 +417,6 @@
     const dots = document.getElementById('dot-holder');
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
-    function adminUnlock() {
-        themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
-        userBackstage.isQualifiziert = true;
-        updateNumColors();
-        updateUI();
-    }
-
     // --- SCAN FUNKTION: Vernetzt Scan mit dem Sektor ---
     async function starteKIErmittlung(id, themaName) {
         const box = document.getElementById('ki-ermittlung-ebene2');
@@ -809,10 +802,19 @@ async function bestatigeCode() {
             const result = await response.json();
 
             if (result.success) {
-                // Das Admin-Panel wird nur eingeblendet, wenn der Keller sagt, du bist Admin
+                ebene = 1; // Erst hier wird der Schalter im System umgelegt
+                
                 if (result.role === 'admin' || email === "mmcommunity22@gmail.com") {
                     document.getElementById('admin-panel-haut').style.display = 'block';
                 }
+                
+                // Wir springen NICHT automatisch in Sektor 1. 
+                // Der User muss jetzt manuell auf eine Box klicken, was nun durch ebene=1 erlaubt ist.
+                document.getElementById('code-step').style.display = 'none'; 
+                document.getElementById('email-step').style.display = 'flex'; 
+                updateNumColors();
+                codeInput.value = "";
+            }
                 
                 showInfo(themen[0], 0); 
                 document.getElementById('code-step').style.display = 'none'; 
@@ -827,22 +829,21 @@ async function bestatigeCode() {
     }
 }
 function pruefeZugang(thema, id) {
-    // 1. KRITISCHE PRÜFUNG: Ist der User überhaupt verifiziert?
-    // Nur wenn ebene === 1 ist (was erst in bestatigeCode passiert), darf man rein.
-    if (ebene !== 1) {
+    // Wenn ebene 0 ist, hat noch keine Verifizierung durch den Server stattgefunden.
+    // NIEMAND kommt hier vorbei, egal welche E-Mail im Feld steht.
+    if (ebene === 0) {
         alert("Zugriff verweigert: Bitte zuerst den Code aus deinem Postfach bestätigen!");
         return;
     }
 
-    // Wenn man verifiziert ist (ebene 1), darf man die Sektoren öffnen
     const nBox = document.getElementById(`num-${id}`);
-    
-    // Admin darf alles öffnen, wenn er eingeloggt ist
     const emailInput = document.getElementById('db-anker-mail');
     const email = emailInput.value.trim().toLowerCase();
-    const isAdmin = (email === "m-m-community22@gmail.com" || email === "mmcommunity22@gmail.com");
+    
+    // Nur wenn der Server 'ebene' auf 1 gesetzt hat, darf der Schöpfer frei navigieren
+    const isSchöpfer = (email === "mmcommunity22@gmail.com");
 
-    if (isAdmin || (nBox && (nBox.classList.contains('num-gelesen') || nBox.classList.contains('num-fertig')))) {
+    if (isSchöpfer || (nBox && (nBox.classList.contains('num-gelesen') || nBox.classList.contains('num-fertig')))) {
         showInfo(thema, id);
     } else {
         alert("Dieser Sektor ist noch nicht für dich bereit.");
