@@ -809,14 +809,22 @@ async function bestatigeCode() {
             const result = await response.json();
 
             if (result.success) {
-                // Das Admin-Panel wird nur eingeblendet, wenn der Keller sagt, du bist Admin
+                // 1. Zuerst die Ebene auf Dashboard setzen
+                ebene = 1; 
+
+                // 2. Admin-Panel nur zeigen, wenn berechtigt
                 if (result.role === 'admin' || email === "mmcommunity22@gmail.com") {
                     document.getElementById('admin-panel-haut').style.display = 'block';
                 }
                 
-                showInfo(themen[0], 0); 
+                // 3. WICHTIG: Die Login-Eingabefelder komplett ausblenden
                 document.getElementById('code-step').style.display = 'none'; 
-                document.getElementById('email-step').style.display = 'flex'; 
+                document.getElementById('email-step').style.display = 'none'; // Hier stand bei dir 'flex', das war falsch
+                
+                // 4. Das Dashboard (die 20 Felder) anzeigen und Farben laden
+                document.getElementById('dashboard').style.display = 'flex';
+                updateNumColors(); // Lädt die Farben der Sektoren
+
                 codeInput.value = "";
             } else {
                 alert("Schlüssel ungültig.");
