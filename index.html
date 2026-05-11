@@ -734,8 +734,7 @@ function updateNumColors() {
         }
     }
 
-    window.onload = () => updateUI(); 
-async function sichereAnkerUndStarteScan() {
+    async function sichereAnkerUndStarteScan() {
     const emailInput = document.getElementById('db-anker-mail');
     const email = emailInput.value.trim();
 
@@ -744,20 +743,43 @@ async function sichereAnkerUndStarteScan() {
         return;
     }
 
-    // Umschalten zur "Kasse" (Code-Eingabe)
-    document.getElementById('email-step').style.display = 'none';
-    document.getElementById('code-step').style.display = 'flex';
-
-    // Hier senden wir den Befehl an dein Backend auf Render
+    // --- START: DER NEUE SCHUTZ-CHECK (DIE WEICHE) ---
     try {
+        // Wir fragen im Keller nach: "Ist die Seele bekannt?"
+        const checkResponse = await fetch('https://mm-community.onrender.com/check-user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email })
+        });
+        const status = await checkResponse.json();
+
+        if (status.exists) {
+            // BEKANNT: Info-Blase zeigen & KEINE Mail senden
+            zeigeHeiligeSchrift('BEKANNT');
+        } else {
+            // NEU: Info-Blase zeigen & Mail senden lassen
+            zeigeHeiligeSchrift('NEU');
+            fetch('https://mm-community.onrender.com/send-code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email })
+            });
+        }
+    } catch (e) { 
+        console.log("Keller-Verbindung wird initialisiert..."); 
+        // Falls der Server pennt, schicken wir sicherheitshalber trotzdem die Mail
         fetch('https://mm-community.onrender.com/send-code', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: email })
         });
-    } catch (e) { console.log("Backend noch nicht bereit"); }
-}
+    }
+    // --- ENDE DER WEICHE ---
 
+    // Umschalten zur Code-Eingabe (bleibt wie es war)
+    document.getElementById('email-step').style.display = 'none';
+    document.getElementById('code-step').style.display = 'flex';
+}
 async function bestatigeCode() {
     const codeInput = document.getElementById('verification-code');
     const code = codeInput.value;
