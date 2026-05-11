@@ -106,35 +106,32 @@ async def handle_verify_access(request: Request):
         print(f"Fehler bei Verifizierung: {e}")
         return JSONResponse(content={"success": False, "status": "Systemfehler"}, status_code=500)
 
-# --- ADMIN & LOGIK START ---
 @app.post("/admin/update-sector")
-async def update_sector(request: Request):
-    try:
-        data = await request.json()
-        email = data.get('email')
-        sector_id = str(data.get('sector_id'))
-        new_status = data.get('status') 
+def admin_update_sector(data: dict):
+    # Prüfen ob Admin...
+    admin = db.codes.find_one({"email": data['email'], "role": "admin"})
+    if not admin: return {"success": False, "error": "Kein Admin"}
+    
+    # Status im Keller speichern
+    db.system_status.update_one(
+        {"type": "sector_control"},
+        {"$set": {f"sector_{data['sector_id']}": data['status']}},
+        upsert=True
+    )
+    return {"success": True}
 
-        admin = db.codes.find_one({"email": email, "role": "admin"})
-        if not admin:
-            return JSONResponse(content={"success": False, "status": "Nicht autorisiert"}, status_code=403)
-
-        db.config.update_one(
-            {"key": "sector_status"},
-            {"$set": {f"sectors.{sector_id}": new_status}},
-            upsert=True
-        )
-        return {"success": True, "status": f"Sektor {sector_id} jetzt {new_status}"}
-    except Exception as e:
-        return {"success": False, "error": str(e)}
-
-@app.get("/admin/stats")
-async def get_stats(request: Request):
-    try:
-        count = db.codes.count_documents({})
-        return {"success": True, "total_souls": count}
-    except Exception as e:
-        return {"success": False, "error": str(e)}
+@app.post("/admin/broadcast")
+def admin_broadcast(data: dict):
+    admin = db.codes.find_one({"email": data['email'], "role": "admin"})
+    if not admin: return {"success": False, "error": "Kein Admin"}
+    
+    # Botschaft speichern
+    db.system_status.update_one(
+        {"type": "global_message"},
+        {"$set": {"text": data['message'], "time": datetime.now()}},
+        upsert=True
+    )
+    return {"success": True}
 
 @app.get("/")
 async def root():
