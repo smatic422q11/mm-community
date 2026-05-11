@@ -800,5 +800,25 @@ function pruefeZugang(thema, id) {
         }
     }
 }
-</script>
+// --- NEUE FUNKTION: INFO-BLASE (Ganz unten einfügen) ---
+function zeigeHeiligeSchrift(typ) {
+    const authWrapper = document.getElementById('auth-wrapper');
+    // Wir erstellen ein Element, das über dem Feld schwebt
+    let infoBlase = document.getElementById('info-blase-biografie');
+    if(!infoBlase) {
+        infoBlase = document.createElement('div');
+        infoBlase.id = 'info-blase-biografie';
+        infoBlase.style = "position: absolute; top: -110px; background: #003d8f; color: #fff; padding: 10px; border: 1px solid #fff; border-radius: 8px; font-size: 0.7rem; z-index: 100; width: 90%; line-height: 1.3;";
+        authWrapper.appendChild(infoBlase);
+    }
+
+    if(typ === 'NEU') {
+        infoBlase.innerHTML = "<b>DEIN ANKER WIRD GESETZT:</b> Dein heiliger Schlüssel wurde an dein Postfach gesandt. Er ist die Signatur deiner Biografie. Bewahre ihn gut auf – ein neuer Code würde deine Reise zurücksetzen.";
+    } else {
+        infoBlase.innerHTML = "<b>WILLKOMMEN ZURÜCK:</b> Dein Anker ist bereits gesetzt. Bitte gib deinen persönlichen Schlüssel ein, um an deiner Biografie weiterzuschreiben. (Es wurde keine neue Mail gesendet).";
+    }
+    
+    // Nach 10 Sekunden verschwindet die Blase wieder
+    setTimeout(() => { if(infoBlase) infoBlase.remove(); }, 12000);
+}</script>
 
