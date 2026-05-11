@@ -869,18 +869,31 @@ function zeigeHeiligeSchrift(typ) {
     setTimeout(() => { if(infoBlase) infoBlase.remove(); }, 12000);
 }
 
-// --- ADMIN-POWER FUNKTIONEN ---
+// --- ADMIN-POWER FUNKTIONEN (VERSION MIT RECHTEM KASTEL) ---
 
 async function ladeAdminStats() {
-    const statsBox = document.querySelector("#admin-panel-haut p"); 
+    // Wir suchen das zweite (rechte) Kästchen im Admin-Panel
+    const adminBoxen = document.querySelectorAll("#admin-panel-haut div div");
+    const userBox = adminBoxen[1]; // Index 1 ist das rechte Kästchen
+
     try {
         const response = await fetch('https://mm-community.onrender.com/admin/stats');
         const data = await response.json();
+        
         if (data.success) {
-            statsBox.innerHTML = `Anzahl der gesetzten Anker (Seelen): <b style="color:#ffd700; font-size:1.2rem;">${data.total_souls}</b>`;
+            userBox.innerHTML = `
+                <h3 style="color: #0088ff; font-size: 0.9rem;">USER-VERWALTUNG</h3>
+                <p style="font-size: 0.8rem; color: #fff; margin-top: 10px;">
+                    Anzahl der gesetzten Anker (Seelen):<br>
+                    <span style="font-size: 2rem; color: #ffd700; font-weight: 900; display: block; margin-top: 5px;">
+                        ${data.total_souls}
+                    </span>
+                </p>
+                <p style="font-size: 0.6rem; color: #888;">Live-Daten aus dem Keller (MongoDB)</p>
+            `;
         }
     } catch (e) {
-        statsBox.innerText = "Fehler beim Laden der Seelen.";
+        userBox.innerHTML = `<h3 style="color: #ff0000;">Fehler beim Laden...</h3>`;
     }
 }
 
@@ -888,13 +901,19 @@ function erstelleSektorenSteuerung() {
     const steuerungsBox = document.querySelector("#admin-panel-haut div div:first-child");
     steuerungsBox.innerHTML = `<h3 style="color: #0088ff; font-size: 0.9rem;">SYSTEM-STEUERUNG (LIVE)</h3>`;
     
-    for (let i = 0; i < 5; i++) {
+    // Hier bauen wir jetzt Schalter für alle 22 Sektoren ein!
+    const btnContainer = document.createElement('div');
+    btnContainer.style = "display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 10px;";
+    
+    for (let i = 0; i < 22; i++) {
         const btn = document.createElement('button');
-        btn.innerText = `Sektor ${i+1}: SPERREN`;
-        btn.style = "background: #ff0000; color: #fff; border: none; margin: 5px; padding: 5px; font-size: 0.6rem; cursor: pointer; border-radius: 3px;";
+        btn.innerText = `${i+1}`;
+        btn.title = `Sektor ${i+1} sperren`;
+        btn.style = "background: #333; color: #fff; border: 1px solid #003d8f; padding: 5px; font-size: 0.7rem; cursor: pointer;";
         btn.onclick = () => schalteSektor(i, 'closed');
-        steuerungsBox.appendChild(btn);
+        btnContainer.appendChild(btn);
     }
+    steuerungsBox.appendChild(btnContainer);
 }
 
 async function schalteSektor(id, status) {
@@ -913,7 +932,6 @@ function aktiviereAdminPanel() {
     ladeAdminStats();
     erstelleSektorenSteuerung();
 }
-
 // Initialer Start der Farben
 updateNumColors();
 </script>
