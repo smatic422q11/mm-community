@@ -192,7 +192,29 @@
     animation: fadeEffect 0.5s forwards;
 }
         .bild-aktiv { animation: kenburns 15s infinite ease-in-out, fadeEffect 8s infinite; }
-    </style>
+        
+ #admin-direkt-button {
+    position: fixed;
+    bottom: 90px; /* Ein Stück über der Navigationsleiste */
+    right: 20px;
+    background: #ffd700;
+    color: #000;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: none; /* Wird per JS sichtbar gemacht */
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 0.7rem;
+    cursor: pointer;
+    z-index: 10001; /* Über allen anderen Ebenen */
+    box-shadow: 0 0 20px #ffd700;
+    border: 2px solid #fff;
+    text-align: center;
+    line-height: 60px;
+} 
+   </style>
 </head>
 <body>
 
@@ -368,8 +390,11 @@
             <a href="datenschutz.html" style="color: #888; text-decoration: none; margin: 0 10px;">Datenschutz</a>
         </div>
         <p style="font-size: 0.7rem; color: #555; margin: 0;">&copy; 2026 M&M Community – Mensch ist Mensch</p>
-    </footer>
+    </footer> 
+ <div id="admin-direkt-button" onclick="aktiviereAdminPanel()">ADMIN</div>
 
+</body>
+</html>
 <script>
     let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5 };
     let chatVerlauf = []; // Hier wird das Gedächtnis gespeichert
@@ -982,4 +1007,14 @@ function aktiviereAdminPanel() {
 }
 // Initialer Start der Farben
 updateNumColors();
+// Setze ihn einfach ans Ende deiner anderen Funktionen
+window.addEventListener('load', function() {
+    if(localStorage.getItem('istAdmin') === 'true') {
+        const btn = document.getElementById('admin-direkt-button');
+        if(btn) {
+            btn.style.display = 'flex'; // Macht den goldenen Knopf wieder sichtbar
+            console.log("Schöpfer erkannt: Admin-Knopf aktiv.");
+        }
+    }
+});
 </script>
