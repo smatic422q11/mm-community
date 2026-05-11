@@ -996,10 +996,23 @@ async function schalteSektor(id, status) {
 }
 
 function aktiviereAdminPanel() {
-    document.getElementById('admin-panel-haut').style.display = 'block';
+    const panel = document.getElementById('admin-panel-haut');
+    panel.style.display = 'block';
+    
+    // Das sorgt dafür, dass das Panel beim Klicken auf die Regler offen bleibt
+    panel.onclick = function(e) {
+        e.stopPropagation(); 
+    };
+
     ladeAdminStats();
     erstelleSektorenSteuerung();
 }
+
+// HIER KOMMT DIE NEUE FUNKTION HIN
+function schliesseAdminPanel() {
+    document.getElementById('admin-panel-haut').style.display = 'none';
+}
+
 // Initialer Start der Farben
 updateNumColors();
 </script>
