@@ -816,12 +816,12 @@ function updateNumColors() {
 async function bestatigeCode() {
     const codeInput = document.getElementById('verification-code');
     const emailInput = document.getElementById('db-anker-mail');
-    const code = codeInput.value;
+    const code = codeInput.value.trim();
     const email = emailInput.value.trim().toLowerCase(); 
 
     if (code.length === 6) {
-        // --- DER STUMME TÜRSTEHER (Kein Code mehr im Index!) ---
         try {
+            // Der Index fragt nur im Keller nach, er kennt den Code selbst nicht
             const response = await fetch('/api/verify-access', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -830,28 +830,31 @@ async function bestatigeCode() {
 
             const result = await response.json();
 
-            if (result.access === "admin") {
-                // Keller hat bestätigt: Das ist der Admin!
-                document.getElementById('admin-panel-haut').style.display = 'block';
-                console.log("Zentrale für Schöpfer aktiviert.");
-            } else if (result.access === "user") {
-                // Keller hat bestätigt: Normaler User-Code
-                showInfo(themen[0], 0); 
+            if (result.success) {
+                // Wir markieren nur deine Admin-Mail für das Panel
+                if (email === "mmcommunity22@gmail.com") {
+                    document.getElementById('admin-panel-haut').style.display = 'block';
+                    console.log("Admin-Zentrale aktiviert.");
+                } else {
+                    // Alle anderen (Privat/User) spazieren normal rein
+                    showInfo(themen[0], 0);
+                    console.log("Normaler Zutritt gewährt.");
+                }
+
+                // Felder säubern und zurück zum Start (GefühlsVorderung mit V)
+                codeInput.value = ""; 
+                document.getElementById('code-step').style.display = 'none'; 
+                document.getElementById('email-step').style.display = 'flex'; 
+
             } else {
-                // Keller sagt: Code oder Mail falsch
+                // Wenn der Keller sagt: Code falsch
                 alert("Dieser Schlüssel gehört nicht zu deiner Biografie.");
                 codeInput.value = "";
-                return;
             }
 
-            // Felder säubern und zurück zum Start (GefühlsVorderung mit V)
-            codeInput.value = ""; 
-            document.getElementById('code-step').style.display = 'none'; 
-            document.getElementById('email-step').style.display = 'flex'; 
-
         } catch (error) {
-            console.error("Keller-Verbindung gestört.");
-            alert("Das System kann den Anker gerade nicht prüfen.");
+            console.error("Verbindung zum Keller unterbrochen.");
+            alert("System-Stau: Der Anker kann gerade nicht geprüft werden.");
         }
         
     } else {
