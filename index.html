@@ -671,15 +671,15 @@ body: JSON.stringify({
     }
 }
 
-function updateNumColors() {
-    // 1. Der Anker: Wir holen die Mail direkt aus dem Eingabefeld
-    const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
-    
-    // 2. Der Status: Wo steht der User? 
-    // (Diese Zahl kommt später LIVE von Render zurück)
-    let aktuellerSektor = 0; 
+// Variable, um die Email nach dem Login festzuhalten
+let eingeloggteEmail = ""; 
 
-    // SCHÖPFER-FREIGABE: Nur diese E-Mail hat freien Zugang
+function updateNumColors() {
+    // Falls wir schon eingeloggt sind, nehmen wir die gespeicherte Mail, sonst das Feld
+    const email = eingeloggteEmail || document.getElementById('db-anker-mail').value.trim().toLowerCase();
+    
+    let aktuellerSektor = 0; // Hier kommt später der Live-Wert rein
+
     const isSchöpfer = (email === "mmcommunity22@gmail.com");
 
     themen.forEach((_, i) => {
@@ -687,31 +687,28 @@ function updateNumColors() {
         if (!nBox) return;
 
         if (isSchöpfer) {
-            // SCHÖPFER-MODUS: Alles auf BLAU (Offen für Arbeit/Kontrolle)
-            nBox.className = "num num-neutral"; 
+            nBox.className = "num num-neutral"; // Alles BLAU für dich
         } else {
-            // DIE EISERNE AMPEL-REGEL (1 bis 20):
             if (i < aktuellerSektor) {
-                nBox.className = "num num-fertig";  // GRÜN: Sicher (Abgeschlossen)
+                nBox.className = "num num-fertig";
             } else if (i === aktuellerSektor) {
-                nBox.className = "num num-gelesen"; // GELB: Arbeit (Aktueller Fokus)
+                nBox.className = "num num-gelesen";
             } else if (i === aktuellerSektor + 1) {
-                nBox.className = "num num-offen";   // ROT: Wartet (Nächste Hürde)
+                nBox.className = "num num-offen";
             } else {
-                nBox.className = "num num-neutral"; // BLAU: Offen (Zukunft)
+                nBox.className = "num num-neutral";
             }
         }
     });
     
-    // Auch die Fundamente (21 & 22) für den Schöpfer freischalten
-    const num21 = document.getElementById('num-20'); // Index 20 ist Sektor 21
-    const num22 = document.getElementById('num-21'); // Index 21 ist Sektor 22
+    // Fundamente 21 & 22
+    const num21 = document.getElementById('num-20'); 
+    const num22 = document.getElementById('num-21'); 
     if (isSchöpfer) {
         if(num21) num21.className = "num num-neutral";
         if(num22) num22.className = "num num-neutral";
     }
 }
-
     function startRotation() { 
         clearInterval(wechselInterval); const bg = document.getElementById('werbe-bg'); if(!bg) return; setNewImage(bg);
         wechselInterval = setInterval(() => { if (ebene >= 2 && ebene <= 4) { bildIndex = (bildIndex + 1) % 4; setNewImage(bg); } }, 8000);
