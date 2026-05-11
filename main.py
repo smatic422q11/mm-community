@@ -49,7 +49,6 @@ def send_verification_email(user_email, code):
         "Content-Type": "application/json"
     }
     
-    # Die "Heilige Schrift" Botschaft direkt in der E-Mail
     mail_text = (
         f"Dein heiliger Schlüssel für die M&M Community lautet: {code}\n\n"
         "BEWAHRE IHN GUT AUF! Er ist die Signatur deiner Biografie.\n"
@@ -83,18 +82,17 @@ def send_verification_email(user_email, code):
     except Exception as e:
         print(f"Systemfehler beim Mail-Versand: {e}")
         return False
-        
-app.post("/verify-access")
+
+# --- ZENTRALE VERIFIZIERUNG ---
+@app.post("/verify-access")
 async def handle_verify_access(request: Request):
     try:
         data = await request.json()
         email = data.get('email', "").lower().strip()
-        entered_code = str(data.get('code', "")).strip() # Code als String und ohne Leerzeichen
+        entered_code = str(data.get('code', "")).strip() 
         
-        # 1. Wir suchen den Eintrag in der MongoDB
         record = db.codes.find_one({"email": email})
         
-        # 2. KRITISCHE PRÜFUNG: Existiert der User UND stimmt der Code?
         if record and str(record['code']) == entered_code and entered_code != "":
             user_role = record.get("role", "user")
             return {
@@ -103,33 +101,41 @@ async def handle_verify_access(request: Request):
                 "status": "verifiziert"
             }
         
-        # Wenn der Code nicht stimmt oder leer ist:
         return JSONResponse(content={"success": False, "status": "Zugriff verweigert"}, status_code=401)
-        
     except Exception as e:
+        print(f"Fehler bei Verifizierung: {e}")
         return JSONResponse(content={"success": False, "status": "Systemfehler"}, status_code=500)
 
-@app.post("/verify-access") # Name angepasst auf deinen Index-Aufruf
-async def handle_verify_access(request: Request):
+# --- ADMIN & LOGIK START ---
+@app.post("/admin/update-sector")
+async def update_sector(request: Request):
     try:
         data = await request.json()
-        email = data.get('email', "").lower().strip()
-        entered_code = data.get('code')
-        
-        record = db.codes.find_one({"email": email})
-        
-        if record and str(record['code']) == str(entered_code):
-            # Wir geben die Rolle (Admin/User) an den Index zurück
-            user_role = record.get("role", "user")
-            return {
-                "success": True, 
-                "role": user_role,
-                "status": "verifiziert"
-            }
-            
-        return JSONResponse(content={"success": False, "status": "falscher code"}, status_code=401)
+        email = data.get('email')
+        sector_id = str(data.get('sector_id'))
+        new_status = data.get('status') 
+
+        admin = db.codes.find_one({"email": email, "role": "admin"})
+        if not admin:
+            return JSONResponse(content={"success": False, "status": "Nicht autorisiert"}, status_code=403)
+
+        db.config.update_one(
+            {"key": "sector_status"},
+            {"$set": {f"sectors.{sector_id}": new_status}},
+            upsert=True
+        )
+        return {"success": True, "status": f"Sektor {sector_id} jetzt {new_status}"}
     except Exception as e:
-        return JSONResponse(content={"success": False, "status": "Systemfehler"}, status_code=500)
+        return {"success": False, "error": str(e)}
+
+@app.get("/admin/stats")
+async def get_stats(request: Request):
+    try:
+        count = db.codes.count_documents({})
+        return {"success": True, "total_souls": count}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
 @app.get("/")
 async def root():
     return {"message": "Die Community-Seite ist LIVE!"}
