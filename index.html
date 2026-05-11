@@ -869,7 +869,57 @@ function zeigeHeiligeSchrift(typ) {
     
     // Nach 10 Sekunden verschwindet die Blase wieder
     setTimeout(() => { if(infoBlase) infoBlase.remove(); }, 12000);
-}</script>
+    // --- ADMIN-POWER FUNKTIONEN ---
+
+// 1. User-Zähler beim Öffnen des Panels laden
+async function ladeAdminStats() {
+    const statsBox = document.querySelector("#admin-panel-haut p"); // Das Feld für die User-Zahl
+    try {
+        const response = await fetch('https://mm-community.onrender.com/admin/stats');
+        const data = await response.json();
+        if (data.success) {
+            statsBox.innerHTML = `Anzahl der gesetzten Anker (Seelen): <b style="color:#ffd700; font-size:1.2rem;">${data.total_souls}</b>`;
+        }
+    } catch (e) {
+        statsBox.innerText = "Fehler beim Laden der Seelen.";
+    }
+}
+
+// 2. Sektoren-Steuerung (Die Schalter bauen)
+function erstelleSektorenSteuerung() {
+    const steuerungsBox = document.querySelector("#admin-panel-haut div div:first-child");
+    steuerungsBox.innerHTML = `<h3 style="color: #0088ff; font-size: 0.9rem;">SYSTEM-STEUERUNG (LIVE)</h3>`;
+    
+    // Wir bauen für die ersten 5 Sektoren Schalter als Test
+    for (let i = 0; i < 5; i++) {
+        const btn = document.createElement('button');
+        btn.innerText = `Sektor ${i+1}: SPERREN`;
+        btn.style = "background: #ff0000; color: #fff; border: none; margin: 5px; padding: 5px; font-size: 0.6rem; cursor: pointer; border-radius: 3px;";
+        btn.onclick = () => schalteSektor(i, 'closed');
+        steuerungsBox.appendChild(btn);
+    }
+}
+
+async function schalteSektor(id, status) {
+    const email = document.getElementById('db-anker-mail').value.trim();
+    const response = await fetch('https://mm-community.onrender.com/admin/update-sector', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, sector_id: id, status: status })
+    });
+    const res = await response.json();
+    if (res.success) alert(`Sektor ${id+1} wurde auf ${status} gesetzt.`);
+}
+
+// 3. Automatisches Laden, wenn das Panel aufspringt
+// Suche in deinem bestatigeCode() nach dem Teil, wo das Admin-Panel auf display='block' gesetzt wird
+// und füge diese Aufrufe hinzu:
+function aktiviereAdminPanel() {
+    document.getElementById('admin-panel-haut').style.display = 'block';
+    ladeAdminStats();
+    erstelleSektorenSteuerung();
+}
+</script>
 
 
 
