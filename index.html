@@ -815,17 +815,46 @@ function updateNumColors() {
 }
 async function bestatigeCode() {
     const codeInput = document.getElementById('verification-code');
-    const code = codeInput.value;
+    const emailInput = document.getElementById('db-anker-mail');
+    const code = codeInput.value.trim();
+    const email = emailInput.value.trim().toLowerCase(); 
 
     if (code.length === 6) {
-        // Hier deine Logik (z.B. Sektor öffnen)
-        showInfo(themen[0], 0); 
+        try {
+            // --- DER ECHTE CHECK (Verbindung zum Keller) ---
+            const response = await fetch('https://mm-community.onrender.com/verify-access', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email, code: code })
+            });
 
-        // GEFÜHLSVORDERUNG: Alles wieder auf neutral stellen
-        codeInput.value = ""; // Feld leeren
-        document.getElementById('code-step').style.display = 'none'; // Code-Teil weg
-        document.getElementById('email-step').style.display = 'flex'; // E-Mail-Teil wieder her
-        
+            const result = await response.json();
+
+            if (result.success) {
+                // FALL 1: Admin-Mail erkennt das System automatisch
+                if (email === "mmcommunity22@gmail.com") {
+                    document.getElementById('admin-panel-haut').style.display = 'block';
+                    console.log("Admin-Zentrale für Schöpfer geöffnet.");
+                } 
+                
+                // FALL 2: Für alle (inkl. Admin) -> Sektoren freischalten
+                showInfo(themen[0], 0); 
+                console.log("Zutritt gewährt.");
+
+                // GEFÜHLSVORDERUNG (mit V): Aufräumen
+                codeInput.value = ""; 
+                document.getElementById('code-step').style.display = 'none'; 
+                document.getElementById('email-step').style.display = 'flex'; 
+            } else {
+                // Code falsch oder nicht im Keller
+                alert("Dieser Schlüssel gehört nicht zu deiner Biografie.");
+                codeInput.value = "";
+            }
+
+        } catch (e) {
+            console.error("Verbindung zum Keller gestört.");
+            alert("System-Stau: Der Anker kann gerade nicht geprüft werden.");
+        }
     } else {
         alert("Bitte den 6-stelligen Code eingeben.");
     }
