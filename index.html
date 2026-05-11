@@ -809,18 +809,25 @@ async function bestatigeCode() {
 
             const result = await response.json();
 
-            if (result.success) {
-                // Das Admin-Panel wird nur eingeblendet, wenn der Keller sagt, du bist Admin
+            // SCHRITT 1: Erst wenn der Keller sagt: "Code ist richtig"
+            if (result.success === true) {
+                
+                // SCHRITT 2: Prüfen, ob es der Admin ist
                 if (result.role === 'admin' || email === "mmcommunity22@gmail.com") {
                     document.getElementById('admin-panel-haut').style.display = 'block';
+                    
+                    // SCHRITT 3: HIER BEFÜLLEN (Anker-Zahl laden)
+                    ladeAdminDaten(); 
                 }
                 
+                // Für alle: Zugang zum ersten Sektor
                 showInfo(themen[0], 0); 
                 document.getElementById('code-step').style.display = 'none'; 
                 document.getElementById('email-step').style.display = 'flex'; 
                 codeInput.value = "";
             } else {
                 alert("Schlüssel ungültig.");
+                codeInput.value = "";
             }
         } catch (e) {
             alert("Verbindung zum Keller fehlgeschlagen.");
