@@ -817,25 +817,35 @@ async function bestatigeCode() {
     const codeInput = document.getElementById('verification-code');
     const emailInput = document.getElementById('db-anker-mail');
     const code = codeInput.value;
-    const email = emailInput.value.trim().toLowerCase(); // Wir holen die Mail zur Prüfung
+    const email = emailInput.value.trim().toLowerCase(); 
+
+    const adminMail = "mmcommunity22@gmail.com"; // Deine Admin-Mail
+    const masterCode = "222222"; // Dein Master-Code
 
     if (code.length === 6) {
         
-        // --- DIE SCHÖPFER-HINTERTÜR (NUR FÜR DICH) ---
-        // Nur wenn die Mail exakt stimmt UND der Code 222222 ist
-        if (email === "mmcommunity22@gmail.com" && code === "222222") {
-            document.getElementById('admin-panel-haut').style.display = 'block';
-            console.log("Admin-Zentrale geöffnet für Schöpfer.");
+        // --- DIE EISERNE WEICHE (ADMIN vs. PRIVAT) ---
+        if (code === masterCode) {
+            if (email === adminMail) {
+                // NUR HIER: Admin-Zentrale öffnen
+                document.getElementById('admin-panel-haut').style.display = 'block';
+                console.log("Admin-Zentrale geöffnet für Schöpfer.");
+            } else {
+                // JEDE ANDERE MAIL (auch deine Privaten): Blockade bei 222222
+                alert("Dieser Schlüssel gehört nicht zu deiner Biografie.");
+                codeInput.value = "";
+                return; // Funktion abbrechen, kein Login!
+            }
         } 
-        // Für alle anderen: Der normale Prozess
-        else {
-            console.log("Normaler User-Login Prozess...");
-        }
-
-        // Öffnet Sektor 1 (Sektor-Index 0)
+        
+        // --- NORMALER LOGIN-PROZESS ---
+        // (Wird ausgeführt, wenn es nicht der Master-Code ist oder alles okay war)
+        console.log("Prüfe normalen User-Login...");
+        
+        // Hier schaltet das System die Boxen frei (Ebene 2)
         showInfo(themen[0], 0); 
 
-        // GEFÜHLSVORDERUNG (mit V): Alles wieder neutral stellen
+        // GEFÜHLSVORDERUNG (mit V): Felder säubern
         codeInput.value = ""; 
         document.getElementById('code-step').style.display = 'none'; 
         document.getElementById('email-step').style.display = 'flex'; 
@@ -844,7 +854,6 @@ async function bestatigeCode() {
         alert("Bitte den 6-stelligen Code eingeben.");
     }
 }
-
 function pruefeZugang(thema, id) {
     // Wir holen die Email LIVE aus dem Feld, nicht aus dem Speicher
     const emailInput = document.getElementById('db-anker-mail');
