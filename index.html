@@ -1005,16 +1005,4 @@ function aktiviereAdminPanel() {
     ladeAdminStats();
     erstelleSektorenSteuerung();
 }
-// Initialer Start der Farben
-updateNumColors();
-// Setze ihn einfach ans Ende deiner anderen Funktionen
-window.addEventListener('load', function() {
-    if(localStorage.getItem('istAdmin') === 'true') {
-        const btn = document.getElementById('admin-direkt-button');
-        if(btn) {
-            btn.style.display = 'flex'; // Macht den goldenen Knopf wieder sichtbar
-            console.log("Schöpfer erkannt: Admin-Knopf aktiv.");
-        }
-    }
-});
 </script>
