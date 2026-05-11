@@ -1,9 +1,8 @@
 import os
 import certifi
 import requests
-import smtplib
 import random
-from email.mime.text import MIMEText
+from datetime import datetime
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pymongo import MongoClient
@@ -41,19 +40,23 @@ app.add_middleware(
 
 # --- E-MAIL LOGIK (SENDGRID SYSTEM) ---
 def send_verification_email(user_email, code):
-    # Den API Key holt sich der Code automatisch von Render (Environment Variable)
     SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
-    
-    # Das ist dein offizieller Absendername - kein extra Account nötig!
     ABSENDER_EMAIL = "info@mm-community.online" 
 
     url = "https://api.sendgrid.com/v3/mail/send"
-    
     headers = {
         "Authorization": f"Bearer {SENDGRID_API_KEY}",
         "Content-Type": "application/json"
     }
     
+    # Die "Heilige Schrift" Botschaft direkt in der E-Mail
+    mail_text = (
+        f"Dein heiliger Schlüssel für die M&M Community lautet: {code}\n\n"
+        "BEWAHRE IHN GUT AUF! Er ist die Signatur deiner Biografie.\n"
+        "Es wird kein zweiter Code gesendet, da jeder neue Code deine Reise zurücksetzen würde.\n"
+        "Dieser Schlüssel öffnet dir ab jetzt immer deine Tür."
+    )
+
     payload = {
         "personalizations": [{
             "to": [{"email": user_email}]
@@ -62,10 +65,10 @@ def send_verification_email(user_email, code):
             "email": ABSENDER_EMAIL,
             "name": "M&M Community"
         },
-        "subject": "Dein Verifizierungscode",
+        "subject": "Dein Einmaliger Heiliger Schlüssel",
         "content": [{
             "type": "text/plain",
-            "value": f"Dein 6-stelliger Code für die M&M Community lautet: {code}"
+            "value": mail_text
         }]
     }
 
@@ -85,34 +88,56 @@ def send_verification_email(user_email, code):
 async def handle_send_code(request: Request):
     try:
         data = await request.json()
-        email = data.get('email')
+        email = data.get('email', "").lower().strip()
         if not email:
             return JSONResponse(content={"status": "E-Mail fehlt"}, status_code=400)
         
+        # --- DIE BRILLE: MongoDB Check auf Einmaligkeit ---
+        user_record = db.codes.find_one({"email": email})
+        
+        if user_record:
+            # FALL: User bekannt -> KEINE MAIL senden
+            return {
+                "status": "returning_user", 
+                "message": "Dein Anker ist bereits gesetzt. Bitte gib deinen persönlichen Schlüssel ein, um an deiner Biografie weiterzuschreiben."
+            }
+        
+        # FALL: Neuer User -> Einmaligen Code generieren und fest speichern
         verification_code = str(random.randint(100000, 999999))
-        db.codes.update_one({"email": email}, {"$set": {"code": verification_code}}, upsert=True)
+        db.codes.insert_one({
+            "email": email, 
+            "code": verification_code,
+            "created_at": datetime.now()
+        })
         
         success = send_verification_email(email, verification_code)
-        return {"status": "gesendet" if success else "fehler"}
+        return {
+            "status": "gesendet" if success else "fehler",
+            "message": "Dein heiliger Schlüssel wurde gesendet. Er gilt für immer und ist der Anker deiner Biografie."
+        }
+        
     except Exception as e:
         return JSONResponse(content={"status": f"Systemfehler: {str(e)}"}, status_code=500)
 
 @app.post("/verify-code")
 async def handle_verify_code(request: Request):
-    data = await request.json()
-    email = data.get('email')
-    entered_code = data.get('code')
-    
-    record = db.codes.find_one({"email": email})
-    if record and record['code'] == entered_code:
-        return {"status": "verifiziert"}
-    return JSONResponse(content={"status": "falscher code"}, status_code=401)
+    try:
+        data = await request.json()
+        email = data.get('email', "").lower().strip()
+        entered_code = data.get('code')
+        
+        record = db.codes.find_one({"email": email})
+        if record and record['code'] == entered_code:
+            return {"status": "verifiziert"}
+        return JSONResponse(content={"status": "falscher code"}, status_code=401)
+    except Exception as e:
+        return JSONResponse(content={"status": "Systemfehler"}, status_code=500)
 
 @app.get("/")
 async def root():
     return {"message": "Die Community-Seite ist LIVE!"}
 
-# --- SEKTOR NAMEN & SEELEN ---
+# --- SEKTOR NAMEN & SEELEN (MIT SYSTEM INSTRUCTIONS) ---
 SECTOR_NAMES = {
     "0": "Lilith", "1": "Aris", "2": "Mira", "3": "Tarik", "4": "Kiron",
     "5": "Vikas", "6": "Rhea", "7": "Lyra", "8": "Nova", "9": "Marek",
