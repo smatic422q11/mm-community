@@ -205,7 +205,7 @@
             <div class="logo-ring" ondblclick="adminUnlock()"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
         </div>
 
-       <div class="info-section">
+      <div class="info-section" style="position: relative;"> 
     <div class="inner-community-label">Von M&M Community</div>
     
     <div style="display: flex; width: 95%; gap: 15px; justify-content: space-between; align-items: flex-start; z-index: 10;">
@@ -226,25 +226,38 @@
         </div>
     </div>
 
-    <div id="auth-wrapper" style="margin-top: 15px; z-index: 10; display: flex; background: rgba(0, 61, 143, 0.1); border: 1px solid #003d8f; border-radius: 4px; width: 95%; max-width: 600px; height: 45px; overflow: hidden; align-items: stretch;">
+    <div id="auth-wrapper" style="margin-top: 15px; z-index: 10; display: flex; background: rgba(0, 61, 143, 0.1); border: 1px solid #003d8f; border-radius: 4px; width: 95%; max-width: 600px; height: 45px; overflow: hidden; align-items: stretch; position: relative;">
         
+        <div id="info-blase-biografie" style="display: none; position: absolute; top: -110px; left: 0; background: #003d8f; color: #fff; padding: 10px; border: 1px solid #fff; border-radius: 8px; font-size: 0.7rem; z-index: 100; width: 95%; line-height: 1.3; box-shadow: 0 10px 20px #000;"></div>
+
         <div id="email-step" style="display: flex; flex: 1; align-items: center; padding-left: 10px; width: 100%;">
-            <input type="email" id="db-anker-mail" placeholder="E-Mail eingeben..." 
-                style="background: transparent; border: none; color: #fff; font-size: 0.8rem; outline: none; flex-grow: 1;">
-            <button onclick="sichereAnkerUndStarteScan()" 
-                style="background: #ffd700; color: #000; border: none; height: 100%; padding: 0 15px; font-size: 0.65rem; font-weight: bold; cursor: pointer; white-space: nowrap;">
+            <input type="email" id="db-anker-mail" placeholder="E-Mail eingeben..." style="background: transparent; border: none; color: #fff; font-size: 0.8rem; outline: none; flex-grow: 1;">
+            <button onclick="sichereAnkerUndStarteScan()" style="background: #ffd700; color: #000; border: none; height: 100%; padding: 0 15px; font-size: 0.65rem; font-weight: bold; cursor: pointer; white-space: nowrap;">
                 ANKER SETZEN
             </button>
         </div>
 
         <div id="code-step" style="display: none; flex: 1; align-items: center; background: rgba(0,0,0,0.4); width: 100%;">
             <div style="padding-left: 10px; color: #0088ff; font-size: 0.7rem; white-space: nowrap; border-right: 1px solid #003d8f; margin-right: 10px;">VERIFIZIERUNG:</div>
-            <input type="text" id="verification-code" placeholder="CODE" maxlength="6"
-                style="background: #00ff00; border: none; color: #000; font-size: 0.8rem; font-weight: bold; width: 80px; height: 100%; text-align: center; outline: none;">
-            <button onclick="bestatigeCode()" 
-                style="background: #fff; color: #000; border: none; height: 100%; flex-grow: 1; font-size: 0.7rem; font-weight: bold; cursor: pointer;">
+            <input type="text" id="verification-code" placeholder="CODE" maxlength="6" style="background: #00ff00; border: none; color: #000; font-size: 0.8rem; font-weight: bold; width: 80px; height: 100%; text-align: center; outline: none;">
+            <button onclick="bestatigeCode()" style="background: #fff; color: #000; border: none; height: 100%; flex-grow: 1; font-size: 0.7rem; font-weight: bold; cursor: pointer;">
                 OK
             </button>
+        </div>
+    </div>
+
+    <div id="admin-panel-haut" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 800px; background: rgba(0, 0, 0, 0.98); border: 2px solid #ffd700; box-shadow: 0 0 100px #000; z-index: 9999; border-radius: 15px; padding: 30px;">
+        <div style="text-align: right; color: #ff0000; cursor: pointer; font-weight: bold; font-size: 1.5rem;" onclick="document.getElementById('admin-panel-haut').style.display='none'">×</div>
+        <h2 style="color: #ffd700; text-align: center; letter-spacing: 8px; margin-bottom: 30px;">ADMIN-ZENTRALE</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div style="border: 1px solid #003d8f; padding: 15px; background: rgba(0,61,143,0.1);">
+                <h3 style="color: #0088ff; font-size: 0.9rem;">SYSTEM-STEUERUNG</h3>
+                <p style="font-size: 0.7rem; color: #888;">Hier kannst du später Sektoren für alle freischalten oder sperren.</p>
+            </div>
+            <div style="border: 1px solid #003d8f; padding: 15px; background: rgba(0,61,143,0.1);">
+                <h3 style="color: #0088ff; font-size: 0.9rem;">USER-VERWALTUNG</h3>
+                <p style="font-size: 0.7rem; color: #888;">Anzahl der gesetzten Anker: (Wird geladen...)</p>
+            </div>
         </div>
     </div>
 </div>
