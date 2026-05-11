@@ -197,7 +197,17 @@
 <body>
 
     <!-- DER GLOBALE SCHRIFTZUG (Bleibt auf Ebene 2, 3 etc.) -->
-    <div id="top-label" class="global-community-label">Von M&M Community</div>
+   <style>
+/* Das löscht die doppelte Schrift oben auf der Linie */
+#top-label {
+    display: none !important;
+}
+
+/* Der Schriftzug im Logo (Ring) bleibt davon unberührt */
+.logo-community {
+    display: block;
+}
+</style>
 
     <!-- DASHBOARD -->
     <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
