@@ -96,10 +96,11 @@ async def handle_send_code(request: Request):
         user_record = db.codes.find_one({"email": email})
         
         if user_record:
-            # FALL: User bekannt -> KEINE MAIL senden
+            # FALL: User bekannt -> Wir senden KEINEN neuen Code.
+            # Der alte Code im Postfach bleibt das gültige Schloss.
             return {
                 "status": "returning_user", 
-                "message": "Dein Anker ist bereits gesetzt. Bitte gib deinen persönlichen Schlüssel ein, um an deiner Biografie weiterzuschreiben."
+                "message": "Dein Anker ist bereits gesetzt. Bitte nutze den Schlüssel aus deinem Postfach."
             }
         
         # FALL: Neuer User -> Einmaligen Code generieren und fest speichern
@@ -107,32 +108,40 @@ async def handle_send_code(request: Request):
         db.codes.insert_one({
             "email": email, 
             "code": verification_code,
+            "role": "admin" if email in ["mmcommunity22@gmail.com", "m-m-community22@gmail.com"] else "user",
             "created_at": datetime.now()
         })
         
         success = send_verification_email(email, verification_code)
         return {
             "status": "gesendet" if success else "fehler",
-            "message": "Dein heiliger Schlüssel wurde gesendet. Er gilt für immer und ist der Anker deiner Biografie."
+            "message": "Dein heiliger Schlüssel wurde gesendet."
         }
         
     except Exception as e:
         return JSONResponse(content={"status": f"Systemfehler: {str(e)}"}, status_code=500)
 
-@app.post("/verify-code")
-async def handle_verify_code(request: Request):
+@app.post("/verify-access") # Name angepasst auf deinen Index-Aufruf
+async def handle_verify_access(request: Request):
     try:
         data = await request.json()
         email = data.get('email', "").lower().strip()
         entered_code = data.get('code')
         
         record = db.codes.find_one({"email": email})
-        if record and record['code'] == entered_code:
-            return {"status": "verifiziert"}
-        return JSONResponse(content={"status": "falscher code"}, status_code=401)
+        
+        if record and str(record['code']) == str(entered_code):
+            # Wir geben die Rolle (Admin/User) an den Index zurück
+            user_role = record.get("role", "user")
+            return {
+                "success": True, 
+                "role": user_role,
+                "status": "verifiziert"
+            }
+            
+        return JSONResponse(content={"success": False, "status": "falscher code"}, status_code=401)
     except Exception as e:
-        return JSONResponse(content={"status": "Systemfehler"}, status_code=500)
-
+        return JSONResponse(content={"success": False, "status": "Systemfehler"}, status_code=500)
 @app.get("/")
 async def root():
     return {"message": "Die Community-Seite ist LIVE!"}
