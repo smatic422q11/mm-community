@@ -802,28 +802,28 @@ async function bestatigeCode() {
             const result = await response.json();
 
             if (result.success) {
-                ebene = 1; // Erst hier wird der Schalter im System umgelegt
+                // Sicherheitsschaltung aktivieren
+                ebene = 1; 
                 
                 if (result.role === 'admin' || email === "mmcommunity22@gmail.com") {
                     document.getElementById('admin-panel-haut').style.display = 'block';
                 }
                 
-                // Wir springen NICHT automatisch in Sektor 1. 
-                // Der User muss jetzt manuell auf eine Box klicken, was nun durch ebene=1 erlaubt ist.
+                // UI umschalten
                 document.getElementById('code-step').style.display = 'none'; 
                 document.getElementById('email-step').style.display = 'flex'; 
+                
+                // WICHTIG: Erst die Farben/Boxen laden, dann anzeigen
                 updateNumColors();
                 codeInput.value = "";
-            }
-                
+
+                // Den ersten Sektor als Startpunkt öffnen
                 showInfo(themen[0], 0); 
-                document.getElementById('code-step').style.display = 'none'; 
-                document.getElementById('email-step').style.display = 'flex'; 
-                codeInput.value = "";
             } else {
                 alert("Schlüssel ungültig.");
             }
         } catch (e) {
+            console.error("Fehler:", e);
             alert("Verbindung zum Keller fehlgeschlagen.");
         }
     }
