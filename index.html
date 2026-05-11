@@ -201,9 +201,9 @@
 
     <!-- DASHBOARD -->
     <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-    <div class="dashboard-header">
-        <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
-    </div>
+        <div class="dashboard-header">
+            <div class="logo-ring" ondblclick="adminUnlock()"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
+        </div>
 
       <div class="info-section" style="position: relative;"> 
     <div class="inner-community-label">Von M&M Community</div>
@@ -246,19 +246,19 @@
         </div>
     </div>
 
-   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-    <div style="border: 1px solid #003d8f; padding: 15px; background: rgba(0,61,143,0.1);">
-        <h3 style="color: #0088ff; font-size: 0.9rem;">SYSTEM-STEUERUNG</h3>
-        <p style="font-size: 0.6rem; color: #888; margin-bottom: 10px;">Globale Sektor-Sperre:</p>
-        <div id="admin-sektor-kontrolle" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px;">
+    <div id="admin-panel-haut" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 800px; background: rgba(0, 0, 0, 0.98); border: 2px solid #ffd700; box-shadow: 0 0 100px #000; z-index: 9999; border-radius: 15px; padding: 30px;">
+        <div style="text-align: right; color: #ff0000; cursor: pointer; font-weight: bold; font-size: 1.5rem;" onclick="document.getElementById('admin-panel-haut').style.display='none'">×</div>
+        <h2 style="color: #ffd700; text-align: center; letter-spacing: 8px; margin-bottom: 30px;">ADMIN-ZENTRALE</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div style="border: 1px solid #003d8f; padding: 15px; background: rgba(0,61,143,0.1);">
+                <h3 style="color: #0088ff; font-size: 0.9rem;">SYSTEM-STEUERUNG</h3>
+                <p style="font-size: 0.7rem; color: #888;">Hier kannst du später Sektoren für alle freischalten oder sperren.</p>
             </div>
-    </div>
-
-    <div style="border: 1px solid #003d8f; padding: 15px; background: rgba(0,61,143,0.1);">
-        <h3 style="color: #0088ff; font-size: 0.9rem;">USER-VERWALTUNG</h3>
-        <p id="admin-user-count" style="font-size: 1.2rem; color: #ffd700; font-weight: bold; margin-top: 10px;">
-            Anker: <span id="anker-zahl">Lädt...</span>
-        </p>
+            <div style="border: 1px solid #003d8f; padding: 15px; background: rgba(0,61,143,0.1);">
+                <h3 style="color: #0088ff; font-size: 0.9rem;">USER-VERWALTUNG</h3>
+                <p style="font-size: 0.7rem; color: #888;">Anzahl der gesetzten Anker: (Wird geladen...)</p>
+            </div>
+        </div>
     </div>
 </div>
         <div class="grid" id="main-grid" style="margin-top: 15px;"></div>
@@ -671,15 +671,15 @@ body: JSON.stringify({
     }
 }
 
-// Variable, um die Email nach dem Login festzuhalten
-let eingeloggteEmail = ""; 
-
 function updateNumColors() {
-    // Falls wir schon eingeloggt sind, nehmen wir die gespeicherte Mail, sonst das Feld
-    const email = eingeloggteEmail || document.getElementById('db-anker-mail').value.trim().toLowerCase();
+    // 1. Der Anker: Wir holen die Mail direkt aus dem Eingabefeld
+    const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
     
-    let aktuellerSektor = 0; // Hier kommt später der Live-Wert rein
+    // 2. Der Status: Wo steht der User? 
+    // (Diese Zahl kommt später LIVE von Render zurück)
+    let aktuellerSektor = 0; 
 
+    // SCHÖPFER-FREIGABE: Nur diese E-Mail hat freien Zugang
     const isSchöpfer = (email === "mmcommunity22@gmail.com");
 
     themen.forEach((_, i) => {
@@ -687,28 +687,31 @@ function updateNumColors() {
         if (!nBox) return;
 
         if (isSchöpfer) {
-            nBox.className = "num num-neutral"; // Alles BLAU für dich
+            // SCHÖPFER-MODUS: Alles auf BLAU (Offen für Arbeit/Kontrolle)
+            nBox.className = "num num-neutral"; 
         } else {
+            // DIE EISERNE AMPEL-REGEL (1 bis 20):
             if (i < aktuellerSektor) {
-                nBox.className = "num num-fertig";
+                nBox.className = "num num-fertig";  // GRÜN: Sicher (Abgeschlossen)
             } else if (i === aktuellerSektor) {
-                nBox.className = "num num-gelesen";
+                nBox.className = "num num-gelesen"; // GELB: Arbeit (Aktueller Fokus)
             } else if (i === aktuellerSektor + 1) {
-                nBox.className = "num num-offen";
+                nBox.className = "num num-offen";   // ROT: Wartet (Nächste Hürde)
             } else {
-                nBox.className = "num num-neutral";
+                nBox.className = "num num-neutral"; // BLAU: Offen (Zukunft)
             }
         }
     });
     
-    // Fundamente 21 & 22
-    const num21 = document.getElementById('num-20'); 
-    const num22 = document.getElementById('num-21'); 
+    // Auch die Fundamente (21 & 22) für den Schöpfer freischalten
+    const num21 = document.getElementById('num-20'); // Index 20 ist Sektor 21
+    const num22 = document.getElementById('num-21'); // Index 21 ist Sektor 22
     if (isSchöpfer) {
         if(num21) num21.className = "num num-neutral";
         if(num22) num22.className = "num num-neutral";
     }
 }
+
     function startRotation() { 
         clearInterval(wechselInterval); const bg = document.getElementById('werbe-bg'); if(!bg) return; setNewImage(bg);
         wechselInterval = setInterval(() => { if (ebene >= 2 && ebene <= 4) { bildIndex = (bildIndex + 1) % 4; setNewImage(bg); } }, 8000);
@@ -764,7 +767,7 @@ function updateNumColors() {
         }
     }
 
-async function sichereAnkerUndStarteScan() {
+ async function sichereAnkerUndStarteScan() {
     const emailInput = document.getElementById('db-anker-mail');
     const email = emailInput.value.trim().toLowerCase();
 
@@ -773,8 +776,7 @@ async function sichereAnkerUndStarteScan() {
         return;
     }
 
-    // SICHERHEITS-STOPP: Hier wird KEIN showInfo() oder admin-Panel aufgerufen!
-    // Egal welche Email, wir schalten NUR zum Code-Eingabefeld um.
+    // Wir schicken einfach den Code – keine Fragen, keine Umwege.
     try {
         await fetch('https://mm-community.onrender.com/send-code', {
             method: 'POST',
@@ -785,7 +787,7 @@ async function sichereAnkerUndStarteScan() {
         console.log("Server wird geweckt...");
     }
 
-    // NUR das Feld umschalten. Die Tür bleibt zu, bis der Code kommt.
+    // Sofort zum Code-Feld umschalten
     document.getElementById('email-step').style.display = 'none';
     document.getElementById('code-step').style.display = 'flex';
 }
@@ -806,31 +808,18 @@ async function bestatigeCode() {
 
             const result = await response.json();
 
-            if (result.success === true) {
-                // Email für das System merken, damit updateNumColors() funktioniert
-                eingeloggteEmail = email; 
-                
-                // Admin-Check
+            if (result.success) {
+                // Das Admin-Panel wird nur eingeblendet, wenn der Keller sagt, du bist Admin
                 if (result.role === 'admin' || email === "mmcommunity22@gmail.com") {
                     document.getElementById('admin-panel-haut').style.display = 'block';
-                    ladeAdminDaten(); 
                 }
                 
-                // --- DAS HIER BRINGT DIE BOXEN ZURÜCK ---
-                ebene = 1; 
-                document.getElementById('dashboard').style.display = 'flex'; 
-                document.getElementById('page-skelett').style.display = 'none'; 
-                
-                // Boxen zeichnen und einfärben
-                updateNumColors(); 
-                // ---------------------------------------
-
+                showInfo(themen[0], 0); 
                 document.getElementById('code-step').style.display = 'none'; 
                 document.getElementById('email-step').style.display = 'flex'; 
                 codeInput.value = "";
             } else {
                 alert("Schlüssel ungültig.");
-                codeInput.value = "";
             }
         } catch (e) {
             alert("Verbindung zum Keller fehlgeschlagen.");
@@ -881,42 +870,9 @@ function zeigeHeiligeSchrift(typ) {
     
     // Nach 10 Sekunden verschwindet die Blase wieder
     setTimeout(() => { if(infoBlase) infoBlase.remove(); }, 12000);
-}
-// --- HIER EINBAUEN: DIE ADMIN-LOGIK ---
+}</script>
 
-async function befuellenAdminZentrale() {
-    try {
-        const res = await fetch('https://mm-community.onrender.com/admin/stats');
-        const data = await res.json();
-        const ankerAnzeige = document.getElementById('anker-zahl');
-        if(ankerAnzeige) ankerAnzeige.innerText = data.anzahl_anker;
 
-        const kontrolle = document.getElementById('admin-sektor-kontrolle');
-        if(!kontrolle) return;
-        
-        kontrolle.innerHTML = ""; 
-        for (let i = 1; i <= 20; i++) {
-            kontrolle.innerHTML += `
-                <div style="display: flex; flex-direction: column; align-items: center; border: 1px solid #003d8f; padding: 5px; background: rgba(0,0,0,0.3);">
-                    <span style="font-size: 0.6rem; color: #ffd700;">S${i}</span>
-                    <input type="checkbox" onchange="toggleSektor(${i}, this.checked)">
-                </div>
-            `;
-        }
-    } catch (e) {
-        console.error("Fehler beim Befüllen der Zentrale.");
-    }
-}
 
-async function toggleSektor(nummer, status) {
-    await fetch('https://mm-community.onrender.com/admin/toggle-sektor', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ sektor: nummer, offen: status })
-    });
-    console.log(`Sektor ${nummer} ist jetzt ${status ? 'OFFEN' : 'GESPERRT'}`);
-}
 
-// --- ENDE DER ADMIN-LOGIK ---
-</script>
-
+ 
