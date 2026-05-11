@@ -744,20 +744,24 @@ async function sichereAnkerUndStarteScan() {
         return;
     }
 
+    // 1. ZUERST UMSCHALTEN (Damit die Boxen und das Feld sofort da sind!)
+    document.getElementById('email-step').style.display = 'none';
+    document.getElementById('code-step').style.display = 'flex';
+
     try {
-        // Wir fragen Render/MongoDB: "Kennen wir diese Seele?"
+        // 2. DANN IM HINTERGRUND DIE BRILLE NUTZEN
         const response = await fetch('https://mm-community.onrender.com/check-anchor', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: email })
         });
+        
         const status = await response.json();
 
         if (status.known === true) {
-            // BEKANNT: Nur Code-Feld zeigen, keine Mail!
             zeigeHeiligeSchrift('BEKANNT');
+            // Keine Mail senden!
         } else {
-            // NEU: Mail triggern
             zeigeHeiligeSchrift('NEU');
             fetch('https://mm-community.onrender.com/send-code', {
                 method: 'POST',
@@ -765,15 +769,16 @@ async function sichereAnkerUndStarteScan() {
                 body: JSON.stringify({ email: email })
             });
         }
-
     } catch (e) { 
-        console.log("Fehler beim Anker-Check:", e);
-        // Falls Server offline, trotzdem zur Sicherheit umschalten
-        document.getElementById('email-step').style.display = 'none';
-        document.getElementById('code-step').style.display = 'flex';
+        console.log("Server-Check verzögert, Mail wird zur Sicherheit gesendet.");
+        // Falls der Check fehlschlägt, senden wir zur Sicherheit trotzdem
+        fetch('https://mm-community.onrender.com/send-code', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email })
+        });
     }
 }
-
 async function bestatigeCode() {
     const codeInput = document.getElementById('verification-code');
     const code = codeInput.value;
