@@ -737,25 +737,41 @@ function updateNumColors() {
     window.onload = () => updateUI(); 
 async function sichereAnkerUndStarteScan() {
     const emailInput = document.getElementById('db-anker-mail');
-    const email = emailInput.value.trim();
+    const email = emailInput.value.trim().toLowerCase();
 
     if (!email || !email.includes('@')) {
         alert("Bitte eine gültige E-Mail eingeben.");
         return;
     }
 
-    // Umschalten zur "Kasse" (Code-Eingabe)
-    document.getElementById('email-step').style.display = 'none';
-    document.getElementById('code-step').style.display = 'flex';
-
-    // Hier senden wir den Befehl an dein Backend auf Render
     try {
-        fetch('https://mm-community.onrender.com/send-code', {
+        // Wir fragen Render/MongoDB: "Kennen wir diese Seele?"
+        const response = await fetch('https://mm-community.onrender.com/check-anchor', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: email })
         });
-    } catch (e) { console.log("Backend noch nicht bereit"); }
+        const status = await response.json();
+
+        if (status.known === true) {
+            // BEKANNT: Nur Code-Feld zeigen, keine Mail!
+            zeigeHeiligeSchrift('BEKANNT');
+        } else {
+            // NEU: Mail triggern
+            zeigeHeiligeSchrift('NEU');
+            fetch('https://mm-community.onrender.com/send-code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email })
+            });
+        }
+
+    } catch (e) { 
+        console.log("Fehler beim Anker-Check:", e);
+        // Falls Server offline, trotzdem zur Sicherheit umschalten
+        document.getElementById('email-step').style.display = 'none';
+        document.getElementById('code-step').style.display = 'flex';
+    }
 }
 
 async function bestatigeCode() {
@@ -763,18 +779,23 @@ async function bestatigeCode() {
     const code = codeInput.value;
 
     if (code.length === 6) {
-        // Hier deine Logik (z.B. Sektor öffnen)
+        // Hier deine Logik (Sektor öffnen)
         showInfo(themen[0], 0); 
 
-        // GEFÜHLSVORDERUNG: Alles wieder auf neutral stellen
-        codeInput.value = ""; // Feld leeren
-        document.getElementById('code-step').style.display = 'none'; // Code-Teil weg
-        document.getElementById('email-step').style.display = 'flex'; // E-Mail-Teil wieder her
+        // GEFÜHLSVORDERUNG (mit V): Alles wieder auf neutral stellen
+        codeInput.value = ""; 
+        document.getElementById('code-step').style.display = 'none'; 
+        document.getElementById('email-step').style.display = 'flex'; 
+        
+        // Info-Blase entfernen falls vorhanden
+        const blase = document.getElementById('info-blase-biografie');
+        if(blase) blase.remove();
         
     } else {
         alert("Bitte den 6-stelligen Code eingeben.");
     }
 }
+Warum das jetzt sicher ist:
 
 function pruefeZugang(thema, id) {
     // Wir holen die Email LIVE aus dem Feld, nicht aus dem Speicher
