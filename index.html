@@ -767,18 +767,17 @@ function updateNumColors() {
         }
     }
 
-    async function sichereAnkerUndStarteScan() {
+  async function sichereAnkerUndStarteScan() {
     const emailInput = document.getElementById('db-anker-mail');
-    const email = emailInput.value.trim();
+    const email = emailInput.value.trim().toLowerCase();
 
     if (!email || !email.includes('@')) {
         alert("Bitte eine gültige E-Mail eingeben.");
         return;
     }
 
-    // --- START: DER NEUE SCHUTZ-CHECK (DIE WEICHE) ---
     try {
-        // Wir fragen im Keller nach: "Ist die Seele bekannt?"
+        // Wir fragen im Keller nach: "Gibt es für diesen User schon einen aktiven Code?"
         const checkResponse = await fetch('https://mm-community.onrender.com/check-user', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -787,12 +786,12 @@ function updateNumColors() {
         const status = await checkResponse.json();
 
         if (status.exists) {
-            // BEKANNT: Info-Blase zeigen & KEINE Mail senden
+            // CODE EXISTIERT SCHON: Wir schicken KEINE neue Mail, damit der alte Code im Postfach gültig bleibt!
             zeigeHeiligeSchrift('BEKANNT');
         } else {
-            // NEU: Info-Blase zeigen & Mail senden lassen
+            // ERST-REGISTRIERUNG: Hier wird zum ersten Mal ein Code verschickt
             zeigeHeiligeSchrift('NEU');
-            fetch('https://mm-community.onrender.com/send-code', {
+            await fetch('https://mm-community.onrender.com/send-code', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: email })
@@ -800,19 +799,19 @@ function updateNumColors() {
         }
     } catch (e) { 
         console.log("Keller-Verbindung wird initialisiert..."); 
-        // Falls der Server pennt, schicken wir sicherheitshalber trotzdem die Mail
+        // Notfall-Trigger (Falls Server im Schlafmodus)
         fetch('https://mm-community.onrender.com/send-code', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: email })
         });
     }
-    // --- ENDE DER WEICHE ---
 
-    // Umschalten zur Code-Eingabe (bleibt wie es war)
+    // Umschalten zur Code-Eingabe
     document.getElementById('email-step').style.display = 'none';
     document.getElementById('code-step').style.display = 'flex';
 }
+
 async function bestatigeCode() {
     const codeInput = document.getElementById('verification-code');
     const emailInput = document.getElementById('db-anker-mail');
@@ -821,6 +820,7 @@ async function bestatigeCode() {
 
     if (code.length === 6) {
         try {
+            // Hier findet der echte Abgleich statt – NUR mit dem Code aus der Mail!
             const response = await fetch('https://mm-community.onrender.com/verify-access', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -830,19 +830,18 @@ async function bestatigeCode() {
             const result = await response.json();
 
             if (result.success) {
-                // DIE WEICHE: Der Keller sagt uns, ob du Admin bist
-                // Wir prüfen auf beide Varianten der Admin-Mail zur Sicherheit
+                // SCHÖPFER-ERKENNUNG: Öffnet das Admin-Panel
                 if (email === "m-m-community22@gmail.com" || email === "mmcommunity22@gmail.com") {
                     const adminPanel = document.getElementById('admin-panel-haut');
                     if(adminPanel) adminPanel.style.display = 'block';
-                    console.log("Admin-Zentrale aktiviert.");
+                    console.log("Admin-Zentrale für Schöpfer geöffnet.");
                 } 
                 
-                // Für alle: Zugang gewähren
+                // Für alle: Sektoren freischalten
                 showInfo(themen[0], 0); 
                 console.log("Zutritt gewährt.");
 
-                // GefühlsVorderung (mit V): Aufräumen ohne Löcher
+                // GefühlsVorderung (mit V): Formular aufräumen
                 codeInput.value = ""; 
                 document.getElementById('code-step').style.display = 'none'; 
                 document.getElementById('email-step').style.display = 'flex'; 
@@ -850,6 +849,7 @@ async function bestatigeCode() {
                 alert("Dieser Schlüssel gehört nicht zu deiner Biografie.");
                 codeInput.value = "";
             }
+
         } catch (e) {
             console.error("Verbindung zum Keller gestört.");
             alert("System-Stau: Der Anker kann gerade nicht geprüft werden.");
