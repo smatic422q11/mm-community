@@ -196,7 +196,7 @@
 </head>
 <body>
 
-   <!-- DER GLOBALE SCHRIFTZUG (Bleibt auf Ebene 2, 3 etc.) -->
+    <!-- DER GLOBALE SCHRIFTZUG (Bleibt auf Ebene 2, 3 etc.) -->
     <div id="top-label" class="global-community-label">Von M&M Community</div>
 
     <!-- DASHBOARD -->
@@ -815,47 +815,16 @@ function updateNumColors() {
 }
 async function bestatigeCode() {
     const codeInput = document.getElementById('verification-code');
-    const emailInput = document.getElementById('db-anker-mail');
-    const code = codeInput.value.trim();
-    const email = emailInput.value.trim().toLowerCase(); 
+    const code = codeInput.value;
 
     if (code.length === 6) {
-        try {
-            // Der Index fragt nur im Keller nach, er kennt den Code selbst nicht
-            const response = await fetch('/api/verify-access', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: email, code: code })
-            });
+        // Hier deine Logik (z.B. Sektor öffnen)
+        showInfo(themen[0], 0); 
 
-            const result = await response.json();
-
-            if (result.success) {
-                // Wir markieren nur deine Admin-Mail für das Panel
-                if (email === "mmcommunity22@gmail.com") {
-                    document.getElementById('admin-panel-haut').style.display = 'block';
-                    console.log("Admin-Zentrale aktiviert.");
-                } else {
-                    // Alle anderen (Privat/User) spazieren normal rein
-                    showInfo(themen[0], 0);
-                    console.log("Normaler Zutritt gewährt.");
-                }
-
-                // Felder säubern und zurück zum Start (GefühlsVorderung mit V)
-                codeInput.value = ""; 
-                document.getElementById('code-step').style.display = 'none'; 
-                document.getElementById('email-step').style.display = 'flex'; 
-
-            } else {
-                // Wenn der Keller sagt: Code falsch
-                alert("Dieser Schlüssel gehört nicht zu deiner Biografie.");
-                codeInput.value = "";
-            }
-
-        } catch (error) {
-            console.error("Verbindung zum Keller unterbrochen.");
-            alert("System-Stau: Der Anker kann gerade nicht geprüft werden.");
-        }
+        // GEFÜHLSVORDERUNG: Alles wieder auf neutral stellen
+        codeInput.value = ""; // Feld leeren
+        document.getElementById('code-step').style.display = 'none'; // Code-Teil weg
+        document.getElementById('email-step').style.display = 'flex'; // E-Mail-Teil wieder her
         
     } else {
         alert("Bitte den 6-stelligen Code eingeben.");
@@ -907,6 +876,4 @@ function zeigeHeiligeSchrift(typ) {
     // Nach 10 Sekunden verschwindet die Blase wieder
     setTimeout(() => { if(infoBlase) infoBlase.remove(); }, 12000);
 }</script>
-
-
 
