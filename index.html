@@ -827,27 +827,25 @@ async function bestatigeCode() {
     }
 }
 function pruefeZugang(thema, id) {
+    // 1. KRITISCHE PRÜFUNG: Ist der User überhaupt verifiziert?
+    // Nur wenn ebene === 1 ist (was erst in bestatigeCode passiert), darf man rein.
+    if (ebene !== 1) {
+        alert("Zugriff verweigert: Bitte zuerst den Code aus deinem Postfach bestätigen!");
+        return;
+    }
+
+    // Wenn man verifiziert ist (ebene 1), darf man die Sektoren öffnen
+    const nBox = document.getElementById(`num-${id}`);
+    
+    // Admin darf alles öffnen, wenn er eingeloggt ist
     const emailInput = document.getElementById('db-anker-mail');
     const email = emailInput.value.trim().toLowerCase();
-    
-    if (!email || !email.includes('@')) {
-        alert("Zugriff verweigert: Bitte zuerst den ANKER mit deiner E-Mail setzen!");
-        return;
-    }
+    const isAdmin = (email === "m-m-community22@gmail.com" || email === "mmcommunity22@gmail.com");
 
-    // Admin hat immer freien Spaziergang
-    if (email === "m-m-community22@gmail.com" || email === "mmcommunity22@gmail.com") {
+    if (isAdmin || (nBox && (nBox.classList.contains('num-gelesen') || nBox.classList.contains('num-fertig')))) {
         showInfo(thema, id);
-        return;
-    }
-
-    const nBox = document.getElementById(`num-${id}`);
-    if (nBox) {
-        if (nBox.classList.contains('num-gelesen') || nBox.classList.contains('num-fertig')) {
-            showInfo(thema, id);
-        } else {
-            alert("Dieser Sektor ist noch nicht für dich bereit.");
-        }
+    } else {
+        alert("Dieser Sektor ist noch nicht für dich bereit.");
     }
 }
 // --- NEUE FUNKTION: INFO-BLASE (Ganz unten einfügen) ---
