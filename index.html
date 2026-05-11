@@ -68,31 +68,25 @@
         }
         .registrierung-text { color: #fff; font-size: 2.2rem; font-weight: 900; letter-spacing: 15px; text-transform: uppercase; }
 
-        .dashboard-header { 
+      .dashboard-header { 
     width: 100%; 
-    position: relative; /* Geändert von absolute auf relative */
-    display: flex; 
-    justify-content: flex-start; 
-    padding: 20px 2%; /* Ein wenig mehr Abstand */
-    box-sizing: border-box; 
-    z-index: 20; 
+    position: absolute; /* Zurück auf absolute */
+    top: 20px; 
+    left: 20px; 
+    z-index: 100; /* Ganz nach oben */
 }
         .logo-ring { width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; }
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
 
-        .info-section { 
+     .info-section { 
     width: 80%; 
-    height: 26vh; 
+    height: 24vh; /* Etwas kleiner von 26vh auf 24vh */
     border: 2px solid #003d8f; 
-    display: flex; 
-    flex-direction: column; 
-    justify-content: center; 
-    align-items: center; 
     background-color: #000; 
     position: relative; 
     overflow: hidden; 
-    margin-top: 40px; /* Erhöht von 2vh auf 40px für mehr Luft */
+    margin-top: 10px; /* Weniger Abstand nach oben */
 }
         .tafel-layout { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; margin-top: 1vh; height: 26vh; flex-shrink: 0; }
         .info-section-ebene { width: 90% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
@@ -226,7 +220,7 @@
     <div id="top-label" class="global-community-label">Von M&M Community</div>
 
     <!-- DASHBOARD -->
-    <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+    <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding-top: 100px;">
         <div class="dashboard-header">
            <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
         </div>
