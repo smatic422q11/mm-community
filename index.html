@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -9,18 +9,18 @@
         body { background-color: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
 
         /* DER GLOBALE SCHRIFTZUG (FÜR EBENE 2, 3 etc.) - EXAKTES LOGO-BLAU */
-       .global-community-label {
-    position: absolute;
-    top: 5px; /* Etwas höher setzen */
-    width: 100%;
-    text-align: center;
-    font-size: 0.7rem; /* Etwas kleiner, damit es dezenter ist */
-    letter-spacing: 5px;
-    text-transform: uppercase;
-    color: #003d8f;
-    z-index: 100;
-    pointer-events: none;
-} 
+        .global-community-label {
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: #003d8f; /* Exaktes Logo-Blau */
+            z-index: 100;
+            pointer-events: none;
+        }
 
         /* DER SCHRIFTZUG NUR IM DASHBOARD-BOARD (DER "HAUCH") - EXAKTES LOGO-BLAU */
         .inner-community-label {
@@ -68,26 +68,12 @@
         }
         .registrierung-text { color: #fff; font-size: 2.2rem; font-weight: 900; letter-spacing: 15px; text-transform: uppercase; }
 
-      .dashboard-header { 
-    width: 100%; 
-    position: absolute; /* Zurück auf absolute */
-    top: 20px; 
-    left: 20px; 
-    z-index: 100; /* Ganz nach oben */
-}
+        .dashboard-header { width: 100%; position: absolute; top: 3%; display: flex; justify-content: flex-start; padding: 0 2%; box-sizing: border-box; z-index: 20; }
         .logo-ring { width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; }
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
 
-     .info-section { 
-    width: 80%; 
-    height: 24vh; /* Etwas kleiner von 26vh auf 24vh */
-    border: 2px solid #003d8f; 
-    background-color: #000; 
-    position: relative; 
-    overflow: hidden; 
-    margin-top: 10px; /* Weniger Abstand nach oben */
-}
+        .info-section { width: 80%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; position: relative; overflow: hidden; margin-top: 2vh; }
         .tafel-layout { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; margin-top: 1vh; height: 26vh; flex-shrink: 0; }
         .info-section-ebene { width: 90% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
 
@@ -189,17 +175,11 @@
 #admin-panel-haut {
     display: none; 
     position: fixed; 
-    top: 50%; left: 50%; 
-    transform: translate(-50%, -50%);
-    width: 90%; max-width: 800px; 
-    max-height: 85vh; /* Begrenzung für kleine Screens */
-    background: rgba(0, 0, 0, 0.98); 
-    border: 2px solid #ffd700;
-    box-shadow: 0 0 100px #000; 
-    z-index: 10000; /* Höchster Wert */
-    border-radius: 15px;
-    padding: 30px; 
-    overflow-y: auto;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 90%; max-width: 800px; height: 70vh;
+    background: rgba(0, 0, 0, 0.98); border: 2px solid #ffd700;
+    box-shadow: 0 0 100px #000; z-index: 9999; border-radius: 15px;
+    padding: 30px; overflow-y: auto;
 }
 
 #info-blase-biografie {
@@ -220,7 +200,7 @@
     <div id="top-label" class="global-community-label">Von M&M Community</div>
 
     <!-- DASHBOARD -->
-    <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding-top: 100px;">
+    <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="dashboard-header">
            <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
         </div>
@@ -266,26 +246,18 @@
         </div>
     </div>
 
-    <!-- ADMIN-PANEL -->
-<div id="admin-panel-haut" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 800px; height: 70vh; background: rgba(0, 0, 0, 0.98); border: 2px solid #ffd700; box-shadow: 0 0 100px #000; z-index: 10000; border-radius: 15px; padding: 30px; overflow-y: auto;">
-    
-    <!-- Das '×' zum Schließen - nutzt jetzt die stabile Funktion -->
-    <div style="text-align: right; color: #ff0000; cursor: pointer; font-weight: bold; font-size: 2rem; padding: 10px;" 
-         onclick="schliesseAdminPanel()">×</div>
-    
-    <h2 style="color: #ffd700; text-align: center; letter-spacing: 8px; margin-bottom: 30px;">ADMIN-ZENTRALE</h2>
-    
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-        <!-- Linke Seite: Steuerung -->
-        <div style="border: 1px solid #003d8f; padding: 15px; background: rgba(0,61,143,0.1);">
-            <h3 style="color: #0088ff; font-size: 0.9rem;">SYSTEM-STEUERUNG</h3>
-            <p style="font-size: 0.7rem; color: #888;">Sektoren werden hier verwaltet...</p>
-        </div>
-        
-        <!-- Rechte Seite: Stats -->
-        <div style="border: 1px solid #003d8f; padding: 15px; background: rgba(0,61,143,0.1);">
-            <h3 style="color: #0088ff; font-size: 0.9rem;">USER-VERWALTUNG</h3>
-            <p style="font-size: 0.7rem; color: #888;">Anzahl der gesetzten Anker: (Wird geladen...)</p>
+    <div id="admin-panel-haut" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 800px; background: rgba(0, 0, 0, 0.98); border: 2px solid #ffd700; box-shadow: 0 0 100px #000; z-index: 9999; border-radius: 15px; padding: 30px;">
+        <div style="text-align: right; color: #ff0000; cursor: pointer; font-weight: bold; font-size: 1.5rem;" onclick="document.getElementById('admin-panel-haut').style.display='none'">×</div>
+        <h2 style="color: #ffd700; text-align: center; letter-spacing: 8px; margin-bottom: 30px;">ADMIN-ZENTRALE</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div style="border: 1px solid #003d8f; padding: 15px; background: rgba(0,61,143,0.1);">
+                <h3 style="color: #0088ff; font-size: 0.9rem;">SYSTEM-STEUERUNG</h3>
+                <p style="font-size: 0.7rem; color: #888;">Hier kannst du später Sektoren für alle freischalten oder sperren.</p>
+            </div>
+            <div style="border: 1px solid #003d8f; padding: 15px; background: rgba(0,61,143,0.1);">
+                <h3 style="color: #0088ff; font-size: 0.9rem;">USER-VERWALTUNG</h3>
+                <p style="font-size: 0.7rem; color: #888;">Anzahl der gesetzten Anker: (Wird geladen...)</p>
+            </div>
         </div>
     </div>
 </div>
@@ -596,52 +568,12 @@ function updateUI() {
     updateDots(); 
     startRotation();
 }
-  // Diese Funktion steuert nun das Verhalten des schwarzen Knopfes
-function aktiviereKandidatenLicht() {
-    const sigL1 = document.getElementById('sig-l1');
-    const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
-    const isSchöpfer = (email === "mmcommunity22@gmail.com");
-
-    // Wenn Schöpfer oder qualifiziert, wird der Knopf zum Admin-Trigger
-    if (isSchöpfer || userBackstage.isQualifiziert) {
-        sigL1.className = "oval-side elite-aktiv"; // Er leuchtet Gold
-        sigL1.style.cursor = "pointer";
-        sigL1.style.opacity = "1";
-        
-        // Der Klick öffnet das Panel und lädt die Daten
-        sigL1.onclick = function(e) {
-            e.preventDefault();
-            aktiviereAdminPanel(); 
-        };
-    } else {
-        // Normalzustand für User
-        sigL1.className = "oval-side ov-schwarz";
-        sigL1.style.cursor = "default";
-        sigL1.onclick = null;
+    function aktiviereKandidatenLicht() {
+        const sigL1 = document.getElementById('sig-l1');
+        if (ebene === 4) { sigL1.className = "oval-side ov-schwarz"; sigL1.onclick = null; } 
+        else if (userBackstage.isQualifiziert && ebene < 5) { sigL1.className = "oval-side elite-aktiv"; sigL1.onclick = () => portalZuEbene5(); } 
+        else { sigL1.className = "oval-side ov-schwarz"; sigL1.onclick = null; }
     }
-}
-
-// Überarbeitete Admin-Aktivierung
-function aktiviereAdminPanel() {
-    const panel = document.getElementById('admin-panel-haut');
-    panel.style.display = 'block';
-    
-    // Verhindert, dass das Panel schließt, wenn man darin klickt
-    panel.onclick = function(e) {
-        e.stopPropagation(); 
-    };
-
-    // Daten laden
-    ladeAdminStats();
-    if (!document.getElementById('admin-btn-0')) { // Nur einmal erstellen
-        erstelleSektorenSteuerung();
-    }
-}
-
-// Schließ-Funktion (Sollte im HTML beim '×' bereits drin sein)
-function schliesseAdminPanel() {
-    document.getElementById('admin-panel-haut').style.display = 'none';
-} 
 
     function updateDots() { for(let i=1; i<=7; i++) { const d = document.getElementById('dot'+i); if(d) d.classList.toggle('active', i === ebene); } }
     function nextPage() { updateUI(); }
@@ -1010,23 +942,10 @@ async function schalteSektor(id, status) {
 }
 
 function aktiviereAdminPanel() {
-    const panel = document.getElementById('admin-panel-haut');
-    panel.style.display = 'block';
-    
-    // Das sorgt dafür, dass das Panel beim Klicken auf die Regler offen bleibt
-    panel.onclick = function(e) {
-        e.stopPropagation(); 
-    };
-
+    document.getElementById('admin-panel-haut').style.display = 'block';
     ladeAdminStats();
     erstelleSektorenSteuerung();
 }
-
-// HIER KOMMT DIE NEUE FUNKTION HIN
-function schliesseAdminPanel() {
-    document.getElementById('admin-panel-haut').style.display = 'none';
-}
-
 // Initialer Start der Farben
 updateNumColors();
 </script>
