@@ -84,42 +84,30 @@ def send_verification_email(user_email, code):
         print(f"Systemfehler beim Mail-Versand: {e}")
         return False
         
-@app.post("/send-code")
-async def handle_send_code(request: Request):
+app.post("/verify-access")
+async def handle_verify_access(request: Request):
     try:
         data = await request.json()
         email = data.get('email', "").lower().strip()
-        if not email:
-            return JSONResponse(content={"status": "E-Mail fehlt"}, status_code=400)
+        entered_code = str(data.get('code', "")).strip() # Code als String und ohne Leerzeichen
         
-        # --- DIE BRILLE: MongoDB Check auf Einmaligkeit ---
-        user_record = db.codes.find_one({"email": email})
+        # 1. Wir suchen den Eintrag in der MongoDB
+        record = db.codes.find_one({"email": email})
         
-        if user_record:
-            # FALL: User bekannt -> Wir senden KEINEN neuen Code.
-            # Der alte Code im Postfach bleibt das gültige Schloss.
+        # 2. KRITISCHE PRÜFUNG: Existiert der User UND stimmt der Code?
+        if record and str(record['code']) == entered_code and entered_code != "":
+            user_role = record.get("role", "user")
             return {
-                "status": "returning_user", 
-                "message": "Dein Anker ist bereits gesetzt. Bitte nutze den Schlüssel aus deinem Postfach."
+                "success": True, 
+                "role": user_role,
+                "status": "verifiziert"
             }
         
-        # FALL: Neuer User -> Einmaligen Code generieren und fest speichern
-        verification_code = str(random.randint(100000, 999999))
-        db.codes.insert_one({
-            "email": email, 
-            "code": verification_code,
-            "role": "admin" if email in ["mmcommunity22@gmail.com", "m-m-community22@gmail.com"] else "user",
-            "created_at": datetime.now()
-        })
-        
-        success = send_verification_email(email, verification_code)
-        return {
-            "status": "gesendet" if success else "fehler",
-            "message": "Dein heiliger Schlüssel wurde gesendet."
-        }
+        # Wenn der Code nicht stimmt oder leer ist:
+        return JSONResponse(content={"success": False, "status": "Zugriff verweigert"}, status_code=401)
         
     except Exception as e:
-        return JSONResponse(content={"status": f"Systemfehler: {str(e)}"}, status_code=500)
+        return JSONResponse(content={"success": False, "status": "Systemfehler"}, status_code=500)
 
 @app.post("/verify-access") # Name angepasst auf deinen Index-Aufruf
 async def handle_verify_access(request: Request):
