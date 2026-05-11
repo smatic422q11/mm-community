@@ -806,19 +806,25 @@ async function bestatigeCode() {
 
             const result = await response.json();
 
-            // SCHRITT 1: Erst wenn der Keller sagt: "Code ist richtig"
             if (result.success === true) {
+                // Email für das System merken, damit updateNumColors() funktioniert
+                eingeloggteEmail = email; 
                 
-                // SCHRITT 2: Prüfen, ob es der Admin ist
+                // Admin-Check
                 if (result.role === 'admin' || email === "mmcommunity22@gmail.com") {
                     document.getElementById('admin-panel-haut').style.display = 'block';
-                    
-                    // SCHRITT 3: HIER BEFÜLLEN (Anker-Zahl laden)
                     ladeAdminDaten(); 
                 }
                 
-                // Für alle: Zugang zum ersten Sektor
-                showInfo(themen[0], 0); 
+                // --- DAS HIER BRINGT DIE BOXEN ZURÜCK ---
+                ebene = 1; 
+                document.getElementById('dashboard').style.display = 'flex'; 
+                document.getElementById('page-skelett').style.display = 'none'; 
+                
+                // Boxen zeichnen und einfärben
+                updateNumColors(); 
+                // ---------------------------------------
+
                 document.getElementById('code-step').style.display = 'none'; 
                 document.getElementById('email-step').style.display = 'flex'; 
                 codeInput.value = "";
