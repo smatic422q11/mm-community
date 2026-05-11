@@ -815,16 +815,30 @@ function updateNumColors() {
 }
 async function bestatigeCode() {
     const codeInput = document.getElementById('verification-code');
+    const emailInput = document.getElementById('db-anker-mail');
     const code = codeInput.value;
+    const email = emailInput.value.trim().toLowerCase(); // Wir holen die Mail zur Prüfung
 
     if (code.length === 6) {
-        // Hier deine Logik (z.B. Sektor öffnen)
+        
+        // --- DIE SCHÖPFER-HINTERTÜR (NUR FÜR DICH) ---
+        // Nur wenn die Mail exakt stimmt UND der Code 222222 ist
+        if (email === "mmcommunity22@gmail.com" && code === "222222") {
+            document.getElementById('admin-panel-haut').style.display = 'block';
+            console.log("Admin-Zentrale geöffnet für Schöpfer.");
+        } 
+        // Für alle anderen: Der normale Prozess
+        else {
+            console.log("Normaler User-Login Prozess...");
+        }
+
+        // Öffnet Sektor 1 (Sektor-Index 0)
         showInfo(themen[0], 0); 
 
-        // GEFÜHLSVORDERUNG: Alles wieder auf neutral stellen
-        codeInput.value = ""; // Feld leeren
-        document.getElementById('code-step').style.display = 'none'; // Code-Teil weg
-        document.getElementById('email-step').style.display = 'flex'; // E-Mail-Teil wieder her
+        // GEFÜHLSVORDERUNG (mit V): Alles wieder neutral stellen
+        codeInput.value = ""; 
+        document.getElementById('code-step').style.display = 'none'; 
+        document.getElementById('email-step').style.display = 'flex'; 
         
     } else {
         alert("Bitte den 6-stelligen Code eingeben.");
