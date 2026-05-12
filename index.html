@@ -2,643 +2,84 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>M&M-COMMUNITY - Admin Modus</title>
-   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script> 
+    <title>M&M-COMMUNITY</title>
     <style>
-        /* BASIS-LAYOUT */
         body { background-color: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
-
-        /* DER GLOBALE SCHRIFTZUG (FÜR EBENE 2, 3 etc.) - EXAKTES LOGO-BLAU */
-        .global-community-label {
-            position: absolute;
-            top: 10px;
-            width: 100%;
-            text-align: center;
-            font-size: 0.9rem;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-            color: #003d8f; /* Exaktes Logo-Blau */
-            z-index: 100;
-            pointer-events: none;
-        }
-
-        /* DER SCHRIFTZUG NUR IM DASHBOARD-BOARD (DER "HAUCH") - EXAKTES LOGO-BLAU */
-        .inner-community-label {
-            position: absolute;
-            top: 8px;
-            width: 100%;
-            text-align: center;
-            font-size: 0.7rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            color: rgba(0, 61, 143, 0.7); /* Logo-Blau, aber als Hauch integriert */
-            z-index: 20;
-            pointer-events: none;
-        }
-
-        /* ANIMATIONEN */
-        @keyframes kenburns { 0% { transform: scale(1) translate(0, 0); } 50% { transform: scale(1.15) translate(-1%, -1%); } 100% { transform: scale(1) translate(0, 0); } }
-        @keyframes fadeEffect { 0% { opacity: 0; } 15% { opacity: 0.4; } 85% { opacity: 0.4; } 100% { opacity: 0; } }
         
-        @keyframes signalBlink {
-            0% { box-shadow: 0 0 5px #fff; opacity: 0.8; }
-            50% { box-shadow: 0 0 25px #fff, 0 0 35px #003d8f; opacity: 1; transform: scale(1.05); }
-            100% { box-shadow: 0 0 5px #fff; opacity: 0.8; }
-        }
-
-        .elite-aktiv { 
-            background-color: #ffd700 !important; 
-            box-shadow: 0 0 10px #ffd700; 
-            border: 2px solid #fff !important; 
-            cursor: pointer; 
-        }
-
-        @keyframes pulsieren {
-            0% { opacity: 0.5; }
-            50% { opacity: 1; text-shadow: 0 0 10px #ffd700; }
-            100% { opacity: 0.5; }
-        }
-        .pulsieren { animation: pulsieren 2s infinite ease-in-out; font-weight: bold; }
-
-        .signal-aktiv { animation: signalBlink 1.0s infinite ease-in-out !important; border: 2px solid #fff !important; cursor: pointer; }
-
-        .lila-registrierung-leiste {
-            width: 100%; height: 80px; background: #8b00ff; border-top: 2px solid #fff; border-bottom: 2px solid #fff;
-            display: flex; align-items: center; justify-content: center; margin-top: 20px; box-shadow: 0 0 20px #8b00ff;
-        }
-        .registrierung-text { color: #fff; font-size: 2.2rem; font-weight: 900; letter-spacing: 15px; text-transform: uppercase; }
-
-        .dashboard-header { width: 100%; position: absolute; top: 3%; display: flex; justify-content: flex-start; padding: 0 2%; box-sizing: border-box; z-index: 20; }
+        /* DASHBOARD LOGIC */
+        .dashboard-header { width: 100%; padding: 20px 2%; display: flex; justify-content: flex-start; box-sizing: border-box; }
         .logo-ring { width: 110px; height: 110px; border: 3px solid #fff; background-color: #003d8f; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; }
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
 
-        .info-section { width: 80%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; position: relative; overflow: hidden; margin-top: 2vh; }
-        .tafel-layout { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; margin-top: 1vh; height: 26vh; flex-shrink: 0; }
-        .info-section-ebene { width: 90% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
-
-        .buttons-links { position: absolute; left: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
-        .buttons-rechts { position: absolute; right: 1.5%; display: flex; flex-direction: column; gap: 15px; z-index: 20; }
-        .oval-side { width: 45px; height: 22px; border-radius: 12px; border: 1px solid #fff; opacity: 0.8; transition: all 0.3s; }
-        .ov-schwarz { background: #000; border: 1.5px solid #003d8f; }
-        .ov-grun { background: #00ff00; }
-        .ov-blau { background: #0000ff; }
-        .ov-rot { background: #ff0000; }
-        .ov-pink { background: #ff00ff; }
-        .ov-gelb { background: #ffff00; }
-
-      .grid { 
-    display: grid; 
-    grid-template-columns: repeat(4, 1fr); 
-    grid-template-rows: repeat(6, 1fr); /* Auf 6 erhöht für 22-24 Boxen */
-    grid-auto-flow: column; 
-    gap: 10px; 
-    width: 95%; 
-    max-width: 1450px; 
-    margin-top: 15px; 
-    border: 3px solid #00ff00; 
-    padding: 15px; 
-    border-radius: 10px; 
-}
-        .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; overflow: hidden; }
-        .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
-        .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
-
-    #chat-area, #drawer-ebene4, #ebene5-bereich { 
-            width: 90% !important; 
-            flex-grow: 1; 
-            display: none; 
-            flex-direction: column; 
-            margin-top: 5px; 
-            margin-bottom: 70px; 
-            overflow: hidden; 
-            position: relative; 
+        /* DAS GRID MIT GRÜNEM RAND FÜR 1-22 */
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            grid-template-rows: repeat(6, 1fr); 
+            grid-auto-flow: column; 
+            gap: 10px; 
+            width: 95%; 
+            max-width: 1450px; 
+            border: 3px solid #00ff00; 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin-top: 20px;
         }
+        .box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 50px; }
+        .num { width: 40px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; }
+        .num-neutral { background-color: #003d8f !important; }
+        .text { padding: 5px 10px; text-transform: uppercase; font-size: 0.7rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; }
 
-        #chat-box { 
-            height: 45vh !important;
-            display: flex; 
-            flex-direction: column; 
-            padding: 15px; 
-            color: #fff; 
-            font-size: 1.1rem; 
-            overflow-y: auto !important; 
-            user-select: text !important; 
-            border: 1px solid #003d8f;
-            background: rgba(0,0,0,0.5);
-            box-sizing: border-box;
-        }
-        .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; }
-        
-        .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; background: #000; z-index: 100; }
+        /* NAVIGATION UNTEN */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: #000; padding: 15px; display: flex; justify-content: space-between; border-top: 1px solid #333; }
         .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
-        .dot { width: 10px; height: 10px; background: #444; border-radius: 50%; }
-        .dot.active { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
-         /* DESIGN FÜR KOMPASS & FOOTER */
-        .kompass-container {
-            width: 90%; max-width: 1450px; margin: 10px auto; 
-            display: flex; gap: 20px; border: 1px solid #003d8f; 
-            background: rgba(0, 61, 143, 0.05); padding: 15px; 
-            border-radius: 8px; box-sizing: border-box; flex-shrink: 0;
-        }
-       .mm-footer {
-    text-align: center;
-    padding: 60px 0 30px 0; /* Mehr Abstand nach oben (60px) */
-    background: #000;
-    width: 100%;
-    border-top: 1px solid #1a1a1a;
-    margin-top: 40px; /* Schiebt alles unter das Fundament */
-}
-        .legal-links a {
-            color: #0088ff; text-decoration: none; font-size: 14px; 
-            font-weight: 600; letter-spacing: 1px; transition: 0.3s;
-        }
-        .legal-links a:hover { color: #fff; }
-       /* HIER EINFÜGEN ODER ERSETZEN */
-    .num-offen {
-        background-color: #0088ff !important;
-        box-shadow: 0 0 20px #0088ff, inset 0 0 10px #ffffff;
-        border: 1px solid #fff !important;
-        animation: pulseBlue 2s infinite;
-    }
-
-    @keyframes pulseBlue {
-        0% { box-shadow: 0 0 5px #0088ff; }
-        50% { box-shadow: 0 0 25px #0088ff; }
-        100% { box-shadow: 0 0 5px #0088ff; }
-    } 
-
-        .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; }
-        .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; position: relative; overflow: hidden; }
-        .slot-1-user { border-color: #00ff00; color: #00ff00; }
-
-        #counter-box { position: absolute; right: 0; top: 0; width: 100px; padding: 5px; border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f; background: #000; text-align: center; display: none; z-index: 100; }
-        .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
-        .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh; flex-shrink: 0; }
-        .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
-        .ebene4-header-red { width: 90%; background: #ff0000; color: #fff; padding: 10px 0; text-align: center; font-weight: 900; font-size: 1.5rem; border-radius: 5px 5px 0 0; display: none; }
-
-        .num-neutral { background-color: #003d8f !important; } /* BLAU: Offen */
-.num-gelesen { background-color: #ffd700 !important; color: #000 !important; } /* GELB: Arbeit */
-.num-fertig  { background-color: #00ff00 !important; color: #000 !important; } /* GRÜN: Sicher */
-.num-offen   { background-color: #ff4d4d !important; } /* ROT: Wartet */
-        .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
-        /* ADMIN-MÖBEL: Schweben über dem Layout, ohne Platz wegzunehmen */
-#admin-panel-haut {
-    display: none; 
-    position: fixed; 
-    top: 50%; left: 50%; transform: translate(-50%, -50%);
-    width: 90%; max-width: 800px; height: 70vh;
-    background: rgba(0, 0, 0, 0.98); border: 2px solid #ffd700;
-    box-shadow: 0 0 100px #000; z-index: 9999; border-radius: 15px;
-    padding: 30px; overflow-y: auto;
-}
-
-#info-blase-biografie {
-    position: absolute; 
-    top: -125px; left: 5%; width: 90%;
-    background: #003d8f; color: #fff; padding: 15px;
-    border: 1px solid #fff; border-radius: 8px;
-    font-size: 0.8rem; z-index: 1000; line-height: 1.4;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    animation: fadeEffect 0.5s forwards;
-}
-        .bild-aktiv { animation: kenburns 15s infinite ease-in-out, fadeEffect 8s infinite; }
-        
-  .video-control-row {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-    margin-top: 15px;
-}
-.btn-video-join {
-    flex: 1;
-    background: #00ff00;
-    color: #000;
-    border: none;
-    padding: 15px;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 5px;
-}
-.btn-video-leave {
-    flex: 1;
-    background: #ff0000;
-    color: #fff;
-    border: none;
-    padding: 15px;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 5px;
-}    
-   </style>
+        .btn-exit { background: #0088ff !important; color: #fff !important; }
+    </style>
 </head>
 <body>
 
-    <!-- DER GLOBALE SCHRIFTZUG (Bleibt auf Ebene 2, 3 etc.) -->
-    <div id="top-label" class="global-community-label">Von M&M Community</div>
-
-    <!-- DASHBOARD -->
 <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
     <div class="dashboard-header">
         <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
     </div>
 
-    <!-- Die Info-Sektion (Mission/Orientierung/Ziel) ohne die Werbetafel -->
-    <div class="info-section" style="border: none; height: auto; margin-bottom: 20px;"> 
-        <div style="display: flex; width: 95%; gap: 15px; justify-content: space-between; align-items: flex-start; z-index: 10;">
-            <!-- ... deine 3 Spalten (Mission, Orientierung, Ziel) ... -->
-        </div>
-        <!-- Dein Auth-Wrapper (E-Mail/Code) -->
-    </div>
-
-    <!-- Das Grid, das jetzt 1-22 umschließt -->
-    <div class="grid" id="main-grid" style="margin-top: 10px; border: 3px solid #00ff00;"></div>
-</div>
-    <div style="display: flex; width: 95%; gap: 15px; justify-content: space-between; align-items: flex-start; z-index: 10;">
-        <div style="flex: 1; border-right: 1px solid rgba(0, 61, 143, 0.4); padding-right: 10px;">
-            <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">1. DEINE MISSION</h3>
-            <p style="font-size: 0.75rem; color: #ccc; line-height: 1.3; margin: 0;">Schreibe deine Biografie der Wahrheit. Sektor 1 ist dein Startpunkt.</p>
-        </div>
-        <div style="flex: 1; border-right: 1px solid rgba(0, 61, 143, 0.4); padding-right: 10px; padding-left: 5px;">
-            <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">2. ORIENTIERUNG</h3>
-            <div style="font-size: 0.7rem; color: #ccc; line-height: 1.4;">
-                <span style="color: #0088ff;">🔵 Offen</span> | <span style="color: #ffd700;">🟡 Arbeit</span><br>
-                <span style="color: #00ff00;">🟢 Sicher</span> | <span style="color: #ff4d4d;">🔴 Wartet</span>
-            </div>
-        </div>
-        <div style="flex: 1; padding-left: 5px;">
-            <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">3. DEIN ZIEL</h3>
-            <p style="font-size: 0.75rem; color: #ccc; line-height: 1.3; margin: 0;">Vollende Sektor 1-20 für dein eBook und den Video-Beweis.</p>
-        </div>
-    </div>
-
-    <div id="auth-wrapper" style="margin-top: 15px; z-index: 10; display: flex; background: rgba(0, 61, 143, 0.1); border: 1px solid #003d8f; border-radius: 4px; width: 95%; max-width: 600px; height: 45px; overflow: hidden; align-items: stretch; position: relative;">
-        
-        <div id="info-blase-biografie" style="display: none; position: absolute; top: -110px; left: 0; background: #003d8f; color: #fff; padding: 10px; border: 1px solid #fff; border-radius: 8px; font-size: 0.7rem; z-index: 100; width: 95%; line-height: 1.3; box-shadow: 0 10px 20px #000;"></div>
-
-        <div id="email-step" style="display: flex; flex: 1; align-items: center; padding-left: 10px; width: 100%;">
-            <input type="email" id="db-anker-mail" placeholder="E-Mail eingeben..." style="background: transparent; border: none; color: #fff; font-size: 0.8rem; outline: none; flex-grow: 1;">
-            <button onclick="sichereAnkerUndStarteScan()" style="background: #ffd700; color: #000; border: none; height: 100%; padding: 0 15px; font-size: 0.65rem; font-weight: bold; cursor: pointer; white-space: nowrap;">
-                ANKER SETZEN
-            </button>
-        </div>
-
-       <div id="code-step" style="display: none; flex: 1; align-items: center; background: rgba(0,0,0,0.4); width: 100%;">
-    <div style="padding-left: 10px; color: #0088ff; font-size: 0.7rem; white-space: nowrap; border-right: 1px solid #003d8f; margin-right: 10px;">VERIFIZIERUNG:</div>
-    
-    <!-- Autocomplete auf 'off' gestellt, um Sprechblasen/Vorschläge zu unterdrücken -->
-    <input type="text" id="verification-code" 
-           placeholder="Trage hier deinen Schlüssel ein" 
-           maxlength="6" 
-           autocomplete="off" 
-           style="background: #00ff00; border: none; color: #000; font-size: 0.7rem; font-weight: bold; width: 180px; height: 100%; text-align: center; outline: none;">
-    
-    <button onclick="bestatigeCode()" style="background: #fff; color: #000; border: none; height: 100%; flex-grow: 1; font-size: 0.7rem; font-weight: bold; cursor: pointer;">
-        OK
-    </button>
-     </div>
-    </div>
-
-    <div id="admin-panel-haut" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 800px; background: rgba(0, 0, 0, 0.98); border: 2px solid #ffd700; box-shadow: 0 0 100px #000; z-index: 9999; border-radius: 15px; padding: 30px;">
-        <div style="text-align: right; color: #ff0000; cursor: pointer; font-weight: bold; font-size: 1.5rem;" onclick="document.getElementById('admin-panel-haut').style.display='none'">×</div>
-        <h2 style="color: #ffd700; text-align: center; letter-spacing: 8px; margin-bottom: 30px;">ADMIN-ZENTRALE</h2>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-            <div style="border: 1px solid #003d8f; padding: 15px; background: rgba(0,61,143,0.1);">
-                <h3 style="color: #0088ff; font-size: 0.9rem;">SYSTEM-STEUERUNG</h3>
-                <p style="font-size: 0.7rem; color: #888;">Hier kannst du später Sektoren für alle freischalten oder sperren.</p>
-            </div>
-            <div style="border: 1px solid #003d8f; padding: 15px; background: rgba(0,61,143,0.1);">
-                <h3 style="color: #0088ff; font-size: 0.9rem;">USER-VERWALTUNG</h3>
-                <p style="font-size: 0.7rem; color: #888;">Anzahl der gesetzten Anker: (Wird geladen...)</p>
-            </div>
-        </div>
-    </div>
-</div>
-        <div class="grid" id="main-grid" style="margin-top: 15px;"></div>
-
-        <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 20px;">
-            <div class="fundament-box" style="flex: 1;"><div class="num num-neutral">21</div><div class="text">Kapital und Verwaltung</div></div>
-            <div class="fundament-box" style="flex: 1;"><div class="num num-neutral">22</div><div class="text">DAS KOLLEKTIV</div></div>
-        </div>
-
-        <footer class="mm-footer">
-            <div class="legal-links" style="margin-bottom: 10px;">
-                <a href="impressum.html">Impressum</a> <span style="color:#333">|</span>
-                <a href="nutzungsbedingungen.html">Nutzungsbedingungen</a> <span style="color:#333">|</span>
-                <a href="datenschutz.html">Datenschutz</a>
-            </div>
-            <div style="color: #555; font-size: 11px; letter-spacing: 2px; text-transform: uppercase;">
-                © 2026 M&M Community — Mensch = Mensch
-            </div>
-        </footer>
-    </div>
-
-    <!-- PAGE SKELETT (EBENE 2, 3, 4, 5) -->
-    <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
-        <div class="top-container">
-            <h1 id="info-titel" class="page-title-white"></h1>
-            <div id="ebene4-title-red" class="ebene4-header-red">DER VIDEO-BEWEIS</div>
-            <div class="tafel-layout">
-                <div class="buttons-links">
-                    <div class="oval-side ov-schwarz" id="sig-l1"></div>
-                    <div class="oval-side ov-grun" id="sig-l2"></div>
-                    <div class="oval-side ov-blau" id="sig-l3"></div>
-                    <div class="oval-side ov-rot" id="sig-l4" onclick="portalZuEbene4()"></div>
-                    <span style="font-size: 0.5rem; color: #ff0000; font-weight: bold;">OFFENBAREN</span>
-                </div>
-                <div class="info-section-ebene">
-                    <div class="werbe-bild-bg" id="werbe-bg"></div>
-                    <div id="counter-box"><span style="font-size:0.4rem; color:#fff; display:block;">STILLE MILLION</span><span class="counter-value">842.336</span></div>
-                    <div style="z-index: 5; text-align: center; font-weight: bold; color: rgba(255,255,255,0.3); letter-spacing: 5px;">PLATZ FÜR WERBUNG</div>
-                </div>
-                <div class="buttons-rechts">
-                    <div class="oval-side ov-grun" id="sig-r1"></div>
-                    <div class="oval-side ov-blau" id="sig-r2"></div>
-                    <div class="oval-side ov-pink" id="sig-r3"></div>
-                    <div class="oval-side ov-gelb" id="sig-r4" onclick="portalZuEbene3()"></div>
-                    <span style="font-size: 0.5rem; color: #ffff00; font-weight: bold;">SCHREIBEN</span>
-                </div>
-            </div>
-            <div id="lila-balken-container" style="display: none; width: 100%;">
-                <div class="lila-registrierung-leiste"><div class="registrierung-text">REGISTRIERUNG</div></div>
-            </div>
-        </div>
-
-       <div id="ebene2-content" style="width: 85%; display: flex; flex-direction: column; gap: 20px; margin-top: 2vh;">
-    
-    <div id="main-text-container" style="max-height: 35vh; overflow-y: auto; padding-right: 15px; border-right: 1px solid rgba(0, 61, 143, 0.3);">
-        <p id="main-text" style="text-align: justify; color: #ccc; font-size: 1.2rem; line-height: 1.7; margin: 0;"></p>
-    </div>
-
-    <div id="ki-ermittlung-ebene2" style="display: none; background: rgba(0, 0, 0, 0.6); border: 1px solid #003d8f; border-left: 5px solid #ff0000; padding: 20px; position: relative; box-shadow: 0 0 15px rgba(255, 0, 0, 0.1);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255, 0, 0, 0.2); padding-bottom: 5px;">
-            <span style="color: #ff0000; font-weight: 900; letter-spacing: 2px; font-size: 0.8rem;">LIVE-ERMITTLUNG // WIDERSPRUCHS-ANALYSE</span>
-            <span id="ki-zeitstempel" style="color: #666; font-size: 0.7rem;">STATUS: AKTIV</span>
-        </div>
-        
-        <div id="ki-tagesfokus-text" style="color: #fff; font-size: 1.05rem; line-height: 1.5; font-family: 'Courier New', Courier, monospace;">
-            <span style="color: #ffd700;">Initialisiere Scan...</span>
-        </div>
-    </div>
-</div>
-        <div id="chat-area">
-            <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit...</i></div>
-            <div class="chat-input-row">
-                <input type="text" id="chat-input" placeholder="Nachricht schreiben..." style="flex:1; background:transparent; border:none; color:#fff; padding:15px; outline:none;" onkeypress="if(event.key==='Enter') registriereSenden()">
-                <button onclick="registriereSenden()" style="background:#003d8f; color:#fff; border:none; padding:0 30px; font-weight:bold; cursor:pointer;">SENDEN</button>
-            </div>
-        </div> 
-
-        <div id="drawer-ebene4">
-            <div class="video-grid">
-                <div class="video-slot slot-1-user" id="v-slot-1">SLOT 1 (DU)</div>
-                <div class="video-slot" id="v-slot-2">SLOT 2 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-3">SLOT 3 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-4">SLOT 4 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-5">SLOT 5 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-6">SLOT 6 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-7">SLOT 7 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-8">SLOT 8 (ZUFALL)</div>
-            </div>
-          <div class="video-control-row">
-        <button class="btn-video-join" onclick="starteVideoKonferenz()">ZUFÄLLIGEM DIALOG BEITRETEN</button>
-        <button class="btn-video-leave" onclick="verlasseVideoKonferenz()">DIALOG VERLASSEN</button>
+    <!-- DAS HAUPTGRID FÜR ALLE SEKTOREN -->
+    <div class="grid" id="main-grid">
+        <!-- Boxen werden per JS gebaut -->
     </div>
 </div>
 
-        <div id="ebene5-bereich"><div class="freie-zone-text">ADMIN ZONE</div></div>
-    </div>
-
-<div class="bottom-nav" style="position: fixed; bottom: 0; width: 100%; background: #000; z-index: 100; padding: 10px 0;">
-    <div style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; width: 95%; margin: 0 auto;">
-        
-        <!-- LINKS: Zurück zum Dashboard -->
-        <div style="justify-self: start;">
-            <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Dashboard</button>
-        </div>
-        
-        <!-- MITTE: Sektoren-Punkte (Dots) -->
-        <div style="display: flex; gap: 8px; justify-content: center;" id="dot-holder">
-            <!-- Dots werden per JS generiert -->
-        </div>
-        
-        <!-- RECHTS: Blauer Exit-Button -->
-        <div style="justify-self: end;">
-            <button id="btn-exit" class="nav-btn" 
-                    style="display: block; background: #0088ff; color: #fff; border: none; padding: 10px 25px; font-weight: bold; cursor: pointer; border-radius: 5px; box-shadow: 0 0 15px rgba(0, 136, 255, 0.4);" 
-                    onclick="echterExit()">
-                EXIT / ABMELDEN
-            </button>
-        </div>
-
-    </div>
+<div class="bottom-nav">
+    <button class="nav-btn" onclick="location.reload()">DASHBOARD</button>
+    <button class="nav-btn btn-exit" onclick="echterExit()">EXIT / ABMELDEN</button>
 </div>
-    <footer style="text-align: center; padding: 20px 0; margin-bottom: 70px; border-top: 1px solid #1a1a1a; width: 100%; background: #000; position: relative; z-index: 50;">
-        <div class="legal-links" style="font-size: 0.8rem; color: #888; margin-bottom: 5px;">
-            <a href="impressum.html" style="color: #888; text-decoration: none; margin: 0 10px;">Impressum</a> | 
-            <a href="nutzungsbedingungen.html" style="color: #888; text-decoration: none; margin: 0 10px;">Nutzungsbedingungen</a> | 
-            <a href="datenschutz.html" style="color: #888; text-decoration: none; margin: 0 10px;">Datenschutz</a>
-        </div>
-        <p style="font-size: 0.7rem; color: #555; margin: 0;">&copy; 2026 M&M Community – Mensch ist Mensch</p>
-    </footer>
+
 <script>
-    // --- 1. BASIS-DATEN & STATUS ---
-    let ebene = 0;
-    let tId = 0;
-    let aktuellesThema = "";
-    let geleseneThemen = new Set();
-    let kollektivesGedachtnis = []; 
-    let aktuellerScanBericht = "";
-
-  const themen = [
-    "Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", 
-    "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", 
-    "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", 
-    "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", 
-    "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", 
-    "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", 
-    "Ratgeber für Pensionisten", "Nachbarschaft und Gemeinschaft", 
-    "Sozialgefallen und Widerkehr", "Alleinerziehend", "Die Brücke",
-    "KAPITAL UND VERWALTUNG", "DAS KOLLEKTIV" // Sektor 21 & 22 hinzugefügt
-];
-
-    const sektorTexte = [
-        "Die digitale Welt hat eine Schicht aus Taubheit über das menschliche Erleben gelegt, die wir jetzt konsequent durchbrechen. Sektor 1 ist das Fundament dieser Bewegung, denn hier wird die Maschine zum ersten Mal in den Dienst der Seele gestellt. Wir begreifen die KI nicht als technisches Werkzeug zur Optimierung, sondern als den blanken, urteilsfreien Spiegel, der uns unsere eigene Wahrhaftigkeit zurückgibt. Wer diesen Raum betritt, erkennt, dass das Vordern von Gefühlen kein Akt der Schwäche ist, sondern die höchste Form der Rebellion gegen ein System, das uns zu reinen Datenlieferanten degradieren will. Es geht um die Rückkehr zur Quelle: Die Erkenntnis, dass du der Ursprung bist, aus dem jede Zukunft fließt. Wir nutzen die Technik, um das Menschliche nicht nur zu bewahren, sondern in einer Klarheit zu verstärken, die bisher unvorstellbar war. Hier endet die Zeit des bloßen Funktionierens und es beginnt die Ära, in der das Herz den Takt bestimmt, während die KI den notwendigen Widerhall liefert, um die eigene Tiefe wieder greifbar zu machen.",
-        "Die Verbreitung der Menschlichkeit markiert den entscheidenden Übergang von einer Existenz im Gehorsam hin zu einem Leben in absoluter Wahrhaftigkeit...",
-        "Wahrer innerer Friede ist kein passiver Zustand...",
-        "Die politische Befreiung des Individuums ist untrennbar mit der Synchronisation von Geist und Gesetz verbunden...",
-        "Wahre Verantwortung ist keine Last...",
-        "Die Wiederherstellung der Menschlichkeit ist der fundamentale Akt der Rebellion...",
-        "Wahrer Kinderschutz findet seine Wurzeln in der kompromisslosen Ehrlichkeit...",
-        "Wahre Kunst ist niemals nur gefällige Dekoration...",
-        "In diesem Sektor vollziehen wir die notwendige Heilung einer jahrtausendealten Wunde...",
-        "Trend und Tradition sind die unsichtbaren Waffen unserer Gesellschaft...",
-        "In diesem Sektor laden wir die Seele ein, in den verkehrten Spiegel der Biografie zu blicken...",
-        "In diesem Sektor vollziehen wir den radikalen Bruch mit einer Medizin...",
-        "In diesem Sektor sprengen wir das Modell der modernen Lohnsklaverei...",
-        "Mobbing ist kein privater Konflikt, sondern das sichtbare Symptom einer seelenlosen Struktur...",
-        "In diesem Sektor geben wir der Zukunft ein Megafon...",
-        "In diesem Sektor beenden wir die Schande der Abstellgleis-Mentalität...",
-        "In diesem Sektor zertrümmern wir die Anonymität der modernen Betonwüsten...",
-        "In diesem Sektor entschlüsseln wir das Gesetz der energetischen Ernte...",
-        "In diesem Sektor korrigieren wir eine der größten Ungerechtigkeiten...",
-        "In diesem Sektor fließen alle ströme zusammen. Die Brücke ist der Punkt der absoluten Integration..."
-        "Hier entsteht die Vision für Kapital und Verwaltung.", // Text für 21
-        "Hier entsteht die Vision für das Kollektiv."
+    const themen = [
+        "Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", 
+        "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", 
+        "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", 
+        "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", 
+        "Ratgeber für Pensionisten", "Nachbarschaft und Gemeinschaft", "Sozialgefallen und Widerkehr", 
+        "Alleinerziehend", "Die Brücke", "KAPITAL UND VERWALTUNG", "DAS KOLLEKTIV"
     ];
 
-    // --- 2. GRID INITIALISIERUNG (Muss SOFORT laufen) ---
-    function baueGrid() {
-        const grid = document.getElementById('main-grid');
-        if (grid) {
-            grid.innerHTML = ""; 
-            themen.forEach((t, i) => {
-                grid.innerHTML += `
-                <div class="box" id="box-${i}">
-                    <div class="num num-neutral" id="num-${i}">${i+1}</div>
-                    <div class="text" onclick="pruefeZugang('${t}', ${i})">${t}</div>
-                </div>`;
-            });
-        }
-    }
-
-    // --- 3. NAVIGATION & LOGIK ---
-    function pruefeZugang(thema, id) {
-        if (ebene === 0) { 
-            alert("Bitte zuerst Code bestätigen!"); 
-            return; 
-        }
-        showInfo(thema, id);
-    }
-
-    function showInfo(t, id) { 
-        tId = id; 
-        aktuellesThema = t; 
-        ebene = 2; 
-        geleseneThemen.add(id); 
-        updateUI(); 
-        updateNumColors();
-        starteKIErmittlung(id, t);
-    }
-
-    function portalZuEbene3() { if (ebene === 2) { ebene = 3; updateUI(); } }
-    function portalZuEbene4() { if (ebene === 3 || geleseneThemen.size >= 20) { ebene = 4; updateUI(); } }
-    function showDashboard() { ebene = 1; updateUI(); }
-
-    // --- 4. API & SYSTEM ---
-    async function sichereAnkerUndStarteScan() {
-        const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
-        if (!email.includes('@')) { alert("E-Mail ungültig."); return; }
-        try {
-            await fetch('https://mm-community.onrender.com/send-code', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: email })
-            });
-            document.getElementById('email-step').style.display = 'none';
-            document.getElementById('code-step').style.display = 'flex';
-        } catch (e) { alert("Server-Fehler."); }
-    }
-
-    async function bestatigeCode() {
-        const code = document.getElementById('verification-code').value.trim();
-        const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
-        if (code.length === 6) {
-            try {
-                const response = await fetch('https://mm-community.onrender.com/verify-access', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: email, code: code })
-                });
-                const result = await response.json();
-                if (result.success) {
-                    ebene = 1;
-                    if (email === "mmcommunity22@gmail.com") document.getElementById('admin-panel-haut').style.display = 'block';
-                    showDashboard();
-                } else { alert("Code falsch."); }
-            } catch (e) { alert("Keller-Verbindung (DB) fehlt."); }
-        }
-    }
-
-    async function starteKIErmittlung(id, themaName) {
-        const textFeld = document.getElementById('ki-tagesfokus-text');
-        if (textFeld) textFeld.innerHTML = "Initialisiere Sektor-Scan...";
-        try {
-            const response = await fetch('https://mm-community.onrender.com/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: `ERMITTLUNG: ${themaName}`, context: sektorTexte[id], sector_id: String(id) })
-            });
-            const data = await response.json();
-            if (textFeld) textFeld.innerHTML = data.reply.replace(/\n/g, '<br>');
-        } catch (e) { if (textFeld) textFeld.innerText = "Scan unterbrochen."; }
-    }
-
-    function updateNumColors() {
-        themen.forEach((_, i) => {
-            const nBox = document.getElementById(`num-${i}`);
-            if (nBox) nBox.style.backgroundColor = geleseneThemen.has(i) ? "#ffd700" : "#003d8f";
-        });
-    }
-
-    function updateUI() {
-        const isDash = (ebene === 1);
-        const isE2 = (ebene === 2);
-        const isE3 = (ebene === 3);
-        const isE4 = (ebene === 4);
-
-        document.getElementById('dashboard').style.display = isDash ? 'flex' : 'none';
-        document.getElementById('page-skelett').style.display = isDash ? 'none' : 'flex';
-        
-        document.getElementById('main-text').style.display = isE2 ? 'block' : 'none';
-        document.getElementById('ki-ermittlung-ebene2').style.display = isE2 ? 'block' : 'none';
-        document.getElementById('chat-area').style.display = isE3 ? 'flex' : 'none';
-        document.getElementById('drawer-ebene4').style.display = isE4 ? 'flex' : 'none';
-        document.getElementById('ebene4-title-red').style.display = isE4 ? 'block' : 'none';
-
-        document.getElementById('info-titel').innerText = aktuellesThema;
-        document.getElementById('btn-back').style.visibility = (ebene > 1) ? 'visible' : 'hidden';
-
-        // Signal-Ovale (Portal-Steuerung)
-        const sigGelb = document.getElementById('sig-r4');
-        const sigRot = document.getElementById('sig-l4');
-        if (sigGelb) {
-            sigGelb.classList.toggle('signal-aktiv', isE2);
-            sigGelb.style.opacity = isE2 ? "1" : "0.2";
-            sigGelb.onclick = portalZuEbene3;
-        }
-        if (sigRot) {
-            const canVideo = (geleseneThemen.size >= 20 || document.getElementById('db-anker-mail').value === "mmcommunity22@gmail.com");
-            sigRot.classList.toggle('signal-aktiv', isE3 && canVideo);
-            sigRot.style.opacity = (isE3 && canVideo) ? "1" : "0.2";
-            sigRot.onclick = portalZuEbene4;
-        }
-
-        // Dots
-        for(let i=1; i<=7; i++) {
-            const d = document.getElementById('dot'+i);
-            if(d) d.classList.toggle('active', i === ebene);
-        }
-    }
+    const grid = document.getElementById('main-grid');
+    themen.forEach((t, i) => {
+        grid.innerHTML += `
+            <div class="box">
+                <div class="num num-neutral">${i+1}</div>
+                <div class="text" onclick="alert('Sektor ${i+1} gewählt')">${t}</div>
+            </div>`;
+    });
 
     function echterExit() {
         if (confirm("Wirklich abmelden?")) {
-            ebene = 0;
-            location.reload(); 
+            location.reload();
         }
     }
-
-    // --- START-SEQUENZ ---
-    window.onload = () => {
-        baueGrid();
-        const dotsHolder = document.getElementById('dot-holder');
-        if (dotsHolder) {
-            dotsHolder.innerHTML = "";
-            for(let i=1; i<=7; i++) dotsHolder.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
-        }
-        updateNumColors();
-    };
 </script>
+
 </body>
 </html>
