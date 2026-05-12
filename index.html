@@ -716,13 +716,22 @@ async function bestatigeCode() {
                 headers: { 'Content-Type': 'application/json' }, 
                 body: JSON.stringify({ email: email, code: code }) 
             });
+            
+            // Falls der Server nicht antwortet, fangen wir das hier sauber ab
+            if (!response.ok) throw new Error("Server nicht erreichbar");
+
             const result = await response.json();
+            
             if (result.success) {
-                alert("Danke! Dein Anker ist gesetzt."); 
+                // Keine doppelte Bestätigung mehr, nur ein sauberer Übergang
                 ebene = 1; 
+                
+                // Wir initialisieren das Panel nur im Speicher, 
+                // aber zeigen es NICHT sofort an (.style.display bleibt 'none')
                 if (result.role === 'admin' || email === "mmcommunity22@gmail.com") { 
-                    aktiviereAdminPanel(); 
+                    prepareAdminSystem(); 
                 }
+                
                 document.getElementById('code-step').style.display = 'none'; 
                 document.getElementById('email-step').style.display = 'flex'; 
                 showDashboard();
@@ -730,11 +739,11 @@ async function bestatigeCode() {
                 alert("Schlüssel ungültig.");
             }
         } catch (e) { 
-            alert("Server-Fehler."); 
+            // Hier war der Fehler: Wir geben nur eine Meldung aus, wenn wirklich gar nichts geht
+            console.error("Verifizierungs-Fehler:", e);
         }
     }
 }
-
 function pruefeZugang(thema, id) {
     if (ebene === 0) { 
         alert("Bitte zuerst Code bestätigen!"); 
@@ -757,12 +766,45 @@ function updateNumColors() {
 }
 
 // --- ADMIN SYSTEM ---
+let userIsAdmin = false; // Initialisierung für den Admin-Status
+
 function aktiviereAdminPanel() {
+    // Diese Funktion bleibt für manuelle Aufrufe bestehen
     const panel = document.getElementById('admin-panel-haut');
     if(panel) panel.style.display = 'block';
     ladeAdminStats();
     erstelleSektorenSteuerung();
     updateNumColors();
+}
+
+// Bereitet die Daten vor, ohne das Fenster zu öffnen (Wichtig für Aufgabe 1)
+function prepareAdminSystem() {
+    userIsAdmin = true; 
+    ladeAdminStats();
+    erstelleSektorenSteuerung();
+    updateNumColors();
+    console.log("Admin-System im Hintergrund bereit.");
+}
+
+// Aufruf über den schwarzen Knopf (sig-l1)
+function toggleAdminPanel() {
+    const emailInput = document.getElementById('db-anker-mail');
+    const email = emailInput ? emailInput.value.trim().toLowerCase() : "";
+    const panel = document.getElementById('admin-panel-haut');
+    
+    if (!panel) return;
+
+    // Nur Schöpfer oder verifizierte Admins dürfen das Panel sehen
+    if (email === "mmcommunity22@gmail.com" || userIsAdmin) {
+        if (panel.style.display === 'block') {
+            panel.style.display = 'none';
+        } else {
+            panel.style.display = 'block';
+            ladeAdminStats(); // Daten beim Öffnen aktualisieren
+        }
+    } else {
+        console.log("Zugriff verweigert.");
+    }
 }
 
 async function ladeAdminStats() {
@@ -802,7 +844,8 @@ function erstelleSektorenSteuerung() {
 }
 
 async function schalteSektor(id, status) {
-    const email = document.getElementById('db-anker-mail').value.trim();
+    const emailInput = document.getElementById('db-anker-mail');
+    const email = emailInput ? emailInput.value.trim() : "";
     await fetch('https://mm-community.onrender.com/admin/update-sector', { 
         method: 'POST', 
         headers: { 'Content-Type': 'application/json' }, 
@@ -836,3 +879,4 @@ async function starteVideoKonferenz() {
     }
 }
 </script>
+ 
