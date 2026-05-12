@@ -13,29 +13,45 @@
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
 
-      .grid { 
-    display: flex; 
-    flex-wrap: wrap; /* Erlaubt den Boxen, ihren Platz selbst zu wählen */
-    gap: 15px; 
-    width: 95%; 
-    max-width: 1450px; 
-    border: 3px solid #00ff00; /* Der Rahmen umschließt 1-22 */
-    padding: 25px; 
-    border-radius: 10px; 
-    margin-top: 30px;
-    justify-content: flex-start; /* Boxen bleiben in ihrer gewohnten Sortierung */
-}
+        .grid { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 15px; 
+            width: 95%; 
+            max-width: 1450px; 
+            border: 3px solid #00ff00; 
+            padding: 25px; 
+            border-radius: 10px; 
+            margin-top: 160px; 
+            justify-content: flex-start; 
+        }
 
-/* Der Altbestand der Boxen bleibt unangetastet */
-.box { 
-    width: 320px; /* Deine gewohnte Breite */
-    display: flex; 
-    border: 2px solid #003d8f; 
-    background-color: #000; 
-    min-height: 60px; 
-}
-        .box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 50px; position: relative; overflow: hidden; }
+        /* Der Altbestand der normalen Boxen */
+        .box { 
+            width: 320px; 
+            display: flex; 
+            border: 2px solid #003d8f; 
+            background-color: #000; 
+            min-height: 60px; 
+            position: relative; 
+            overflow: hidden;
+            flex: 0 0 auto;
+        }
+
+        /* Die Sonderbreite für 21 & 22 (2x Box + Gap) */
+        .box-breit { 
+            width: 655px; 
+            display: flex; 
+            border: 2px solid #003d8f; 
+            background-color: #000; 
+            min-height: 60px; 
+            position: relative; 
+            overflow: hidden;
+            flex: 0 0 auto;
+        }
+
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; font-size: 0.85rem; }
+        .num-neutral { background-color: #003d8f !important; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.65rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
         /* AUTH & INFO */
@@ -49,8 +65,7 @@
         .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
         .btn-exit { background: #0088ff !important; color: #fff !important; }
 
-        /* EBENEN */
-        #page-skelett, #chat-area, #drawer-ebene4 { display: none; width: 90%; flex-direction: column; align-items: center; margin-top: 20px; }
+        #page-skelett { display: none; width: 90%; flex-direction: column; align-items: center; margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -76,7 +91,6 @@
         <div class="grid" id="main-grid"></div>
     </div>
 
-    <!-- HIER KOMMEN DEINE EBENEN HIN (PAGE SKELETT, CHAT, VIDEO) -->
     <div id="page-skelett">
         <h1 id="info-titel"></h1>
         <p id="main-text" style="padding: 20px; text-align: justify;"></p>
@@ -88,7 +102,6 @@
     </div>
 
 <script>
-    // BASIS-DATEN (Altbestand + 21 & 22)
     let ebene = 0;
     const themen = [
         "Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", 
@@ -102,26 +115,25 @@
         "KAPITAL UND VERWALTUNG", "DAS KOLLEKTIV"
     ];
 
-    // Diese Funktion baut die Boxen EXAKT im Altbestand-Stil
-    function stelleAltbestandWiederHer() {
+    // Baut das Grid auf - Sektoren 1-20 normal, 21-22 breit
+    function baueGrid() {
         const grid = document.getElementById('main-grid');
         if (!grid) return;
+        grid.innerHTML = ""; 
 
-        grid.innerHTML = ""; // Clean Start
-        
-        // Wir bauen 1 bis 22 in den grünen Rahmen
         themen.forEach((t, i) => {
+            const istBreit = (i >= 20); 
+            const klassenName = istBreit ? "box-breit" : "box";
+
             grid.innerHTML += `
-            <div class="box" id="box-${i}" style="flex: 0 0 auto;">
+            <div class="${klassenName}" id="box-${i}">
                 <div class="num num-neutral" id="num-${i}">${i+1}</div>
                 <div class="text" onclick="pruefeZugang('${t}', ${i})">${t}</div>
             </div>`;
         });
-        
-        console.log("Altbestand 1-22 wurde stabil hergestellt.");
+        console.log("Grid 1-22 stabil hergestellt.");
     }
 
-    // AUTH-LOGIK (Behält deine Verbindung zu Render/API)
     async function sichereAnkerUndStarteScan() {
         const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
         try {
@@ -148,11 +160,13 @@
             if (res.success) {
                 ebene = 1;
                 alert("Verbindung zum Keller (DB) steht.");
-                if (email === "mmcommunity22@gmail.com") {
-                    document.getElementById('admin-panel-haut').style.display = 'block';
-                }
             } else { alert("Code ungültig."); }
         } catch (e) { alert("Fehler beim Abgleich."); }
+    }
+
+    function pruefeZugang(t, i) {
+        if (ebene === 0) { alert("Bitte zuerst Code bestätigen!"); return; }
+        alert("Sektor " + (i+1) + " gewählt: " + t);
     }
 
     function echterExit() {
@@ -161,8 +175,8 @@
         }
     }
 
-    // Beim Laden der Seite wird der Altbestand sofort gerichtet
-    window.onload = stelleAltbestandWiederHer;
+    // WICHTIG: Hier wird die neue Bau-Funktion beim Laden aufgerufen
+    window.onload = baueGrid;
 </script>
 </body>
 </html>
