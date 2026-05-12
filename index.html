@@ -13,31 +13,23 @@
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
 
-        .grid { 
-            display: flex; 
-            flex-wrap: wrap; 
-            gap: 15px; 
-            width: 95%; 
-            max-width: 1450px; 
-            border: 3px solid #00ff00; 
-            padding: 25px; 
-            border-radius: 10px; 
-            margin-top: 160px; 
-            justify-content: flex-start; 
-        }
+      .grid { 
+    display: inline-flex; /* Der Rahmen zieht sich nur so weit wie nötig */
+    flex-wrap: wrap; 
+    gap: 15px; 
+    width: auto; /* Wichtig: Nicht auf 95% festnageln */
+    max-width: 1450px; 
+    border: 3px solid #00ff00; 
+    padding: 25px; 
+    border-radius: 15px; 
+    margin-top: 160px; 
+    justify-content: center; 
+} 
 
-        /* Der Altbestand der normalen Boxen */
-        .box { 
-            width: 320px; 
-            display: flex; 
-            border: 2px solid #003d8f; 
-            background-color: #000; 
-            min-height: 60px; 
-            position: relative; 
-            overflow: hidden;
-            flex: 0 0 auto;
-        }
-
+  .box, .box-breit {
+    flex-shrink: 0; /* Die Boxen dürfen nicht zusammengedrückt werden */
+    margin: 5px;
+}   
         /* Die Sonderbreite für 21 & 22 (2x Box + Gap) */
         .box-breit { 
             width: 655px; 
