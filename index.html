@@ -582,8 +582,8 @@ function updateUI() {
     const topLabel = document.getElementById('top-label');
     if (topLabel) topLabel.style.display = isDashboard ? 'none' : 'block';
     
-    const chatArea = document.getElementById('chat-area');
-    if (chatArea) chatArea.style.display = isChat ? 'flex' : 'none';
+   const chatArea = document.getElementById('chat-area');
+   if (chatArea) chatArea.style.display = (ebene === 3) ? 'flex' : 'none';
     
     const drawer4 = document.getElementById('drawer-ebene4');
     if (drawer4) drawer4.style.display = isVideo ? 'flex' : 'none';
