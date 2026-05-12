@@ -391,24 +391,29 @@
     </div>
 
 <div class="bottom-nav" style="position: fixed; bottom: 0; width: 100%; background: #000; z-index: 100; padding: 10px 0;">
-    <div style="display: flex; justify-content: space-between; align-items: center; width: 90%; margin: 0 auto;">
+    <div style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; width: 95%; margin: 0 auto;">
         
-        <!-- LINKS: Dashboard -->
-        <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Dashboard</button>
+        <!-- LINKS: Zurück zum Dashboard -->
+        <div style="justify-self: start;">
+            <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Dashboard</button>
+        </div>
         
-        <!-- MITTE: Indikatoren -->
-        <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
+        <!-- MITTE: Sektoren-Punkte (Dots) -->
+        <div style="display: flex; gap: 8px; justify-content: center;" id="dot-holder">
+            <!-- Dots werden per JS generiert -->
+        </div>
         
-        <!-- RECHTS: Exit / Abmelden (Initial versteckt) -->
-        <button id="btn-exit" class="nav-btn" 
-                style="display: none; background: #0088ff; color: #fff; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 136, 255, 0.4);" 
-                onclick="echterExit()">
-            Exit / Abmelden
-        </button>
+        <!-- RECHTS: Blauer Exit-Button -->
+        <div style="justify-self: end;">
+            <button id="btn-exit" class="nav-btn" 
+                    style="display: block; background: #0088ff; color: #fff; border: none; padding: 10px 25px; font-weight: bold; cursor: pointer; border-radius: 5px; box-shadow: 0 0 15px rgba(0, 136, 255, 0.4);" 
+                    onclick="echterExit()">
+                EXIT / ABMELDEN
+            </button>
+        </div>
 
     </div>
 </div>
-
     <footer style="text-align: center; padding: 20px 0; margin-bottom: 70px; border-top: 1px solid #1a1a1a; width: 100%; background: #000; position: relative; z-index: 50;">
         <div class="legal-links" style="font-size: 0.8rem; color: #888; margin-bottom: 5px;">
             <a href="impressum.html" style="color: #888; text-decoration: none; margin: 0 10px;">Impressum</a> | 
