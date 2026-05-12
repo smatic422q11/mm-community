@@ -658,7 +658,7 @@ Schritt 1.8: Korrektur der Klick-Sperre (pruefeZugang)
         element.classList.remove('bild-aktiv'); void element.offsetWidth; element.classList.add('bild-aktiv'); 
     }
 
-    // --- ANKER & VERIFIZIERUNG ---
+   // --- ANKER & VERIFIZIERUNG ---
     async function sichereAnkerUndStarteScan() {
         const emailInput = document.getElementById('db-anker-mail');
         const email = emailInput.value.trim().toLowerCase();
@@ -688,30 +688,12 @@ Schritt 1.8: Korrektur der Klick-Sperre (pruefeZugang)
         }
     }
 
-// KORREKTUR AUFGABE 1.5: ABSOLUTE KLICK-SPERRE FÜR USER
-function pruefeZugang(thema, id) {
-    if (ebene === 0) { 
-        alert("Bitte zuerst Code bestätigen!"); 
-        return; 
+    function pruefeZugang(thema, id) {
+        if (ebene === 0) { alert("Bitte zuerst Code bestätigen!"); return; }
+        showInfo(thema, id);
     }
 
-    const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
-    const isSchöpfer = (email === "mmcommunity22@gmail.com");
-
-    if (!isSchöpfer) {
-        const nBox = document.getElementById(`num-${id}`);
-        
-        // Der User darf NUR in Sektoren klicken, die GELB (num-gelesen) 
-        // oder GRÜN (num-fertig) sind. Alles andere (Rot/Blau) wird abgeblockt.
-        if (!nBox.classList.contains('num-gelesen') && !nBox.classList.contains('num-fertig')) {
-            alert("Dieser Sektor ist noch versiegelt. Konzentriere dich auf deine aktuelle Aufgabe.");
-            return;
-        }
-    }
-
-    showInfo(thema, id);
-}
-   // --- ADMIN PANEL & REGLER ---
+    // --- ADMIN PANEL & REGLER ---
     function aktiviereAdminPanel() {
         document.getElementById('admin-panel-haut').style.display = 'block';
         ladeAdminStats();
@@ -792,3 +774,4 @@ function pruefeZugang(thema, id) {
 
     updateNumColors();
 </script>
+ 
