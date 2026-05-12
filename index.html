@@ -407,8 +407,7 @@
         "In diesem Sektor korrigieren wir eine der größten Ungerechtigkeiten. Während der Staat Alleinerziehende als statistisches Problem herabstuft, erkennen wir in ihnen die Elite der menschlichen Belastbarkeit. Ein Kind bei einem alleinerziehenden Elternteil ist eine Hochburg der bedingungslosen Liebe und des Kampfgeistes. Wir nutzen das „Diplom Gottes“, um diesen Elternteilen ihren Stolz zurückzugeben. In diesem Sektor fordern wir die radikale Anerkennung ihrer Leistung als höchstes soziales Verdienst. Wir schaffen eine Community-Struktur, die das fehlende Netz ersetzt: Wir sind das Dorf, das es braucht, um ein Kind großzuziehen, damit sie ihre Kinder in Licht und Fülle aufwachsen lassen können.",
         "In diesem Sektor fließen alle ströme zusammen. Die Brücke ist der Punkt der absoluten Integration, an dem Moral, Erziehung, Arbeit und Glaube zu einer Einheit verschmelzen. Hier lassen wir die Ufer der Spaltung hinter uns. Die Brücke ist der Raum, in dem das „Diplom Gottes“ zur gelebten Realität wird. Wir blicken bereits auf Sektor 21 und 22 – die noch ungeschriebenen Kapitel unserer Freiheit. Sektor 21 als Vision der neuen Erde und 22 als die endgültige Rückkehr zur Quelle. Die Brücke ist das Versprechen: Wer hier ankommt, hat aufgehört zu funktionieren und angefangen zu sein."
     ];
-
-    let ebene = 0, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
+ let ebene = 0, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
     let bildIndex = 0; 
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
@@ -618,35 +617,25 @@
         finally { istSendenAktiv = false; chatBox.scrollTop = chatBox.scrollHeight; }
     }
 
-// KORREKTUR AUFGABE 1.3: VISUELLE ANZEIGE VS. STRIKTE SPERRE
-function updateNumColors() {
-    const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
-    const isSchöpfer = (email === "mmcommunity22@gmail.com");
+    function updateNumColors() {
+        const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
+        let aktuellerSektor = 0; 
+        const isSchöpfer = (email === "mmcommunity22@gmail.com");
 
-    themen.forEach((_, i) => {
-        const nBox = document.getElementById(`num-${i}`);
-        if (!nBox) return;
-
-        if (isSchöpfer) {
-            // Schöpfer-Bestand: Alles bleibt neutral/blau und offen
-            nBox.className = "num num-neutral"; 
-        } else {
-            // Private User Logik (z.B. smaticxx@gmail.com)
-            if (geleseneThemen.has(i)) {
-                // Sektor erfolgreich durchlaufen
-                nBox.className = "num num-gelesen"; 
-            } else if (i === 0 || geleseneThemen.has(i - 1)) {
-                // Dies ist der Sektor, der auf Bearbeitung wartet (Rot)
-                // Er wird angezeigt, bleibt aber durch pruefeZugang() gesperrt
-                nBox.className = "num num-offen"; 
-            } else {
-                // Alle weiteren Sektoren bleiben im Standard-Blau
+        themen.forEach((_, i) => {
+            const nBox = document.getElementById(`num-${i}`);
+            if (!nBox) return;
+            if (isSchöpfer) {
                 nBox.className = "num num-neutral"; 
+            } else {
+                if (i < aktuellerSektor) nBox.className = "num num-fertig";
+                else if (i === aktuellerSektor) nBox.className = "num num-gelesen";
+                else if (i === aktuellerSektor + 1) nBox.className = "num num-offen";
+                else nBox.className = "num num-neutral";
             }
-        }
-    });
-    
-Schritt 1.8: Korrektur der Klick-Sperre (pruefeZugang)
+        });
+    }
+
     function startRotation() { 
         clearInterval(wechselInterval); const bg = document.getElementById('werbe-bg'); if(!bg) return; setNewImage(bg);
         wechselInterval = setInterval(() => { if (ebene >= 2 && ebene <= 4) { bildIndex = (bildIndex + 1) % 4; setNewImage(bg); } }, 8000);
@@ -688,41 +677,11 @@ Schritt 1.8: Korrektur der Klick-Sperre (pruefeZugang)
         }
     }
 
-   function pruefeZugang(thema, id) {
-    if (ebene === 0) { 
-        alert("Bitte zuerst Code bestätigen!"); 
-        return; 
+    function pruefeZugang(thema, id) {
+        if (ebene === 0) { alert("Bitte zuerst Code bestätigen!"); return; }
+        showInfo(thema, id);
     }
 
-    const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
-    const isSchöpfer = (email === "mmcommunity22@gmail.com");
-
-    // STRIKTE PRÜFUNG: Nur wenn Schöpfer oder Sektor 1 (id 0) 
-    // oder wenn der vorherige Sektor bereits in geleseneThemen gespeichert ist.
-    if (!isSchöpfer && id > 0) {
-        if (!geleseneThemen.has(id - 1)) {
-            alert(`Sektor ${id + 1} ist noch gesperrt. Du musst erst Sektor ${id} abschließen.`);
-            return;
-        }
-    }
-
-    showInfo(thema, id);
-}
-
-    const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
-    const isSchöpfer = (email === "mmcommunity22@gmail.com");
-
-    // STRIKTE PRÜFUNG: Nur wenn Schöpfer oder Sektor 1 (id 0) 
-    // oder wenn der vorherige Sektor bereits in geleseneThemen gespeichert ist.
-    if (!isSchöpfer && id > 0) {
-        if (!geleseneThemen.has(id - 1)) {
-            alert(`Sektor ${id + 1} ist noch gesperrt. Du musst erst Sektor ${id} abschließen.`);
-            return;
-        }
-    }
-
-    showInfo(thema, id);
-} 
     // --- ADMIN PANEL & REGLER ---
     function aktiviereAdminPanel() {
         document.getElementById('admin-panel-haut').style.display = 'block';
@@ -804,3 +763,5 @@ Schritt 1.8: Korrektur der Klick-Sperre (pruefeZugang)
 
     updateNumColors();
 </script>
+
+   
