@@ -81,59 +81,81 @@
     </div>
 
 <script>
+    // BASIS-DATEN (Altbestand + 21 & 22)
     let ebene = 0;
-    let tId = 0;
-    let aktuellesThema = "";
-    let geleseneThemen = new Set();
-
     const themen = [
-        "Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", 
-        "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", 
-        "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", 
-        "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", 
-        "Ratgeber für Pensionisten", "Nachbarschaft und Gemeinschaft", "Sozialgefallen und Widerkehr", 
-        "Alleinerziehend", "Die Brücke", "KAPITAL UND VERWALTUNG", "DAS KOLLEKTIV"
+        "Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", 
+        "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", 
+        "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", 
+        "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", 
+        "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", 
+        "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", 
+        "Ratgeber für Pensionisten", "Nachbarschaft und Gemeinschaft", 
+        "Sozialgefallen und Widerkehr", "Alleinerziehend", "Die Brücke",
+        "KAPITAL UND VERWALTUNG", "DAS KOLLEKTIV"
     ];
 
-    const sektorTexte = Array(22).fill("Hier entsteht dein Text..."); // Deine langen Texte hier einfügen
+    // Diese Funktion baut die Boxen EXAKT im Altbestand-Stil
+    function stelleAltbestandWiederHer() {
+        const grid = document.getElementById('main-grid');
+        if (!grid) return;
 
-    // GRID BAUEN (1-22)
-    const grid = document.getElementById('main-grid');
-    themen.forEach((t, i) => {
-        grid.innerHTML += `
-            <div class="box">
-                <div class="num" id="num-${i}">${i+1}</div>
+        grid.innerHTML = ""; // Clean Start
+        
+        // Wir bauen 1 bis 22 in den grünen Rahmen
+        themen.forEach((t, i) => {
+            grid.innerHTML += `
+            <div class="box" id="box-${i}" style="flex: 0 0 auto;">
+                <div class="num num-neutral" id="num-${i}">${i+1}</div>
                 <div class="text" onclick="pruefeZugang('${t}', ${i})">${t}</div>
             </div>`;
-    });
-
-    function pruefeZugang(thema, id) {
-        if (ebene === 0) { alert("Bitte zuerst Code bestätigen!"); return; }
-        tId = id; aktuellesThema = thema;
-        document.getElementById('dashboard').style.display = 'none';
-        document.getElementById('page-skelett').style.display = 'flex';
-        document.getElementById('info-titel').innerText = thema;
-        document.getElementById('main-text').innerText = sektorTexte[id];
-        ebene = 2;
+        });
+        
+        console.log("Altbestand 1-22 wurde stabil hergestellt.");
     }
 
+    // AUTH-LOGIK (Behält deine Verbindung zu Render/API)
     async function sichereAnkerUndStarteScan() {
-        const email = document.getElementById('db-anker-mail').value;
-        await fetch('https://mm-community.onrender.com/send-code', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email }) });
-        document.getElementById('email-step').style.display = 'none';
-        document.getElementById('code-step').style.display = 'flex';
+        const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
+        try {
+            await fetch('https://mm-community.onrender.com/send-code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email })
+            });
+            document.getElementById('email-step').style.display = 'none';
+            document.getElementById('code-step').style.display = 'flex';
+        } catch (e) { alert("Serververbindung fehlgeschlagen."); }
     }
 
     async function bestatigeCode() {
-        const code = document.getElementById('verification-code').value;
-        const email = document.getElementById('db-anker-mail').value;
-        const resp = await fetch('https://mm-community.onrender.com/verify-access', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email, code: code }) });
-        const res = await resp.json();
-        if (res.success) { ebene = 1; alert("Anker stabil!"); }
+        const code = document.getElementById('verification-code').value.trim();
+        const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
+        try {
+            const resp = await fetch('https://mm-community.onrender.com/verify-access', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email, code: code })
+            });
+            const res = await resp.json();
+            if (res.success) {
+                ebene = 1;
+                alert("Verbindung zum Keller (DB) steht.");
+                if (email === "mmcommunity22@gmail.com") {
+                    document.getElementById('admin-panel-haut').style.display = 'block';
+                }
+            } else { alert("Code ungültig."); }
+        } catch (e) { alert("Fehler beim Abgleich."); }
     }
 
-    function echterExit() { if (confirm("Abmelden?")) location.reload(); }
-</script>
+    function echterExit() {
+        if (confirm("Möchtest du dich wirklich abmelden?")) {
+            location.reload();
+        }
+    }
 
+    // Beim Laden der Seite wird der Altbestand sofort gerichtet
+    window.onload = stelleAltbestandWiederHer;
+</script>
 </body>
 </html>
