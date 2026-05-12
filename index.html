@@ -192,34 +192,7 @@
     animation: fadeEffect 0.5s forwards;
 }
         .bild-aktiv { animation: kenburns 15s infinite ease-in-out, fadeEffect 8s infinite; }
-        
-  .video-control-row {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-    margin-top: 15px;
-}
-.btn-video-join {
-    flex: 1;
-    background: #00ff00;
-    color: #000;
-    border: none;
-    padding: 15px;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 5px;
-}
-.btn-video-leave {
-    flex: 1;
-    background: #ff0000;
-    color: #fff;
-    border: none;
-    padding: 15px;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 5px;
-}    
-   </style>
+    </style>
 </head>
 <body>
 
@@ -264,20 +237,13 @@
             </button>
         </div>
 
-       <div id="code-step" style="display: none; flex: 1; align-items: center; background: rgba(0,0,0,0.4); width: 100%;">
-    <div style="padding-left: 10px; color: #0088ff; font-size: 0.7rem; white-space: nowrap; border-right: 1px solid #003d8f; margin-right: 10px;">VERIFIZIERUNG:</div>
-    
-    <!-- Autocomplete auf 'off' gestellt, um Sprechblasen/Vorschläge zu unterdrücken -->
-    <input type="text" id="verification-code" 
-           placeholder="Trage hier deinen Schlüssel ein" 
-           maxlength="6" 
-           autocomplete="off" 
-           style="background: #00ff00; border: none; color: #000; font-size: 0.7rem; font-weight: bold; width: 180px; height: 100%; text-align: center; outline: none;">
-    
-    <button onclick="bestatigeCode()" style="background: #fff; color: #000; border: none; height: 100%; flex-grow: 1; font-size: 0.7rem; font-weight: bold; cursor: pointer;">
-        OK
-    </button>
-     </div>
+        <div id="code-step" style="display: none; flex: 1; align-items: center; background: rgba(0,0,0,0.4); width: 100%;">
+            <div style="padding-left: 10px; color: #0088ff; font-size: 0.7rem; white-space: nowrap; border-right: 1px solid #003d8f; margin-right: 10px;">VERIFIZIERUNG:</div>
+            <input type="text" id="verification-code" placeholder="CODE" maxlength="6" style="background: #00ff00; border: none; color: #000; font-size: 0.8rem; font-weight: bold; width: 80px; height: 100%; text-align: center; outline: none;">
+            <button onclick="bestatigeCode()" style="background: #fff; color: #000; border: none; height: 100%; flex-grow: 1; font-size: 0.7rem; font-weight: bold; cursor: pointer;">
+                OK
+            </button>
+        </div>
     </div>
 
     <div id="admin-panel-haut" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 800px; background: rgba(0, 0, 0, 0.98); border: 2px solid #ffd700; box-shadow: 0 0 100px #000; z-index: 9999; border-radius: 15px; padding: 30px;">
@@ -381,11 +347,8 @@
                 <div class="video-slot" id="v-slot-7">SLOT 7 (ZUFALL)</div>
                 <div class="video-slot" id="v-slot-8">SLOT 8 (ZUFALL)</div>
             </div>
-          <div class="video-control-row">
-        <button class="btn-video-join" onclick="starteVideoKonferenz()">ZUFÄLLIGEM DIALOG BEITRETEN</button>
-        <button class="btn-video-leave" onclick="verlasseVideoKonferenz()">DIALOG VERLASSEN</button>
-    </div>
-</div>
+            <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; margin-top: 15px; font-weight: bold; cursor: pointer; border-radius: 5px;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
+        </div> 
 
         <div id="ebene5-bereich"><div class="freie-zone-text">ADMIN ZONE</div></div>
     </div>
@@ -437,7 +400,8 @@
         "In diesem Sektor korrigieren wir eine der größten Ungerechtigkeiten. Während der Staat Alleinerziehende als statistisches Problem herabstuft, erkennen wir in ihnen die Elite der menschlichen Belastbarkeit. Ein Kind bei einem alleinerziehenden Elternteil ist eine Hochburg der bedingungslosen Liebe und des Kampfgeistes. Wir nutzen das „Diplom Gottes“, um diesen Elternteilen ihren Stolz zurückzugeben. In diesem Sektor fordern wir die radikale Anerkennung ihrer Leistung als höchstes soziales Verdienst. Wir schaffen eine Community-Struktur, die das fehlende Netz ersetzt: Wir sind das Dorf, das es braucht, um ein Kind großzuziehen, damit sie ihre Kinder in Licht und Fülle aufwachsen lassen können.",
         "In diesem Sektor fließen alle ströme zusammen. Die Brücke ist der Punkt der absoluten Integration, an dem Moral, Erziehung, Arbeit und Glaube zu einer Einheit verschmelzen. Hier lassen wir die Ufer der Spaltung hinter uns. Die Brücke ist der Raum, in dem das „Diplom Gottes“ zur gelebten Realität wird. Wir blicken bereits auf Sektor 21 und 22 – die noch ungeschriebenen Kapitel unserer Freiheit. Sektor 21 als Vision der neuen Erde und 22 als die endgültige Rückkehr zur Quelle. Die Brücke ist das Versprechen: Wer hier ankommt, hat aufgehört zu funktionieren und angefangen zu sein."
     ];
- let ebene = 0, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
+
+    let ebene = 0, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
     let bildIndex = 0; 
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
@@ -492,38 +456,18 @@
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
     
-   function portalZuEbene4() {
-    const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
-    const isSchöpfer = (email === "mmcommunity22@gmail.com");
-    let fertigeSektoren = 0;
-
-    for (let i = 0; i < 22; i++) {
-        const nBox = document.getElementById(`num-${i}`);
-        if (nBox && (nBox.classList.contains('num-fertig') || nBox.classList.contains('num-gelesen'))) {
-            fertigeSektoren++;
+    function portalZuEbene4() {
+        const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
+        const isSchöpfer = (email === "mmcommunity22@gmail.com");
+        let fertigeSektoren = 0;
+        for (let i = 0; i < 22; i++) {
+            const nBox = document.getElementById(`num-${i}`);
+            if (nBox && (nBox.classList.contains('num-fertig') || nBox.classList.contains('num-gelesen'))) fertigeSektoren++;
         }
+        if (isSchöpfer || fertigeSektoren >= 22) { ebene = 4; updateUI(); starteVideoKonferenz(); } 
+        else { alert("Der Videobeweis ist erst nach 22 Sektoren offen."); }
     }
 
-    if (isSchöpfer || fertigeSektoren >= 22) { 
-        ebene = 4; 
-        updateUI(); // Das schaltet die Ansicht auf den Videobeweis um
-    } else { 
-        alert("Der Videobeweis ist erst nach 22 Sektoren offen."); 
-    }
-}
-    function verlasseVideoKonferenz() {
-    const meinSlot = document.getElementById('v-slot-1');
-    const videoElement = document.getElementById('user-video');
-    
-    if (videoElement && videoElement.srcObject) {
-        const tracks = videoElement.srcObject.getTracks();
-        tracks.forEach(track => track.stop()); // Kamera wirklich ausmachen
-    }
-    
-    meinSlot.innerHTML = "SLOT 1 (DU)"; // Anzeige leeren
-    console.log("Dialog verlassen.");
-    showDashboard(); // Sicher zurück zum Startpunkt
-}
     function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
 
     function updateUI() {
@@ -813,5 +757,3 @@
 
     updateNumColors();
 </script>
-
-   
