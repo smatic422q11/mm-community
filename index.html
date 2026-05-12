@@ -232,8 +232,33 @@
            <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
         </div>
 
-      <div class="info-section" style="position: relative;"> 
-    <div class="inner-community-label">Von M&M Community</div>
+    .info-section-ebene { 
+    width: 90% !important; 
+    height: 100%; 
+    border: 2px solid #003d8f; 
+    background-color: #000; 
+    position: relative; 
+    overflow: hidden; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+    z-index: 10;
+    /* HIER DIE KORREKTUR: */
+    padding-top: 15px; /* Schiebt den Inhalt ein Stück von der oberen Linie weg */
+} 
+    .inner-community-label {
+    position: absolute;
+    top: 15px; /* Von 8px auf 15px erhöht für mehr Abstand zur Linie */
+    width: 100%;
+    text-align: center;
+    font-size: 0.7rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: rgba(0, 61, 143, 0.7);
+    z-index: 20;
+    pointer-events: none;
+}
     
     <div style="display: flex; width: 95%; gap: 15px; justify-content: space-between; align-items: flex-start; z-index: 10;">
         <div style="flex: 1; border-right: 1px solid rgba(0, 61, 143, 0.4); padding-right: 10px;">
