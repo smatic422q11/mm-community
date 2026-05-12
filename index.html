@@ -87,7 +87,19 @@
         .ov-pink { background: #ff00ff; }
         .ov-gelb { background: #ffff00; }
 
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 10px; width: 95%; max-width: 1450px; margin-top: 30px; border: 3px solid #00ff00; padding: 15px; border-radius: 10px; }
+      .grid { 
+    display: grid; 
+    grid-template-columns: repeat(4, 1fr); 
+    grid-template-rows: repeat(6, 1fr); /* Auf 6 erhöht für 22-24 Boxen */
+    grid-auto-flow: column; 
+    gap: 10px; 
+    width: 95%; 
+    max-width: 1450px; 
+    margin-top: 15px; 
+    border: 3px solid #00ff00; 
+    padding: 15px; 
+    border-radius: 10px; 
+}
         .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; overflow: hidden; }
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
@@ -472,6 +484,8 @@
         "In diesem Sektor entschlüsseln wir das Gesetz der energetischen Ernte...",
         "In diesem Sektor korrigieren wir eine der größten Ungerechtigkeiten...",
         "In diesem Sektor fließen alle ströme zusammen. Die Brücke ist der Punkt der absoluten Integration..."
+        "Hier entsteht die Vision für Kapital und Verwaltung.", // Text für 21
+        "Hier entsteht die Vision für das Kollektiv."
     ];
 
     // --- 2. GRID INITIALISIERUNG (Muss SOFORT laufen) ---
