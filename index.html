@@ -506,7 +506,19 @@
         updateUI(); 
     } 
 
-    function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
+   function portalZuEbene3() { 
+    // Wir prüfen, ob der Button aktiv ist (gelbes Signal leuchtet)
+    if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { 
+        ebene = 3; 
+        updateUI(); // Aktualisiert die Sichtbarkeit, damit das Chat-Fenster erscheint
+        
+        // Sicherstellen, dass das Chat-Eingabefeld bereit ist
+        setTimeout(() => {
+            const chatInput = document.getElementById('chat-input');
+            if(chatInput) chatInput.focus();
+        }, 100);
+    } 
+}
     
    function portalZuEbene4() {
     const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
