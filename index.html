@@ -347,7 +347,7 @@
                 <div class="video-slot" id="v-slot-7">SLOT 7 (ZUFALL)</div>
                 <div class="video-slot" id="v-slot-8">SLOT 8 (ZUFALL)</div>
             </div>
-            <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; margin-top: 15px; font-weight: bold; cursor: pointer; border-radius: 5px;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
+          <button onclick="starteVideoKonferenz()" style="...">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button> 
         </div> 
 
         <div id="ebene5-bereich"><div class="freie-zone-text">ADMIN ZONE</div></div>
@@ -456,16 +456,19 @@
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
     
-    function portalZuEbene4() {
-        const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
-        const isSchöpfer = (email === "mmcommunity22@gmail.com");
-        let fertigeSektoren = 0;
-        for (let i = 0; i < 22; i++) {
-            const nBox = document.getElementById(`num-${i}`);
-            if (nBox && (nBox.classList.contains('num-fertig') || nBox.classList.contains('num-gelesen'))) fertigeSektoren++;
-        }
-        if (isSchöpfer || fertigeSektoren >= 22) { ebene = 4; updateUI(); starteVideoKonferenz(); } 
-        else { alert("Der Videobeweis ist erst nach 22 Sektoren offen."); }
+  function portalZuEbene4() {
+    const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
+    const isSchöpfer = (email === "mmcommunity22@gmail.com");
+    let fertigeSektoren = 0;
+    for (let i = 0; i < 22; i++) {
+        const nBox = document.getElementById(`num-${i}`);
+        if (nBox && (nBox.classList.contains('num-fertig') || nBox.classList.contains('num-gelesen'))) fertigeSektoren++;
+    }
+    if (isSchöpfer || fertigeSektoren >= 22) { 
+        ebene = 4; 
+        updateUI(); 
+    } else { 
+        alert("Der Videobeweis ist erst nach 22 Sektoren offen."); 
     }
 
     function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
@@ -680,11 +683,11 @@ async function bestatigeCode() {
             const result = await response.json();
             
             if (result.success) {
-                // ERFOLG: Jetzt wird aufgeräumt
+                // --- TOTALER RESET BEIM LOGIN ---
                 ebene = 1; 
-                document.getElementById('chat-box').innerHTML = "<i>System: Dialog bereit...</i>";
-                document.getElementById('verification-code').value = ""; 
-                kollektivesGedachtnis = []; 
+                kollektivesGedachtnis = []; // KI-Gedächtnis löschen
+                document.getElementById('chat-box').innerHTML = "<i>System: Dialog bereit...</i>"; // Sprechblasen weg
+                document.getElementById('verification-code').value = ""; // Code-Feld leeren
                 
                 if (result.role === 'admin' || email === "mmcommunity22@gmail.com") { 
                     aktiviereAdminPanel(); 
@@ -697,9 +700,7 @@ async function bestatigeCode() {
             } else { 
                 alert("Schlüssel ungültig."); 
             }
-        } catch (e) { 
-            alert("Server-Fehler."); 
-        }
+        } catch (e) { alert("Server-Fehler."); }
     }
 }
    
