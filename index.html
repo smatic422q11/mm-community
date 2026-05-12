@@ -707,6 +707,21 @@ Schritt 1.8: Korrektur der Klick-Sperre (pruefeZugang)
     }
 
     showInfo(thema, id);
+}
+
+    const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
+    const isSchöpfer = (email === "mmcommunity22@gmail.com");
+
+    // STRIKTE PRÜFUNG: Nur wenn Schöpfer oder Sektor 1 (id 0) 
+    // oder wenn der vorherige Sektor bereits in geleseneThemen gespeichert ist.
+    if (!isSchöpfer && id > 0) {
+        if (!geleseneThemen.has(id - 1)) {
+            alert(`Sektor ${id + 1} ist noch gesperrt. Du musst erst Sektor ${id} abschließen.`);
+            return;
+        }
+    }
+
+    showInfo(thema, id);
 } 
     // --- ADMIN PANEL & REGLER ---
     function aktiviereAdminPanel() {
