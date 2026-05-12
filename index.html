@@ -543,92 +543,108 @@
     function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
 
     function updateUI() {
-        const isDashboard = (ebene === 1);
-        const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
-        
-        document.getElementById('top-label').style.display = isDashboard ? 'none' : 'block';
-        document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
-        document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
-        document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
-        document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
-        
-        const mainText = document.getElementById('main-text');
-        const kiBox = document.getElementById('ki-ermittlung-ebene2');
-        const textFeld = document.getElementById('ki-tagesfokus-text');
+    const isDashboard = (ebene === 1);
+    const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
+    
+    // Sichtbarkeit der Hauptbereiche
+    document.getElementById('top-label').style.display = isDashboard ? 'none' : 'block';
+    document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
+    document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
+    document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
+    document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
+    
+    const mainText = document.getElementById('main-text');
+    const kiBox = document.getElementById('ki-ermittlung-ebene2');
+    const textFeld = document.getElementById('ki-tagesfokus-text');
 
-        if (ebene === 2) {
-            mainText.style.display = 'block';
-            mainText.style.maxHeight = "30vh";
-            mainText.style.overflowY = "auto";
-            if(kiBox) {
-                kiBox.style.display = 'block';
-                textFeld.style.display = "block";
-                textFeld.style.maxHeight = "25vh"; 
-                textFeld.style.overflowY = "scroll";
-                textFeld.style.paddingRight = "10px";
-            }
-        } else {
-            mainText.style.display = 'none';
-            if(kiBox) kiBox.style.display = 'none';
+    if (ebene === 2) {
+        mainText.style.display = 'block';
+        mainText.style.maxHeight = "30vh";
+        mainText.style.overflowY = "auto";
+        if(kiBox) {
+            kiBox.style.display = 'block';
+            textFeld.style.display = "block";
+            textFeld.style.maxHeight = "25vh"; 
+            textFeld.style.overflowY = "scroll";
+            textFeld.style.paddingRight = "10px";
         }
-
-        document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
-        document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
-        document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
-        document.getElementById('btn-back').style.visibility = 'visible';
-        document.getElementById('info-titel').innerText = aktuellesThema;
-        
-        if (ebene === 2) { document.getElementById('main-text').innerText = sektorTexte[tId]; }
-
-        const btnNext = document.getElementById('btn-next');
-        const sigGelb = document.getElementById('sig-r4');
-        const sigRot = document.getElementById('sig-l4');
-
-        // --- ADMIN-WÄCHTER ---
-        const sigL1 = document.getElementById('sig-l1');
-        const emailInput = document.getElementById('db-anker-mail');
-        const email = emailInput ? emailInput.value.trim().toLowerCase() : "";
-        const isSchöpfer = (email === "mmcommunity22@gmail.com");
-
-        if (sigL1) {
-            if (isSchöpfer) {
-                sigL1.className = "oval-side elite-aktiv"; 
-                sigL1.style.opacity = "1";
-                sigL1.style.cursor = "pointer";
-                sigL1.onclick = aktiviereAdminPanel;
-            } else {
-                aktiviereKandidatenLicht(); 
-            }
-        }
-
-        let fertigeSektoren = 0;
-        for (let i = 0; i < 22; i++) {
-            const nBox = document.getElementById(`num-${i}`);
-            if (nBox && (nBox.classList.contains('num-fertig') || nBox.classList.contains('num-gelesen'))) fertigeSektoren++;
-        }
-
-        if (ebene === 2) {
-            btnNext.style.visibility = 'hidden'; 
-            sigGelb.classList.add('signal-aktiv'); 
-        } else {
-            sigGelb.classList.remove('signal-aktiv');
-        }
-
-        if (isSchöpfer || fertigeSektoren >= 22) {
-            sigRot.classList.add('signal-aktiv');
-            sigRot.style.opacity = "1";
-            sigRot.style.cursor = "pointer";
-            sigRot.onclick = portalZuEbene4;
-        } else {
-            sigRot.classList.remove('signal-aktiv');
-            sigRot.style.opacity = "0.2"; 
-            sigRot.style.cursor = "default";
-            sigRot.onclick = function() { alert("Der Videobeweis ist erst nach 22 Sektoren offen."); };
-        }
-
-        updateDots(); 
-        startRotation();
+    } else {
+        mainText.style.display = 'none';
+        if(kiBox) kiBox.style.display = 'none';
     }
+
+    document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
+    document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
+    document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
+    
+    // --- NEUE STEUERUNG DER NAVIGATION (EXIT & BACK) ---
+    const btnExit = document.getElementById('btn-exit');
+    const btnBack = document.getElementById('btn-back');
+
+    if (isVideo) {
+        if (btnExit) btnExit.style.display = 'block';
+        if (btnBack) btnBack.style.visibility = 'visible';
+    } else if (isDashboard) {
+        if (btnExit) btnExit.style.display = 'none';
+        if (btnBack) btnBack.style.visibility = 'hidden';
+    } else {
+        if (btnExit) btnExit.style.display = 'none';
+        if (btnBack) btnBack.style.visibility = 'visible';
+    }
+
+    document.getElementById('info-titel').innerText = aktuellesThema;
+    if (ebene === 2) { document.getElementById('main-text').innerText = sektorTexte[tId]; }
+
+    const btnNext = document.getElementById('btn-next');
+    const sigGelb = document.getElementById('sig-r4');
+    const sigRot = document.getElementById('sig-l4');
+
+    // --- ADMIN-WÄCHTER (Altbestand) ---
+    const sigL1 = document.getElementById('sig-l1');
+    const emailInput = document.getElementById('db-anker-mail');
+    const email = emailInput ? emailInput.value.trim().toLowerCase() : "";
+    const isSchöpfer = (email === "mmcommunity22@gmail.com");
+
+    if (sigL1) {
+        if (isSchöpfer) {
+            sigL1.className = "oval-side elite-aktiv"; 
+            sigL1.style.opacity = "1";
+            sigL1.style.cursor = "pointer";
+            sigL1.onclick = aktiviereAdminPanel;
+        } else {
+            aktiviereKandidatenLicht(); 
+        }
+    }
+
+    let fertigeSektoren = 0;
+    for (let i = 0; i < 22; i++) {
+        const nBox = document.getElementById(`num-${i}`);
+        if (nBox && (nBox.classList.contains('num-fertig') || nBox.classList.contains('num-gelesen'))) fertigeSektoren++;
+    }
+
+    if (ebene === 2) {
+        if (btnNext) btnNext.style.visibility = 'hidden'; 
+        sigGelb.classList.add('signal-aktiv'); 
+    } else {
+        sigGelb.classList.remove('signal-aktiv');
+    }
+
+    // --- VIDEO-SPERRE (Altbestand) ---
+    if (isSchöpfer || fertigeSektoren >= 22) {
+        sigRot.classList.add('signal-aktiv');
+        sigRot.style.opacity = "1";
+        sigRot.style.cursor = "pointer";
+        sigRot.onclick = portalZuEbene4;
+    } else {
+        sigRot.classList.remove('signal-aktiv');
+        sigRot.style.opacity = "0.2"; 
+        sigRot.style.cursor = "default";
+        sigRot.onclick = function() { alert("Der Videobeweis ist erst nach 22 Sektoren offen."); };
+    }
+
+    updateDots(); 
+    startRotation();
+}
 
     function aktiviereKandidatenLicht() {
         const sigL1 = document.getElementById('sig-l1');
