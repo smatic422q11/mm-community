@@ -618,7 +618,7 @@
         finally { istSendenAktiv = false; chatBox.scrollTop = chatBox.scrollHeight; }
     }
 
- function updateNumColors() {
+function updateNumColors() {
     const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
     const isSchöpfer = (email === "mmcommunity22@gmail.com");
 
@@ -627,24 +627,23 @@
         if (!nBox) return;
 
         if (isSchöpfer) {
-            nBox.className = "num num-neutral"; // Schöpfer-Bestand bleibt blau
+            // Schöpfer sieht den Standard-Altbestand
+            nBox.className = "num num-neutral"; 
         } else {
-            // STRIKTE USER-FÜHRUNG
+            // STRIKTE USER-REGELN NACH DEINER LEGENDE
             if (geleseneThemen.has(i)) {
-                // KI hat Sektor freigegeben oder User war schon drin
-                nBox.className = "num num-fertig"; // GRÜN
+                nBox.className = "num num-fertig"; // GRÜN: Sicher / Erledigt
             } else if (i === 0 || geleseneThemen.has(i - 1)) {
-                // Das ist der Sektor, den der User JETZT bearbeiten muss
-                nBox.className = "num num-gelesen"; // GELB
-            } else if (i === (Array.from(geleseneThemen).length + 1)) {
-                // Der übernächste Sektor zeigt an, dass er wartet
-                nBox.className = "num num-offen"; // ROT
+                nBox.className = "num num-gelesen"; // GELB: Arbeit
+            } else if (i === (Array.from(geleseneThemen).size + 1)) {
+                nBox.className = "num num-offen"; // ROT: Wartet
             } else {
-                nBox.className = "num num-neutral"; // BLAU
+                nBox.className = "num num-neutral"; // BLAU: Offen
             }
         }
     });
 }
+Schritt 1.8: Korrektur der Klick-Sperre (pruefeZugang)
     function startRotation() { 
         clearInterval(wechselInterval); const bg = document.getElementById('werbe-bg'); if(!bg) return; setNewImage(bg);
         wechselInterval = setInterval(() => { if (ebene >= 2 && ebene <= 4) { bildIndex = (bildIndex + 1) % 4; setNewImage(bg); } }, 8000);
