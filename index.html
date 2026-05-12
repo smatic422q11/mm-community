@@ -717,18 +717,42 @@
         await fetch('https://mm-community.onrender.com/admin/update-sector', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email, sector_id: id, status: status }) });
     }
 
-    // --- VIDEO SYSTEM ---
+  // --- VIDEO SYSTEM (AKTIVIERT) ---
     const peerConfiguration = { iceServers: [{ urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'] }] };
     let meinPeer = new Peer(`M-M-Sektor-${tId+1}-Beweis`, { config: peerConfiguration });
 
     async function starteVideoKonferenz() {
         const meinSlot = document.getElementById('v-slot-1');
+        const partnerSlot = document.getElementById('v-slot-2'); // Der zweite Slot für das Gegenüber
         if (!meinSlot) return;
+
         try {
+            // 1. Zugriff auf Kamera und Mikrofon anfordern
             const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover; background:#000;"></video>`;
-            document.getElementById('user-video').srcObject = stream;
-        } catch (err) { meinSlot.innerHTML = `<div style="color:red;">KAMERA-ZUGRIFF FEHLT!</div>`; }
+            
+            // 2. Dein Video im ersten Slot anzeigen
+            meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover; background:#000; border: 1px solid #003d8f;"></video>`;
+            const videoElement = document.getElementById('user-video');
+            videoElement.srcObject = stream;
+
+            // 3. Peer-Verbindung: Auf Anruf warten (Wohnzimmer ruft an)
+            meinPeer.on('call', (call) => {
+                call.answer(stream); // Deinen Stream mitschicken
+                call.on('stream', (remoteStream) => {
+                    // Das Bild vom Wohnzimmer im zweiten Slot zeigen
+                    if(partnerSlot) {
+                        partnerSlot.innerHTML = `<video id="remote-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover; background:#000; border: 1px solid #ffd700;"></video>`;
+                        document.getElementById('remote-video').srcObject = remoteStream;
+                    }
+                });
+            });
+
+            console.log("Kamera-System aktiv im Sektor " + (tId + 1));
+
+        } catch (err) {
+            console.error("Kamera-Fehler:", err);
+            meinSlot.innerHTML = `<div style="color:red; font-size: 12px; padding: 10px;">ZUGRIFF VERWEIGERT: Bitte Kamera in den Browser-Einstellungen erlauben!</div>`;
+        }
     }
 
     updateNumColors();
