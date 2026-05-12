@@ -460,19 +460,29 @@
     const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
     const isSchöpfer = (email === "mmcommunity22@gmail.com");
     let fertigeSektoren = 0;
+    
     for (let i = 0; i < 22; i++) {
         const nBox = document.getElementById(`num-${i}`);
-        if (nBox && (nBox.classList.contains('num-fertig') || nBox.classList.contains('num-gelesen'))) fertigeSektoren++;
+        if (nBox && (nBox.classList.contains('num-fertig') || nBox.classList.contains('num-gelesen'))) {
+            fertigeSektoren++;
+        }
     }
+
     if (isSchöpfer || fertigeSektoren >= 22) { 
         ebene = 4; 
         updateUI(); 
+        // HIER STEHT KEIN starteVideoKonferenz() MEHR! Die Kamera bleibt aus.
     } else { 
         alert("Der Videobeweis ist erst nach 22 Sektoren offen."); 
     }
+} 
 
-    function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
-
+function portalZuEbene5() { 
+    if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { 
+        ebene = 5; 
+        updateUI(); 
+    } 
+}
     function updateUI() {
         const isDashboard = (ebene === 1);
         const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
@@ -683,11 +693,11 @@ async function bestatigeCode() {
             const result = await response.json();
             
             if (result.success) {
-                // --- TOTALER RESET BEIM LOGIN ---
+                // --- DER RADIKALE SICHERHEITS-CLEAN-SWEEP ---
                 ebene = 1; 
-                kollektivesGedachtnis = []; // KI-Gedächtnis löschen
-                document.getElementById('chat-box').innerHTML = "<i>System: Dialog bereit...</i>"; // Sprechblasen weg
-                document.getElementById('verification-code').value = ""; // Code-Feld leeren
+                kollektivesGedachtnis = []; 
+                document.getElementById('chat-box').innerHTML = "<i>System: Dialog bereit...</i>"; 
+                document.getElementById('verification-code').value = ""; 
                 
                 if (result.role === 'admin' || email === "mmcommunity22@gmail.com") { 
                     aktiviereAdminPanel(); 
