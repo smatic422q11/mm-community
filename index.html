@@ -372,7 +372,8 @@
 
 <script>
     let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5 };
-    let chatVerlauf = []; // Hier wird das Gedächtnis gespeichert
+    let kollektivesGedachtnis = []; 
+    let aktuellerScanBericht = "";
     const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Alleinerziehend", "Die Brücke"];
     
     // Globaler Speicher für den Scan, damit der Chat ihn im Gedächtnis hat
@@ -401,21 +402,11 @@
         "In diesem Sektor fließen alle Ströme zusammen. Die Brücke ist der Punkt der absoluten Integration, an dem Moral, Erziehung, Arbeit und Glaube zu einer Einheit verschmelzen. Hier lassen wir die Ufer der Spaltung hinter uns. Die Brücke ist der Raum, in dem das „Diplom Gottes“ zur gelebten Realität wird. Wir blicken bereits auf Sektor 21 und 22 – die noch ungeschriebenen Kapitel unserer Freiheit. Sektor 21 als Vision der neuen Erde und 22 als die endgültige Rückkehr zur Quelle. Die Brücke ist das Versprechen: Wer hier ankommt, hat aufgehört zu funktionieren und angefangen zu sein."
     ];
 
-<script>
-    let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5 };
-    let kollektivesGedachtnis = []; 
-    let aktuellerScanBericht = "";
-    const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Alleinerziehend", "Die Brücke"];
-    
-    const sektorTexte = [
-        "Die digitale Welt hat eine Schicht aus Taubheit über das menschliche Erleben gelegt...", // (Hier sind deine Texte drin, ich kürze es nur für die Übersicht)
-        // ... (behalte deine langen Texte hier bei)
-    ];
-
-    let ebene = 0, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
+let ebene = 0, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
     let bildIndex = 0; 
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
+    // GRID INITIALISIERUNG
     const grid = document.getElementById('main-grid');
     themen.forEach((t, i) => { 
         grid.innerHTML += `
@@ -433,17 +424,17 @@
         const textFeld = document.getElementById('ki-tagesfokus-text');
         if(!box || !textFeld) return;
         box.style.display = 'block';
-        textFeld.innerHTML = "<span style='color: #ffd700;'>Initialisiere Sektor-Scan...</span>";
+        textFeld.innerHTML = "<span style='color: #ffd700; font-family: Courier New;'>Initialisiere Sektor-Scan...</span>";
         try {
             const response = await fetch('https://mm-community.onrender.com/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: `AKTUELLER SEKTOR-SCAN: '${themaName}'...`, context: sektorTexte[id], sector_id: String(id) })
+                body: JSON.stringify({ message: `Dossier Sektor: ${themaName}`, context: sektorTexte[id], sector_id: String(id) })
             });
             const data = await response.json();
             aktuellerScanBericht = data.reply;
             textFeld.innerHTML = data.reply.replace(/\n/g, '<br>');
-        } catch (error) { textFeld.innerText = "Fehler: Verbindung unterbrochen."; }
+        } catch (error) { textFeld.innerText = "Verbindung unterbrochen."; }
     }
 
     function showInfo(t, id) { 
@@ -468,28 +459,38 @@
             if (nBox && (nBox.classList.contains('num-fertig') || nBox.classList.contains('num-gelesen'))) fertigeSektoren++;
         }
         if (isSchöpfer || fertigeSektoren >= 22) { ebene = 4; updateUI(); starteVideoKonferenz(); } 
-        else { alert("Der Videobeweis ist noch gesperrt."); }
+        else { alert("Der Videobeweis ist erst nach 22 Sektoren offen."); }
     }
 
+    // --- DIE REPARIERTE UPDATE UI FUNKTION ---
     function updateUI() {
         const isDashboard = (ebene === 1);
         const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
         
-        if(document.getElementById('top-label')) document.getElementById('top-label').style.display = isDashboard ? 'none' : 'block';
-        if(document.getElementById('chat-area')) document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
-        if(document.getElementById('drawer-ebene4')) document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
+        document.getElementById('top-label').style.display = isDashboard ? 'none' : 'block';
+        document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
+        document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
+        document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
+        document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
         
         const mainText = document.getElementById('main-text');
         const kiBox = document.getElementById('ki-ermittlung-ebene2');
         if (ebene === 2) {
-            if(mainText) { mainText.style.display = 'block'; mainText.innerText = sektorTexte[tId]; }
+            mainText.style.display = 'block';
+            mainText.innerText = sektorTexte[tId];
             if(kiBox) kiBox.style.display = 'block';
         } else {
-            if(mainText) mainText.style.display = 'none';
+            mainText.style.display = 'none';
             if(kiBox) kiBox.style.display = 'none';
         }
 
-        // --- DER ADMIN-WÄCHTER ---
+        document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
+        document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
+        document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
+        document.getElementById('btn-back').style.visibility = 'visible';
+        document.getElementById('info-titel').innerText = aktuellesThema;
+
+        // ADMIN-WÄCHTER (Der schwarze Knopf links oben)
         const sigL1 = document.getElementById('sig-l1');
         const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
         const isSchöpfer = (email === "mmcommunity22@gmail.com");
@@ -504,6 +505,7 @@
             }
         }
 
+        // Signale rechts (Gelber Knopf)
         const sigGelb = document.getElementById('sig-r4');
         if (ebene === 2 && sigGelb) sigGelb.classList.add('signal-aktiv');
         else if (sigGelb) sigGelb.classList.remove('signal-aktiv');
@@ -515,10 +517,18 @@
     function updateNumColors() {
         const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
         const isSchöpfer = (email === "mmcommunity22@gmail.com");
+        let aktuellerSektor = 0; 
+
         themen.forEach((_, i) => {
             const nBox = document.getElementById(`num-${i}`);
             if (!nBox) return;
-            if (isSchöpfer) nBox.className = "num num-neutral";
+            if (isSchöpfer) {
+                nBox.className = "num num-neutral"; 
+            } else {
+                if (i < aktuellerSektor) nBox.className = "num num-fertig";
+                else if (i === aktuellerSektor) nBox.className = "num num-gelesen";
+                else nBox.className = "num num-neutral";
+            }
         });
     }
 
@@ -537,7 +547,6 @@
         const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
         if (code.length === 6) {
             ebene = 1;
-            if (email === "mmcommunity22@gmail.com") aktiviereAdminPanel();
             document.getElementById('code-step').style.display = 'none';
             document.getElementById('email-step').style.display = 'flex';
             updateNumColors();
@@ -550,18 +559,45 @@
         showInfo(thema, id);
     }
 
+    // ADMIN FUNKTIONEN
     function aktiviereAdminPanel() {
         document.getElementById('admin-panel-haut').style.display = 'block';
         ladeAdminStats();
         erstelleSektorenSteuerung();
     }
 
-    function startRotation() { /* Deine Rotationslogik */ }
-    function aktiviereKandidatenLicht() { /* Deine Lichtlogik */ }
+    async function ladeAdminStats() {
+        const adminBoxen = document.querySelectorAll("#admin-panel-haut div div");
+        const userBox = adminBoxen[1];
+        try {
+            const response = await fetch('https://mm-community.onrender.com/admin/stats');
+            const data = await response.json();
+            if (data.success) {
+                userBox.innerHTML = `<h3 style="color:#0088ff;">USER-VERWALTUNG</h3><p>Anker (Seelen): <span style="font-size:2rem;color:#ffd700;">${data.total_souls}</span></p>`;
+            }
+        } catch (e) { userBox.innerHTML = "Fehler beim Laden."; }
+    }
 
-    // Admin Funktionen
-    async function ladeAdminStats() { /* ... */ }
-    function erstelleSektorenSteuerung() { /* ... */ }
+    function erstelleSektorenSteuerung() {
+        const steuerungsBox = document.querySelector("#admin-panel-haut div div:first-child");
+        steuerungsBox.innerHTML = `<h3 style="color:#0088ff;">SEKTOR-REGLER</h3>`;
+        const btnContainer = document.createElement('div');
+        btnContainer.style = "display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:15px;";
+        for (let i = 0; i < 22; i++) {
+            const btn = document.createElement('button');
+            btn.innerText = i+1;
+            btn.style = "background:#003d8f;color:#fff;border:1px solid #fff;padding:8px;cursor:pointer;";
+            btnContainer.appendChild(btn);
+        }
+        steuerungsBox.appendChild(btnContainer);
+    }
 
+    function startRotation() { /* Deine Bildlogik */ }
+    function aktiviereKandidatenLicht() { 
+        const sigL1 = document.getElementById('sig-l1');
+        if(sigL1) sigL1.className = "oval-side ov-schwarz"; 
+    }
+
+    // Start
     updateNumColors();
 </script>
