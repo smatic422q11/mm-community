@@ -336,19 +336,28 @@
             </div>
         </div> 
 
-        <div id="drawer-ebene4">
-            <div class="video-grid">
-                <div class="video-slot slot-1-user" id="v-slot-1">SLOT 1 (DU)</div>
-                <div class="video-slot" id="v-slot-2">SLOT 2 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-3">SLOT 3 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-4">SLOT 4 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-5">SLOT 5 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-6">SLOT 6 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-7">SLOT 7 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-8">SLOT 8 (ZUFALL)</div>
-            </div>
-          <button onclick="starteVideoKonferenz()" style="...">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button> 
-        </div> 
+       <div id="drawer-ebene4">
+    <div class="video-grid">
+        <div class="video-slot slot-1-user" id="v-slot-1">SLOT 1 (DU)</div>
+        <div class="video-slot" id="v-slot-2">SLOT 2 (ZUFALL)</div>
+        <div class="video-slot" id="v-slot-3">SLOT 3 (ZUFALL)</div>
+        <div class="video-slot" id="v-slot-4">SLOT 4 (ZUFALL)</div>
+        <div class="video-slot" id="v-slot-5">SLOT 5 (ZUFALL)</div>
+        <div class="video-slot" id="v-slot-6">SLOT 6 (ZUFALL)</div>
+        <div class="video-slot" id="v-slot-7">SLOT 7 (ZUFALL)</div>
+        <div class="video-slot" id="v-slot-8">SLOT 8 (ZUFALL)</div>
+    </div>
+    
+    <!-- DIE NEUEN STEUERUNGS-BALKEN -->
+    <div style="display: flex; gap: 15px; margin-top: 20px; width: 100%;">
+        <button onclick="starteVideoKonferenz()" style="flex: 1; background: #00ff00; color: #000; border: 2px solid #fff; padding: 20px; font-weight: 900; cursor: pointer; border-radius: 8px; font-size: 1.1rem; text-transform: uppercase;">
+            Dialog Beitreten
+        </button>
+        <button onclick="stoppeVideoKonferenz()" style="flex: 1; background: #ff0000; color: #fff; border: 2px solid #fff; padding: 20px; font-weight: 900; cursor: pointer; border-radius: 8px; font-size: 1.1rem; text-transform: uppercase;">
+            Dialog Verlassen
+        </button>
+    </div>
+</div>
 
         <div id="ebene5-bereich"><div class="freie-zone-text">ADMIN ZONE</div></div>
     </div>
@@ -693,26 +702,25 @@ async function bestatigeCode() {
             const result = await response.json();
             
             if (result.success) {
-                // --- DER RADIKALE SICHERHEITS-CLEAN-SWEEP ---
-                ebene = 1; 
-                kollektivesGedachtnis = []; 
-                document.getElementById('chat-box').innerHTML = "<i>System: Dialog bereit...</i>"; 
-                document.getElementById('verification-code').value = ""; 
-                
-                if (result.role === 'admin' || email === "mmcommunity22@gmail.com") { 
-                    aktiviereAdminPanel(); 
-                }
-                
-                document.getElementById('code-step').style.display = 'none'; 
-                document.getElementById('email-step').style.display = 'flex'; 
-                updateNumColors(); 
-                showInfo(themen[0], 0); 
-            } else { 
-                alert("Schlüssel ungültig."); 
-            }
-        } catch (e) { alert("Server-Fehler."); }
+    ebene = 1;
+    
+    // RADIKAL-REINIGUNG DER EINGABEFELDER
+    document.getElementById('db-anker-mail').value = "";      // Email-Feld leeren
+    document.getElementById('verification-code').value = ""; // Code-Feld leeren
+    
+    // Chatverlauf für neuen User löschen
+    document.getElementById('chat-box').innerHTML = "<i>System: Dialog bereit...</i>"; 
+    kollektivesGedachtnis = []; 
+
+    // Admin Check und UI Update
+    if (result.role === 'admin' || email === "mmcommunity22@gmail.com") { 
+        aktiviereAdminPanel(); 
     }
-}
+    
+    document.getElementById('code-step').style.display = 'none'; 
+    document.getElementById('email-step').style.display = 'flex'; 
+    updateNumColors(); 
+    showInfo(themen[0], 0);
    
     function pruefeZugang(thema, id) {
         if (ebene === 0) { alert("Bitte zuerst Code bestätigen!"); return; }
@@ -790,13 +798,27 @@ async function bestatigeCode() {
                 });
             });
 
-            console.log("Kamera-System aktiv im Sektor " + (tId + 1));
-
-        } catch (err) {
-            console.error("Kamera-Fehler:", err);
-            meinSlot.innerHTML = `<div style="color:red; font-size: 12px; padding: 10px;">ZUGRIFF VERWEIGERT: Bitte Kamera in den Browser-Einstellungen erlauben!</div>`;
-        }
+          console.log("Kamera-System aktiv im Sektor " + (tId + 1));
+  
+   function stoppeVideoKonferenz() {
+    const videoElement = document.getElementById('user-video');
+    if (videoElement && videoElement.srcObject) {
+        videoElement.srcObject.getTracks().forEach(track => track.stop());
+        videoElement.srcObject = null;
     }
+    // Dem Server sagen: "Ich bin raus, mach den Platz frei!"
+    fetch('https://mm-community.onrender.com/video/leave', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: document.getElementById('db-anker-mail').value })
+    });
+
+    document.getElementById('v-slot-1').innerHTML = "SLOT 1 (DU)";
+    // Alle anderen Slots auch resetten...
+    for(let i=2; i<=8; i++) {
+        document.getElementById(`v-slot-${i}`).innerHTML = `SLOT ${i} (FREI)`;
+    }
+} 
 
     updateNumColors();
 </script>
