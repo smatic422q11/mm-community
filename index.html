@@ -858,7 +858,7 @@ function aktiviereAdminPanel() {
         document.getElementById('code-step').style.display = 'flex';
     }
 
-  async function bestatigeCode() {
+async function bestatigeCode() {
     const codeInput = document.getElementById('verification-code');
     const emailInput = document.getElementById('db-anker-mail');
     const code = codeInput.value.trim();
@@ -875,24 +875,46 @@ function aktiviereAdminPanel() {
             const result = await response.json();
             
             if (result.success) {
-                // Aufgabe 4: Positive Rückmeldung statt Server-Fehler
                 alert("Danke! Dein Anker ist gesetzt."); 
-                
                 ebene = 1; 
                 if (result.role === 'admin' || email === "mmcommunity22@gmail.com") { 
                     aktiviereAdminPanel(); 
                 }
-                
                 document.getElementById('code-step').style.display = 'none'; 
                 document.getElementById('email-step').style.display = 'flex'; 
                 
-                updateNumColors(); 
-               }
-    function pruefeZugang(thema, id) {
-        if (ebene === 0) { alert("Bitte zuerst Code bestätigen!"); return; }
-        showInfo(thema, id);
+                // Dashboard anzeigen
+                showDashboard();
+            } else {
+                alert("Schlüssel ungültig.");
+            }
+        } catch (e) { 
+            alert("Server-Fehler."); 
+        }
     }
+}
 
+function pruefeZugang(thema, id) {
+    if (ebene === 0) { 
+        alert("Bitte zuerst Code bestätigen!"); 
+        return; 
+    }
+    showInfo(thema, id);
+}
+
+// Hilfsfunktion, damit die Boxen ihre Farben behalten
+function updateNumColors() {
+    themen.forEach((t, i) => {
+        const nBox = document.getElementById(`num-${i}`);
+        if (nBox) {
+            if (geleseneThemen.has(i)) {
+                nBox.className = 'num num-gelesen';
+            } else {
+                nBox.className = 'num num-neutral';
+            }
+        }
+    });
+}
     // --- ADMIN PANEL & REGLER ---
     function aktiviereAdminPanel() {
         document.getElementById('admin-panel-haut').style.display = 'block';
