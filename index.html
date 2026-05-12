@@ -858,7 +858,7 @@ function aktiviereAdminPanel() {
         document.getElementById('code-step').style.display = 'flex';
     }
 
-  async function bestatigeCode() {
+ async function bestatigeCode() {
     const codeInput = document.getElementById('verification-code');
     const emailInput = document.getElementById('db-anker-mail');
     const code = codeInput.value.trim();
@@ -871,34 +871,50 @@ function aktiviereAdminPanel() {
                 headers: { 'Content-Type': 'application/json' }, 
                 body: JSON.stringify({ email: email, code: code }) 
             });
-            
             const result = await response.json();
             
             if (result.success) {
-                // Aufgabe 4: Positive Rückmeldung statt Server-Fehler
                 alert("Danke! Dein Anker ist gesetzt."); 
-                
                 ebene = 1; 
                 if (result.role === 'admin' || email === "mmcommunity22@gmail.com") { 
                     aktiviereAdminPanel(); 
                 }
-                
                 document.getElementById('code-step').style.display = 'none'; 
                 document.getElementById('email-step').style.display = 'flex'; 
-                
                 updateNumColors(); 
-               }
-    function pruefeZugang(thema, id) {
-        if (ebene === 0) { alert("Bitte zuerst Code bestätigen!"); return; }
-        showInfo(thema, id);
+                showInfo(themen[0], 0); 
+            } else { 
+                alert("Schlüssel ungültig."); 
+            }
+        } catch (e) { 
+            console.error("Verifizierungs-Fehler:", e);
+            alert("Verbindung aktiv – Anker wird stabilisiert."); 
+        }
     }
+} // <--- Hier war das Loch!
 
-    // --- ADMIN PANEL & REGLER ---
-    function aktiviereAdminPanel() {
-        document.getElementById('admin-panel-haut').style.display = 'block';
+function pruefeZugang(thema, id) {
+    if (ebene === 0) { 
+        alert("Bitte zuerst Code bestätigen!"); 
+        return; 
+    }
+    showInfo(thema, id);
+}
+
+function aktiviereAdminPanel() {
+    const panel = document.getElementById('admin-panel-haut');
+    if(panel) {
+        panel.style.display = 'block';
         ladeAdminStats();
         erstelleSektorenSteuerung();
     }
+}
+
+// Ganz am Ende rufen wir die Start-Farben auf
+updateNumColors();
+</script>
+</body>
+</html>
 
     async function ladeAdminStats() {
         const adminBoxen = document.querySelectorAll("#admin-panel-haut div div");
