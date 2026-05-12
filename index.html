@@ -688,30 +688,26 @@ function updateNumColors() {
         }
     }
 
-  // KORREKTUR AUFGABE 1.1: STRIKTE SEKTOR-ABFOLGE FÜR USER
 function pruefeZugang(thema, id) {
     if (ebene === 0) { 
         alert("Bitte zuerst Code bestätigen!"); 
         return; 
     }
 
-    const emailInput = document.getElementById('db-anker-mail');
-    const email = emailInput.value.trim().toLowerCase();
+    const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
     const isSchöpfer = (email === "mmcommunity22@gmail.com");
 
-    // Wenn nicht Schöpfer, prüfe ob der vorherige Sektor gelesen wurde
+    // STRIKTE PRÜFUNG: Nur wenn Schöpfer oder Sektor 1 (id 0) 
+    // oder wenn der vorherige Sektor bereits in geleseneThemen gespeichert ist.
     if (!isSchöpfer && id > 0) {
-        const vorherigerSektor = document.getElementById(`num-${id-1}`);
-        if (!vorherigerSektor.classList.contains('num-gelesen') && 
-            !vorherigerSektor.classList.contains('num-fertig')) {
-            alert(`Stopp! Du musst zuerst Sektor ${id} abschließen, bevor du Sektor ${id+1} betreten kannst.`);
+        if (!geleseneThemen.has(id - 1)) {
+            alert(`Sektor ${id + 1} ist noch gesperrt. Du musst erst Sektor ${id} abschließen.`);
             return;
         }
     }
 
-    // Wenn Prüfung bestanden oder Schöpfer, dann öffnen
     showInfo(thema, id);
-} 
+}
 
     // --- ADMIN PANEL & REGLER ---
     function aktiviereAdminPanel() {
