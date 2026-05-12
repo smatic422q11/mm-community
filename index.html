@@ -787,4 +787,21 @@ function pruefeZugang(thema, id) {
     }
 
     updateNumColors();
+// WIEDERHERSTELLUNG DER BOXEN UND INITIALISIERUNG
+function initialisiereGrid() {
+    const grid = document.getElementById('main-grid');
+    if (!grid) return;
+    grid.innerHTML = ""; 
+    themen.forEach((t, i) => { 
+        grid.innerHTML += `
+        <div class="box" id="box-${i}">
+            <div class="num num-neutral" id="num-${i}">${i+1}</div>
+            <div class="text" onclick="pruefeZugang('${t}', ${i})">${t}</div>
+        </div>`; 
+    });
+}
+
+// Startet den Aufbau beim Laden der Seite
+initialisiereGrid();
+updateNumColors();
 </script>
