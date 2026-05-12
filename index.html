@@ -492,18 +492,38 @@
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
     
-    function portalZuEbene4() {
-        const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
-        const isSchöpfer = (email === "mmcommunity22@gmail.com");
-        let fertigeSektoren = 0;
-        for (let i = 0; i < 22; i++) {
-            const nBox = document.getElementById(`num-${i}`);
-            if (nBox && (nBox.classList.contains('num-fertig') || nBox.classList.contains('num-gelesen'))) fertigeSektoren++;
+   function portalZuEbene4() {
+    const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
+    const isSchöpfer = (email === "mmcommunity22@gmail.com");
+    let fertigeSektoren = 0;
+
+    for (let i = 0; i < 22; i++) {
+        const nBox = document.getElementById(`num-${i}`);
+        if (nBox && (nBox.classList.contains('num-fertig') || nBox.classList.contains('num-gelesen'))) {
+            fertigeSektoren++;
         }
-        if (isSchöpfer || fertigeSektoren >= 22) { ebene = 4; updateUI(); starteVideoKonferenz(); } 
-        else { alert("Der Videobeweis ist erst nach 22 Sektoren offen."); }
     }
 
+    if (isSchöpfer || fertigeSektoren >= 22) { 
+        ebene = 4; 
+        updateUI(); // Das schaltet die Ansicht auf den Videobeweis um
+    } else { 
+        alert("Der Videobeweis ist erst nach 22 Sektoren offen."); 
+    }
+}
+    function verlasseVideoKonferenz() {
+    const meinSlot = document.getElementById('v-slot-1');
+    const videoElement = document.getElementById('user-video');
+    
+    if (videoElement && videoElement.srcObject) {
+        const tracks = videoElement.srcObject.getTracks();
+        tracks.forEach(track => track.stop()); // Kamera wirklich ausmachen
+    }
+    
+    meinSlot.innerHTML = "SLOT 1 (DU)"; // Anzeige leeren
+    console.log("Dialog verlassen.");
+    showDashboard(); // Sicher zurück zum Startpunkt
+}
     function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
 
     function updateUI() {
