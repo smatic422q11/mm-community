@@ -664,46 +664,32 @@ body: JSON.stringify({
     }
 }
 
-function updateNumColors() {
-    // 1. Der Anker: Wir holen die Mail direkt aus dem Eingabefeld
-    const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
-    
-    // 2. Der Status: Wo steht der User? 
-    // (Diese Zahl kommt später LIVE von Render zurück)
-    let aktuellerSektor = 0; 
+function updateUI() {
+    // ... (dein bestehender Code am Anfang der Funktion)
 
-    // SCHÖPFER-FREIGABE: Nur diese E-Mail hat freien Zugang
+    // --- NEU: DER PERMANENTE ADMIN-WÄCHTER FÜR DEN SCHWARZEN BUTTON ---
+    const sigL1 = document.getElementById('sig-l1');
+    const emailInput = document.getElementById('db-anker-mail');
+    const email = emailInput ? emailInput.value.trim().toLowerCase() : "";
     const isSchöpfer = (email === "mmcommunity22@gmail.com");
 
-    themen.forEach((_, i) => {
-        const nBox = document.getElementById(`num-${i}`);
-        if (!nBox) return;
-
+    if (sigL1) {
         if (isSchöpfer) {
-            // SCHÖPFER-MODUS: Alles auf BLAU (Offen für Arbeit/Kontrolle)
-            nBox.className = "num num-neutral"; 
+            // Der Button wird zum goldenen Admin-Portal, egal auf welcher Ebene du bist
+            sigL1.className = "oval-side elite-aktiv"; 
+            sigL1.style.opacity = "1";
+            sigL1.style.cursor = "pointer";
+            sigL1.onclick = function() {
+                document.getElementById('admin-panel-haut').style.display = 'block';
+                ladeAdminStats();
+                erstelleSektorenSteuerung();
+            };
         } else {
-            // DIE EISERNE AMPEL-REGEL (1 bis 20):
-            if (i < aktuellerSektor) {
-                nBox.className = "num num-fertig";  // GRÜN: Sicher (Abgeschlossen)
-            } else if (i === aktuellerSektor) {
-                nBox.className = "num num-gelesen"; // GELB: Arbeit (Aktueller Fokus)
-            } else if (i === aktuellerSektor + 1) {
-                nBox.className = "num num-offen";   // ROT: Wartet (Nächste Hürde)
-            } else {
-                nBox.className = "num num-neutral"; // BLAU: Offen (Zukunft)
-            }
+            // Für normale User bleibt er schwarz/neutral
+            aktiviereKandidatenLicht(); 
         }
-    });
-    
-    // Auch die Fundamente (21 & 22) für den Schöpfer freischalten
-    const num21 = document.getElementById('num-20'); // Index 20 ist Sektor 21
-    const num22 = document.getElementById('num-21'); // Index 21 ist Sektor 22
-    if (isSchöpfer) {
-        if(num21) num21.className = "num num-neutral";
-        if(num22) num22.className = "num num-neutral";
     }
-}
+    // -----------------------------------------------------------------
 
     function startRotation() { 
         clearInterval(wechselInterval); const bg = document.getElementById('werbe-bg'); if(!bg) return; setNewImage(bg);
