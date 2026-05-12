@@ -641,25 +641,68 @@
         element.classList.remove('bild-aktiv'); void element.offsetWidth; element.classList.add('bild-aktiv'); 
     }
 
-    // --- ANKER & VERIFIZIERUNG ---
+   // --- ANKER & VERIFIZIERUNG ---
     async function sichereAnkerUndStarteScan() {
-    // NEU: ALLES LEEREN BEVOR ES LOSGEHT
-    document.getElementById('chat-box').innerHTML = ""; // Löscht den alten Chat-Verlauf
-    document.getElementById('verification-code').value = ""; // Löscht einen alten Code
-    kollektivesGedachtnis = []; // Löscht das KI-Gedächtnis der vorherigen Sitzung
-    
-    const emailInput = document.getElementById('db-anker-mail');
+        // NEU: ALLES LEEREN BEVOR ES LOSGEHT
+        document.getElementById('chat-box').innerHTML = ""; 
+        document.getElementById('verification-code').value = ""; 
+        kollektivesGedachtnis = []; 
+        
+        const emailInput = document.getElementById('db-anker-mail');
+        const email = emailInput.value.trim().toLowerCase();
+        if (!email || !email.includes('@')) { alert("Bitte eine gültige E-Mail eingeben."); return; }
+        
+        try { 
+            await fetch('https://mm-community.onrender.com/send-code', { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify({ email: email }) 
+            }); 
+        } catch (e) { console.error("Anker-Fehler:", e); }
+        
+        document.getElementById('email-step').style.display = 'none';
+        document.getElementById('code-step').style.display = 'flex';
+    }
 
     async function bestatigeCode() {
-        const codeInput =document.getElementById('verification-code').value = ""; // Löscht die 6 Zahlen aus dem Feld
+        const codeInput = document.getElementById('verification-code'); // Hier lag der Fehler!
         const emailInput = document.getElementById('db-anker-mail');
         const code = codeInput.value.trim();
         const email = emailInput.value.trim().toLowerCase(); 
+        
         if (code.length === 6) {
             try {
-                const response = await fetch('https://mm-community.onrender.com/verify-access', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email, code: code }) });
+                const response = await fetch('https://mm-community.onrender.com/verify-access', { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ email: email, code: code }) 
+                });
                 const result = await response.json();
+                
                 if (result.success) {
+                    ebene = 1; 
+                    
+                    // NEU: SICHERHEITS-CLEAN-SWEEP
+                    document.getElementById('chat-box').innerHTML = "<i>System: Dialog bereit...</i>";
+                    document.getElementById('verification-code').value = ""; // Code-Feld leeren
+                    kollektivesGedachtnis = []; 
+                    
+                    if (result.role === 'admin' || email === "mmcommunity22@gmail.com") { 
+                        aktiviereAdminPanel(); 
+                    }
+                    
+                    document.getElementById('code-step').style.display = 'none'; 
+                    document.getElementById('email-step').style.display = 'flex'; 
+                    updateNumColors(); 
+                    showInfo(themen[0], 0); 
+                } else { 
+                    alert("Schlüssel ungültig."); 
+                }
+            } catch (e) { 
+                alert("Server-Fehler."); 
+            }
+        }
+    }
     ebene = 1; 
     
     // NEU: SICHERHEITS-CLEAN-SWEEP
