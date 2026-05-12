@@ -391,12 +391,23 @@
     </div>
 
 <div class="bottom-nav" style="position: fixed; bottom: 0; width: 100%; background: #000; z-index: 100; padding: 10px 0;">
-        <div style="display: flex; justify-content: space-between; align-items: center; width: 90%; margin: 0 auto;">
-            <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Dashboard</button>
-            <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
-            <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
-        </div>
+    <div style="display: flex; justify-content: space-between; align-items: center; width: 90%; margin: 0 auto;">
+        
+        <!-- LINKS: Dashboard (Bleibt Gold/Gelb) -->
+        <button id="btn-back" class="nav-btn" style="visibility: visible;" onclick="showDashboard()">← Dashboard</button>
+        
+        <!-- MITTE: Die Orientierungspunkte -->
+        <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
+        
+        <!-- RECHTS: Exit / Abmelden (Blau - exakt gleiche Größe) -->
+        <button id="btn-exit" class="nav-btn" 
+                style="background: #0088ff; color: #fff; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 136, 255, 0.4);" 
+                onclick="echterExit()">
+            Exit / Abmelden
+        </button>
+
     </div>
+</div>
 
     <footer style="text-align: center; padding: 20px 0; margin-bottom: 70px; border-top: 1px solid #1a1a1a; width: 100%; background: #000; position: relative; z-index: 50;">
         <div class="legal-links" style="font-size: 0.8rem; color: #888; margin-bottom: 5px;">
