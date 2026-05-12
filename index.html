@@ -627,22 +627,25 @@ function updateNumColors() {
         if (!nBox) return;
 
         if (isSchöpfer) {
-            // Schöpfer sieht den Standard-Altbestand
-            nBox.className = "num num-neutral"; 
+            nBox.className = "num num-neutral"; // Schöpfer-Bestand bleibt blau
         } else {
-            // STRIKTE USER-REGELN NACH DEINER LEGENDE
+            // STRIKTE USER-FÜHRUNG
             if (geleseneThemen.has(i)) {
-                nBox.className = "num num-fertig"; // GRÜN: Sicher / Erledigt
+                // KI hat Sektor freigegeben oder User war schon drin
+                nBox.className = "num num-fertig"; // GRÜN
             } else if (i === 0 || geleseneThemen.has(i - 1)) {
-                nBox.className = "num num-gelesen"; // GELB: Arbeit
-            } else if (i === (Array.from(geleseneThemen).size + 1)) {
-                nBox.className = "num num-offen"; // ROT: Wartet
+                // Das ist der Sektor, den der User JETZT bearbeiten muss
+                nBox.className = "num num-gelesen"; // GELB
+            } else if (i === (Array.from(geleseneThemen).length + 1)) {
+                // Der übernächste Sektor zeigt an, dass er wartet
+                nBox.className = "num num-offen"; // ROT
             } else {
-                nBox.className = "num num-neutral"; // BLAU: Offen
+                nBox.className = "num num-neutral"; // BLAU
             }
         }
     });
 }
+    
 Schritt 1.8: Korrektur der Klick-Sperre (pruefeZugang)
     function startRotation() { 
         clearInterval(wechselInterval); const bg = document.getElementById('werbe-bg'); if(!bg) return; setNewImage(bg);
@@ -685,6 +688,7 @@ Schritt 1.8: Korrektur der Klick-Sperre (pruefeZugang)
         }
     }
 
+// KORREKTUR AUFGABE 1.5: ABSOLUTE KLICK-SPERRE FÜR USER
 function pruefeZugang(thema, id) {
     if (ebene === 0) { 
         alert("Bitte zuerst Code bestätigen!"); 
@@ -697,16 +701,16 @@ function pruefeZugang(thema, id) {
     if (!isSchöpfer) {
         const nBox = document.getElementById(`num-${id}`);
         
-        // Nur Klick auf GELB (Arbeit) oder GRÜN (Sicher) erlaubt
+        // Der User darf NUR in Sektoren klicken, die GELB (num-gelesen) 
+        // oder GRÜN (num-fertig) sind. Alles andere (Rot/Blau) wird abgeblockt.
         if (!nBox.classList.contains('num-gelesen') && !nBox.classList.contains('num-fertig')) {
-            alert("Dieser Sektor ist versiegelt. Bearbeite erst deine aktuelle Aufgabe (Gelb).");
+            alert("Dieser Sektor ist noch versiegelt. Konzentriere dich auf deine aktuelle Aufgabe.");
             return;
         }
     }
 
     showInfo(thema, id);
 }
-
     // --- ADMIN PANEL & REGLER ---
     function aktiviereAdminPanel() {
         document.getElementById('admin-panel-haut').style.display = 'block';
@@ -786,26 +790,5 @@ function pruefeZugang(thema, id) {
         }
     }
 
-   
-function initialisiereGrid() {
-        const grid = document.getElementById('main-grid');
-        if (!grid) return;
-        
-        grid.innerHTML = ""; // Löscht Reste, um sauber aufzubauen
-        
-        themen.forEach((t, i) => { 
-            grid.innerHTML += `
-            <div class="box" id="box-${i}">
-                <div class="num num-neutral" id="num-${i}">${i+1}</div>
-                <div class="text" onclick="pruefeZugang('${t}', ${i})">${t}</div>
-            </div>`; 
-        });
-        
-        // Erst wenn das Grid fertig gebaut ist, werden die Farben gesetzt
-        updateNumColors();
-    }
-
-    // Einmaliger Aufruf beim Laden der Seite
-    initialisiereGrid();
-
+    updateNumColors();
 </script>
