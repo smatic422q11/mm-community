@@ -702,123 +702,113 @@ async function bestatigeCode() {
             const result = await response.json();
             
             if (result.success) {
-    ebene = 1;
-    
-    // RADIKAL-REINIGUNG DER EINGABEFELDER
-    document.getElementById('db-anker-mail').value = "";      // Email-Feld leeren
-    document.getElementById('verification-code').value = ""; // Code-Feld leeren
-    
-    // Chatverlauf für neuen User löschen
-    document.getElementById('chat-box').innerHTML = "<i>System: Dialog bereit...</i>"; 
-    kollektivesGedachtnis = []; 
+                ebene = 1;
+                document.getElementById('db-anker-mail').value = "";      
+                document.getElementById('verification-code').value = ""; 
+                document.getElementById('chat-box').innerHTML = "<i>System: Dialog bereit...</i>"; 
+                kollektivesGedachtnis = []; 
 
-    // Admin Check und UI Update
-    if (result.role === 'admin' || email === "mmcommunity22@gmail.com") { 
-        aktiviereAdminPanel(); 
-    }
-    
-    document.getElementById('code-step').style.display = 'none'; 
-    document.getElementById('email-step').style.display = 'flex'; 
-    updateNumColors(); 
-    showInfo(themen[0], 0);
-   
-    function pruefeZugang(thema, id) {
-        if (ebene === 0) { alert("Bitte zuerst Code bestätigen!"); return; }
-        showInfo(thema, id);
-    }
-
-    // --- ADMIN PANEL & REGLER ---
-    function aktiviereAdminPanel() {
-        document.getElementById('admin-panel-haut').style.display = 'block';
-        ladeAdminStats();
-        erstelleSektorenSteuerung();
-    }
-
-    async function ladeAdminStats() {
-        const adminBoxen = document.querySelectorAll("#admin-panel-haut div div");
-        const userBox = adminBoxen[1];
-        try {
-            const response = await fetch('https://mm-community.onrender.com/admin/stats');
-            const data = await response.json();
-            if (data.success) { userBox.innerHTML = `<h3 style="color: #0088ff;">USER-VERWALTUNG</h3><p>Anker: <span style="font-size: 2rem; color: #ffd700;">${data.total_souls}</span></p><p style="font-size: 0.6rem;">Live MongoDB</p>`; }
-        } catch (e) { userBox.innerHTML = "Fehler..."; }
-    }
-
-    function erstelleSektorenSteuerung() {
-        const steuerungsBox = document.querySelector("#admin-panel-haut div div:first-child");
-        steuerungsBox.innerHTML = `<h3 style="color: #0088ff;">SEKTOR-REGLER (BETA)</h3>`;
-        const btnContainer = document.createElement('div');
-        btnContainer.style = "display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 15px;";
-        for (let i = 0; i < 22; i++) {
-            const btn = document.createElement('button');
-            btn.innerText = i+1;
-            btn.style = "background: #003d8f; color: #fff; border: 1px solid #fff; padding: 10px; cursor: pointer; border-radius: 4px;";
-            btn.onclick = function() { 
-                const istGesperrt = btn.style.backgroundColor === 'rgb(255, 0, 0)';
-                schalteSektor(i, istGesperrt ? 'open' : 'closed');
-                btn.style.backgroundColor = istGesperrt ? '#003d8f' : '#ff0000';
-            };
-            btnContainer.appendChild(btn);
+                if (result.role === 'admin' || email === "mmcommunity22@gmail.com") { 
+                    aktiviereAdminPanel(); 
+                }
+                
+                document.getElementById('code-step').style.display = 'none'; 
+                document.getElementById('email-step').style.display = 'flex'; 
+                updateNumColors(); 
+                showInfo(themen[0], 0);
+            } else {
+                alert("Schlüssel ungültig.");
+            }
+        } catch (e) { 
+            alert("Server-Fehler."); 
         }
-        steuerungsBox.appendChild(btnContainer);
     }
+} // <--- Klammer für bestatigeCode geflickt!
 
-    async function schalteSektor(id, status) {
-        const email = document.getElementById('db-anker-mail').value.trim();
-        await fetch('https://mm-community.onrender.com/admin/update-sector', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email, sector_id: id, status: status }) });
+function pruefeZugang(thema, id) {
+    if (ebene === 0) { alert("Bitte zuerst Code bestätigen!"); return; }
+    showInfo(thema, id);
+}
+
+function aktiviereAdminPanel() {
+    document.getElementById('admin-panel-haut').style.display = 'block';
+    ladeAdminStats();
+    erstelleSektorenSteuerung();
+}
+
+async function ladeAdminStats() {
+    const adminBoxen = document.querySelectorAll("#admin-panel-haut div div");
+    const userBox = adminBoxen[1];
+    try {
+        const response = await fetch('https://mm-community.onrender.com/admin/stats');
+        const data = await response.json();
+        if (data.success) { 
+            userBox.innerHTML = `<h3 style="color: #0088ff;">USER-VERWALTUNG</h3><p>Anker: <span style="font-size: 2rem; color: #ffd700;">${data.total_souls}</span></p><p style="font-size: 0.6rem;">Live MongoDB</p>`; 
+        }
+    } catch (e) { userBox.innerHTML = "Fehler..."; }
+}
+
+function erstelleSektorenSteuerung() {
+    const steuerungsBox = document.querySelector("#admin-panel-haut div div:first-child");
+    steuerungsBox.innerHTML = `<h3 style="color: #0088ff;">SEKTOR-REGLER (BETA)</h3>`;
+    const btnContainer = document.createElement('div');
+    btnContainer.style = "display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 15px;";
+    for (let i = 0; i < 22; i++) {
+        const btn = document.createElement('button');
+        btn.innerText = i+1;
+        btn.style = "background: #003d8f; color: #fff; border: 1px solid #fff; padding: 10px; cursor: pointer; border-radius: 4px;";
+        btn.onclick = function() { 
+            const istGesperrt = btn.style.backgroundColor === 'rgb(255, 0, 0)';
+            schalteSektor(i, istGesperrt ? 'open' : 'closed');
+            btn.style.backgroundColor = istGesperrt ? '#003d8f' : '#ff0000';
+        };
+        btnContainer.appendChild(btn);
     }
+    steuerungsBox.appendChild(btnContainer);
+}
 
-  // --- VIDEO SYSTEM (AKTIVIERT) ---
-    const peerConfiguration = { iceServers: [{ urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'] }] };
-    let meinPeer = new Peer(`M-M-Sektor-${tId+1}-Beweis`, { config: peerConfiguration });
+async function schalteSektor(id, status) {
+    const email = document.getElementById('db-anker-mail').value.trim();
+    await fetch('https://mm-community.onrender.com/admin/update-sector', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email, sector_id: id, status: status }) });
+}
 
-    async function starteVideoKonferenz() {
-        const meinSlot = document.getElementById('v-slot-1');
-        const partnerSlot = document.getElementById('v-slot-2'); // Der zweite Slot für das Gegenüber
-        if (!meinSlot) return;
+async function starteVideoKonferenz() {
+    const meinSlot = document.getElementById('v-slot-1');
+    const partnerSlot = document.getElementById('v-slot-2'); 
+    if (!meinSlot) return;
 
-        try {
-            // 1. Zugriff auf Kamera und Mikrofon anfordern
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            
-            // 2. Dein Video im ersten Slot anzeigen
-            meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover; background:#000; border: 1px solid #003d8f;"></video>`;
-            const videoElement = document.getElementById('user-video');
-            videoElement.srcObject = stream;
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover; background:#000; border: 1px solid #003d8f;"></video>`;
+        document.getElementById('user-video').srcObject = stream;
 
-            // 3. Peer-Verbindung: Auf Anruf warten (Wohnzimmer ruft an)
-            meinPeer.on('call', (call) => {
-                call.answer(stream); // Deinen Stream mitschicken
-                call.on('stream', (remoteStream) => {
-                    // Das Bild vom Wohnzimmer im zweiten Slot zeigen
-                    if(partnerSlot) {
-                        partnerSlot.innerHTML = `<video id="remote-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover; background:#000; border: 1px solid #ffd700;"></video>`;
-                        document.getElementById('remote-video').srcObject = remoteStream;
-                    }
-                });
+        meinPeer.on('call', (call) => {
+            call.answer(stream);
+            call.on('stream', (remoteStream) => {
+                if(partnerSlot) {
+                    partnerSlot.innerHTML = `<video id="remote-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover; background:#000; border: 1px solid #ffd700;"></video>`;
+                    document.getElementById('remote-video').srcObject = remoteStream;
+                }
             });
+        });
+        console.log("Kamera aktiv.");
+    } catch (err) {
+        console.error(err);
+        meinSlot.innerHTML = "Fehler!";
+    }
+} // <--- Hier fehlte die Klammer!
 
-          console.log("Kamera-System aktiv im Sektor " + (tId + 1));
-  
-   function stoppeVideoKonferenz() {
+function stoppeVideoKonferenz() {
     const videoElement = document.getElementById('user-video');
     if (videoElement && videoElement.srcObject) {
         videoElement.srcObject.getTracks().forEach(track => track.stop());
         videoElement.srcObject = null;
     }
-    // Dem Server sagen: "Ich bin raus, mach den Platz frei!"
-    fetch('https://mm-community.onrender.com/video/leave', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: document.getElementById('db-anker-mail').value })
-    });
-
     document.getElementById('v-slot-1').innerHTML = "SLOT 1 (DU)";
-    // Alle anderen Slots auch resetten...
     for(let i=2; i<=8; i++) {
         document.getElementById(`v-slot-${i}`).innerHTML = `SLOT ${i} (FREI)`;
     }
-} 
+}
 
-    updateNumColors();
+updateNumColors();
 </script>
