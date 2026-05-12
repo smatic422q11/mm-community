@@ -507,7 +507,13 @@
     } 
 
   
-   function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } } 
+  function portalZuEbene3() { 
+    // Wir wechseln nur zu Ebene 3, wenn wir in Ebene 2 sind
+    if (ebene === 2) { 
+        ebene = 3; 
+        updateUI(); 
+    } 
+}
    function portalZuEbene4() {
     const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
     const isSchöpfer = (email === "mmcommunity22@gmail.com");
