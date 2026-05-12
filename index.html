@@ -543,13 +543,35 @@
         tracks.forEach(track => track.stop()); 
     }
     
-    // 2. Den eigenen Slot leeren, aber auf Ebene 4 bleiben
+    // 2. Den eigenen Slot leeren
     meinSlot.innerHTML = "PLATZ FREIGEGEBEN"; 
-    meinSlot.style.color = "#666"; // Zeigt an, dass du nur noch zuschaust
+    meinSlot.style.color = "#666"; 
     
     console.log("Eigene Kamera gestoppt. Passiv-Modus aktiv.");
-    
-    // WICHTIG: showDashboard() wurde entfernt, damit du das Grid weiter siehst!
+} // <--- DIESE Klammer hat gefehlt!
+
+function echterExit() {
+    // 1. Sicherheitsschleife
+    if (confirm("Möchtest du dich wirklich abmelden? Dein Anker bleibt im System.")) {
+        
+        // 2. Alles auf Anfang setzen
+        ebene = 0;
+        
+        // 3. Die Eingabefelder leeren
+        const mailInp = document.getElementById('db-anker-mail');
+        const codeInp = document.getElementById('verification-code');
+        if(mailInp) mailInp.value = "";
+        if(codeInp) codeInp.value = "";
+        
+        // 4. Zurück zur E-Mail-Eingabe springen
+        const codeStep = document.getElementById('code-step');
+        const mailStep = document.getElementById('email-step');
+        if(codeStep) codeStep.style.display = 'none';
+        if(mailStep) mailStep.style.display = 'flex';
+        
+        // 5. Seite neu laden, um alle Speicher zu leeren
+        location.reload(); 
+    }
 }
     function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
 function updateUI() {
