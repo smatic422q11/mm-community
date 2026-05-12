@@ -343,18 +343,26 @@
             </div>
         </div> 
 
-        <div id="drawer-ebene4">
-            <div class="video-grid">
-                <div class="video-slot slot-1-user" id="v-slot-1">SLOT 1 (DU)</div>
-                <div class="video-slot" id="v-slot-2">SLOT 2 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-3">SLOT 3 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-4">SLOT 4 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-5">SLOT 5 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-6">SLOT 6 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-7">SLOT 7 (ZUFALL)</div>
-                <div class="video-slot" id="v-slot-8">SLOT 8 (ZUFALL)</div>
-            </div>
-            .video-control-row {
+       <div id="drawer-ebene4">
+    <div class="video-grid">
+        <!-- Deine Video Slots 1-8 bleiben hier (Altbestand) -->
+        <div class="video-slot slot-1-user" id="v-slot-1">SLOT 1 (DU)</div>
+        <div class="video-slot" id="v-slot-2">SLOT 2 (ZUFALL)</div>
+        <div class="video-slot" id="v-slot-3">SLOT 3 (ZUFALL)</div>
+        <div class="video-slot" id="v-slot-4">SLOT 4 (ZUFALL)</div>
+        <div class="video-slot" id="v-slot-5">SLOT 5 (ZUFALL)</div>
+        <div class="video-slot" id="v-slot-6">SLOT 6 (ZUFALL)</div>
+        <div class="video-slot" id="v-slot-7">SLOT 7 (ZUFALL)</div>
+        <div class="video-slot" id="v-slot-8">SLOT 8 (ZUFALL)</div>
+    </div>
+    
+    <!-- DER GESPALTETE BALKEN -->
+    <div class="video-control-row">
+        <button class="btn-video-join" onclick="starteVideoKonferenz()">ZUFÄLLIGEM DIALOG BEITRETEN</button>
+        <button class="btn-video-leave" onclick="verlasseVideoKonferenz()">DIALOG VERLASSEN</button>
+    </div>
+</div> 
+  .video-control-row {
     display: flex;
     gap: 10px;
     width: 100%;
