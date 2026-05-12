@@ -909,13 +909,7 @@ function aktiviereAdminPanel() {
         erstelleSektorenSteuerung();
     }
 }
-
-// Ganz am Ende rufen wir die Start-Farben auf
-updateNumColors();
-</script>
-</body>
-</html>
-
+    
     async function ladeAdminStats() {
         const adminBoxen = document.querySelectorAll("#admin-panel-haut div div");
         const userBox = adminBoxen[1];
@@ -1064,9 +1058,10 @@ function aktiviereAdminPanel() {
     document.getElementById('admin-panel-haut').style.display = 'block';
     ladeAdminStats();
     erstelleSektorenSteuerung();
-    updateNumColors();
+  updateNumColors();
 </script>
-   
+</body>
+</html>
 
 
    
