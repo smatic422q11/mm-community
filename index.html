@@ -807,16 +807,13 @@ async function schalteSektor(id, status) {
     });
     const res = await response.json();
     if (res.success) alert(`Sektor ${id+1} wurde auf ${status} gesetzt.`);
-}
+    }
 
 function aktiviereAdminPanel() {
     document.getElementById('admin-panel-haut').style.display = 'block';
     ladeAdminStats();
     erstelleSektorenSteuerung();
-}
-// Initialer Start der Farben
-updateNumColors();
-</script>
+    }
 
     function startRotation() { 
         clearInterval(wechselInterval); const bg = document.getElementById('werbe-bg'); if(!bg) return; setNewImage(bg);
