@@ -618,8 +618,7 @@
         finally { istSendenAktiv = false; chatBox.scrollTop = chatBox.scrollHeight; }
     }
 
-   // KORREKTUR AUFGABE 1.3: VISUELLE ANZEIGE VS. STRIKTE SPERRE
-function updateNumColors() {
+ function updateNumColors() {
     const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
     const isSchöpfer = (email === "mmcommunity22@gmail.com");
 
@@ -628,25 +627,24 @@ function updateNumColors() {
         if (!nBox) return;
 
         if (isSchöpfer) {
-            // Schöpfer-Bestand: Alles bleibt neutral/blau und offen
-            nBox.className = "num num-neutral"; 
+            nBox.className = "num num-neutral"; // Schöpfer-Bestand bleibt blau
         } else {
-            // Private User Logik (z.B. smaticxx@gmail.com)
+            // STRIKTE USER-FÜHRUNG
             if (geleseneThemen.has(i)) {
-                // Sektor erfolgreich durchlaufen
-                nBox.className = "num num-gelesen"; 
+                // KI hat Sektor freigegeben oder User war schon drin
+                nBox.className = "num num-fertig"; // GRÜN
             } else if (i === 0 || geleseneThemen.has(i - 1)) {
-                // Dies ist der Sektor, der auf Bearbeitung wartet (Rot)
-                // Er wird angezeigt, bleibt aber durch pruefeZugang() gesperrt
-                nBox.className = "num num-offen"; 
+                // Das ist der Sektor, den der User JETZT bearbeiten muss
+                nBox.className = "num num-gelesen"; // GELB
+            } else if (i === (Array.from(geleseneThemen).length + 1)) {
+                // Der übernächste Sektor zeigt an, dass er wartet
+                nBox.className = "num num-offen"; // ROT
             } else {
-                // Alle weiteren Sektoren bleiben im Standard-Blau
-                nBox.className = "num num-neutral"; 
+                nBox.className = "num num-neutral"; // BLAU
             }
         }
     });
 }
-
     function startRotation() { 
         clearInterval(wechselInterval); const bg = document.getElementById('werbe-bg'); if(!bg) return; setNewImage(bg);
         wechselInterval = setInterval(() => { if (ebene >= 2 && ebene <= 4) { bildIndex = (bildIndex + 1) % 4; setNewImage(bg); } }, 8000);
@@ -688,6 +686,7 @@ function updateNumColors() {
         }
     }
 
+// KORREKTUR AUFGABE 1.5: ABSOLUTE KLICK-SPERRE FÜR USER
 function pruefeZugang(thema, id) {
     if (ebene === 0) { 
         alert("Bitte zuerst Code bestätigen!"); 
@@ -697,11 +696,13 @@ function pruefeZugang(thema, id) {
     const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
     const isSchöpfer = (email === "mmcommunity22@gmail.com");
 
-    // STRIKTE PRÜFUNG: Nur wenn Schöpfer oder Sektor 1 (id 0) 
-    // oder wenn der vorherige Sektor bereits in geleseneThemen gespeichert ist.
-    if (!isSchöpfer && id > 0) {
-        if (!geleseneThemen.has(id - 1)) {
-            alert(`Sektor ${id + 1} ist noch gesperrt. Du musst erst Sektor ${id} abschließen.`);
+    if (!isSchöpfer) {
+        const nBox = document.getElementById(`num-${id}`);
+        
+        // Der User darf NUR in Sektoren klicken, die GELB (num-gelesen) 
+        // oder GRÜN (num-fertig) sind. Alles andere (Rot/Blau) wird abgeblockt.
+        if (!nBox.classList.contains('num-gelesen') && !nBox.classList.contains('num-fertig')) {
+            alert("Dieser Sektor ist noch versiegelt. Konzentriere dich auf deine aktuelle Aufgabe.");
             return;
         }
     }
