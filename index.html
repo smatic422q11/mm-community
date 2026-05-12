@@ -511,18 +511,23 @@
         alert("Der Videobeweis ist erst nach 22 Sektoren offen."); 
     }
 }
-    function verlasseVideoKonferenz() {
+   function verlasseVideoKonferenz() {
     const meinSlot = document.getElementById('v-slot-1');
     const videoElement = document.getElementById('user-video');
     
+    // 1. Nur die EIGENE Kamera stoppen
     if (videoElement && videoElement.srcObject) {
         const tracks = videoElement.srcObject.getTracks();
-        tracks.forEach(track => track.stop()); // Kamera wirklich ausmachen
+        tracks.forEach(track => track.stop()); 
     }
     
-    meinSlot.innerHTML = "SLOT 1 (DU)"; // Anzeige leeren
-    console.log("Dialog verlassen.");
-    showDashboard(); // Sicher zurück zum Startpunkt
+    // 2. Den eigenen Slot leeren, aber auf Ebene 4 bleiben
+    meinSlot.innerHTML = "PLATZ FREIGEGEBEN"; 
+    meinSlot.style.color = "#666"; // Zeigt an, dass du nur noch zuschaust
+    
+    console.log("Eigene Kamera gestoppt. Passiv-Modus aktiv.");
+    
+    // WICHTIG: showDashboard() wurde entfernt, damit du das Grid weiter siehst!
 }
     function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
 
