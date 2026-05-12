@@ -685,7 +685,6 @@ Schritt 1.8: Korrektur der Klick-Sperre (pruefeZugang)
         }
     }
 
-// KORREKTUR AUFGABE 1.5: ABSOLUTE KLICK-SPERRE FÜR USER
 function pruefeZugang(thema, id) {
     if (ebene === 0) { 
         alert("Bitte zuerst Code bestätigen!"); 
@@ -698,10 +697,9 @@ function pruefeZugang(thema, id) {
     if (!isSchöpfer) {
         const nBox = document.getElementById(`num-${id}`);
         
-        // Der User darf NUR in Sektoren klicken, die GELB (num-gelesen) 
-        // oder GRÜN (num-fertig) sind. Alles andere (Rot/Blau) wird abgeblockt.
+        // Nur Klick auf GELB (Arbeit) oder GRÜN (Sicher) erlaubt
         if (!nBox.classList.contains('num-gelesen') && !nBox.classList.contains('num-fertig')) {
-            alert("Dieser Sektor ist noch versiegelt. Konzentriere dich auf deine aktuelle Aufgabe.");
+            alert("Dieser Sektor ist versiegelt. Bearbeite erst deine aktuelle Aufgabe (Gelb).");
             return;
         }
     }
