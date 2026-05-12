@@ -618,24 +618,34 @@
         finally { istSendenAktiv = false; chatBox.scrollTop = chatBox.scrollHeight; }
     }
 
-    function updateNumColors() {
-        const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
-        let aktuellerSektor = 0; 
-        const isSchöpfer = (email === "mmcommunity22@gmail.com");
+   // KORREKTUR AUFGABE 1.3: VISUELLE ANZEIGE VS. STRIKTE SPERRE
+function updateNumColors() {
+    const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
+    const isSchöpfer = (email === "mmcommunity22@gmail.com");
 
-        themen.forEach((_, i) => {
-            const nBox = document.getElementById(`num-${i}`);
-            if (!nBox) return;
-            if (isSchöpfer) {
-                nBox.className = "num num-neutral"; 
+    themen.forEach((_, i) => {
+        const nBox = document.getElementById(`num-${i}`);
+        if (!nBox) return;
+
+        if (isSchöpfer) {
+            // Schöpfer-Bestand: Alles bleibt neutral/blau und offen
+            nBox.className = "num num-neutral"; 
+        } else {
+            // Private User Logik (z.B. smaticxx@gmail.com)
+            if (geleseneThemen.has(i)) {
+                // Sektor erfolgreich durchlaufen
+                nBox.className = "num num-gelesen"; 
+            } else if (i === 0 || geleseneThemen.has(i - 1)) {
+                // Dies ist der Sektor, der auf Bearbeitung wartet (Rot)
+                // Er wird angezeigt, bleibt aber durch pruefeZugang() gesperrt
+                nBox.className = "num num-offen"; 
             } else {
-                if (i < aktuellerSektor) nBox.className = "num num-fertig";
-                else if (i === aktuellerSektor) nBox.className = "num num-gelesen";
-                else if (i === aktuellerSektor + 1) nBox.className = "num num-offen";
-                else nBox.className = "num num-neutral";
+                // Alle weiteren Sektoren bleiben im Standard-Blau
+                nBox.className = "num num-neutral"; 
             }
-        });
-    }
+        }
+    });
+}
 
     function startRotation() { 
         clearInterval(wechselInterval); const bg = document.getElementById('werbe-bg'); if(!bg) return; setNewImage(bg);
