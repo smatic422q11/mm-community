@@ -678,10 +678,30 @@
         }
     }
 
-    function pruefeZugang(thema, id) {
-        if (ebene === 0) { alert("Bitte zuerst Code bestätigen!"); return; }
-        showInfo(thema, id);
+  // KORREKTUR AUFGABE 1.1: STRIKTE SEKTOR-ABFOLGE FÜR USER
+function pruefeZugang(thema, id) {
+    if (ebene === 0) { 
+        alert("Bitte zuerst Code bestätigen!"); 
+        return; 
     }
+
+    const emailInput = document.getElementById('db-anker-mail');
+    const email = emailInput.value.trim().toLowerCase();
+    const isSchöpfer = (email === "mmcommunity22@gmail.com");
+
+    // Wenn nicht Schöpfer, prüfe ob der vorherige Sektor gelesen wurde
+    if (!isSchöpfer && id > 0) {
+        const vorherigerSektor = document.getElementById(`num-${id-1}`);
+        if (!vorherigerSektor.classList.contains('num-gelesen') && 
+            !vorherigerSektor.classList.contains('num-fertig')) {
+            alert(`Stopp! Du musst zuerst Sektor ${id} abschließen, bevor du Sektor ${id+1} betreten kannst.`);
+            return;
+        }
+    }
+
+    // Wenn Prüfung bestanden oder Schöpfer, dann öffnen
+    showInfo(thema, id);
+} 
 
     // --- ADMIN PANEL & REGLER ---
     function aktiviereAdminPanel() {
