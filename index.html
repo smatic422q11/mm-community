@@ -716,22 +716,24 @@ async function bestatigeCode() {
                 headers: { 'Content-Type': 'application/json' }, 
                 body: JSON.stringify({ email: email, code: code }) 
             });
-            
-            // Falls der Server nicht antwortet, fangen wir das hier sauber ab
-            if (!response.ok) throw new Error("Server nicht erreichbar");
+
+            // Falls die Antwort nicht okay ist, werfen wir keinen Alert, sondern loggen es nur
+            if (!response.ok) {
+                console.log("Server meldet Status: " + response.status);
+                return;
+            }
 
             const result = await response.json();
-            
             if (result.success) {
-                // Keine doppelte Bestätigung mehr, nur ein sauberer Übergang
+                // Erfolg: Wir gehen ins Dashboard (Ebene 1)
                 ebene = 1; 
                 
-                // Wir initialisieren das Panel nur im Speicher, 
-                // aber zeigen es NICHT sofort an (.style.display bleibt 'none')
+                // Falls Admin: System im Hintergrund vorbereiten, OHNE es anzuzeigen
                 if (result.role === 'admin' || email === "mmcommunity22@gmail.com") { 
                     prepareAdminSystem(); 
                 }
                 
+                // UI umschalten
                 document.getElementById('code-step').style.display = 'none'; 
                 document.getElementById('email-step').style.display = 'flex'; 
                 showDashboard();
@@ -739,8 +741,8 @@ async function bestatigeCode() {
                 alert("Schlüssel ungültig.");
             }
         } catch (e) { 
-            // Hier war der Fehler: Wir geben nur eine Meldung aus, wenn wirklich gar nichts geht
-            console.error("Verifizierungs-Fehler:", e);
+            // Hier fangen wir den Netzwerkfehler ab, ohne dass ein störender Alert kommt
+            console.error("Netzwerk/Server-Fehler unterdrückt für flüssigen Login.");
         }
     }
 }
