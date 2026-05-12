@@ -391,23 +391,12 @@
     </div>
 
 <div class="bottom-nav" style="position: fixed; bottom: 0; width: 100%; background: #000; z-index: 100; padding: 10px 0;">
-    <div style="display: flex; justify-content: space-between; align-items: center; width: 90%; margin: 0 auto;">
-        
-        <!-- LINKS: Dashboard -->
-        <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Dashboard</button>
-        
-        <!-- MITTE: Indikatoren -->
-        <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
-        
-        <!-- RECHTS: Exit / Abmelden (Initial versteckt) -->
-        <button id="btn-exit" class="nav-btn" 
-                style="display: none; background: #0088ff; color: #fff; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 136, 255, 0.4);" 
-                onclick="echterExit()">
-            Exit / Abmelden
-        </button>
-
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 90%; margin: 0 auto;">
+            <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Dashboard</button>
+            <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
+            <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
+        </div>
     </div>
-</div>
 
     <footer style="text-align: center; padding: 20px 0; margin-bottom: 70px; border-top: 1px solid #1a1a1a; width: 100%; background: #000; position: relative; z-index: 50;">
         <div class="legal-links" style="font-size: 0.8rem; color: #888; margin-bottom: 5px;">
@@ -522,23 +511,18 @@
         alert("Der Videobeweis ist erst nach 22 Sektoren offen."); 
     }
 }
-   function verlasseVideoKonferenz() {
+    function verlasseVideoKonferenz() {
     const meinSlot = document.getElementById('v-slot-1');
     const videoElement = document.getElementById('user-video');
     
-    // 1. Nur die EIGENE Kamera stoppen
     if (videoElement && videoElement.srcObject) {
         const tracks = videoElement.srcObject.getTracks();
-        tracks.forEach(track => track.stop()); 
+        tracks.forEach(track => track.stop()); // Kamera wirklich ausmachen
     }
     
-    // 2. Den eigenen Slot leeren, aber auf Ebene 4 bleiben
-    meinSlot.innerHTML = "PLATZ FREIGEGEBEN"; 
-    meinSlot.style.color = "#666"; // Zeigt an, dass du nur noch zuschaust
-    
-    console.log("Eigene Kamera gestoppt. Passiv-Modus aktiv.");
-    
-    // WICHTIG: showDashboard() wurde entfernt, damit du das Grid weiter siehst!
+    meinSlot.innerHTML = "SLOT 1 (DU)"; // Anzeige leeren
+    console.log("Dialog verlassen.");
+    showDashboard(); // Sicher zurück zum Startpunkt
 }
     function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
 
