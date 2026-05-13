@@ -463,8 +463,10 @@ async function showInfo(t, id) {
     document.getElementById('dashboard').style.display = 'none'; 
     document.getElementById('page-skelett').style.display = 'flex'; 
     
-    // WICHTIG: Das Gedächtnis im Fenster laden
-    renderChatHistory(); 
+    // DER ENTSCHEIDENDE SCHRITT:
+    // Wir leeren NUR die Anzeige für den User, damit es ordentlich aussieht.
+    // Wir rufen renderChatHistory NICHT auf.
+    document.getElementById('chat-box').innerHTML = `<i>System: Dialog für Raum ${id+1} bereit...</i>`;
 
     ebene = 2; 
     geleseneThemen.add(id); 
