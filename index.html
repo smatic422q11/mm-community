@@ -741,8 +741,15 @@ function updateNumColors(fortschritt = 0) {
                 
                 const result = await response.json();
                 
-                if (result.success) {
+               if (result.success) {
                     ebene = 1; 
+                    
+                    // GEDÄCHTNIS-ANKER: Daten aus MongoDB in das Skript laden
+                    if (result.history) {
+                        kollektivesGedachtnis = result.history;
+                    } else {
+                        kollektivesGedachtnis = []; // Falls ganz neu
+                    }
                     
                     // Admin-Check
                     if (result.role === 'admin' || email === "mmcommunity22@gmail.com") { 
@@ -753,14 +760,9 @@ function updateNumColors(fortschritt = 0) {
                     document.getElementById('code-step').style.display = 'none'; 
                     document.getElementById('email-step').style.display = 'flex'; 
                     
-                    // --- DER WICHTIGE ANKER ---
-                    // Wir holen den Fortschritt aus der MongoDB (Punkt B)
+                    // Fortschritt & Sektor-Start
                     const userFortschritt = result.fortschritt || 0; 
-                    
-                    // Farben im Grid aktualisieren
                     updateNumColors(userFortschritt); 
-                    
-                    // Direkt zum aktuellen Sektor springen
                     showInfo(themen[userFortschritt], userFortschritt); 
                     
                 } else { 
