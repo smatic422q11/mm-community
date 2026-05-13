@@ -360,13 +360,7 @@
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
     const grid = document.getElementById('main-grid');
-   themen.forEach((t, i) => { 
-    grid.innerHTML += `
-    <div class="box" id="box-${i}">
-        <div class="num num-neutral" id="num-${i}">${i+1}</div>
-        <div class="text" onclick="pruefeZugang('${t}', ${i})">${t}</div>
-    </div>`; 
-});
+    themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; });
     
     const dots = document.getElementById('dot-holder');
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
@@ -698,32 +692,5 @@ async function sichereAnkerUndStarteScan(id, thema) {
         alert("Verbindung fehlgeschlagen. Ist der Server auf Render schon 'Live'?");
     }
 }
-   function pruefeZugang(thema, id) {
-    const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
-    
-    // 1. Ohne Mail kommt niemand rein
-    if (!email || !email.includes('@')) {
-        alert("Zugriff verweigert: Bitte zuerst den ANKER mit deiner E-Mail setzen!");
-        return;
-    }
-
-    // 2. Schöpfer-Check: Die "22" darf überall rein
-    if (email === "mmcommunity22@gmail.com") {
-        showInfo(thema, id);
-        return;
-    }
-
-    // 3. User-Check: Nur Gelbe (Arbeit) oder Grüne (Sicher) Sektoren öffnen
-    const nBox = document.getElementById(`num-${id}`);
-    if (nBox) {
-        if (nBox.classList.contains('num-gelesen') || nBox.classList.contains('num-fertig')) {
-            // Gelb oder Grün -> Einlass gewährt
-            showInfo(thema, id);
-        } else {
-            // Blau oder Rot -> Tür bleibt zu
-            alert("Dieser Sektor ist noch nicht für dich bereit. Folge der Reihenfolge der Wahrheit (Sektor 1 bis 20).");
-        }
-    }
-} 
 </script>
 
