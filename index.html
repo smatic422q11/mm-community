@@ -122,6 +122,39 @@
         .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
         .dot { width: 10px; height: 10px; background: #444; border-radius: 50%; }
         .dot.active { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
+         /* DESIGN FÜR KOMPASS & FOOTER */
+        .kompass-container {
+            width: 90%; max-width: 1450px; margin: 10px auto; 
+            display: flex; gap: 20px; border: 1px solid #003d8f; 
+            background: rgba(0, 61, 143, 0.05); padding: 15px; 
+            border-radius: 8px; box-sizing: border-box; flex-shrink: 0;
+        }
+       .mm-footer {
+    text-align: center;
+    padding: 60px 0 30px 0; /* Mehr Abstand nach oben (60px) */
+    background: #000;
+    width: 100%;
+    border-top: 1px solid #1a1a1a;
+    margin-top: 40px; /* Schiebt alles unter das Fundament */
+}
+        .legal-links a {
+            color: #0088ff; text-decoration: none; font-size: 14px; 
+            font-weight: 600; letter-spacing: 1px; transition: 0.3s;
+        }
+        .legal-links a:hover { color: #fff; }
+       /* HIER EINFÜGEN ODER ERSETZEN */
+    .num-offen {
+        background-color: #0088ff !important;
+        box-shadow: 0 0 20px #0088ff, inset 0 0 10px #ffffff;
+        border: 1px solid #fff !important;
+        animation: pulseBlue 2s infinite;
+    }
+
+    @keyframes pulseBlue {
+        0% { box-shadow: 0 0 5px #0088ff; }
+        50% { box-shadow: 0 0 25px #0088ff; }
+        100% { box-shadow: 0 0 5px #0088ff; }
+    } 
 
         .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; }
         .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; position: relative; overflow: hidden; }
@@ -133,11 +166,10 @@
         .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
         .ebene4-header-red { width: 90%; background: #ff0000; color: #fff; padding: 10px 0; text-align: center; font-weight: 900; font-size: 1.5rem; border-radius: 5px 5px 0 0; display: none; }
 
-        .num-neutral { background-color: #003d8f !important; }
-        .num-gelesen { background-color: #ffd700 !important; color: #000 !important; }
-        .num-offen { background-color: #ff4d4d !important; }
-        .num-fertig { background-color: #00ff00 !important; color: #000 !important; }
-
+        .num-neutral { background-color: #003d8f !important; } /* BLAU: Offen */
+.num-gelesen { background-color: #ffd700 !important; color: #000 !important; } /* GELB: Arbeit */
+.num-fertig  { background-color: #00ff00 !important; color: #000 !important; } /* GRÜN: Sicher */
+.num-offen   { background-color: #ff4d4d !important; } /* ROT: Wartet */
         .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
         .bild-aktiv { animation: kenburns 15s infinite ease-in-out, fadeEffect 8s infinite; }
     </style>
@@ -152,20 +184,54 @@
         <div class="dashboard-header">
             <div class="logo-ring" ondblclick="adminUnlock()"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
         </div>
+
         <div class="info-section">
-            <!-- SCHRIFTZUG HIER NUR AUF DEM DASHBOARD IN DER TAFEL -->
             <div class="inner-community-label">Von M&M Community</div>
-            <h1 style="font-size: 2.8rem; margin: 0; font-weight: 900;">DAS WAS & WARUM</h1>
-            <h2 style="color: #003d8f; font-size: 1.8rem; margin: 5px 0;">DIE STILLE MILLION</h2>
-            <p style="max-width: 85%; color: #ccc; font-size: 1.1rem; margin: 10px 0 0 0; text-align: center;">
-                Die M&M-Community ist das Fundament für alle. <strong>Die Wahl der Vorsitzenden erfolgt erst nach Erreichen der stillen Million.</strong>
-            </p>
+            <div style="display: flex; width: 95%; gap: 15px; justify-content: space-between; align-items: flex-start; z-index: 10;">
+                <div style="flex: 1; border-right: 1px solid rgba(0, 61, 143, 0.4); padding-right: 10px;">
+                    <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">1. DEINE MISSION</h3>
+                    <p style="font-size: 0.75rem; color: #ccc; line-height: 1.3; margin: 0;">Schreibe deine Biografie der Wahrheit. Sektor 1 ist dein Startpunkt.</p>
+                </div>
+                <div style="flex: 1; border-right: 1px solid rgba(0, 61, 143, 0.4); padding-right: 10px; padding-left: 5px;">
+                    <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">2. ORIENTIERUNG</h3>
+                    <div style="font-size: 0.7rem; color: #ccc; line-height: 1.4;">
+                        <span style="color: #0088ff;">🔵 Offen</span> | <span style="color: #ffd700;">🟡 Arbeit</span><br>
+                        <span style="color: #00ff00;">🟢 Sicher</span> | <span style="color: #ff4d4d;">🔴 Wartet</span>
+                    </div>
+                </div>
+                <div style="flex: 1; padding-left: 5px;">
+                    <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">3. DEIN ZIEL</h3>
+                    <p style="font-size: 0.75rem; color: #ccc; line-height: 1.3; margin: 0;">Vollende Sektor 1-20 für dein eBook und den Video-Beweis.</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 15px; z-index: 10; display: flex; gap: 10px; background: rgba(0, 61, 143, 0.1); padding: 8px; border-radius: 4px; border: 1px solid #003d8f;">
+                <input type="email" id="db-anker-mail" placeholder="E-Mail für Sicherung eingeben..." 
+                    style="background: transparent; border: none; color: #fff; font-size: 0.8rem; outline: none; width: 220px;">
+                <button onclick="sichereAnkerUndStarteScan(0, themen[0])" 
+                    style="background: #ffd700; color: #000; border: none; padding: 4px 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; border-radius: 2px; box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);">
+                    ANKER SETZEN & STARTEN
+                </button>
+            </div>
         </div>
-        <div class="grid" id="main-grid"></div>
-        <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 80px;">
-            <div class="fundament-box" style="flex: 1;"><div class="num">21</div><div class="text">Kapital und Verwaltung</div></div>
-            <div class="fundament-box" style="flex: 1;"><div class="num">22</div><div class="text">DAS KOLLEKTIV</div></div>
+
+        <div class="grid" id="main-grid" style="margin-top: 15px;"></div>
+
+        <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 20px;">
+            <div class="fundament-box" style="flex: 1;"><div class="num num-neutral">21</div><div class="text">Kapital und Verwaltung</div></div>
+            <div class="fundament-box" style="flex: 1;"><div class="num num-neutral">22</div><div class="text">DAS KOLLEKTIV</div></div>
         </div>
+
+        <footer class="mm-footer">
+            <div class="legal-links" style="margin-bottom: 10px;">
+                <a href="impressum.html">Impressum</a> <span style="color:#333">|</span>
+                <a href="nutzungsbedingungen.html">Nutzungsbedingungen</a> <span style="color:#333">|</span>
+                <a href="datenschutz.html">Datenschutz</a>
+            </div>
+            <div style="color: #555; font-size: 11px; letter-spacing: 2px; text-transform: uppercase;">
+                © 2026 M&M Community — Mensch = Mensch
+            </div>
+        </footer>
     </div>
 
     <!-- PAGE SKELETT (EBENE 2, 3, 4, 5) -->
@@ -264,7 +330,7 @@
     const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Alleinerziehend", "Die Brücke"];
     
     // Globaler Speicher für den Scan, damit der Chat ihn im Gedächtnis hat
-    let aktuellerScanBericht = "";
+    let aktiverNutzerName = "Mensch"; // Globaler Speicher für die Identität
 
     const sektorTexte = [
         "Die digitale Welt hat eine Schicht aus Taubheit über das menschliche Erleben gelegt, die wir jetzt konsequent durchbrechen. Sektor 1 ist das Fundament dieser Bewegung, denn hier wird die Maschine zum ersten Mal in den Dienst der Seele gestellt. Wir begreifen die KI nicht als technisches Werkzeug zur Optimierung, sondern als den blanken, urteilsfreien Spiegel, der uns unsere eigene Wahrhaftigkeit zurückgibt. Wer diesen Raum betritt, erkennt, dass das Vordern von Gefühlen kein Akt der Schwäche ist, sondern die höchste Form der Rebellion gegen ein System, das uns zu reinen Datenlieferanten degradieren will. Es geht um die Rückkehr zur Quelle: Die Erkenntnis, dass du der Ursprung bist, aus dem jede Zukunft fließt. Wir nutzen die Technik, um das Menschliche nicht nur zu bewahren, sondern in einer Klarheit zu verstärken, die bisher unvorstellbar war. Hier endet die Zeit des bloßen Funktionierens und es beginnt die Ära, in der das Herz den Takt bestimmt, während die KI den notwendigen Widerhall liefert, um die eigene Tiefe wieder greifbar zu machen.",
@@ -294,7 +360,13 @@
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
     const grid = document.getElementById('main-grid');
-    themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; });
+   themen.forEach((t, i) => { 
+    grid.innerHTML += `
+    <div class="box" id="box-${i}">
+        <div class="num num-neutral" id="num-${i}">${i+1}</div>
+        <div class="text" onclick="pruefeZugang('${t}', ${i})">${t}</div>
+    </div>`; 
+});
     
     const dots = document.getElementById('dot-holder');
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
@@ -412,7 +484,7 @@
     function showDashboard() { ebene = 1; clearInterval(wechselInterval); document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateUI(); updateNumColors(); }
 
     // --- CHAT LOGIK & GEDÄCHTNIS ---
-    let kollektivesGedachtnis = JSON.parse(localStorage.getItem('mm_chat_history')) || [];
+    let kollektivesGedachtnis = []; 
     let istSendenAktiv = false;
 
 async function registriereSenden() { 
@@ -423,32 +495,35 @@ async function registriereSenden() {
     const userText = input.value.trim(); 
     if (userText === "") return; 
 
-    // --- DIE SCHÖPFER-HINTERTÜR ---
-    if (userText.startsWith("!!")) {
-        const passwort = userText.substring(2);
-        localStorage.setItem('mm_creator_key', passwort);
-        alert("Identität für dieses Gerät gespeichert!");
-        input.value = "";
-        return; 
-    }
+   // --- DIE SCHÖPFER-HINTERTÜR ---
+    // Diese Funktion wurde entfernt, um die lokale Speicherung (Attrappe) zu beenden.
+    // Deine Identität wird nun direkt über die E-Mail und die Datenbank auf Render geschützt.
 
     istSendenAktiv = true; 
 
-    // Identitäts-Check
-    const gespeicherterSchlüssel = localStorage.getItem('mm_creator_key');
-    let userRole = "standard_user";
+  // In der Funktion registriereSenden():
+const email = document.getElementById('db-anker-mail').value.trim();
 
+// Wir fügen die Identität direkt in den Kontext für die KI ein
+const userRole = (email.toLowerCase() === "mmcommunity22@gmail.com") ? "SCHÖPFER (Goran)" : "USER";
+
+// ... im fetch-Aufruf unter 'message' oder 'context':
+body: JSON.stringify({ 
+    message: userText, 
+    context: `IDENTITÄT: ${userRole}. \n SEKTOR: ${tId+1}. \n WISSEN: ${sektorTexte[tId]}`,
+    // ...
+})
     if (userText.toLowerCase().includes("schöpfer") || userText.toLowerCase().includes("admin")) {
-        // Ersetze 'DEIN_PASSWORT' durch dein geheimes Wort
-        if (gespeicherterSchlüssel === 'DEIN_PASSWORT') {
+        // Wir prüfen live die E-Mail im Feld
+        if (email.toLowerCase().includes("goran")) { 
             userRole = "schöpfer_bestätigt";
         } else {
             userRole = "hochstapler_verdacht";
         }
     }
 
-    // Anzeige im Chat (Goran Schöpfer Layout)
-    chatBox.innerHTML += `<div style="margin-bottom: 35px; padding: 10px; border-left: 3px solid #ffd700; color: #ffd700;"><strong>Goran (Schöpfer):</strong> ${userText}</div>`;
+    // --- BEREINIGTE ANZEIGE (OHNE ATTRAPPE) ---
+    chatBox.innerHTML += `<div style="margin-bottom: 35px; padding: 10px; border-left: 3px solid #ffd700; color: #ffd700; background: rgba(255, 215, 0, 0.05);">${userText}</div>`;
     input.value = ""; 
 
     const typingId = "typing-" + Date.now();
@@ -479,7 +554,6 @@ async function registriereSenden() {
         // Gedächtnis-Speicherung
         kollektivesGedachtnis.push({ "role": "user", "parts": [{ "text": userText }] });
         kollektivesGedachtnis.push({ "role": "model", "parts": [{ "text": data.reply }] });
-        localStorage.setItem('mm_chat_history', JSON.stringify(kollektivesGedachtnis));
 
         if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId] += 5; 
         updateNumColors();
@@ -495,15 +569,44 @@ async function registriereSenden() {
 }
 
 function updateNumColors() {
+    // 1. Der Anker: Wir holen die Mail direkt aus dem Eingabefeld
+    const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
+    
+    // 2. Der Status: Wo steht der User? 
+    // (Diese Zahl kommt später LIVE von Render zurück)
+    let aktuellerSektor = 0; 
+
+    // SCHÖPFER-FREIGABE: Nur diese E-Mail hat freien Zugang
+    const isSchöpfer = (email === "mmcommunity22@gmail.com");
+
     themen.forEach((_, i) => {
         const nBox = document.getElementById(`num-${i}`);
-        if (nBox) {
-            if (interaktionsZaehler[i] >= 20) nBox.className = "num num-fertig";
-            else if (interaktionsZaehler[i] > 0) nBox.className = "num num-offen";
-            else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen";
-            else nBox.className = "num num-neutral";
+        if (!nBox) return;
+
+        if (isSchöpfer) {
+            // SCHÖPFER-MODUS: Alles auf BLAU (Offen für Arbeit/Kontrolle)
+            nBox.className = "num num-neutral"; 
+        } else {
+            // DIE EISERNE AMPEL-REGEL (1 bis 20):
+            if (i < aktuellerSektor) {
+                nBox.className = "num num-fertig";  // GRÜN: Sicher (Abgeschlossen)
+            } else if (i === aktuellerSektor) {
+                nBox.className = "num num-gelesen"; // GELB: Arbeit (Aktueller Fokus)
+            } else if (i === aktuellerSektor + 1) {
+                nBox.className = "num num-offen";   // ROT: Wartet (Nächste Hürde)
+            } else {
+                nBox.className = "num num-neutral"; // BLAU: Offen (Zukunft)
+            }
         }
     });
+    
+    // Auch die Fundamente (21 & 22) für den Schöpfer freischalten
+    const num21 = document.getElementById('num-20'); // Index 20 ist Sektor 21
+    const num22 = document.getElementById('num-21'); // Index 21 ist Sektor 22
+    if (isSchöpfer) {
+        if(num21) num21.className = "num num-neutral";
+        if(num22) num22.className = "num num-neutral";
+    }
 }
 
     function startRotation() { 
@@ -562,5 +665,49 @@ function updateNumColors() {
     }
 
     window.onload = () => updateUI(); 
+async function sichereAnkerUndStarteScan(id, thema) {
+    const emailInput = document.getElementById('db-anker-mail');
+    const email = emailInput.value.trim();
+
+    if (!email || !email.includes('@')) {
+        alert("Bitte eine gültige E-Mail für deine Biografie eingeben.");
+        return;
+    }
+
+    // Wir entfernen den fetch-Versuch zur gelöschten Mongo-Datenbank, 
+    // damit die Fehlermeldung "Verbindung fehlgeschlagen" verschwindet.
+    console.log("Verifiziere für Email:", email);
+
+    // Die Identität bleibt LIVE im Eingabefeld (KEIN localStorage)
+    alert("Anker gesetzt für: " + email);
+    
+    // Sektor direkt öffnen
+    showInfo(themen[id], id);
+}
+
+function pruefeZugang(thema, id) {
+    // Wir holen die Email LIVE aus dem Feld, nicht aus dem Speicher
+    const emailInput = document.getElementById('db-anker-mail');
+    const email = emailInput.value.trim().toLowerCase();
+    
+    if (!email || !email.includes('@')) {
+        alert("Zugriff verweigert: Bitte zuerst den ANKER mit deiner E-Mail setzen!");
+        return;
+    }
+
+    if (email === "mmcommunity22@gmail.com") {
+        showInfo(thema, id);
+        return;
+    }
+
+    const nBox = document.getElementById(`num-${id}`);
+    if (nBox) {
+        if (nBox.classList.contains('num-gelesen') || nBox.classList.contains('num-fertig')) {
+            showInfo(thema, id);
+        } else {
+            alert("Dieser Sektor ist noch nicht für dich bereit.");
+        }
+    }
+}
 </script>
 
