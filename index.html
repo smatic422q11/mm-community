@@ -245,7 +245,9 @@
 
         <div id="code-step" style="display: none; flex: 1; align-items: center; background: rgba(0,0,0,0.4); width: 100%;">
             <div style="padding-left: 10px; color: #0088ff; font-size: 0.7rem; white-space: nowrap; border-right: 1px solid #003d8f; margin-right: 10px;">VERIFIZIERUNG:</div>
-            <input type="text" id="verification-code" placeholder="CODE" maxlength="6" style="background: #00ff00; border: none; color: #000; font-size: 0.8rem; font-weight: bold; width: 80px; height: 100%; text-align: center; outline: none;">
+           <input type="text" id="verification-code" placeholder="CODE" maxlength="6" 
+       autocomplete="off" 
+       style="background: #00ff00; border: none; color: #000; font-size: 0.8rem; font-weight: bold; width: 80px; height: 100%; text-align: center; outline: none;">
             <button onclick="bestatigeCode()" style="background: #fff; color: #000; border: none; height: 100%; flex-grow: 1; font-size: 0.7rem; font-weight: bold; cursor: pointer;">
                 OK
             </button>
