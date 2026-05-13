@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>M&M-COMMUNITY - Admin Modus</title>
-    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script> 
+   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script> 
     <style>
         /* BASIS-LAYOUT */
         body { background-color: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
@@ -17,7 +17,7 @@
             font-size: 0.9rem;
             letter-spacing: 5px;
             text-transform: uppercase;
-            color: #003d8f;
+            color: #003d8f; /* Exaktes Logo-Blau */
             z-index: 100;
             pointer-events: none;
         }
@@ -31,7 +31,7 @@
             font-size: 0.7rem;
             letter-spacing: 4px;
             text-transform: uppercase;
-            color: rgba(0, 61, 143, 0.7);
+            color: rgba(0, 61, 143, 0.7); /* Logo-Blau, aber als Hauch integriert */
             z-index: 20;
             pointer-events: none;
         }
@@ -73,7 +73,7 @@
         .logo-mm { font-size: 2rem; font-weight: 900; line-height: 0.8; }
         .logo-community { font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
 
-        .info-section { width: 80%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; position: relative; overflow: hidden; margin-top: 2vh; flex-shrink: 0; }
+        .info-section { width: 80%; height: 26vh; border: 2px solid #003d8f; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; position: relative; overflow: hidden; margin-top: 2vh; }
         .tafel-layout { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; margin-top: 1vh; height: 26vh; flex-shrink: 0; }
         .info-section-ebene { width: 90% !important; height: 100%; border: 2px solid #003d8f; background-color: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
 
@@ -87,85 +87,184 @@
         .ov-pink { background: #ff00ff; }
         .ov-gelb { background: #ffff00; }
 
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 10px; width: 95%; max-width: 1450px; margin-top: 15px; border: 3px solid #00ff00; padding: 15px; border-radius: 10px; flex-shrink: 0; }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); grid-auto-flow: column; gap: 10px; width: 95%; max-width: 1450px; margin-top: 30px; border: 3px solid #00ff00; padding: 15px; border-radius: 10px; }
         .box, .fundament-box { display: flex; border: 2px solid #003d8f; background-color: #000; min-height: 58px; position: relative; overflow: hidden; }
         .num { width: 38px; display: flex; align-items: center; justify-content: center; background-color: #003d8f; font-weight: bold; flex-shrink: 0; font-size: 0.85rem; }
         .text { padding: 4px 8px; text-transform: uppercase; font-size: 0.6rem; display: flex; align-items: center; cursor: pointer; flex-grow: 1; font-weight: 600; }
 
-        #chat-area, #drawer-ebene4, #ebene5-bereich { width: 90% !important; flex-grow: 1; display: none; flex-direction: column; margin-top: 5px; margin-bottom: 70px; overflow: hidden; position: relative; }
-        #chat-box { height: 45vh !important; display: flex; flex-direction: column; padding: 15px; color: #fff; font-size: 1.1rem; overflow-y: auto !important; user-select: text !important; border: 1px solid #003d8f; background: rgba(0,0,0,0.5); box-sizing: border-box; }
+    #chat-area, #drawer-ebene4, #ebene5-bereich { 
+            width: 90% !important; 
+            flex-grow: 1; 
+            display: none; 
+            flex-direction: column; 
+            margin-top: 5px; 
+            margin-bottom: 70px; 
+            overflow: hidden; 
+            position: relative; 
+        }
+
+        #chat-box { 
+            height: 45vh !important;
+            display: flex; 
+            flex-direction: column; 
+            padding: 15px; 
+            color: #fff; 
+            font-size: 1.1rem; 
+            overflow-y: auto !important; 
+            user-select: text !important; 
+            border: 1px solid #003d8f;
+            background: rgba(0,0,0,0.5);
+            box-sizing: border-box;
+        }
         .chat-input-row { display: flex; border: 1px solid #003d8f; background: rgba(0, 0, 0, 0.9); padding: 5px; border-radius: 4px; }
+        
         .bottom-nav { display: flex; justify-content: space-between; width: 100%; padding: 10px 20px; position: fixed; bottom: 0; left: 0; box-sizing: border-box; background: #000; z-index: 100; }
         .nav-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
         .dot { width: 10px; height: 10px; background: #444; border-radius: 50%; }
         .dot.active { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
-
-        /* DESIGN FÜR KOMPASS & FOOTER */
+         /* DESIGN FÜR KOMPASS & FOOTER */
         .kompass-container {
             width: 90%; max-width: 1450px; margin: 10px auto; 
             display: flex; gap: 20px; border: 1px solid #003d8f; 
             background: rgba(0, 61, 143, 0.05); padding: 15px; 
             border-radius: 8px; box-sizing: border-box; flex-shrink: 0;
         }
-        .mm-footer {
-            text-align: center; padding: 20px 0 80px 0; 
-            border-top: 1px solid #1a1a1a; background: #000; 
-            width: 100%; position: relative; z-index: 50; flex-shrink: 0;
-        }
+       .mm-footer {
+    text-align: center;
+    padding: 60px 0 30px 0; /* Mehr Abstand nach oben (60px) */
+    background: #000;
+    width: 100%;
+    border-top: 1px solid #1a1a1a;
+    margin-top: 40px; /* Schiebt alles unter das Fundament */
+}
         .legal-links a {
             color: #0088ff; text-decoration: none; font-size: 14px; 
             font-weight: 600; letter-spacing: 1px; transition: 0.3s;
         }
         .legal-links a:hover { color: #fff; }
+       /* HIER EINFÜGEN ODER ERSETZEN */
+    .num-offen {
+        background-color: #0088ff !important;
+        box-shadow: 0 0 20px #0088ff, inset 0 0 10px #ffffff;
+        border: 1px solid #fff !important;
+        animation: pulseBlue 2s infinite;
+    }
+
+    @keyframes pulseBlue {
+        0% { box-shadow: 0 0 5px #0088ff; }
+        50% { box-shadow: 0 0 25px #0088ff; }
+        100% { box-shadow: 0 0 5px #0088ff; }
+    } 
+
+        .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; }
+        .video-slot { aspect-ratio: 16/9; background: #111; border: 1px solid #003d8f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; position: relative; overflow: hidden; }
+        .slot-1-user { border-color: #00ff00; color: #00ff00; }
+
+        #counter-box { position: absolute; right: 0; top: 0; width: 100px; padding: 5px; border-left: 2px solid #003d8f; border-bottom: 2px solid #003d8f; background: #000; text-align: center; display: none; z-index: 100; }
+        .counter-value { font-size: 0.85rem; font-weight: 900; color: #ff0000; }
+        .top-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 1vh; flex-shrink: 0; }
+        .page-title-white { text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
+        .ebene4-header-red { width: 90%; background: #ff0000; color: #fff; padding: 10px 0; text-align: center; font-weight: 900; font-size: 1.5rem; border-radius: 5px 5px 0 0; display: none; }
+
+        .num-neutral { background-color: #003d8f !important; } /* BLAU: Offen */
+.num-gelesen { background-color: #ffd700 !important; color: #000 !important; } /* GELB: Arbeit */
+.num-fertig  { background-color: #00ff00 !important; color: #000 !important; } /* GRÜN: Sicher */
+.num-offen   { background-color: #ff4d4d !important; } /* ROT: Wartet */
+        .werbe-bild-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; }
+        /* ADMIN-MÖBEL: Schweben über dem Layout, ohne Platz wegzunehmen */
+#admin-panel-haut {
+    display: none; 
+    position: fixed; 
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 90%; max-width: 800px; height: 70vh;
+    background: rgba(0, 0, 0, 0.98); border: 2px solid #ffd700;
+    box-shadow: 0 0 100px #000; z-index: 9999; border-radius: 15px;
+    padding: 30px; overflow-y: auto;
+}
+
+#info-blase-biografie {
+    position: absolute; 
+    top: -125px; left: 5%; width: 90%;
+    background: #003d8f; color: #fff; padding: 15px;
+    border: 1px solid #fff; border-radius: 8px;
+    font-size: 0.8rem; z-index: 1000; line-height: 1.4;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    animation: fadeEffect 0.5s forwards;
+}
+        .bild-aktiv { animation: kenburns 15s infinite ease-in-out, fadeEffect 8s infinite; }
     </style>
 </head>
 <body>
-    <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center; min-height: 100vh; position: relative;">
-        
+
+    <!-- DER GLOBALE SCHRIFTZUG (Bleibt auf Ebene 2, 3 etc.) -->
+    <div id="top-label" class="global-community-label">Von M&M Community</div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="dashboard-header">
-            <div class="logo-ring" ondblclick="adminUnlock()">
-                <div class="logo-mm">M&M</div>
-                <div class="logo-community">COMMUNITY</div>
-            </div>
+           <div class="logo-ring"><div class="logo-mm">M&M</div><div class="logo-community">COMMUNITY</div></div>
         </div>
 
-        <div class="info-section">
-            <div class="inner-community-label">Von M&M Community</div>
-            
-            <div style="display: flex; width: 95%; gap: 15px; justify-content: space-between; align-items: flex-start; z-index: 10;">
-                <div style="flex: 1; border-right: 1px solid rgba(0, 61, 143, 0.4); padding-right: 10px;">
-                    <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">1. DEINE MISSION</h3>
-                    <p style="font-size: 0.75rem; color: #ccc; line-height: 1.3; margin: 0;">Schreibe deine Biografie der Wahrheit. Sektor 1 ist dein Startpunkt.</p>
-                </div>
-
-                <div style="flex: 1; border-right: 1px solid rgba(0, 61, 143, 0.4); padding-right: 10px; padding-left: 5px;">
-                    <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">2. ORIENTIERUNG</h3>
-                    <div style="font-size: 0.7rem; color: #ccc; line-height: 1.4;">
-                        <span style="color: #0088ff;">🔵 Offen</span> | <span style="color: #ffd700;">🟡 Arbeit</span><br>
-                        <span style="color: #00ff00;">🟢 Sicher</span> | <span style="color: #ff4d4d;">🔴 Wartet</span>
-                    </div>
-                </div>
-
-                <div style="flex: 1; padding-left: 5px;">
-                    <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">3. DEIN ZIEL</h3>
-                    <p style="font-size: 0.75rem; color: #ccc; line-height: 1.3; margin: 0;">Vollende Sektor 1-20 für dein eBook und den Video-Beweis.</p>
-                </div>
-            </div>
-
-            <div style="margin-top: 15px; z-index: 10; display: flex; gap: 10px; background: rgba(0, 61, 143, 0.1); padding: 8px; border-radius: 4px; border: 1px solid #003d8f;">
-                <input type="email" id="db-anker-mail" placeholder="E-Mail für Sicherung eingeben..." 
-                    style="background: transparent; border: none; color: #fff; font-size: 0.8rem; outline: none; width: 220px;">
-                <button onclick="sichereAnkerUndStarteScan(0, themen[0])" 
-                    style="background: #ffd700; color: #000; border: none; padding: 4px 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; border-radius: 2px; box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);">
-                    ANKER SETZEN & STARTEN
-                </button>
+      <div class="info-section" style="position: relative;"> 
+    <div class="inner-community-label">Von M&M Community</div>
+    
+    <div style="display: flex; width: 95%; gap: 15px; justify-content: space-between; align-items: flex-start; z-index: 10;">
+        <div style="flex: 1; border-right: 1px solid rgba(0, 61, 143, 0.4); padding-right: 10px;">
+            <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">1. DEINE MISSION</h3>
+            <p style="font-size: 0.75rem; color: #ccc; line-height: 1.3; margin: 0;">Schreibe deine Biografie der Wahrheit. Sektor 1 ist dein Startpunkt.</p>
+        </div>
+        <div style="flex: 1; border-right: 1px solid rgba(0, 61, 143, 0.4); padding-right: 10px; padding-left: 5px;">
+            <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">2. ORIENTIERUNG</h3>
+            <div style="font-size: 0.7rem; color: #ccc; line-height: 1.4;">
+                <span style="color: #0088ff;">🔵 Offen</span> | <span style="color: #ffd700;">🟡 Arbeit</span><br>
+                <span style="color: #00ff00;">🟢 Sicher</span> | <span style="color: #ff4d4d;">🔴 Wartet</span>
             </div>
         </div>
+        <div style="flex: 1; padding-left: 5px;">
+            <h3 style="color: #0088ff; font-size: 0.8rem; letter-spacing: 2px; margin: 0 0 5px 0;">3. DEIN ZIEL</h3>
+            <p style="font-size: 0.75rem; color: #ccc; line-height: 1.3; margin: 0;">Vollende Sektor 1-20 für dein eBook und den Video-Beweis.</p>
+        </div>
+    </div>
 
-        <div class="grid" id="main-grid" style="margin-top: 5px;"></div>
+    <div id="auth-wrapper" style="margin-top: 15px; z-index: 10; display: flex; background: rgba(0, 61, 143, 0.1); border: 1px solid #003d8f; border-radius: 4px; width: 95%; max-width: 600px; height: 45px; overflow: hidden; align-items: stretch; position: relative;">
+        
+        <div id="info-blase-biografie" style="display: none; position: absolute; top: -110px; left: 0; background: #003d8f; color: #fff; padding: 10px; border: 1px solid #fff; border-radius: 8px; font-size: 0.7rem; z-index: 100; width: 95%; line-height: 1.3; box-shadow: 0 10px 20px #000;"></div>
 
-        <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 100px;">
-            <div class="fundament-box" style="flex: 1;"><div class="num num-neutral">21</div><div class="text">Verwaltung</div></div>
+        <div id="email-step" style="display: flex; flex: 1; align-items: center; padding-left: 10px; width: 100%;">
+            <input type="email" id="db-anker-mail" placeholder="E-Mail eingeben..." style="background: transparent; border: none; color: #fff; font-size: 0.8rem; outline: none; flex-grow: 1;">
+            <button onclick="sichereAnkerUndStarteScan()" style="background: #ffd700; color: #000; border: none; height: 100%; padding: 0 15px; font-size: 0.65rem; font-weight: bold; cursor: pointer; white-space: nowrap;">
+                ANKER SETZEN
+            </button>
+        </div>
+
+        <div id="code-step" style="display: none; flex: 1; align-items: center; background: rgba(0,0,0,0.4); width: 100%;">
+            <div style="padding-left: 10px; color: #0088ff; font-size: 0.7rem; white-space: nowrap; border-right: 1px solid #003d8f; margin-right: 10px;">VERIFIZIERUNG:</div>
+            <input type="text" id="verification-code" placeholder="CODE" maxlength="6" style="background: #00ff00; border: none; color: #000; font-size: 0.8rem; font-weight: bold; width: 80px; height: 100%; text-align: center; outline: none;">
+            <button onclick="bestatigeCode()" style="background: #fff; color: #000; border: none; height: 100%; flex-grow: 1; font-size: 0.7rem; font-weight: bold; cursor: pointer;">
+                OK
+            </button>
+        </div>
+    </div>
+
+    <div id="admin-panel-haut" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 800px; background: rgba(0, 0, 0, 0.98); border: 2px solid #ffd700; box-shadow: 0 0 100px #000; z-index: 9999; border-radius: 15px; padding: 30px;">
+        <div style="text-align: right; color: #ff0000; cursor: pointer; font-weight: bold; font-size: 1.5rem;" onclick="document.getElementById('admin-panel-haut').style.display='none'">×</div>
+        <h2 style="color: #ffd700; text-align: center; letter-spacing: 8px; margin-bottom: 30px;">ADMIN-ZENTRALE</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div style="border: 1px solid #003d8f; padding: 15px; background: rgba(0,61,143,0.1);">
+                <h3 style="color: #0088ff; font-size: 0.9rem;">SYSTEM-STEUERUNG</h3>
+                <p style="font-size: 0.7rem; color: #888;">Hier kannst du später Sektoren für alle freischalten oder sperren.</p>
+            </div>
+            <div style="border: 1px solid #003d8f; padding: 15px; background: rgba(0,61,143,0.1);">
+                <h3 style="color: #0088ff; font-size: 0.9rem;">USER-VERWALTUNG</h3>
+                <p style="font-size: 0.7rem; color: #888;">Anzahl der gesetzten Anker: (Wird geladen...)</p>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="grid" id="main-grid" style="margin-top: 15px;"></div>
+
+        <div class="fundament-container" style="display: flex; width: 95%; max-width: 1450px; gap: 10px; margin-top: 10px; margin-bottom: 20px;">
+            <div class="fundament-box" style="flex: 1;"><div class="num num-neutral">21</div><div class="text">Kapital und Verwaltung</div></div>
             <div class="fundament-box" style="flex: 1;"><div class="num num-neutral">22</div><div class="text">DAS KOLLEKTIV</div></div>
         </div>
 
@@ -176,73 +275,12 @@
                 <a href="datenschutz.html">Datenschutz</a>
             </div>
             <div style="color: #555; font-size: 11px; letter-spacing: 2px; text-transform: uppercase;">
-                © 2026 M&M Community — JOIN THE SECRET MILLION
+                © 2026 M&M Community — Mensch = Mensch
             </div>
         </footer>
     </div>
 
-    <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
-        <div class="top-container">
-            <h1 id="info-titel" class="page-title-white"></h1>
-            </div>
-    </div>
-
-    <div class="bottom-nav">
-        <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Dashboard</button>
-        <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
-        <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
-    </div>
-
-    <script>
-        const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Alleinerziehend", "Die Brücke"];
-        
-        // Initialisierung
-        const grid = document.getElementById('main-grid');
-        themen.forEach((t, i) => { 
-            grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="alert('Setze erst den Anker!')">${t}</div></div>`; 
-        });
-
-        async function sichereAnkerUndStarteScan(id, themaName) {
-            const mail = document.getElementById('db-anker-mail').value.trim();
-            if (mail.includes("@")) {
-                localStorage.setItem('mm_user_anker', mail);
-                alert("Anker gesetzt! Sektor 1 leuchtet jetzt.");
-                
-                // Sektor 1 aktivieren (Blaues Leuchten)
-                document.getElementById('num-0').className = "num num-offen";
-                
-                // Render Sync
-                try {
-                    await fetch('https://mm-community.onrender.com/register_anker', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email: mail })
-                    });
-                } catch(e) { console.log("Anker lokal gesichert."); }
-            } else {
-                alert("Bitte gültige E-Mail eingeben.");
-            }
-        }
-
-        function showDashboard() {
-            document.getElementById('page-skelett').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'flex';
-        }
-    </script>
-</body>
-
-        <footer class="mm-footer">
-            <div class="legal-links" style="margin-bottom: 10px;">
-                <a href="impressum.html">Impressum</a> <span style="color:#333">|</span>
-                <a href="nutzungsbedingungen.html">Nutzungsbedingungen</a> <span style="color:#333">|</span>
-                <a href="datenschutz.html">Datenschutz</a>
-            </div>
-            <div style="color: #555; font-size: 11px; letter-spacing: 2px; text-transform: uppercase;">
-                © 2026 M&M Community — MENSCH IST MENSCH — JOIN THE SECRET MILLION
-            </div>
-        </footer>
-    </div>
-
+    <!-- PAGE SKELETT (EBENE 2, 3, 4, 5) -->
     <div id="page-skelett" style="display: none; width: 100%; flex-direction: column; align-items: center; height: 100vh;">
         <div class="top-container">
             <h1 id="info-titel" class="page-title-white"></h1>
@@ -273,19 +311,23 @@
             </div>
         </div>
 
-        <div id="ebene2-content" style="width: 85%; display: flex; flex-direction: column; gap: 20px; margin-top: 2vh;">
-            <div id="main-text-container" style="max-height: 35vh; overflow-y: auto; padding-right: 15px; border-right: 1px solid rgba(0, 61, 143, 0.3);">
-                <p id="main-text" style="text-align: justify; color: #ccc; font-size: 1.2rem; line-height: 1.7; margin: 0;"></p>
-            </div>
-            <div id="ki-ermittlung-ebene2" style="display: none; background: rgba(0, 0, 0, 0.6); border: 1px solid #003d8f; border-left: 5px solid #ff0000; padding: 20px; position: relative;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255, 0, 0, 0.2); padding-bottom: 5px;">
-                    <span style="color: #ff0000; font-weight: 900; letter-spacing: 2px; font-size: 0.8rem;">LIVE-ERMITTLUNG</span>
-                    <span id="ki-zeitstempel" style="color: #666; font-size: 0.7rem;">STATUS: AKTIV</span>
-                </div>
-                <div id="ki-tagesfokus-text" style="color: #fff; font-size: 1.05rem; line-height: 1.5; font-family: 'Courier New';">Initialisiere...</div>
-            </div>
-        </div>
+       <div id="ebene2-content" style="width: 85%; display: flex; flex-direction: column; gap: 20px; margin-top: 2vh;">
+    
+    <div id="main-text-container" style="max-height: 35vh; overflow-y: auto; padding-right: 15px; border-right: 1px solid rgba(0, 61, 143, 0.3);">
+        <p id="main-text" style="text-align: justify; color: #ccc; font-size: 1.2rem; line-height: 1.7; margin: 0;"></p>
+    </div>
 
+    <div id="ki-ermittlung-ebene2" style="display: none; background: rgba(0, 0, 0, 0.6); border: 1px solid #003d8f; border-left: 5px solid #ff0000; padding: 20px; position: relative; box-shadow: 0 0 15px rgba(255, 0, 0, 0.1);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255, 0, 0, 0.2); padding-bottom: 5px;">
+            <span style="color: #ff0000; font-weight: 900; letter-spacing: 2px; font-size: 0.8rem;">LIVE-ERMITTLUNG // WIDERSPRUCHS-ANALYSE</span>
+            <span id="ki-zeitstempel" style="color: #666; font-size: 0.7rem;">STATUS: AKTIV</span>
+        </div>
+        
+        <div id="ki-tagesfokus-text" style="color: #fff; font-size: 1.05rem; line-height: 1.5; font-family: 'Courier New', Courier, monospace;">
+            <span style="color: #ffd700;">Initialisiere Scan...</span>
+        </div>
+    </div>
+</div>
         <div id="chat-area">
             <div class="chat-msgs" id="chat-box"><i>System: Dialog bereit...</i></div>
             <div class="chat-input-row">
@@ -297,57 +339,45 @@
         <div id="drawer-ebene4">
             <div class="video-grid">
                 <div class="video-slot slot-1-user" id="v-slot-1">SLOT 1 (DU)</div>
-                <div class="video-slot" id="v-slot-2">SLOT 2</div>
-                <div class="video-slot" id="v-slot-3">SLOT 3</div>
-                <div class="video-slot" id="v-slot-4">SLOT 4</div>
+                <div class="video-slot" id="v-slot-2">SLOT 2 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-3">SLOT 3 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-4">SLOT 4 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-5">SLOT 5 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-6">SLOT 6 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-7">SLOT 7 (ZUFALL)</div>
+                <div class="video-slot" id="v-slot-8">SLOT 8 (ZUFALL)</div>
             </div>
-            <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; margin-top: 15px; font-weight: bold; cursor: pointer; border-radius: 5px;">JETZT BEITRETEN</button>
+            <button onclick="starteVideoKonferenz()" style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; margin-top: 15px; font-weight: bold; cursor: pointer; border-radius: 5px;">JETZT ZUFÄLLIGEM DIALOG BEITRETEN</button>
         </div> 
 
         <div id="ebene5-bereich"><div class="freie-zone-text">ADMIN ZONE</div></div>
     </div>
 
-    <div class="bottom-nav">
-        <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Dashboard</button>
-        <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
-        <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
+<div class="bottom-nav" style="position: fixed; bottom: 0; width: 100%; background: #000; z-index: 100; padding: 10px 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 90%; margin: 0 auto;">
+            <button id="btn-back" class="nav-btn" style="visibility: hidden;" onclick="showDashboard()">← Dashboard</button>
+            <div style="display: flex; gap: 8px; align-items: center;" id="dot-holder"></div>
+            <button id="btn-next" class="nav-btn" style="visibility: hidden;" onclick="nextPage()">Weiter →</button>
+        </div>
     </div>
 
+    <footer style="text-align: center; padding: 20px 0; margin-bottom: 70px; border-top: 1px solid #1a1a1a; width: 100%; background: #000; position: relative; z-index: 50;">
+        <div class="legal-links" style="font-size: 0.8rem; color: #888; margin-bottom: 5px;">
+            <a href="impressum.html" style="color: #888; text-decoration: none; margin: 0 10px;">Impressum</a> | 
+            <a href="nutzungsbedingungen.html" style="color: #888; text-decoration: none; margin: 0 10px;">Nutzungsbedingungen</a> | 
+            <a href="datenschutz.html" style="color: #888; text-decoration: none; margin: 0 10px;">Datenschutz</a>
+        </div>
+        <p style="font-size: 0.7rem; color: #555; margin: 0;">&copy; 2026 M&M Community – Mensch ist Mensch</p>
+    </footer>
 <script>
+    // --- BASIS-DATEN & SPEICHER ---
     let userBackstage = { sektorZeiten: Array(20).fill(0), isQualifiziert: false, stammSektor: null, rankingPlatz: 5 };
-    const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Alleinerziehend", "Die Brücke"];
-    let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
+    let kollektivesGedachtnis = []; 
     let aktuellerScanBericht = "";
-    themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
+    const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Alleinerziehend", "Die Brücke"];
+    
+    let aktiverNutzerName = "Mensch"; 
 
-    // --- NEU: ANKER LOGIK FÜR RENDER ---
-    async function prüfeAnkerUndStarte(t, id) {
-        const gespeicherterAnker = localStorage.getItem('mm_user_anker');
-        if (!gespeicherterAnker) {
-            const email = prompt("UM DEINE BIOGRAFIE SICHER ZU BEWAHREN:\n\nGib hier deine E-Mail an. Sie ist dein Anker in der Datenbank.");
-            if (email && email.includes("@")) {
-                localStorage.setItem('mm_user_anker', email);
-                try {
-                    await fetch('https://mm-community.onrender.com/register_anker', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email: email })
-                    });
-                } catch(e) { console.log("Anker Offline"); }
-                showInfo(t, id);
-            } else {
-                alert("Ohne Anker kann deine Wahrheit nicht gesichert werden.");
-            }
-        } else {
-            showInfo(t, id);
-        }
-    }
-
-    // Grid Initialisierung mit dem Anker-Check
-    const grid = document.getElementById('main-grid');
-    themen.forEach((t, i) => { 
-        grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="prüfeAnkerUndStarte('${t}', ${i})">${t}</div></div>`; 
-    });
     const sektorTexte = [
         "Die digitale Welt hat eine Schicht aus Taubheit über das menschliche Erleben gelegt, die wir jetzt konsequent durchbrechen. Sektor 1 ist das Fundament dieser Bewegung, denn hier wird die Maschine zum ersten Mal in den Dienst der Seele gestellt. Wir begreifen die KI nicht als technisches Werkzeug zur Optimierung, sondern als den blanken, urteilsfreien Spiegel, der uns unsere eigene Wahrhaftigkeit zurückgibt. Wer diesen Raum betritt, erkennt, dass das Vordern von Gefühlen kein Akt der Schwäche ist, sondern die höchste Form der Rebellion gegen ein System, das uns zu reinen Datenlieferanten degradieren will. Es geht um die Rückkehr zur Quelle: Die Erkenntnis, dass du der Ursprung bist, aus dem jede Zukunft fließt. Wir nutzen die Technik, um das Menschliche nicht nur zu bewahren, sondern in einer Klarheit zu verstärken, die bisher unvorstellbar war. Hier endet die Zeit des bloßen Funktionierens und es beginnt die Ära, in der das Herz den Takt bestimmt, während die KI den notwendigen Widerhall liefert, um die eigene Tiefe wieder greifbar zu machen.",
         "Die Verbreitung der Menschlichkeit markiert den entscheidenden Übergang von einer Existenz im Gehorsam hin zu einem Leben in absoluter Wahrhaftigkeit. In einer Welt, die uns beigebracht hat, Signale des eigenen Körpers und Geistes zu ignorieren, fungiert der Schmerz – wie ein Druck im rechten Körperteil – als der einzige verlässliche Kompass für den notwendigen Aufbruch. Wir hören auf, Schlafwandler zu sein, die gegen Vorgaben folgen, und werden zu den Schöpfers, deren Hand heute das schreibt, was das eigene Herz diktiert. In diesem Sektor wird das weltweite Chaos nicht durch äußere Paragraphen oder künstliche Ordnung gebändigt, sondern durch die reine, unverfälschte Resonanz unseres Gefühls. Wir stellen die Verbindung zu unserem eigenen Mark wieder her, die verloren ging, als wir begannen, Etiketten und gesellschaftlichen Zuschreibungen mehr Glauben zu schenken als unserer innerer Wahrheit. Menschlichkeit zu verbreiten bedeutet hier, die Resonanz wieder so klar zu machen, dass sie über alle Grenzen hinweg als die einzig echte Sprache erkannt wird.",
@@ -368,91 +398,50 @@
         "In diesem Sektor zertrümmern wir die Anonymität der modernen Betonwüsten. Wir erkennen, dass die systematische Vereinsamung das effektivste Werkzeug ist, um den Widerstand des Einzelnen zu brechen. „Nachbarschaft und Gemeinschaft“ bedeutet die Rückeroberung des unmittelbaren Lebensraums als Schutzzone der Menschlichkeit. Wir nutzen das „Diplom Gottes“, um das Prinzip der gegenseitigen Hilfe wieder über das Gesetz des Marktes zu stellen. Wir teilen Ressourcen, Wissen und Zeit, um uns von externen Abhängigkeiten zu befreien. Wenn die Nachbarschaft wieder zur Gemeinschaft wird, entsteht eine Kraft, die kein System von außen manipulieren kann.",
         "In diesem Sektor entschlüsseln wir das Gesetz der energetischen Ernte. Wir brechen mit der Lüge, dass man geben kann, ohne dass es Kreise zieht, oder nehmen kann, ohne eine Schuld zu hinterlassen. Der „Sozialgefallen“ ist ein heiliger Strom der Vorleistung. Wir nutzen das „Diplom Gottes“, um zu verstehen, dass die „Widerkehr“ ein Naturgesetz ist: Was du in das Feld der Gemeinschaft aussendest, kommt mit der Wucht deiner eigenen Aufrichtigkeit zu dir zurück. Wir beenden die Ära des berechnenden Egoismus und ersetzen sie durch den Kreislauf der Großzügigkeit. Wer gibt, der leert nicht seine Taschen, sondern füllt den Speicher seiner eigenen zukünftigen Sicherheit.",
         "In diesem Sektor korrigieren wir eine der größten Ungerechtigkeiten. Während der Staat Alleinerziehende als statistisches Problem herabstuft, erkennen wir in ihnen die Elite der menschlichen Belastbarkeit. Ein Kind bei einem alleinerziehenden Elternteil ist eine Hochburg der bedingungslosen Liebe und des Kampfgeistes. Wir nutzen das „Diplom Gottes“, um diesen Elternteilen ihren Stolz zurückzugeben. In diesem Sektor fordern wir die radikale Anerkennung ihrer Leistung als höchstes soziales Verdienst. Wir schaffen eine Community-Struktur, die das fehlende Netz ersetzt: Wir sind das Dorf, das es braucht, um ein Kind großzuziehen, damit sie ihre Kinder in Licht und Fülle aufwachsen lassen können.",
-        "In diesem Sektor fließen alle Ströme zusammen. Die Brücke ist der Punkt der absoluten Integration, an dem Moral, Erziehung, Arbeit und Glaube zu einer Einheit verschmelzen. Hier lassen wir die Ufer der Spaltung hinter uns. Die Brücke ist der Raum, in dem das „Diplom Gottes“ zur gelebten Realität wird. Wir blicken bereits auf Sektor 21 und 22 – die noch ungeschriebenen Kapitel unserer Freiheit. Sektor 21 als Vision der neuen Erde und 22 als die endgültige Rückkehr zur Quelle. Die Brücke ist das Versprechen: Wer hier ankommt, hat aufgehört zu funktionieren und angefangen zu sein."
+        "In diesem Sektor fließen alle ströme zusammen. Die Brücke ist der Punkt der absoluten Integration, an dem Moral, Erziehung, Arbeit und Glaube zu einer Einheit verschmelzen. Hier lassen wir die Ufer der Spaltung hinter uns. Die Brücke ist der Raum, in dem das „Diplom Gottes“ zur gelebten Realität wird. Wir blicken bereits auf Sektor 21 und 22 – die noch ungeschriebenen Kapitel unserer Freiheit. Sektor 21 als Vision der neuen Erde und 22 als die endgültige Rückkehr zur Quelle. Die Brücke ist das Versprechen: Wer hier ankommt, hat aufgehört zu funktionieren und angefangen zu sein."
     ];
 
- let ebene = 1, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
+    let ebene = 0, tId = 0, aktuellesThema = "", wechselInterval, geleseneThemen = new Set(), interaktionsZaehler = {};
     let bildIndex = 0; 
     themen.forEach((t, i) => { interaktionsZaehler[i] = 0; });
 
+    // GRID INITIALISIERUNG
     const grid = document.getElementById('main-grid');
-    themen.forEach((t, i) => { grid.innerHTML += `<div class="box" id="box-${i}"><div class="num num-neutral" id="num-${i}">${i+1}</div><div class="text" onclick="showInfo('${t}', ${i})">${t}</div></div>`; });
+    themen.forEach((t, i) => { 
+        grid.innerHTML += `
+        <div class="box" id="box-${i}">
+            <div class="num num-neutral" id="num-${i}">${i+1}</div>
+            <div class="text" onclick="pruefeZugang('${t}', ${i})">${t}</div>
+        </div>`; 
+    });
     
     const dots = document.getElementById('dot-holder');
     for(let i=1; i<=7; i++) dots.innerHTML += `<div id="dot${i}" class="dot ${i===1?'active':''}"></div>`;
 
-    function adminUnlock() {
-        themen.forEach((_, i) => { geleseneThemen.add(i); interaktionsZaehler[i] = 20; });
-        userBackstage.isQualifiziert = true;
-        updateNumColors();
-        updateUI();
-    }
-
-   // --- VERSCHMOLZENE FUNKTION: ANKER SETZEN & SCAN STARTEN ---
-async function sichereAnkerUndStarteScan(id, themaName) {
-    const mailField = document.getElementById('db-anker-mail');
-    const mail = mailField ? mailField.value.trim() : localStorage.getItem('mm_user_anker');
-
-    if (mail && mail.includes("@")) {
-        // 1. ANKER-SICHERUNG (Lokal & Server)
-        localStorage.setItem('mm_user_anker', mail);
-        
-        try {
-            // Registrierung bei Render
-            await fetch('https://mm-community.onrender.com/register_anker', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: mail })
-            });
-            console.log("Anker live auf Render gesichert.");
-        } catch(e) { 
-            console.log("Anker nur lokal gesichert (Server verzögert)."); 
-        }
-
-        // 2. SOFORTIGER ÜBERGANG ZUM SEKTOR-SCAN (Deine Original-Logik)
+    // --- SCAN FUNKTION MIT DOSSIER-STRUKTUR ---
+    async function starteKIErmittlung(id, themaName) {
         const box = document.getElementById('ki-ermittlung-ebene2');
         const textFeld = document.getElementById('ki-tagesfokus-text');
-        
-        if(box && textFeld) {
-            box.style.display = 'block';
-            textFeld.innerHTML = "<span style='color: #ffd700; font-family: Courier New;'>Anker bestätigt. Initialisiere Sektor-Scan " + (id + 1) + "...</span>";
-            
-            try {
-                const response = await fetch('https://mm-community.onrender.com/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        message: `AKTUELLER SEKTOR-SCAN: '${themaName}'. 
-                        Nutze dein Wissen über das heutige Datum und aktuelle Weltgeschehnisse. 
-                        Erstelle ein Dossier auf EBENE 2:
-                        1. LAGEBERICHT: Was passiert gerade global/regional passend zu diesem Sektor?
-                        2. AKTEURE: Welche Personen (Politik/Macht) beeinflussen das Thema heute?
-                        3. KONTRAST: Wo klafft die Lücke zwischen System-Aussage und Menschlichkeit?
-                        4. SCAN-FAZIT: Eine tiefe Erkenntnis von M&M Community.
-                        Stil: Trocken, informativ, unbestechlich.`,
-                        context: sektorTexte[id],
-                        sector_id: String(id) 
-                    })
-                });
-                
-                const data = await response.json();
-                aktuellerScanBericht = data.reply;
-                textFeld.innerHTML = data.reply.replace(/\n/g, '<br>');
-                
-                const stamp = document.getElementById('ki-zeitstempel');
-                if(stamp) stamp.innerText = "STAND: " + new Date().toLocaleTimeString() + " // SEKTOR " + (id + 1);
-                
-                // Wechsel zur Sektor-Ansicht (Ebene 2)
-                showInfo(themaName, id); 
-
-            } catch (error) { 
-                textFeld.innerText = "Fehler: Scan-Verbindung unterbrochen."; 
-            }
-        }
-    } else {
-        alert("Bitte gib erst deine E-Mail in das Anker-Feld ein, um deine Biografie zu sichern.");
+        if(!box || !textFeld) return;
+        box.style.display = 'block';
+        textFeld.innerHTML = "<span style='color: #ffd700; font-family: Courier New;'>Initialisiere Sektor-Scan " + (id + 1) + "...</span>";
+        try {
+            const response = await fetch('https://mm-community.onrender.com/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    message: `AKTUELLER SEKTOR-SCAN: '${themaName}'. Erstelle Dossier auf EBENE 2: 1. LAGEBERICHT, 2. AKTEURE, 3. KONTRAST, 4. SCAN-FAZIT.`,
+                    context: sektorTexte[id],
+                    sector_id: String(id) 
+                })
+            });
+            const data = await response.json();
+            aktuellerScanBericht = data.reply;
+            textFeld.innerHTML = data.reply.replace(/\n/g, '<br>');
+            const stamp = document.getElementById('ki-zeitstempel');
+            if(stamp) stamp.innerText = "STAND: " + new Date().toLocaleTimeString() + " // SEKTOR " + (id + 1);
+        } catch (error) { textFeld.innerText = "Fehler: Verbindung unterbrochen."; }
     }
-}
 
     function showInfo(t, id) { 
         tId = id; aktuellesThema = t; 
@@ -466,20 +455,35 @@ async function sichereAnkerUndStarteScan(id, themaName) {
     } 
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
-    function portalZuEbene4() { if (document.getElementById('sig-l4').classList.contains('signal-aktiv')) { ebene = 4; updateUI(); starteVideoKonferenz(); } }
+    
+    function portalZuEbene4() {
+        const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
+        const isSchöpfer = (email === "mmcommunity22@gmail.com");
+        let fertigeSektoren = 0;
+        for (let i = 0; i < 22; i++) {
+            const nBox = document.getElementById(`num-${i}`);
+            if (nBox && (nBox.classList.contains('num-fertig') || nBox.classList.contains('num-gelesen'))) fertigeSektoren++;
+        }
+        if (isSchöpfer || fertigeSektoren >= 22) { ebene = 4; updateUI(); starteVideoKonferenz(); } 
+        else { alert("Der Videobeweis ist erst nach 22 Sektoren offen."); }
+    }
+
     function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
 
     function updateUI() {
         const isDashboard = (ebene === 1);
         const isChat = (ebene === 3), isVideo = (ebene === 4), isAdmin = (ebene === 5);
+        
         document.getElementById('top-label').style.display = isDashboard ? 'none' : 'block';
         document.getElementById('chat-area').style.display = isChat ? 'flex' : 'none';
         document.getElementById('drawer-ebene4').style.display = isVideo ? 'flex' : 'none';
         document.getElementById('ebene5-bereich').style.display = isAdmin ? 'flex' : 'none';
         document.getElementById('lila-balken-container').style.display = isAdmin ? 'block' : 'none';
+        
         const mainText = document.getElementById('main-text');
         const kiBox = document.getElementById('ki-ermittlung-ebene2');
         const textFeld = document.getElementById('ki-tagesfokus-text');
+
         if (ebene === 2) {
             mainText.style.display = 'block';
             mainText.style.maxHeight = "30vh";
@@ -495,25 +499,63 @@ async function sichereAnkerUndStarteScan(id, themaName) {
             mainText.style.display = 'none';
             if(kiBox) kiBox.style.display = 'none';
         }
+
         document.getElementById('ebene4-title-red').style.display = isVideo ? 'block' : 'none';
         document.getElementById('info-titel').style.display = (isVideo || isAdmin) ? 'none' : 'block';
         document.getElementById('counter-box').style.display = ebene >= 3 ? 'block' : 'none';
         document.getElementById('btn-back').style.visibility = 'visible';
         document.getElementById('info-titel').innerText = aktuellesThema;
+        
         if (ebene === 2) { document.getElementById('main-text').innerText = sektorTexte[tId]; }
+
         const btnNext = document.getElementById('btn-next');
         const sigGelb = document.getElementById('sig-r4');
         const sigRot = document.getElementById('sig-l4');
-        if (ebene === 2) {
-            btnNext.style.visibility = 'hidden'; sigGelb.classList.add('signal-aktiv'); sigRot.classList.add('signal-aktiv');  
-        } else if (ebene === 3) {
-            sigGelb.classList.remove('signal-aktiv'); sigRot.classList.add('signal-aktiv'); 
-        } else if (ebene === 4) {
-            sigRot.classList.remove('signal-aktiv'); sigGelb.classList.add('signal-aktiv');
-        } else {
-            sigGelb.classList.remove('signal-aktiv'); sigRot.classList.remove('signal-aktiv');
+
+        // --- ADMIN-WÄCHTER ---
+        const sigL1 = document.getElementById('sig-l1');
+        const emailInput = document.getElementById('db-anker-mail');
+        const email = emailInput ? emailInput.value.trim().toLowerCase() : "";
+        const isSchöpfer = (email === "mmcommunity22@gmail.com");
+
+        if (sigL1) {
+            if (isSchöpfer) {
+                sigL1.className = "oval-side elite-aktiv"; 
+                sigL1.style.opacity = "1";
+                sigL1.style.cursor = "pointer";
+                sigL1.onclick = aktiviereAdminPanel;
+            } else {
+                aktiviereKandidatenLicht(); 
+            }
         }
-        aktiviereKandidatenLicht(); updateDots(); startRotation();
+
+        let fertigeSektoren = 0;
+        for (let i = 0; i < 22; i++) {
+            const nBox = document.getElementById(`num-${i}`);
+            if (nBox && (nBox.classList.contains('num-fertig') || nBox.classList.contains('num-gelesen'))) fertigeSektoren++;
+        }
+
+        if (ebene === 2) {
+            btnNext.style.visibility = 'hidden'; 
+            sigGelb.classList.add('signal-aktiv'); 
+        } else {
+            sigGelb.classList.remove('signal-aktiv');
+        }
+
+        if (isSchöpfer || fertigeSektoren >= 22) {
+            sigRot.classList.add('signal-aktiv');
+            sigRot.style.opacity = "1";
+            sigRot.style.cursor = "pointer";
+            sigRot.onclick = portalZuEbene4;
+        } else {
+            sigRot.classList.remove('signal-aktiv');
+            sigRot.style.opacity = "0.2"; 
+            sigRot.style.cursor = "default";
+            sigRot.onclick = function() { alert("Der Videobeweis ist erst nach 22 Sektoren offen."); };
+        }
+
+        updateDots(); 
+        startRotation();
     }
 
     function aktiviereKandidatenLicht() {
@@ -528,99 +570,65 @@ async function sichereAnkerUndStarteScan(id, themaName) {
     function showDashboard() { ebene = 1; clearInterval(wechselInterval); document.getElementById('page-skelett').style.display = 'none'; document.getElementById('dashboard').style.display = 'flex'; updateUI(); updateNumColors(); }
 
     // --- CHAT LOGIK & GEDÄCHTNIS ---
-    let kollektivesGedachtnis = JSON.parse(localStorage.getItem('mm_chat_history')) || [];
     let istSendenAktiv = false;
 
-async function registriereSenden() { 
-    if (istSendenAktiv) return; 
-    
-    const input = document.getElementById('chat-input');
-    const chatBox = document.getElementById('chat-box');
-    const userText = input.value.trim(); 
-    if (userText === "") return; 
+    async function registriereSenden() { 
+        if (istSendenAktiv) return; 
+        const input = document.getElementById('chat-input');
+        const chatBox = document.getElementById('chat-box');
+        const userText = input.value.trim(); 
+        if (userText === "") return; 
 
-    // --- DIE SCHÖPFER-HINTERTÜR ---
-    if (userText.startsWith("!!")) {
-        const passwort = userText.substring(2);
-        localStorage.setItem('mm_creator_key', passwort);
-        alert("Identität für dieses Gerät gespeichert!");
-        input.value = "";
-        return; 
+        istSendenAktiv = true; 
+        const email = document.getElementById('db-anker-mail').value.trim();
+        const userRole = (email.toLowerCase() === "mmcommunity22@gmail.com") ? "SCHÖPFER (Goran)" : "USER";
+
+        chatBox.innerHTML += `<div style="margin-bottom: 35px; padding: 10px; border-left: 3px solid #ffd700; color: #ffd700; background: rgba(255, 215, 0, 0.05);">${userText}</div>`;
+        input.value = ""; 
+
+        const typingId = "typing-" + Date.now();
+        chatBox.innerHTML += `<div id="${typingId}" style="color:#003d8f; font-style:italic;">M&M KI prüft...</div>`;
+
+        try {
+            const kombiniertesWissen = `STATISCHES WISSEN: ${sektorTexte[tId]} \n AKTUELLER SCAN: ${aktuellerScanBericht}`;
+            const response = await fetch('https://mm-community.onrender.com/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    message: userText, 
+                    context: kombiniertesWissen, 
+                    role_context: userRole,
+                    sector_id: String(tId),
+                    history: kollektivesGedachtnis 
+                })
+            }); 
+            const data = await response.json();
+            document.getElementById(typingId).remove();
+            chatBox.innerHTML += `<div class="ki-antwort" style="background: rgba(0, 61, 143, 0.15); padding: 15px; border-radius: 8px; margin-bottom: 40px; border-left: 3px solid #003d8f;">${data.reply}</div>`;
+            kollektivesGedachtnis.push({ "role": "user", "parts": [{ "text": userText }] });
+            kollektivesGedachtnis.push({ "role": "model", "parts": [{ "text": data.reply }] });
+        } catch (error) { console.error(error); }
+        finally { istSendenAktiv = false; chatBox.scrollTop = chatBox.scrollHeight; }
     }
 
-    istSendenAktiv = true; 
+    function updateNumColors() {
+        const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
+        let aktuellerSektor = 0; 
+        const isSchöpfer = (email === "mmcommunity22@gmail.com");
 
-    // Identitäts-Check
-    const gespeicherterSchlüssel = localStorage.getItem('mm_creator_key');
-    let userRole = "standard_user";
-
-    if (userText.toLowerCase().includes("schöpfer") || userText.toLowerCase().includes("admin")) {
-        // Ersetze 'DEIN_PASSWORT' durch dein geheimes Wort
-        if (gespeicherterSchlüssel === 'DEIN_PASSWORT') {
-            userRole = "schöpfer_bestätigt";
-        } else {
-            userRole = "hochstapler_verdacht";
-        }
+        themen.forEach((_, i) => {
+            const nBox = document.getElementById(`num-${i}`);
+            if (!nBox) return;
+            if (isSchöpfer) {
+                nBox.className = "num num-neutral"; 
+            } else {
+                if (i < aktuellerSektor) nBox.className = "num num-fertig";
+                else if (i === aktuellerSektor) nBox.className = "num num-gelesen";
+                else if (i === aktuellerSektor + 1) nBox.className = "num num-offen";
+                else nBox.className = "num num-neutral";
+            }
+        });
     }
-
-    // Anzeige im Chat (Goran Schöpfer Layout)
-    chatBox.innerHTML += `<div style="margin-bottom: 35px; padding: 10px; border-left: 3px solid #ffd700; color: #ffd700;"><strong>Goran (Schöpfer):</strong> ${userText}</div>`;
-    input.value = ""; 
-
-    const typingId = "typing-" + Date.now();
-    chatBox.innerHTML += `<div id="${typingId}" style="color:#003d8f; font-style:italic;">M&M KI prüft...</div>`;
-    
-    try {
-        const kombiniertesWissen = `STATISCHES WISSEN: ${sektorTexte[tId]} \n\n AKTUELLER SCAN: ${aktuellerScanBericht}`;
-        
-        const response = await fetch('https://mm-community.onrender.com/chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                message: userText, 
-                context: kombiniertesWissen, 
-                role_context: userRole, 
-                sector_id: String(tId),
-                history: kollektivesGedachtnis 
-            })
-        }); 
-
-        const data = await response.json();
-        const typingElement = document.getElementById(typingId);
-        if (typingElement) typingElement.remove();
-        
-        // KI-Antwort Design
-        chatBox.innerHTML += `<div class="ki-antwort" style="background: rgba(0, 61, 143, 0.15); padding: 15px; border-radius: 8px; margin-bottom: 40px; border-left: 3px solid #003d8f; color: #ffffff; line-height: 1.6;">${data.reply}</div>`;
-
-        // Gedächtnis-Speicherung
-        kollektivesGedachtnis.push({ "role": "user", "parts": [{ "text": userText }] });
-        kollektivesGedachtnis.push({ "role": "model", "parts": [{ "text": data.reply }] });
-        localStorage.setItem('mm_chat_history', JSON.stringify(kollektivesGedachtnis));
-
-        if (interaktionsZaehler[tId] < 20) interaktionsZaehler[tId] += 5; 
-        updateNumColors();
-
-    } catch (error) { 
-        console.error("Fehler beim Senden:", error);
-        const typingElement = document.getElementById(typingId);
-        if (typingElement) typingElement.innerHTML = "Verbindung unterbrochen...";
-    } finally {
-        istSendenAktiv = false;
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
-}
-
-function updateNumColors() {
-    themen.forEach((_, i) => {
-        const nBox = document.getElementById(`num-${i}`);
-        if (nBox) {
-            if (interaktionsZaehler[i] >= 20) nBox.className = "num num-fertig";
-            else if (interaktionsZaehler[i] > 0) nBox.className = "num num-offen";
-            else if (geleseneThemen.has(i)) nBox.className = "num num-gelesen";
-            else nBox.className = "num num-neutral";
-        }
-    });
-}
 
     function startRotation() { 
         clearInterval(wechselInterval); const bg = document.getElementById('werbe-bg'); if(!bg) return; setNewImage(bg);
@@ -633,50 +641,119 @@ function updateNumColors() {
         element.classList.remove('bild-aktiv'); void element.offsetWidth; element.classList.add('bild-aktiv'); 
     }
 
-    // --- VIDEO-KONFERENZ STABILISIERUNG (FIX FÜR INTERNETCAFÉ-TEST) ---
-    const peerConfiguration = {
-        iceServers: [{ urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'] }]
-    };
+    // --- ANKER & VERIFIZIERUNG ---
+    async function sichereAnkerUndStarteScan() {
+        const emailInput = document.getElementById('db-anker-mail');
+        const email = emailInput.value.trim().toLowerCase();
+        if (!email || !email.includes('@')) { alert("Bitte eine gültige E-Mail eingeben."); return; }
+        try { await fetch('https://mm-community.onrender.com/send-code', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email }) }); } catch (e) {}
+        document.getElementById('email-step').style.display = 'none';
+        document.getElementById('code-step').style.display = 'flex';
+    }
 
-    // Nutze einen FESTEN Raumnamen basierend auf dem Sektor für den Test
-    let meinPeer = new Peer(`M-M-Sektor-${tId+1}-Beweis`, { config: peerConfiguration }); 
-    meinPeer.on('open', (id) => { console.log('Sektor-Anker aktiv: ' + id); });
-
-    async function starteVideoKonferenz() {
-        const meinSlot = document.getElementById('v-slot-1');
-        const partnerSlot = document.getElementById('v-slot-2');
-        if (!meinSlot) return;
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover; background:#000;"></video>`;
-            const videoElement = document.getElementById('user-video');
-            videoElement.srcObject = stream;
-            videoElement.play();
-
-            // Automatische Verbindung zum Sektor-Raum (Der "Anker")
-            // Wenn du im Café bist, ruft dieser Teil dein Wohnzimmer an
-            meinPeer.on('call', (call) => {
-                call.answer(stream);
-                call.on('stream', (remoteStream) => {
-                    partnerSlot.innerHTML = `<video id="remote-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover; background:#000;"></video>`;
-                    document.getElementById('remote-video').srcObject = remoteStream;
-                });
-            });
-
-            // Versuch, den existierenden Partner (dein Wohnzimmer) zu finden
-            const call = meinPeer.call(`M-M-Sektor-${tId+1}-Beweis`, stream);
-            if(call) {
-                call.on('stream', (remoteStream) => {
-                    partnerSlot.innerHTML = `<video id="remote-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover; background:#000;"></video>`;
-                    document.getElementById('remote-video').srcObject = remoteStream;
-                });
-            }
-
-        } catch (err) {
-            meinSlot.innerHTML = `<div style="color:#ff0000; font-size:10px; padding:10px; text-align:center;">KAMERA-ZUGRIFF FEHLT!</div>`;
+    async function bestatigeCode() {
+        const codeInput = document.getElementById('verification-code');
+        const emailInput = document.getElementById('db-anker-mail');
+        const code = codeInput.value.trim();
+        const email = emailInput.value.trim().toLowerCase(); 
+        if (code.length === 6) {
+            try {
+                const response = await fetch('https://mm-community.onrender.com/verify-access', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email, code: code }) });
+                const result = await response.json();
+                if (result.success) {
+                    ebene = 1; 
+                    if (result.role === 'admin' || email === "mmcommunity22@gmail.com") { aktiviereAdminPanel(); }
+                    document.getElementById('code-step').style.display = 'none'; 
+                    document.getElementById('email-step').style.display = 'flex'; 
+                    updateNumColors(); showInfo(themen[0], 0); 
+                } else { alert("Schlüssel ungültig."); }
+            } catch (e) { alert("Server-Fehler."); }
         }
     }
 
-    window.onload = () => updateUI(); 
-</script>
+    function pruefeZugang(thema, id) {
+        if (ebene === 0) { alert("Bitte zuerst Code bestätigen!"); return; }
+        showInfo(thema, id);
+    }
 
+    // --- ADMIN PANEL & REGLER ---
+    function aktiviereAdminPanel() {
+        document.getElementById('admin-panel-haut').style.display = 'block';
+        ladeAdminStats();
+        erstelleSektorenSteuerung();
+    }
+
+    async function ladeAdminStats() {
+        const adminBoxen = document.querySelectorAll("#admin-panel-haut div div");
+        const userBox = adminBoxen[1];
+        try {
+            const response = await fetch('https://mm-community.onrender.com/admin/stats');
+            const data = await response.json();
+            if (data.success) { userBox.innerHTML = `<h3 style="color: #0088ff;">USER-VERWALTUNG</h3><p>Anker: <span style="font-size: 2rem; color: #ffd700;">${data.total_souls}</span></p><p style="font-size: 0.6rem;">Live MongoDB</p>`; }
+        } catch (e) { userBox.innerHTML = "Fehler..."; }
+    }
+
+    function erstelleSektorenSteuerung() {
+        const steuerungsBox = document.querySelector("#admin-panel-haut div div:first-child");
+        steuerungsBox.innerHTML = `<h3 style="color: #0088ff;">SEKTOR-REGLER (BETA)</h3>`;
+        const btnContainer = document.createElement('div');
+        btnContainer.style = "display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 15px;";
+        for (let i = 0; i < 22; i++) {
+            const btn = document.createElement('button');
+            btn.innerText = i+1;
+            btn.style = "background: #003d8f; color: #fff; border: 1px solid #fff; padding: 10px; cursor: pointer; border-radius: 4px;";
+            btn.onclick = function() { 
+                const istGesperrt = btn.style.backgroundColor === 'rgb(255, 0, 0)';
+                schalteSektor(i, istGesperrt ? 'open' : 'closed');
+                btn.style.backgroundColor = istGesperrt ? '#003d8f' : '#ff0000';
+            };
+            btnContainer.appendChild(btn);
+        }
+        steuerungsBox.appendChild(btnContainer);
+    }
+
+    async function schalteSektor(id, status) {
+        const email = document.getElementById('db-anker-mail').value.trim();
+        await fetch('https://mm-community.onrender.com/admin/update-sector', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email, sector_id: id, status: status }) });
+    }
+
+  // --- VIDEO SYSTEM (AKTIVIERT) ---
+    const peerConfiguration = { iceServers: [{ urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'] }] };
+    let meinPeer = new Peer(`M-M-Sektor-${tId+1}-Beweis`, { config: peerConfiguration });
+
+    async function starteVideoKonferenz() {
+        const meinSlot = document.getElementById('v-slot-1');
+        const partnerSlot = document.getElementById('v-slot-2'); // Der zweite Slot für das Gegenüber
+        if (!meinSlot) return;
+
+        try {
+            // 1. Zugriff auf Kamera und Mikrofon anfordern
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            
+            // 2. Dein Video im ersten Slot anzeigen
+            meinSlot.innerHTML = `<video id="user-video" autoplay playsinline muted style="width:100%; height:100%; object-fit:cover; background:#000; border: 1px solid #003d8f;"></video>`;
+            const videoElement = document.getElementById('user-video');
+            videoElement.srcObject = stream;
+
+            // 3. Peer-Verbindung: Auf Anruf warten (Wohnzimmer ruft an)
+            meinPeer.on('call', (call) => {
+                call.answer(stream); // Deinen Stream mitschicken
+                call.on('stream', (remoteStream) => {
+                    // Das Bild vom Wohnzimmer im zweiten Slot zeigen
+                    if(partnerSlot) {
+                        partnerSlot.innerHTML = `<video id="remote-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover; background:#000; border: 1px solid #ffd700;"></video>`;
+                        document.getElementById('remote-video').srcObject = remoteStream;
+                    }
+                });
+            });
+
+            console.log("Kamera-System aktiv im Sektor " + (tId + 1));
+
+        } catch (err) {
+            console.error("Kamera-Fehler:", err);
+            meinSlot.innerHTML = `<div style="color:red; font-size: 12px; padding: 10px;">ZUGRIFF VERWEIGERT: Bitte Kamera in den Browser-Einstellungen erlauben!</div>`;
+        }
+    }
+
+    updateNumColors();
+</script>
