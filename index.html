@@ -603,15 +603,13 @@ async function showInfo(t, id) {
     // --- CHAT LOGIK & GEDÄCHTNIS ---
     let istSendenAktiv = false;
        
-    function renderChatHistory() {
+  function renderChatHistory() {
     const chatBox = document.getElementById('chat-box');
-    chatBox.innerHTML = ""; // Fenster leeren für sauberen Neuaufbau
-    
+    chatBox.innerHTML = ""; 
     if (kollektivesGedachtnis.length === 0) {
         chatBox.innerHTML = `<i>System: Dialog für Raum ${tId+1} bereit...</i>`;
         return;
     }
-
     kollektivesGedachtnis.forEach(msg => {
         const istUser = msg.role === "user";
         chatBox.innerHTML += istUser 
@@ -619,7 +617,7 @@ async function showInfo(t, id) {
             : `<div class="ki-antwort" style="background: rgba(0, 61, 143, 0.15); padding: 15px; border-radius: 8px; margin-bottom: 40px; border-left: 3px solid #003d8f;">${msg.parts[0].text}</div>`;
     });
     chatBox.scrollTop = chatBox.scrollHeight;
-   }
+}
    async function registriereSenden() { 
     if (istSendenAktiv) return; 
     const input = document.getElementById('chat-input');
