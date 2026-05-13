@@ -455,7 +455,7 @@
         } catch (error) { textFeld.innerText = "Fehler: Verbindung unterbrochen."; }
     }
 
-   async function showInfo(t, id) { 
+async function showInfo(t, id) { 
     tId = id; 
     aktuellesThema = t; 
     
@@ -463,19 +463,19 @@
     document.getElementById('dashboard').style.display = 'none'; 
     document.getElementById('page-skelett').style.display = 'flex'; 
     
-    // WICHTIG: Den alten Chatverlauf im Fenster wieder sichtbar machen
+    // WICHTIG: Das Gedächtnis im Fenster laden
     renderChatHistory(); 
 
     ebene = 2; 
     geleseneThemen.add(id); 
     
-    // Den Scan für den neuen Sektor starten
+    // Den Scan starten
     starteKIErmittlung(id, t);
     
-    // Farben aktualisieren (Anker MongoDB)
-    const email = document.getElementById('db-anker-mail').value.trim();
+    // Farben & UI Refresh
     updateNumColors(id); 
-    updateUI();
+    updateUI(); 
+}
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
     
