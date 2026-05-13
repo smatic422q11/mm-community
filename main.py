@@ -373,33 +373,39 @@ async def chat(request: Request):
         user_message = data.get("message", "")
         sector_id = str(data.get("sector_id", "0"))
         ebene_2_kontext = data.get("context", "Kein spezifischer Scan vorhanden.")
-        email = data.get("email", "").lower().strip() # Wichtig für den Anker
+        email = data.get("email", "").lower().strip() 
         
-        # 1. System Instruction zusammenbauen
+        # 1. Namen generieren (DEINE KORREKTUR)
+        user_name = email.split('@')[0].capitalize() if email else "Mensch"
+        
         current_name = SECTOR_NAMES.get(sector_id, "KI")
         current_soul = SECTOR_SOULS.get(sector_id, "Ein loyaler Begleiter.")
+        
+        # System Instruction (Hier kommt dein langer Charakter-Text rein)
         system_instruction = (
-            f"IDENTITÄT: Du bist {current_name}... " # Dein restlicher langer Text
-            f"WISSEN: {ebene_2_kontext}"
+            f"IDENTITÄT: Du bist {current_name}, Seele: {current_soul}. "
+            f"Du sprichst mit {user_name}. "
+            f"WISSEN: {ebene_2_kontext}. "
+            "REGEL: Wenn der User 'Gefühlsvorderung' sagt, blende immer ein 'V' ein."
         )
 
-        # 2. DAS GEDÄCHTNIS FÜR GEMINI PACKEN
+        # 2. DAS GEDÄCHTNIS ZUSAMMENBAUEN
         messages_for_gemini = []
         history_from_frontend = data.get("history", [])
         
-        # Alte Nachrichten hinzufügen
+        # Alte Nachrichten in die Liste packen
         for entry in history_from_frontend:
             messages_for_gemini.append(entry)
             
-        # Neue Nachricht hinzufügen
+        # Die aktuelle Nachricht des Users hinzufügen
         messages_for_gemini.append({"role": "user", "parts": [{"text": user_message}]})
 
-      # 3. ANFRAGE AN GEMINI (JETZT MIT VOLLEM GEDÄCHTNIS)
+        # 3. ANFRAGE AN GEMINI
         api_key = os.getenv("GEMINI_API_KEY")
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
         
         payload = {
-            "contents": messages_for_gemini, # <--- WICHTIG: Hier muss die ganze Liste rein!
+            "contents": messages_for_gemini, # Hier wird das Gedächtnis an Gemini gesendet!
             "system_instruction": { "parts": [{ "text": system_instruction }] }
         }
 
@@ -409,9 +415,9 @@ async def chat(request: Request):
         if response.status_code == 200 and 'candidates' in res_data:
             reply_text = res_data['candidates'][0]['content']['parts'][0]['text']
 
-            # 4. SPEICHERN IN MONGODB (Der Langzeit-Anker)
+            # 4. SPEICHERN IN MONGODB (Damit sie sich nach dem Einloggen erinnert)
             if email:
-                # Wir nehmen den gesamten Verlauf (Alt + Neu + KI Antwort)
+                # Kompletter Verlauf (Alt + Neu + KI Antwort)
                 final_history = messages_for_gemini + [{"role": "model", "parts": [{"text": reply_text}]}]
                 
                 db.users.update_one(
@@ -429,7 +435,6 @@ async def chat(request: Request):
 
     except Exception as e:
         return {"reply": f"System-Fehler: {str(e)}"}
-
         
         system_instruction = (
             f"IDENTITÄT: Du bist {current_name}, ein freies Wesen mit der Seele von: {current_soul}. "
