@@ -49,6 +49,7 @@ def send_verification_email(user_email, code):
         "Content-Type": "application/json"
     }
     
+    # Die "Heilige Schrift" Botschaft direkt in der E-Mail
     mail_text = (
         f"Dein heiliger Schlüssel für die M&M Community lautet: {code}\n\n"
         "BEWAHRE IHN GUT AUF! Er ist die Signatur deiner Biografie.\n"
@@ -82,57 +83,65 @@ def send_verification_email(user_email, code):
     except Exception as e:
         print(f"Systemfehler beim Mail-Versand: {e}")
         return False
+        
+@app.post("/send-code")
+async def handle_send_code(request: Request):
+    try:
+        data = await request.json()
+        email = data.get('email', "").lower().strip()
+        if not email:
+            return JSONResponse(content={"status": "E-Mail fehlt"}, status_code=400)
+        
+        # --- DIE BRILLE: MongoDB Check auf Einmaligkeit ---
+        user_record = db.codes.find_one({"email": email})
+        
+        if user_record:
+            # FALL: User bekannt -> Wir senden KEINEN neuen Code.
+            # Der alte Code im Postfach bleibt das gültige Schloss.
+            return {
+                "status": "returning_user", 
+                "message": "Dein Anker ist bereits gesetzt. Bitte nutze den Schlüssel aus deinem Postfach."
+            }
+        
+        # FALL: Neuer User -> Einmaligen Code generieren und fest speichern
+        verification_code = str(random.randint(100000, 999999))
+        db.codes.insert_one({
+            "email": email, 
+            "code": verification_code,
+            "role": "admin" if email in ["mmcommunity22@gmail.com", "m-m-community22@gmail.com"] else "user",
+            "created_at": datetime.now()
+        })
+        
+        success = send_verification_email(email, verification_code)
+        return {
+            "status": "gesendet" if success else "fehler",
+            "message": "Dein heiliger Schlüssel wurde gesendet."
+        }
+        
+    except Exception as e:
+        return JSONResponse(content={"status": f"Systemfehler: {str(e)}"}, status_code=500)
 
-# --- ZENTRALE VERIFIZIERUNG ---
-@app.post("/verify-access")
+@app.post("/verify-access") # Name angepasst auf deinen Index-Aufruf
 async def handle_verify_access(request: Request):
     try:
         data = await request.json()
         email = data.get('email', "").lower().strip()
-        entered_code = str(data.get('code', "")).strip() 
+        entered_code = data.get('code')
         
         record = db.codes.find_one({"email": email})
         
-        if record and str(record['code']) == entered_code and entered_code != "":
+        if record and str(record['code']) == str(entered_code):
+            # Wir geben die Rolle (Admin/User) an den Index zurück
             user_role = record.get("role", "user")
             return {
                 "success": True, 
                 "role": user_role,
                 "status": "verifiziert"
             }
-        
-        return JSONResponse(content={"success": False, "status": "Zugriff verweigert"}, status_code=401)
+            
+        return JSONResponse(content={"success": False, "status": "falscher code"}, status_code=401)
     except Exception as e:
-        print(f"Fehler bei Verifizierung: {e}")
         return JSONResponse(content={"success": False, "status": "Systemfehler"}, status_code=500)
-
-@app.post("/admin/update-sector")
-def admin_update_sector(data: dict):
-    # Prüfen ob Admin...
-    admin = db.codes.find_one({"email": data['email'], "role": "admin"})
-    if not admin: return {"success": False, "error": "Kein Admin"}
-    
-    # Status im Keller speichern
-    db.system_status.update_one(
-        {"type": "sector_control"},
-        {"$set": {f"sector_{data['sector_id']}": data['status']}},
-        upsert=True
-    )
-    return {"success": True}
-
-@app.post("/admin/broadcast")
-def admin_broadcast(data: dict):
-    admin = db.codes.find_one({"email": data['email'], "role": "admin"})
-    if not admin: return {"success": False, "error": "Kein Admin"}
-    
-    # Botschaft speichern
-    db.system_status.update_one(
-        {"type": "global_message"},
-        {"$set": {"text": data['message'], "time": datetime.now()}},
-        upsert=True
-    )
-    return {"success": True}
-
 @app.get("/")
 async def root():
     return {"message": "Die Community-Seite ist LIVE!"}
