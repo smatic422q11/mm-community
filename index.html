@@ -625,20 +625,27 @@ body: JSON.stringify({
     const typingId = "typing-" + Date.now();
     chatBox.innerHTML += `<div id="${typingId}" style="color:#003d8f; font-style:italic;">M&M KI prüft...</div>`;
     
-    try {
-        const kombiniertesWissen = `STATISCHES WISSEN: ${sektorTexte[tId]} \n\n AKTUELLER SCAN: ${aktuellerScanBericht}`;
+   try {
+        // --- DAS GEDÄCHTNIS AKTIVIEREN ---
+        // Wir wandeln den bisherigen Verlauf in lesbaren Text um
+        let verlaufText = kollektivesGedachtnis.map(m => 
+            (m.role === "user" ? "User: " : "KI: ") + m.parts[0].text
+        ).join("\n");
+
+        // Wir fügen den Verlauf dem kombinierten Wissen hinzu
+        const kombiniertesWissen = `IDENTITÄT: ${userRole}. \n SEKTOR: ${tId+1}. \n WISSEN: ${sektorTexte[tId]} \n\n AKTUELLER SCAN: ${aktuellerScanBericht} \n\n GEDÄCHTNIS (Bisheriger Verlauf): \n${verlaufText}`;
         
         const response = await fetch('https://mm-community.onrender.com/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
                 message: userText, 
-                context: kombiniertesWissen, 
+                context: kombiniertesWissen, // Jetzt ist das Gedächtnis hier drin!
                 role_context: userRole, 
-                sector_id: String(tId),
-                history: kollektivesGedachtnis 
+                sector_id: String(tId)
+                // history lassen wir weg, da das Backend es nicht liest
             })
-        }); 
+        });
 
         const data = await response.json();
         const typingElement = document.getElementById(typingId);
