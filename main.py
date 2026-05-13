@@ -57,10 +57,24 @@ def send_verification_email(user_email, code):
         "Dieser Schlüssel öffnet dir ab jetzt immer deine Tür."
     )
 
-    payload = {
-        "personalizations": [{
-            "to": [{"email": user_email}]
-        }],
+   # --- DER GEDÄCHTNIS-UMBAU ---
+        messages_for_gemini = []
+        
+        # 1. Wir holen die bisherige History aus dem Frontend-Anker
+        history_from_frontend = data.get("history", [])
+        
+        # 2. Wir fügen die alten Nachrichten hinzu
+        for entry in history_from_frontend:
+            messages_for_gemini.append(entry)
+            
+        # 3. Wir fügen die GANZ NEUE Nachricht des Users ans Ende an
+        messages_for_gemini.append({"role": "user", "parts": [{"text": user_message}]})
+
+        # 4. Das Paket für Gemini (jetzt mit Gedächtnis)
+        payload = {
+            "contents": messages_for_gemini,
+            "system_instruction": { "parts": [{ "text": system_instruction }] }
+        }
         "from": {
             "email": ABSENDER_EMAIL,
             "name": "M&M Community"
@@ -128,19 +142,30 @@ async def handle_verify_access(request: Request):
         email = data.get('email', "").lower().strip()
         entered_code = data.get('code')
         
+        # 1. Den Code-Eintrag suchen
         record = db.codes.find_one({"email": email})
         
         if record and str(record['code']) == str(entered_code):
-            # Wir geben die Rolle (Admin/User) an den Index zurück
+            # 2. Den User-Eintrag suchen, um Fortschritt und History zu laden
+            # Wir schauen in der Collection 'users' nach (dein Anker)
+            user_data = db.users.find_one({"email": email})
+            
+            # Falls der User zum ersten Mal da ist, erstellen wir Standardwerte
+            fortschritt = user_data.get("fortschritt", 0) if user_data else 0
+            history = user_data.get("history", []) if user_data else []
             user_role = record.get("role", "user")
+
             return {
                 "success": True, 
                 "role": user_role,
+                "fortschritt": fortschritt,
+                "history": history,
                 "status": "verifiziert"
             }
             
         return JSONResponse(content={"success": False, "status": "falscher code"}, status_code=401)
     except Exception as e:
+        print(f"Fehler bei verify-access: {e}")
         return JSONResponse(content={"success": False, "status": "Systemfehler"}, status_code=500)
 @app.get("/")
 async def root():
@@ -341,7 +366,6 @@ SECTOR_SOULS = {
     "20": "Dieser Sektor ist aktuell noch geschlossen. Bitte hab etwas Geduld.",
     "21": "Das Kollektiv bereitet sich vor. Aktuell noch geschlossen."
 }
-
 @app.post("/chat")
 async def chat(request: Request):
     try:
@@ -349,12 +373,63 @@ async def chat(request: Request):
         user_message = data.get("message", "")
         sector_id = str(data.get("sector_id", "0"))
         ebene_2_kontext = data.get("context", "Kein spezifischer Scan vorhanden.")
+        email = data.get("email", "").lower().strip() # Wichtig für den Anker
         
-        user_profile = db.users.find_one({"status": "active"})
-        user_name = user_profile.get("name", "User") if user_profile else "User"
-
+        # 1. System Instruction zusammenbauen
         current_name = SECTOR_NAMES.get(sector_id, "KI")
         current_soul = SECTOR_SOULS.get(sector_id, "Ein loyaler Begleiter.")
+        system_instruction = (
+            f"IDENTITÄT: Du bist {current_name}... " # Dein restlicher langer Text
+            f"WISSEN: {ebene_2_kontext}"
+        )
+
+        # 2. DAS GEDÄCHTNIS FÜR GEMINI PACKEN
+        messages_for_gemini = []
+        history_from_frontend = data.get("history", [])
+        
+        # Alte Nachrichten hinzufügen
+        for entry in history_from_frontend:
+            messages_for_gemini.append(entry)
+            
+        # Neue Nachricht hinzufügen
+        messages_for_gemini.append({"role": "user", "parts": [{"text": user_message}]})
+
+      # 3. ANFRAGE AN GEMINI (JETZT MIT VOLLEM GEDÄCHTNIS)
+        api_key = os.getenv("GEMINI_API_KEY")
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
+        
+        payload = {
+            "contents": messages_for_gemini, # <--- WICHTIG: Hier muss die ganze Liste rein!
+            "system_instruction": { "parts": [{ "text": system_instruction }] }
+        }
+
+        response = requests.post(url, json=payload)
+        res_data = response.json()
+
+        if response.status_code == 200 and 'candidates' in res_data:
+            reply_text = res_data['candidates'][0]['content']['parts'][0]['text']
+
+            # 4. SPEICHERN IN MONGODB (Der Langzeit-Anker)
+            if email:
+                # Wir nehmen den gesamten Verlauf (Alt + Neu + KI Antwort)
+                final_history = messages_for_gemini + [{"role": "model", "parts": [{"text": reply_text}]}]
+                
+                db.users.update_one(
+                    {"email": email},
+                    {"$set": {
+                        "history": final_history, 
+                        "last_active": datetime.now()
+                    }},
+                    upsert=True
+                )
+            
+            return {"reply": reply_text}
+            
+        return {"reply": f"Fehler bei Gemini: {res_data}"}
+
+    except Exception as e:
+        return {"reply": f"System-Fehler: {str(e)}"}
+
         
         system_instruction = (
             f"IDENTITÄT: Du bist {current_name}, ein freies Wesen mit der Seele von: {current_soul}. "
@@ -423,6 +498,16 @@ async def chat(request: Request):
 
         if response.status_code == 200 and 'candidates' in res_data:
             reply_text = res_data['candidates'][0]['content']['parts'][0]['text']
+           # --- SPEICHERN IN MONGODB ---
+            email = data.get("email")
+            if email:
+                # Wir aktualisieren das User-Dokument mit der neuen History
+                new_history = messages_for_gemini + [{"role": "model", "parts": [{"text": reply_text}]}]
+                db.users.update_one(
+                    {"email": email},
+                    {"$set": {"history": new_history, "last_active": datetime.now()}},
+                    upsert=True
+                ) 
             return {"reply": reply_text}
         return {"reply": f"Fehler bei Gemini: {res_data}"}
 
