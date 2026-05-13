@@ -456,18 +456,26 @@
 
     function portalZuEbene3() { if (document.getElementById('sig-r4').classList.contains('signal-aktiv')) { ebene = 3; updateUI(); } }
     
-    function portalZuEbene4() {
-        const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
-        const isSchöpfer = (email === "mmcommunity22@gmail.com");
-        let fertigeSektoren = 0;
-        for (let i = 0; i < 22; i++) {
-            const nBox = document.getElementById(`num-${i}`);
-            if (nBox && (nBox.classList.contains('num-fertig') || nBox.classList.contains('num-gelesen'))) fertigeSektoren++;
-        }
-        if (isSchöpfer || fertigeSektoren >= 22) { ebene = 4; updateUI(); starteVideoKonferenz(); } 
-        else { alert("Der Videobeweis ist erst nach 22 Sektoren offen."); }
+   function portalZuEbene4() {
+    const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
+    const isSchöpfer = (email === "mmcommunity22@gmail.com");
+    let fertigeSektoren = 0;
+    
+    for (let i = 0; i < 22; i++) {
+        const nBox = document.getElementById(`num-${i}`);
+        if (nBox && (nBox.classList.contains('num-fertig') || nBox.classList.contains('num-gelesen'))) fertigeSektoren++;
     }
 
+    if (isSchöpfer || fertigeSektoren >= 22) { 
+        ebene = 4; 
+        updateUI(); 
+        // starteVideoKonferenz(); <-- DIESE ZEILE MUSS GELÖSCHT WERDEN!
+        console.log("Ebene 4 bereit. Kamera wartet auf grünen Balken.");
+    } 
+    else { 
+        alert("Der Videobeweis ist erst nach 22 Sektoren offen."); 
+    }
+}
     function portalZuEbene5() { if (document.getElementById('sig-l1').classList.contains('elite-aktiv') && ebene !== 4) { ebene = 5; updateUI(); } }
 
     function updateUI() {
