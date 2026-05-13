@@ -601,14 +601,11 @@ async function registriereSenden() {
 const email = document.getElementById('db-anker-mail').value.trim();
 
 // Wir fügen die Identität direkt in den Kontext für die KI ein
-const userRole = (email.toLowerCase() === "mmcommunity22@gmail.com") ? "SCHÖPFER (Goran)" : "USER";
+let userRole = (email.toLowerCase() === "mmcommunity22@gmail.com") ? "SCHÖPFER (Goran)" : "USER";
 
 // ... im fetch-Aufruf unter 'message' oder 'context':
-body: JSON.stringify({ 
-    message: userText, 
-    context: `IDENTITÄT: ${userRole}. \n SEKTOR: ${tId+1}. \n WISSEN: ${sektorTexte[tId]}`,
-    // ...
-})
+// (Dieser Teil wird unten im fetch-Body angewendet)
+
     if (userText.toLowerCase().includes("schöpfer") || userText.toLowerCase().includes("admin")) {
         // Wir prüfen live die E-Mail im Feld
         if (email.toLowerCase().includes("goran")) { 
@@ -633,7 +630,7 @@ body: JSON.stringify({
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
                 message: userText, 
-                context: kombiniertesWissen, 
+                context: `IDENTITÄT: ${userRole}. \n SEKTOR: ${tId+1}. \n WISSEN: ${sektorTexte[tId]}`, 
                 role_context: userRole, 
                 sector_id: String(tId),
                 history: kollektivesGedachtnis 
@@ -663,7 +660,6 @@ body: JSON.stringify({
         chatBox.scrollTop = chatBox.scrollHeight;
     }
 }
-
 function updateNumColors() {
     // 1. Der Anker: Wir holen die Mail direkt aus dem Eingabefeld
     const email = document.getElementById('db-anker-mail').value.trim().toLowerCase();
