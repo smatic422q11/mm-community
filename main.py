@@ -78,43 +78,38 @@ async def handle_send_code(request: Request):
         if not email:
             return JSONResponse(content={"status": "E-Mail fehlt"}, status_code=400)
         
-        # 1. PRÜFUNG: Hat dieser Mensch schon einen heiligen Schlüssel?
         user_record = db.codes.find_one({"email": email})
         
         if user_record:
-            # FALL: User existiert. Wir schicken KEINE neue Mail, um 
-            # das Prinzip der Einmaligkeit zu schützen. 
-            # Der User muss in seinem Postfach nach der ersten Mail suchen.
+            # ÄNDERUNG: Statt abzubrechen, senden wir den EXISTIERENDEN Code erneut
+            verification_code = user_record['code']
+            success = send_verification_email(email, verification_code)
+            
             return {
-                "status": "returning_user", 
-                "message": "Dein Anker ist bereits gesetzt. Dein Schlüssel wurde dir bereits an dein Postfach gesendet. Er ist einmalig und wird kein zweites Mal verschickt."
+                "status": "gesendet" if success else "fehler",
+                "message": "Dein vorhandener Schlüssel wurde dir erneut zugesendet."
             }
         
-        # 2. FALL: Ganz neuer User -> Jetzt wird der Schlüssel für die Ewigkeit erschaffen
+        # Falls ganz neu:
         verification_code = str(random.randint(100000, 999999))
-        
-        # In MongoDB festschreiben
         db.codes.insert_one({
             "email": email, 
             "code": verification_code,
-            "role": "admin" if email in ["mmcommunity22@gmail.com", "m-m-community22@gmail.com"] else "user",
+            "role": "admin" if email in ["mmcommunity22@gmail.com"] else "user",
             "created_at": datetime.now(),
-            "history": [], # Leeres Gedächtnis zum Start
+            "history": [],
             "fortschritt": 0
         })
         
-        # 3. VERSAND: Jetzt geht die Mail wirklich raus
         success = send_verification_email(email, verification_code)
         
         return {
             "status": "gesendet" if success else "fehler",
-            "message": "Dein heiliger Schlüssel wurde erschaffen und an dich gesendet."
+            "message": "Dein heiliger Schlüssel wurde erschaffen und gesendet."
         }
-        
     except Exception as e:
-        print(f"Fehler im Send-Code: {e}")
+        print(f"Fehler: {e}")
         return JSONResponse(content={"status": "Systemfehler"}, status_code=500)
-        
 @app.post("/verify-access")
 async def handle_verify_access(request: Request):
     try:
