@@ -78,9 +78,18 @@ async def handle_send_code(request: Request):
         if not email:
             return JSONResponse(content={"status": "E-Mail fehlt"}, status_code=400)
         
+       # --- FLEXIBLE PRÜFUNG ---
         user_record = db.codes.find_one({"email": email})
+        
         if user_record:
-            return {"status": "returning_user", "message": "Dein Anker ist bereits gesetzt."}
+            # Der User existiert schon? Dann schicken wir den alten Code einfach nochmal!
+            existing_code = user_record.get('code')
+            success = send_verification_email(email, existing_code)
+            
+            return {
+                "status": "erneut_gesendet" if success else "fehler",
+                "message": "Dein Anker ist bereits gesetzt. Wir haben dir deinen Schlüssel erneut zugeschickt."
+            }
         
         verification_code = str(random.randint(100000, 999999))
         db.codes.insert_one({
