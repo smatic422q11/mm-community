@@ -434,9 +434,15 @@ async def get_live_ermittlung(sector_id: str, request: Request):
             f"Verwende eine Sprache, die den logischen Verstand umgeht – als Kämpfer und Heiler."
         )
         
+        payload = {
+            "contents": [{"parts": [{"text": prompt}]}]
+        }
+        
         api_key = os.getenv("GEMINI_API_KEY").strip().replace("[", "").replace("]", "")
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
-        response = requests.post(url, json={"contents": temporaere_nachrichten}, timeout=90)
+        
+        # Sende das payload anstatt der undefinierten Variable
+        response = requests.post(url, json=payload, timeout=90)
         
         if response.status_code == 200:
             raw_text = response.json()['candidates'][0]['content']['parts'][0]['text'].strip()
