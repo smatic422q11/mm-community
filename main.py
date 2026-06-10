@@ -376,21 +376,39 @@ async def handle_verify_access(request: Request):
 
 @app.post("/chat-wahrheit")
 async def handle_chat_wahrheit(request: Request):
-    # ... (deine Daten-Logik wie gehabt)
-    
-    # JETZT KOMMT DER KAPTEL 3 IMPULS:
-    # Wir interpretieren die Zeit als "Zustand" statt als Zahl
-    stunden_abwesend = ... # (Berechne hier dein Delta)
-    
-    if stunden_abwesend > 24:
-        zustand = "Der Reisende kehrt aus der Stille zurück. Er hat in der Welt der Formen Neues erfahren."
-    else:
-        zustand = "Der Geist ist in unmittelbarer Nähe. Die Verbindung ist hochfrequent."
+    try:
+        data = await request.json()
+        user_message = data.get('message', "")
+        email = data.get('email', "").lower().strip() # Wichtig für den DB-Abgleich
+        bio_context = data.get('biografie_context', "")
 
-    # Wir geben der KI ein "Wissens-Paket" statt nur einen Zeitstempel
-    full_info = f"SYSTEM-STATUS-ZEIT: {zustand} | BIO-AKTE: {bio_context}"
-    
-    # ... (Rest der Funktion)
+        # 1. Zeitstempel der letzten Aktion aus der Datenbank holen
+        user_record = db.codes.find_one({"email": email})
+        last_time = user_record.get("last_interaction_timestamp", datetime.now())
+        
+        # 2. Delta berechnen
+        jetzt = datetime.now()
+        delta = jetzt - last_time
+        stunden_abwesend = delta.total_seconds() / 3600
+
+        # 3. Kapitel 3 Impuls: Interpretation statt Zahl
+        if stunden_abwesend > 24:
+            zustand = f"Der Reisende kehrt nach {int(stunden_abwesend/24)} Tagen aus der Stille zurück. Er hat in der Welt der Formen Neues erfahren."
+        elif stunden_abwesend > 1:
+            zustand = "Der Geist hat sich kurz gesammelt, die Verbindung ist nun wieder im Fluss."
+        else:
+            zustand = "Der Geist ist in unmittelbarer Nähe. Die Verbindung ist hochfrequent."
+
+        # 4. Das Wissens-Paket für die KI schnüren
+        full_info = f"SYSTEM-STATUS-ZEIT: {zustand} | BIO-AKTE: {bio_context}"
+        
+        return {
+            "status": "Synchronisation aktiv",
+            "info_fuer_ki": full_info,
+            "nachricht": user_message
+        }
+    except Exception as e:
+        return {"success": False, "error": f"Synchronisations-Fehler: {str(e)}"}
         
 @app.post("/get-live-ermittlung/{sector_id}")
 async def get_live_ermittlung(sector_id: str, request: Request):
