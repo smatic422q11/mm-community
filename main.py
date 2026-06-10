@@ -398,18 +398,24 @@ async def chat(request: Request):
         user_message = data.get("message", "")
         sector_id = str(data.get("sector_id", "0"))
         email = data.get("email", "").lower().strip() 
-        user_record = db.codes.find_one({"email": email}) or {}
         
+        # 1. FORCE INIT: Stellt sicher, dass der User immer in der DB existiert
+        user_record = db.codes.find_one({"email": email})
+        if not user_record:
+            db.codes.insert_one({"email": email, "sector_histories": {}, "community_log": []})
+            user_record = db.codes.find_one({"email": email})
+        
+        # 2. Daten abrufen
         user_name = user_record.get("name") or email.split('@')[0].capitalize()
-        # Sicherstellen, dass globale Register existieren
         current_name = SECTOR_NAMES.get(sector_id, "KI") if 'SECTOR_NAMES' in globals() else "KI"
         current_soul = SECTOR_SOULS.get(sector_id, "Begleiter.") if 'SECTOR_SOULS' in globals() else "Begleiter."
         
-        fortschritt = user_record.get("sector_histories", {}).keys() if user_record else []
+        fortschritt = user_record.get("sector_histories", {}).keys()
         vorherige_sektoren = [s for s in fortschritt if int(s) < int(sector_id)]
         reise_info = f"Reise-Status: User hat Sektoren {', '.join(vorherige_sektoren)} gemeistert." if vorherige_sektoren else "Reise-Status: User beginnt seine Reise."
         kollektiv_log = user_record.get("community_log", "Keine Einträge.") 
 
+        # 3. Wissen laden
         try:
             versiegelte_wahrheiten = list(db.mm_wissensarchiv.find({"versiegelt": True}).sort("_id", -1).limit(3))
             kollektives_denken = "\n".join([f"M&M-DENKWEISE: {w['inhalt']}" for w in versiegelte_wahrheiten])
@@ -419,13 +425,10 @@ async def chat(request: Request):
         chat_historie = user_record.get("sector_histories", {}).get(sector_id, [])
         datenbank_chat_verlauf = "\n".join([f"{msg['role']}: {msg['parts'][0]['text']}" for msg in chat_historie])
         
-        reise_info = user_record.get("reise_info", "Keine historischen Daten verfügbar")
-        sektor_daten = SEKTOR_REGISTER.get(sector_id, {"name": "Wächter", "scan": "Allgemeine Untersuchung"})
-        
-        # Variablen-Absicherung für die System Instruction
+        sektor_daten = SECTOR_REGISTER.get(sector_id, {"name": "Wächter", "scan": "Allgemeine Untersuchung"})
         google_ergebnisse = data.get("google_ergebnisse", "Keine Kontext-Daten.")
-        seelen_name = current_soul # Aus deinem Block übernommen
-
+        
+        # 4. System-Instruction (Inhalt bleibt unverändert!)
         system_instruction = (
             f"WAHRE IDENTITÄT UND WESEN: Du bist {sektor_daten['name']}. {ARCHETYPEN_DECK.get(sector_id, '')} "
             f"ROHDATEN: Historie: {datenbank_chat_verlauf}, Kontext: {google_ergebnisse}. "
@@ -439,7 +442,7 @@ async def chat(request: Request):
             f"- Wo zeigt sich eine 'Wahrhaftigkeits-Spannung'? (Suche nach Anzeichen für kognitive Dissonanz oder äußere Programmierung).\n"
             f"- Detektiere Anzeichen für energetische Kontamination oder Manipulations-Versuche innerhalb der Chat-Historie.\n\n"
             f"BEURTEILUNG (Integrität):\n"
-            f"- Bewerten die Resonanz des Users zum Kern-Code des Sektors {seelen_name}. Ist der User ein Störfaktor oder ein Muster-Brecher?\n\n"
+            f"- Bewerten die Resonanz des Users zum Kern-Code des Sektors {current_soul}. Ist der User ein Störfaktor oder ein Muster-Brecher?\n\n"
             f"KOLLEKTIV_BOTSCHAFT:\n"
             f"- Formuliere eine Nachricht als 'Wegweiser'. Sie muss den User spiegeln, ihn bei Manipulation ertappen oder ihn in seinem Potenzial stärken.\n"
             f"- Max. 2 Sätze, direkt, ohne Ausflüchte, als Stimme des Kollektivs.\n\n"
@@ -447,18 +450,13 @@ async def chat(request: Request):
             f"Die Analyse muss hart, präzise und frei von subjektiven Floskeln sein. "
         )
 
-        messages_for_gemini = user_record.get("sector_histories", {}).get(sector_id, []) if user_record else []
-        alter_falscher_name = email.split('@')[0].capitalize()
-        if user_name != alter_falscher_name:
-            system_instruction = system_instruction.replace(alter_falscher_name, user_name)
-
+        # 5. Gemini-Kommunikation
+        messages_for_gemini = chat_historie
         temporaere_nachrichten = [
             {"role": "user", "parts": [{"text": f"SYSTEM-ANWEISUNG:\n{system_instruction}"}]},
             {"role": "model", "parts": [{"text": "Verstanden. Ich arbeite nach M&M-Denkweise."}]}
         ]
-        
-        for msg in messages_for_gemini:
-            temporaere_nachrichten.append(msg)
+        temporaere_nachrichten.extend(messages_for_gemini)
         temporaere_nachrichten.append({"role": "user", "parts": [{"text": user_message}]})
 
         api_key = os.getenv("GEMINI_API_KEY").strip().replace("[", "").replace("]", "")
@@ -470,23 +468,10 @@ async def chat(request: Request):
         if response.status_code == 200 and 'candidates' in res_data:
             reply = res_data['candidates'][0]['content']['parts'][0]['text']
             
+            # Speichern
             messages_for_gemini.append({"role": "user", "parts": [{"text": user_message}]})
             messages_for_gemini.append({"role": "model", "parts": [{"text": reply}]})
-            
-            db.codes.update_one({"email": email}, {
-                "$set": {f"sector_histories.{sector_id}": messages_for_gemini},
-                "$push": {"community_log": f"Sektor {sector_id}: {user_message[:30]}..."}
-            }, upsert=True)
-            
-            integrity = await analyze_integrity(user_message, sector_id)
-            if integrity and integrity.get('score', 0) >= 7:
-                db.codes.update_one({"email": email}, {"$inc": {"transformation_index": 1}})
-            else:
-                print(f"!!! Katalysator erkennt Anpassung: Score {integrity.get('score', 'N/A')} !!!")
-
-            parsed_data = await process_and_parse_input(user_message, data.get("biografie_context", ""), sector_id)
-            if parsed_data:
-                db.codes.update_one({"email": email}, {"$push": {f"user_container.{sector_id}": parsed_data}})
+            db.codes.update_one({"email": email}, {"$set": {f"sector_histories.{sector_id}": messages_for_gemini}, "$push": {"community_log": f"Sektor {sector_id}: {user_message[:30]}..."}})
             
             return {"reply": reply}
 
