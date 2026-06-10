@@ -968,10 +968,9 @@ async function handleVerifyAccess() {
         } else {
             alert("Schlüsselcode ungültig.");
         }
-    } catch (e) {
-        console.error("Fehler bei der Kommunikation:", e);
-        alert("Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.");
-    }
+   } catch (e) {
+    console.error("Detaillierter Fehler:", e); // Zeigt den echten Fehler an
+    alert("Ein Fehler ist aufgetreten: " + e.message); 
 }
 async function sendeChat() {
     const inputField = document.getElementById('chat-in');
