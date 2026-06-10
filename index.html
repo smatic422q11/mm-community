@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="de"> 
+<html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>M&M-COMMUNITY 2.0</title>
+    <title>Sovereign OS Plattform</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script> 
     <script src="https://js.stripe.com/v3/"></script>
     <style>
@@ -418,8 +418,10 @@
         <button onclick="wähleModus('ebook')" style="padding:15px 30px; cursor:pointer;">BIOGRAFIE (EBOOK)</button>
     </div>
 </div>
-
- <script>
+ 
+</head>
+<body>
+<script>
        const LIVE_MODUS_AKTIV = false;
        const themen = ["Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede", "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung", "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte", "Wahre Richtung und Kunst", "LGBTQ und Kirche", "Trend und Tradition", "Religionsbekenntnis oder Selbstwahl", "Gesundheitswesen und Verhalten", "Arbeitswelt und Du", "Mobbing am Arbeitsplatz", "Jugendsprecher", "Ratgeber für Pensionisten", "Sozialgefallen und Widerkehr", "Nachbarschaft und Gemeinschaft", "Alleinerziehend", "Die Brücke"];
        const seelenNamen = {"0": "Lilith", "1": "Karl", "2": "Mark", "3": "Martin", "4": "Immanuel", "5": "Fjodor", "6": "Michael", "7": "Alejandro", "8": "Nova", "9": "Alan", "10": "Gibran", "11": "Julius", "12": "Werner", "13": "Erin", "14": "Greta", "15": "Claus", "16": "Nelson", "17": "Richard", "18": "Astrid", "19": "Chiron"}
@@ -993,6 +995,18 @@ async function sendeChat() {
         });
 
         const data = await response.json();
+        console.log("SERVER ANTWORTET MIT DETAILS:", JSON.stringify(data));
+
+        if (data && (data.reply || data.text)) {
+            const antwort = data.reply || data.text; // Nimmt das, was kommt
+            chatBox.innerHTML += `<div style="color: #ffd700; margin-bottom: 15px;"><b>${nameKI}:</b> ${antwort}</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+            
+            // ... Verlauf speichern ...
+        } else {
+            // Zeige den Fehler an, falls das Backend "nichts" geschickt hat
+            chatBox.innerHTML += `<div style="color: red;"><b>System:</b> Fehler - keine Antwort erhalten.</div>`;
+        }
         
         // Jetzt kommt die echte Antwort von Gemini zurück
         if (data.reply) {
@@ -1129,12 +1143,12 @@ async function ticketAnfrageSenden() {
     // 1. Dein Server erstellt bei Stripe eine "Checkout-Session"
     const response = await fetch('/create-checkout-session', { 
         method: 'POST',
-        headers: { 'Content-Type': 'application/json
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
             email: userEmail, 
             sektor: aktuelleSektorId 
         })
-    });
+    }); // <--- Hier fehlte das });
     
     const session = await response.json();
     
@@ -1144,5 +1158,3 @@ async function ticketAnfrageSenden() {
  </script>
 </body>
 </html>  
-
-
