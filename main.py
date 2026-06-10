@@ -498,21 +498,25 @@ async def get_live_ermittlung(sector_id: str, request: Request):
     try:
         data = await request.json()
         email = data.get("email", "").lower().strip()
-        user_record = db.codes.find_one({"email": email})
-        user_name = user_record.get("name") if user_record and user_record.get("name") else email.split('@')[0].capitalize()
+        user_record = db.codes.find_one({"email": email}) or {}
         
-        chat_historie = user_record.get("sector_histories", {}).get(sector_id, [])
-        user_interaktionen = [msg for msg in chat_historie if msg.get('role') == 'user']
+        # 1. Daten neu definieren, die bisher fehlten
+        user_name = user_record.get("name") or email.split('@')[0].capitalize()
+        reise_info = user_record.get("reise_info", "Reise-Status: User beginnt seine Reise.")
+        kollektiv_log = user_record.get("community_log", "Keine Einträge.")
         
-        if len(user_interaktionen) < 3:
-            return {
-                "success": True, 
-                "data": {
-                    "EXTRAKTION": {"Info": "Wahrnehmungsphase"},
-                    "BEURTEILUNG": {"Resonanz": "Ankommen"},
-                    "KOLLEKTIV_BOTSCHAFT": "Reisender, deine Frequenz beginnt sich mit dem Sektor zu synchronisieren. Teile mir mehr von deinem inneren Kompass mit, damit wir gemeinsam die Tiefe des Kern-Codes erreichen können."
-                }
-            }
+        # Kollektives Denken aus der DB holen
+        try:
+            versiegelte_wahrheiten = list(db.mm_wissensarchiv.find({"versiegelt": True}).sort("_id", -1).limit(3))
+            kollektives_denken = "\n".join([f"M&M-DENKWEISE: {w['inhalt']}" for w in versiegelte_wahrheiten])
+        except:
+            kollektives_denken = "Keine Daten hinterlegt."
+
+        # SEKTOR_REGISTER definieren (oder global oben in die Datei auslagern!)
+        SEKTOR_REGISTER = { ... } # [Hier dein komplettes Dictionary einfügen]
+        
+        sektor_daten = SEKTOR_REGISTER.get(sector_id, {"name": "Wächter", "scan": "Allgemeine Untersuchung"})
+        current_soul = sektor_daten["name"]
             
         SEKTOR_REGISTER = {
             "0": {"name": "Lilith", "scan": "Psychische Überlastung Gesellschaft OR Emotionale Kälte Einsamkeit aktuell"},
