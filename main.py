@@ -42,8 +42,8 @@ async def create_checkout_session(request: Request):
                 'quantity': 1,
             }],
             mode='payment',
-            success_url='https://smatic422q22.onrender.com/erfolg',
-            cancel_url='https://smatic422q22.onrender.com/abgebrochen',
+            success_url='https://mm-community.onrender.com/erfolg',
+            cancel_url='https://mm-community.onrender.com/abgebrochen',
         )
         return {"id": session.id}
     except Exception as e:
@@ -761,7 +761,7 @@ async def handle_ticket_anfrage(request: Request):
             return JSONResponse(content={"status": "User nicht gefunden"}, status_code=404)
         
         # Das ist der Link, den du zum Testen in Version 2 brauchst:
-        aktivierungs_link = f"https://smatic422q22.onrender.com/aktiviere-sektor?email={user_email}&sektor={sektor_id}"
+        aktivierungs_link = f"https://mm-community.onrender.com/aktiviere-sektor?email={user_email}&sektor={sektor_id}"
         
         # Wir übergeben den Link an deinen funktionierenden Kanal:
         success = send_verification_email(user_email, aktivierungs_link)
