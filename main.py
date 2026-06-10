@@ -527,11 +527,15 @@ async def get_live_ermittlung(sector_id: str, request: Request):
             "19": {"name": "Chiron", "scan": "Spaltung der Gesellschaft Krise OR Annäherung Versöhnung Konflikte weltweit OR Kollektives Bewusstsein"}
         } 
         
-        seelen_name = SECTOR_NAMES.get(sector_id, "KI")
-        such_anfrage = such_mappings.get(sector_id, f"{seelen_name} aktuelle Nachrichten Konflikte")
-        
-        google_ergebnisse = perform_google_search(such_anfrage)
+        chat_historie = user_record.get("sector_histories", {}).get(sector_id, [])
         datenbank_chat_verlauf = "\n".join([f"{msg['role']}: {msg['parts'][0]['text']}" for msg in chat_historie])
+        
+        # 2. Reise-Info (falls nicht vorhanden, ein Default-Wert setzen, um Absturz zu vermeiden)
+        reise_info = user_record.get("reise_info", "Keine historischen Daten verfügbar")
+        
+        # 3. Such-Parameter für den Sektor abrufen
+        sektor_daten = SEKTOR_REGISTER.get(sector_id, {"name": "Wächter", "scan": "Allgemeine Untersuchung"})
+        such_anfrage = sektor_daten["scan"]
 
         prompt = (
             f"ADMIN-MASTER-ANWEISUNG (90/10-REGEL):\n"
