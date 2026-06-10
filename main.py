@@ -574,7 +574,7 @@ async def get_live_ermittlung(sector_id: str, request: Request):
             aktualisiere_sektor_fortschritt(email, sector_id, "letzter_scan", ergebnis_json)
             return {"success": True, "data": ergebnis_json}
                 
-         try:
+            try:
                 ergebnis_json = json.loads(raw_text)
             except json.JSONDecodeError:
                 # Fallback, wenn die KI keinen JSON-Output liefert
