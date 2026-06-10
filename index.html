@@ -1129,7 +1129,7 @@ async function ticketAnfrageSenden() {
     // 1. Dein Server erstellt bei Stripe eine "Checkout-Session"
     const response = await fetch('/create-checkout-session', { 
         method: 'POST',
-        headers: { 'Content-Type': 'application/json
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
             email: userEmail, 
             sektor: aktuelleSektorId 
