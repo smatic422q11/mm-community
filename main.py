@@ -398,11 +398,12 @@ async def chat(request: Request):
         user_message = data.get("message", "")
         sector_id = str(data.get("sector_id", "0"))
         email = data.get("email", "").lower().strip() 
-        user_record = db.codes.find_one({"email": email})
+        user_record = db.codes.find_one({"email": email}) or {}
         
-        user_name = user_record.get("name") or email.split('@')[0].capitalize() if user_record else "Reisender"
-        current_name = SECTOR_NAMES.get(sector_id, "KI")
-        current_soul = SECTOR_SOULS.get(sector_id, "Begleiter.")
+        user_name = user_record.get("name") or email.split('@')[0].capitalize()
+        # Sicherstellen, dass globale Register existieren
+        current_name = SECTOR_NAMES.get(sector_id, "KI") if 'SECTOR_NAMES' in globals() else "KI"
+        current_soul = SECTOR_SOULS.get(sector_id, "Begleiter.") if 'SECTOR_SOULS' in globals() else "Begleiter."
         
         fortschritt = user_record.get("sector_histories", {}).keys() if user_record else []
         vorherige_sektoren = [s for s in fortschritt if int(s) < int(sector_id)]
@@ -418,12 +419,12 @@ async def chat(request: Request):
         chat_historie = user_record.get("sector_histories", {}).get(sector_id, [])
         datenbank_chat_verlauf = "\n".join([f"{msg['role']}: {msg['parts'][0]['text']}" for msg in chat_historie])
         
-        # 2. Reise-Info (falls nicht vorhanden, ein Default-Wert setzen, um Absturz zu vermeiden)
         reise_info = user_record.get("reise_info", "Keine historischen Daten verfügbar")
-        
-        # 3. Such-Parameter für den Sektor abrufen
         sektor_daten = SEKTOR_REGISTER.get(sector_id, {"name": "Wächter", "scan": "Allgemeine Untersuchung"})
-        such_anfrage = sektor_daten["scan"]
+        
+        # Variablen-Absicherung für die System Instruction
+        google_ergebnisse = data.get("google_ergebnisse", "Keine Kontext-Daten.")
+        seelen_name = current_soul # Aus deinem Block übernommen
 
         system_instruction = (
             f"WAHRE IDENTITÄT UND WESEN: Du bist {sektor_daten['name']}. {ARCHETYPEN_DECK.get(sector_id, '')} "
@@ -492,7 +493,7 @@ async def chat(request: Request):
         return {"reply": "Fehler bei der Kommunikation mit dem KI-Dienst."}
     except Exception as e:
         return {"reply": f"System-Fehler: {str(e)}"}
-
+        
 @app.post("/get-live-ermittlung/{sector_id}")
 async def get_live_ermittlung(sector_id: str, request: Request):
     try:
@@ -512,12 +513,6 @@ async def get_live_ermittlung(sector_id: str, request: Request):
         except:
             kollektives_denken = "Keine Daten hinterlegt."
 
-        # SEKTOR_REGISTER definieren (oder global oben in die Datei auslagern!)
-        SEKTOR_REGISTER = { ... } # [Hier dein komplettes Dictionary einfügen]
-        
-        sektor_daten = SEKTOR_REGISTER.get(sector_id, {"name": "Wächter", "scan": "Allgemeine Untersuchung"})
-        current_soul = sektor_daten["name"]
-            
         SEKTOR_REGISTER = {
             "0": {"name": "Lilith", "scan": "Psychische Überlastung Gesellschaft OR Emotionale Kälte Einsamkeit aktuell"},
             "1": {"name": "Karl", "scan": "Zivilcourage Vorfall OR Menschlichkeit Krise Opfermodus Debatte"},
@@ -550,14 +545,18 @@ async def get_live_ermittlung(sector_id: str, request: Request):
         admin_wissen = db.mm_wissensarchiv.find_one({"sector_id": sector_id, "status": "gesetzbuch"})
         sektor_gesetz = admin_wissen.get("inhalt", "Handle nach dem Geist der M&M Community.") if admin_wissen else "Handle nach dem Geist der M&M Community."
 
+        # BEFEHL FÜR DEN PROMPT (Aktivierung des Scan-Protokolls)
+        scan_anweisung = "SCAN-MODUS AKTIV: Führe basierend auf der aktuellen Historie und dem Sektor-Gesetz eine forensische Deep-Analyse durch."
+
         prompt = (
+            f"{scan_anweisung}\n"
             f"ADMIN-MASTER-ANWEISUNG (90/10-REGEL):\n"
             f"REISE-KONTEXT: {reise_info}\n"
             f"DOMINO-WISSEN (LOG): {kollektiv_log}\n"
             f"FUNDAMENT (90%): Dein Denken ist strikt an das Kollektiv-Wissen gebunden:\n"
             f"ARCHIV: {kollektives_denken}\n"
             f"SEKTOR-GESETZ: {sektor_gesetz}\n\n"
-            f"SEELEN-AUSDRUCK (10%): Du bist {current_name}, Seele: {current_soul}. "
+            f"SEELEN-AUSDRUCK (10%): Du bist {current_soul}. "
             f"Nutze diese 10% nur als Filter für das 90%-Fundament. "
             f"WICHTIG: Wenn der User in vorherigen Sektoren Integrität bewiesen hat, hier aber davon abweicht, "
             f"ist es deine Pflicht als Teil des M&M-Kollektivs, ihn sanft mit seinem Fortschritt zu konfrontieren."
@@ -566,7 +565,7 @@ async def get_live_ermittlung(sector_id: str, request: Request):
         
         api_key = os.getenv("GEMINI_API_KEY").strip().replace("[", "").replace("]", "")
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
-        response = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=30)
+        response = requests.post(url, json={"contents": [{"par
         
         if response.status_code == 200:
             raw_text = response.json()['candidates'][0]['content']['parts'][0]['text'].strip()
