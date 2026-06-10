@@ -498,6 +498,13 @@ async def get_live_ermittlung(sector_id: str, request: Request):
         except:
             kollektives_denken = "Keine Daten hinterlegt."
 
+        # ANWEISUNGS-BEFEHL FÜR DAS SEKTOR-REGISTER:
+        # Dieser Befehl zwingt die KI zur forensischen Interpretation der Sektor-Daten.
+        sektor_direktive = (
+            "FORENSISCHE ANWEISUNG: Nutze das folgende SEKTOR_REGISTER als absolute psychologische Karte. "
+            "Jeder 'Scan' ist eine tiefenpsychologische Untersuchung des Users im Kontext des jeweiligen Sektor-Themas. "
+            "Du darfst den 'Scan'-Inhalt niemals nur lesen, sondern musst ihn als diagnostisches Werkzeug anwenden."
+        )
         SEKTOR_REGISTER = {
             "0": {"name": "Lilith", "scan": "Psychische Überlastung Gesellschaft OR Emotionale Kälte Einsamkeit aktuell"},
             "1": {"name": "Karl", "scan": "Zivilcourage Vorfall OR Menschlichkeit Krise Opfermodus Debatte"},
