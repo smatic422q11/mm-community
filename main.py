@@ -520,7 +520,7 @@ async def get_live_ermittlung(sector_id: str, request: Request):
             "17": {"name": "Richard", "scan": "Egozentrische Selbstdarstellung OR Narzissmus Krise aktuell"},
             "18": {"name": "Astrid", "scan": "Alleinerziehende Armutsgrenze OR Überforderung Erschöpfung Mütter Väter"},
             "19": {"name": "Chiron", "scan": "Spaltung der Gesellschaft Krise OR Annäherung Versöhnung Konflikte weltweit OR Kollektives Bewusstsein"
-         }
+        '{'
         
         seelen_name = SECTOR_NAMES.get(sector_id, "KI")
         such_anfrage = such_mappings.get(sector_id, f"{seelen_name} aktuelle Nachrichten Konflikte")
