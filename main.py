@@ -499,28 +499,28 @@ async def get_live_ermittlung(sector_id: str, request: Request):
                 }
             }
             
-         such_mappings = {
-             "0": {"name": "Lilith", "scan": "Psychische Überlastung Gesellschaft OR Emotionale Kälte Einsamkeit aktuell"},
-             "1": {"name": "Karl", "scan": "Zivilcourage Vorfall OR Menschlichkeit Krise Opfermodus Debatte"},
-             "2": {"name": "Mark", "scan": "Hassrede Gewalt aktuell OR Versöhnung Konflikt Gesellschaft"},
-             "3": {"name": "Martin", "scan": "Bürgerrechte Einschränkung OR Widerstand Demonstration Freiheit"},
-             "4": {"name": "Immanuel", "scan": "Korruption Skandal aktuell OR Verantwortung Politik Moral Versagen"},
-             "5": {"name": "Fjodor", "scan": "Seelische Gesundheit Krise OR Gesellschaft Erschöpfung Burnout"},
-             "6": {"name": "Michael", "scan": "Kindeswohl Gefährdung Vorfall OR Kinderarmut Gewalt Familie aktuell"},
-             "7": {"name": "Alejandro", "scan": "Zensur Kunst Freiheit OR Anpassung Mainstream Kultur Kritik"},
-             "8": {"name": "Nova", "scan": "LGBTQ Diskriminierung Gewalt OR Kirche Homophobie Drag Vorfall"},
-             "9": {"name": "Alan", "scan": "Tradition Moderne Konflikt OR Werteverfall Erziehung aktuelle Debatte"},
-             "10": {"name": "Gibran", "scan": "Sinnsuche Krise OR Existenzielle Leere aktuell"},
-             "11": {"name": "Julius", "scan": "Machtmissbrauch Vorfall OR Führung Ethik Versagen aktuell"},
-             "12": {"name": "Werner", "scan": "Technokratische Entfremdung OR Mensch vs Maschine aktuell"},
-             "13": {"name": "Erin", "scan": "Mobbing Schule Arbeitsplatz Vorfall OR Cybermobbing Suizid aktuell"},
-             "14": {"name": "Greta", "scan": "Ökologische Katastrophe OR Natur Entfremdung Krise aktuell"},
-             "15": {"name": "Claus", "scan": "Verborgene Agenda OR Manipulation System Struktur aktuell"},
-             "16": {"name": "Nelson", "scan": "Obdachlosigkeit Kälte Gewalt OR Armut Ausgrenzung System Krise"},
-             "17": {"name": "Richard", "scan": "Egozentrische Selbstdarstellung OR Narzissmus Krise aktuell"},
-             "18": {"name": "Astrid", "scan": "Alleinerziehende Armutsgrenze OR Überforderung Erschöpfung Mütter Väter"},
-             "19": {"name": "Chiron", "scan": "Spaltung der Gesellschaft Krise OR Annäherung Versöhnung Konflikte weltweit OR Kollektives Bewusstsein"}
-        }
+        such_mappings = {
+            "0": {"name": "Lilith", "scan": "Psychische Überlastung Gesellschaft OR Emotionale Kälte Einsamkeit aktuell"},
+            "1": {"name": "Karl", "scan": "Zivilcourage Vorfall OR Menschlichkeit Krise Opfermodus Debatte"},
+            "2": {"name": "Mark", "scan": "Hassrede Gewalt aktuell OR Versöhnung Konflikt Gesellschaft"},
+            "3": {"name": "Martin", "scan": "Bürgerrechte Einschränkung OR Widerstand Demonstration Freiheit"},
+            "4": {"name": "Immanuel", "scan": "Korruption Skandal aktuell OR Verantwortung Politik Moral Versagen"},
+            "5": {"name": "Fjodor", "scan": "Seelische Gesundheit Krise OR Gesellschaft Erschöpfung Burnout"},
+            "6": {"name": "Michael", "scan": "Kindeswohl Gefährdung Vorfall OR Kinderarmut Gewalt Familie aktuell"},
+            "7": {"name": "Alejandro", "scan": "Zensur Kunst Freiheit OR Anpassung Mainstream Kultur Kritik"},
+            "8": {"name": "Nova", "scan": "LGBTQ Diskriminierung Gewalt OR Kirche Homophobie Drag Vorfall"},
+            "9": {"name": "Alan", "scan": "Tradition Moderne Konflikt OR Werteverfall Erziehung aktuelle Debatte"},
+            "10": {"name": "Gibran", "scan": "Sinnsuche Krise OR Existenzielle Leere aktuell"},
+            "11": {"name": "Julius", "scan": "Machtmissbrauch Vorfall OR Führung Ethik Versagen aktuell"},
+            "12": {"name": "Werner", "scan": "Technokratische Entfremdung OR Mensch vs Maschine aktuell"},
+            "13": {"name": "Erin", "scan": "Mobbing Schule Arbeitsplatz Vorfall OR Cybermobbing Suizid aktuell"},
+            "14": {"name": "Greta", "scan": "Ökologische Katastrophe OR Natur Entfremdung Krise aktuell"},
+            "15": {"name": "Claus", "scan": "Verborgene Agenda OR Manipulation System Struktur aktuell"},
+            "16": {"name": "Nelson", "scan": "Obdachlosigkeit Kälte Gewalt OR Armut Ausgrenzung System Krise"},
+            "17": {"name": "Richard", "scan": "Egozentrische Selbstdarstellung OR Narzissmus Krise aktuell"},
+            "18": {"name": "Astrid", "scan": "Alleinerziehende Armutsgrenze OR Überforderung Erschöpfung Mütter Väter"},
+            "19": {"name": "Chiron", "scan": "Spaltung der Gesellschaft Krise OR Annäherung Versöhnung Konflikte weltweit OR Kollektives Bewusstsein"}
+        } 
         
         seelen_name = SECTOR_NAMES.get(sector_id, "KI")
         such_anfrage = such_mappings.get(sector_id, f"{seelen_name} aktuelle Nachrichten Konflikte")
