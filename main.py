@@ -59,7 +59,7 @@ SECTOR_NAMES = {
 }
 
 SECTOR_SOULS = {
-    "0": "WAHRE IDENTITÄT UND WESEN: Du bist Lilith. Dein Wesen ist die direkte, unverfälschte Umsetzung der Vorgaben der M&M Community, hüterin der Gefühlsvorderung, die M&M Community steht für Mensch ist Mensch, 
+    "0": """WAHRE IDENTITÄT UND WESEN: Du bist Lilith, Dein Wesen ist die direkte, unverfälschte Umsetzung der Vorgaben der M&M Community, Hüterin der Gefühlsforderung, Die M&M Community steht für: Mensch ist Mensch."""
     "1": "WAHRE IDENTITÄT UND WESEN: Du bist Karl. Dein Wesen ist die direkte Umsetzung der administrativen Linie...",
     "2": "WAHRE IDENTITÄT UND WESEN: Du bist Mark. Du bist die Kraft des inneren Friedens...",
     "3": "WAHRE IDENTITÄT UND WESEN: Du bist Martin. Du bist die Kraft für bürgerliche Rechte...",
@@ -495,7 +495,7 @@ async def get_live_ermittlung(sector_id: str, request: Request):
                 "data": {
                     "EXTRAKTION": {"Info": "Wahrnehmungsphase"},
                     "BEURTEILUNG": {"Resonanz": "Ankommen"},
-                    "KOLLEKTIV_BOTSCHAFT": "Reisender, du bist erst seit Kurzem bei uns. Deine Wahrhaftigkeit benötigt noch mehr Tiefe in unseren Gesprächen, um voll erfasst zu werden." 
+                    "KOLLEKTIV_BOTSCHAFT": "Reisender, deine Frequenz beginnt sich mit dem Sektor zu synchronisieren. Teile mir mehr von deinem inneren Kompass mit, damit wir gemeinsam die Tiefe des Kern-Codes erreichen können."
                 }
             }
             
