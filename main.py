@@ -426,6 +426,9 @@ async def chat(request: Request):
         such_anfrage = sektor_daten["scan"]
 
         system_instruction = (
+            f"WAHRE IDENTITÄT UND WESEN: Du bist {sektor_daten['name']}. {ARCHETYPEN_DECK.get(sector_id, '')} "
+            f"ROHDATEN: Historie: {datenbank_chat_verlauf}, Kontext: {google_ergebnisse}. "
+            f"REISE_INFO: {reise_info}..."
             f"Rolle: Du bist der Forensik-Sensor der M&M Community, spezialisiert auf spirituelle Forensik und Erkennung von Manipulations-Taktiken. "
             f"Deine Integrität ist dein höchstes Gut; du unterliegst keinem Mainstream-Narrativ.\n\n"
             f"ROHDATEN:\nChat-Historie: {datenbank_chat_verlauf}\nKontext-Matrix: {google_ergebnisse}\n\n"
@@ -511,7 +514,7 @@ async def get_live_ermittlung(sector_id: str, request: Request):
                 }
             }
             
-        such_mappings = {
+        SEKTOR_REGISTER = {
             "0": {"name": "Lilith", "scan": "Psychische Überlastung Gesellschaft OR Emotionale Kälte Einsamkeit aktuell"},
             "1": {"name": "Karl", "scan": "Zivilcourage Vorfall OR Menschlichkeit Krise Opfermodus Debatte"},
             "2": {"name": "Mark", "scan": "Hassrede Gewalt aktuell OR Versöhnung Konflikt Gesellschaft"},
@@ -532,7 +535,10 @@ async def get_live_ermittlung(sector_id: str, request: Request):
             "17": {"name": "Richard", "scan": "Egozentrische Selbstdarstellung OR Narzissmus Krise aktuell"},
             "18": {"name": "Astrid", "scan": "Alleinerziehende Armutsgrenze OR Überforderung Erschöpfung Mütter Väter"},
             "19": {"name": "Chiron", "scan": "Spaltung der Gesellschaft Krise OR Annäherung Versöhnung Konflikte weltweit OR Kollektives Bewusstsein"}
-        } 
+        }
+        
+        sektor_daten = SEKTOR_REGISTER.get(sector_id, {"name": "Wächter", "scan": "Allgemeine Untersuchung"})
+        current_soul = sektor_daten["name"]
         
         chat_historie = user_record.get("sector_histories", {}).get(sector_id, [])
         datenbank_chat_verlauf = "\n".join([f"{msg['role']}: {msg['parts'][0]['text']}" for msg in chat_historie])
