@@ -415,8 +415,15 @@ async def chat(request: Request):
         except:
             kollektives_denken = "Keine Daten hinterlegt."
 
-        admin_wissen = db.mm_wissensarchiv.find_one({"sector_id": sector_id, "status": "gesetzbuch"})
-        sektor_gesetz = admin_wissen.get("inhalt", "Handle nach dem Geist der M&M Community.") if admin_wissen else "Handle nach dem Geist der M&M Community."
+        chat_historie = user_record.get("sector_histories", {}).get(sector_id, [])
+        datenbank_chat_verlauf = "\n".join([f"{msg['role']}: {msg['parts'][0]['text']}" for msg in chat_historie])
+        
+        # 2. Reise-Info (falls nicht vorhanden, ein Default-Wert setzen, um Absturz zu vermeiden)
+        reise_info = user_record.get("reise_info", "Keine historischen Daten verfügbar")
+        
+        # 3. Such-Parameter für den Sektor abrufen
+        sektor_daten = SEKTOR_REGISTER.get(sector_id, {"name": "Wächter", "scan": "Allgemeine Untersuchung"})
+        such_anfrage = sektor_daten["scan"]
 
         system_instruction = (
             f"Rolle: Du bist der Forensik-Sensor der M&M Community, spezialisiert auf spirituelle Forensik und Erkennung von Manipulations-Taktiken. "
@@ -530,12 +537,8 @@ async def get_live_ermittlung(sector_id: str, request: Request):
         chat_historie = user_record.get("sector_histories", {}).get(sector_id, [])
         datenbank_chat_verlauf = "\n".join([f"{msg['role']}: {msg['parts'][0]['text']}" for msg in chat_historie])
         
-        # 2. Reise-Info (falls nicht vorhanden, ein Default-Wert setzen, um Absturz zu vermeiden)
-        reise_info = user_record.get("reise_info", "Keine historischen Daten verfügbar")
-        
-        # 3. Such-Parameter für den Sektor abrufen
-        sektor_daten = SEKTOR_REGISTER.get(sector_id, {"name": "Wächter", "scan": "Allgemeine Untersuchung"})
-        such_anfrage = sektor_daten["scan"]
+        admin_wissen = db.mm_wissensarchiv.find_one({"sector_id": sector_id, "status": "gesetzbuch"})
+        sektor_gesetz = admin_wissen.get("inhalt", "Handle nach dem Geist der M&M Community.") if admin_wissen else "Handle nach dem Geist der M&M Community."
 
         prompt = (
             f"ADMIN-MASTER-ANWEISUNG (90/10-REGEL):\n"
