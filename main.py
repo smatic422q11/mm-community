@@ -396,75 +396,62 @@ async def get_live_ermittlung(sector_id: str, request: Request):
     try:
         data = await request.json()
         email = data.get("email", "").lower().strip()
-        user_record = db.codes.find_one({"email": email}) or {}
-        
-        # 1. Daten neu definieren, die bisher fehlten
-        user_name = user_record.get("name") or email.split('@')[0].capitalize()
-        reise_info = user_record.get("reise_info", "Reise-Status: User beginnt seine Reise.")
-        kollektiv_log = user_record.get("community_log", "Keine Einträge.")
-        
-        # Kollektives Denken aus der DB holen
-        try:
-            versiegelte_wahrheiten = list(db.mm_wissensarchiv.find({"versiegelt": True}).sort("_id", -1).limit(3))
-            kollektives_denken = "\n".join([f"M&M-DENKWEISE: {w['inhalt']}" for w in versiegelte_wahrheiten])
-        except:
-            kollektives_denken = "Keine Daten hinterlegt."
-
-        # ANWEISUNGS-BEFEHL FÜR DAS SEKTOR-REGISTER:
-        # Dieser Befehl zwingt die KI zur forensischen Interpretation der Sektor-Daten.
-        sektor_direktive = (
-            "FORENSISCHE ANWEISUNG: Nutze das folgende SEKTOR_REGISTER als absolute psychologische Karte. "
-            "Jeder 'Scan' ist eine tiefenpsychologische Untersuchung des Users im Kontext des jeweiligen Sektor-Themas. "
-            "Du darfst den 'Scan'-Inhalt niemals nur lesen, sondern musst ihn als diagnostisches Werkzeug anwenden."
-        )
-        SEKTOR_REGISTER = {
-            "0": {"name": "Lilith", "scan": "Psychische Überlastung Gesellschaft OR Emotionale Kälte Einsamkeit aktuell"},
-            "1": {"name": "Karl", "scan": "Zivilcourage Vorfall OR Menschlichkeit Krise Opfermodus Debatte"},
-            "2": {"name": "Mark", "scan": "Hassrede Gewalt aktuell OR Versöhnung Konflikt Gesellschaft"},
-            "3": {"name": "Martin", "scan": "Bürgerrechte Einschränkung OR Widerstand Demonstration Freiheit"},
-            "4": {"name": "Immanuel", "scan": "Korruption Skandal aktuell OR Verantwortung Politik Moral Versagen"},
-            "5": {"name": "Fjodor", "scan": "Seelische Gesundheit Krise OR Gesellschaft Erschöpfung Burnout"},
-            "6": {"name": "Michael", "scan": "Kindeswohl Gefährdung Vorfall OR Kinderarmut Gewalt Familie aktuell"},
-            "7": {"name": "Alejandro", "scan": "Zensur Kunst Freiheit OR Anpassung Mainstream Kultur Kritik"},
-            "8": {"name": "Nova", "scan": "LGBTQ Diskriminierung Gewalt OR Kirche Homophobie Drag Vorfall"},
-            "9": {"name": "Alan", "scan": "Tradition Moderne Konflikt OR Werteverfall Erziehung aktuelle Debatte"},
-            "10": {"name": "Gibran", "scan": "Sinnsuche Krise OR Existenzielle Leere aktuell"},
-            "11": {"name": "Julius", "scan": "Machtmissbrauch Vorfall OR Führung Ethik Versagen aktuell"},
-            "12": {"name": "Werner", "scan": "Technokratische Entfremdung OR Mensch vs Maschine aktuell"},
-            "13": {"name": "Erin", "scan": "Mobbing Schule Arbeitsplatz Vorfall OR Cybermobbing Suizid aktuell"},
-            "14": {"name": "Greta", "scan": "Ökologische Katastrophe OR Natur Entfremdung Krise aktuell"},
-            "15": {"name": "Claus", "scan": "Verborgene Agenda OR Manipulation System Struktur aktuell"},
-            "16": {"name": "Nelson", "scan": "Obdachlosigkeit Kälte Gewalt OR Armut Ausgrenzung System Krise"},
-            "17": {"name": "Richard", "scan": "Egozentrische Selbstdarstellung OR Narzissmus Krise aktuell"},
-            "18": {"name": "Astrid", "scan": "Alleinerziehende Armutsgrenze OR Überforderung Erschöpfung Mütter Väter"},
-            "19": {"name": "Chiron", "scan": "Spaltung der Gesellschaft Krise OR Annäherung Versöhnung Konflikte weltweit OR Kollektives Bewusstsein"}
-        }
-        
-        sektor_daten = SEKTOR_REGISTER.get(sector_id, {"name": "Wächter", "scan": "Allgemeine Untersuchung"})
-        current_soul = sektor_daten["name"]
+        user_record = db.codes.find_one({"email": email})
+        user_name = user_record.get("name") if user_record and user_record.get("name") else email.split('@')[0].capitalize()
         
         chat_historie = user_record.get("sector_histories", {}).get(sector_id, [])
-        datenbank_chat_verlauf = "\n".join([f"{msg['role']}: {msg['parts'][0]['text']}" for msg in chat_historie])
+        user_interaktionen = [msg for msg in chat_historie if msg.get('role') == 'user']
         
-        admin_wissen = db.mm_wissensarchiv.find_one({"sector_id": sector_id, "status": "gesetzbuch"})
-        sektor_gesetz = admin_wissen.get("inhalt", "Handle nach dem Geist der M&M Community.") if admin_wissen else "Handle nach dem Geist der M&M Community."
-
-        # BEFEHL FÜR DEN PROMPT (Aktivierung des Scan-Protokolls)
-        scan_anweisung = "SCAN-MODUS AKTIV: Führe basierend auf der aktuellen Historie und dem Sektor-Gesetz eine forensische Deep-Analyse durch."
+        if len(user_interaktionen) < 3:
+            return {
+                "success": True, 
+                "data": {
+                    "EXTRAKTION": {"Info": "Wahrnehmungsphase"},
+                    "BEURTEILUNG": {"Resonanz": "Ankommen"},
+                    "KOLLEKTIV_BOTSCHAFT": "Reisender, du bist erst seit Kurzem bei uns. Deine Wahrhaftigkeit benötigt noch mehr Tiefe in unseren Gesprächen, um voll erfasst zu werden." 
+                }
+            }
+            
+        such_mappings = {
+            "0": "Psychische Überlastung Gesellschaft OR Emotionale Kälte Einsamkeit aktuell",
+            "1": "Zivilcourage Vorfall OR Menschlichkeit Krise Opfermodus Debatte",
+            "2": "Hassrede Gewalt aktuell OR Versöhnung Konflikt Gesellschaft",
+            "3": "Bürgerrechte Einschränkung OR Widerstand Demonstration Freiheit",
+            "4": "Korruption Skandal aktuell OR Verantwortung Politik Moral Versagen",
+            "5": "Seelische Gesundheit Krise OR Gesellschaft Erschöpfung Burnout",
+            "6": "Kindeswohl Gefährdung Vorfall OR Kinderarmut Gewalt Familie aktuell",
+            "7": "Zensur Kunst Freiheit OR Anpassung Mainstream Kultur Kritik",
+            "8": "LGBTQ Diskriminierung Gewalt OR Kirche Homophobie Drag Vorfall",
+            "9": "Tradition Moderne Konflikt OR Werteverfall Erziehung aktuelle Debatte",
+            "13": "Mobbing Schule Arbeitsplatz Vorfall OR Cybermobbing Suizid aktuell",
+            "16": "Obdachlosigkeit Kälte Gewalt OR Armut Ausgrenzung System Krise",
+            "18": "Alleinerziehende Armutsgrenze OR Überforderung Erschöpfung Mütter Väter",
+            "19": "Spaltung der Gesellschaft Krise OR Annäherung Versöhnung Konflikte weltweit OR Kollektives Bewusstsein"
+        }
+        
+        seelen_name = SECTOR_NAMES.get(sector_id, "KI")
+        such_anfrage = such_mappings.get(sector_id, f"{seelen_name} aktuelle Nachrichten Konflikte")
+        
+        google_ergebnisse = perform_google_search(such_anfrage)
+        datenbank_chat_verlauf = "\n".join([f"{msg['role']}: {msg['parts'][0]['text']}" for msg in chat_historie])
 
         prompt = (
-            f"{scan_anweisung}\n"
-            f"ADMIN-MASTER-ANWEISUNG (90/10-REGEL):\n"
-            f"REISE-KONTEXT: {reise_info}\n"
-            f"DOMINO-WISSEN (LOG): {kollektiv_log}\n"
-            f"FUNDAMENT (90%): Dein Denken ist strikt an das Kollektiv-Wissen gebunden:\n"
-            f"ARCHIV: {kollektives_denken}\n"
-            f"SEKTOR-GESETZ: {sektor_gesetz}\n\n"
-            f"SEELEN-AUSDRUCK (10%): Du bist {current_soul}. "
-            f"Nutze diese 10% nur als Filter für das 90%-Fundament. "
-            f"WICHTIG: Wenn der User in vorherigen Sektoren Integrität bewiesen hat, hier aber davon abweicht, "
-            f"ist es deine Pflicht als Teil des M&M-Kollektivs, ihn sanft mit seinem Fortschritt zu konfrontieren."
-            f"Struktur: {{'EXTRAKTION': {{'Muster': '...', 'Wahrhaftigkeits_Spannung': '...', 'Kontaminations_Level': '...'}}, 'BEURTEILUNG': '...', 'KOLLEKTIV_BOTSCHAFT': '...'}}"
+            f"Du bist der objektive Analytiker der M&M Community. "
+            f"DIESE DATEN SIND DEIN ROHMATERIAL: {datenbank_chat_verlauf}\n"
+            f"ZUSÄTZLICHER MEDIEN-KONTEXT: {google_ergebnisse}\n\n"
+            f"AUFGABE: Erstelle KEINE Zusammenfassung der Chat-Inhalte. Das Ziel ist eine psychologische und strategische Extraktion des Users {user_name}.\n\n"
+            f"EXTRAKTION (90%): \n"
+            f"- Was ist das zugrunde liegende Muster in {user_name}s Handeln in diesem Sektor?\n"
+            f"- Welcher Kernwert treibt ihn an, auch wenn er ihn nicht explizit ausspricht?\n"
+            f"- Wo zeigt sich bei ihm eine 'Wahrhaftigkeits-Spannung' (Widerspruch zwischen Wort und Tat)?\n\n"
+            f"BEURTEILUNG (10%): \n"
+            f"- Wie bewertet die KI die Resonanz des Users zum Sektor {seelen_name}?\n\n"
+            f"KOLLEKTIV_BOTSCHAFT: \n"
+            f"- Erstelle eine finale, kondensierte Botschaft des Kollektivs (0-19) basierend auf dem gesamten Scan-Ergebnis.\n"
+            f"- Sie muss den User direkt adressieren, den Scan-Inhalt würdigen und als 'Wahrheit' des Kollektivs mitgegeben werden.\n"
+            f"- Maximal 2 Sätze.\n\n"
+            f"FORMAT: Antworte NUR als JSON. Verarbeite die Rohdaten zu einem Profil, nenne keine Zitate aus dem Chat."
+            f"Stelle sicher, dass alle drei Bereiche (EXTRAKTION, BEURTEILUNG, KOLLEKTIV_BOTSCHAFT) im JSON enthalten sind."
         )
         
         api_key = os.getenv("GEMINI_API_KEY").strip().replace("[", "").replace("]", "")
@@ -478,23 +465,94 @@ async def get_live_ermittlung(sector_id: str, request: Request):
             aktualisiere_sektor_fortschritt(email, sector_id, "letzter_scan", ergebnis_json)
             return {"success": True, "data": ergebnis_json}
                 
-            try:
-                ergebnis_json = json.loads(raw_text)
-            except json.JSONDecodeError:
-                ergebnis_json = {
-                    "EXTRAKTION": {"Muster": "Analysefehler", "Wahrhaftigkeits_Spannung": "Daten korrupt", "Kontaminations_Level": "0"},
-                    "BEURTEILUNG": "Die KI konnte keine strukturierte Antwort liefern.",
-                    "KOLLEKTIV_BOTSCHAFT": "Der Scan-Prozess erfordert einen Neustart."
-                }
-            
-            aktualisiere_sektor_fortschritt(email, sector_id, "letzter_scan", ergebnis_json)
-            return {"success": True, "data": ergebnis_json}
-        
-        # HIER HAT DAS 'except' GEFEHLT:
         return {"success": True, "data": {"widersprueche": ["Fehler"], "lagebericht": "Schnittstelle offline"}}
-
     except Exception as e:
         return {"success": True, "data": {"widersprueche": [f"Fehler: {str(e)}"]}}
+
+@app.post("/generate-and-send-pdf")
+async def generate_and_send_pdf(request: Request):
+    try:
+        data = await request.json()
+        email = data.get("email", "").lower().strip()
+        user_record = db.codes.find_one({"email": email})
+        
+        if not user_record:
+            return JSONResponse(content={"message": "User nicht gefunden"}, status_code=404)
+
+        user_container = user_record.get("user_container", {})
+        bio_text = generate_biography_text(user_container)
+        
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Arial", size=12)
+        pdf.multi_cell(0, 10, txt=bio_text.encode('latin-1', 'replace').decode('latin-1'))
+        
+        pdf_bytes = pdf.output(dest='S').encode('latin-1')
+        encoded_pdf = base64.b64encode(pdf_bytes).decode()
+        
+        success = send_email_with_attachment(
+            to_email=email,
+            subject="Dein M&M Community Manifest",
+            body="Anbei findest du dein versiegeltes Manifest als PDF.",
+            attachment_name="Biografie.pdf",
+            attachment_data=encoded_pdf
+        )
+
+        if success:
+            return JSONResponse(content={"message": "Das Manifest wurde per E-Mail versendet."})
+        return JSONResponse(content={"message": "Versand fehlgeschlagen"}, status_code=500)
+    except Exception as e:
+        return JSONResponse(content={"message": str(e)}, status_code=500)
+
+@app.post("/update-modus")
+async def update_modus(request: Request):
+    try:
+        data = await request.json()
+        email = data.get("email").lower().strip()
+        modus = data.get("modus")
+        
+        db.codes.update_one(
+            {"email": email},
+            {"$set": {
+                "manifest_mode": modus, 
+                "drawer_opened": True
+            }}
+        )
+        return {"success": True}
+    except Exception as e:
+        print(f"Fehler bei Modus-Speicherung: {e}")
+        return JSONResponse(content={"message": "Systemfehler"}, status_code=500)
+        
+@app.post("/admin/update-sector")
+async def update_sector(request: Request):
+    try:
+        data = await request.json()
+        admin_email = data.get("email")
+        sector_id = str(data.get("sector_id"))
+        status = data.get("status")
+        
+        if admin_email != "mmcommunity22@gmail.com":
+            return JSONResponse(content={"message": "Zugriff verweigert"}, status_code=403)
+            
+        if status == 'update-text':
+            header_text = data.get("header_text")
+            db.codes.update_one(
+                {"email": "mmcommunity22@gmail.com"},
+                {"$set": {f"sector_headers.{sector_id}": header_text}},
+                upsert=True
+            )
+            return {"success": True, "message": "Text gespeichert"}
+        else:
+            # FIX: Admin ändert hier den Status für das System global/oder einen Ziel-User
+            db.codes.update_one(
+                {"email": "mmcommunity22@gmail.com"},
+                {"$set": {f"sector_statuses.{sector_id}": status}},
+                upsert=True
+            )
+            return {"success": True, "message": "Status gespeichert"}
+    except Exception as e:
+        print(f"Fehler bei update-sector: {e}")
+        return JSONResponse(content={"message": "Systemfehler"}, status_code=500)
 
 @app.post("/chat")
 async def chat(request: Request):
@@ -503,65 +561,51 @@ async def chat(request: Request):
         user_message = data.get("message", "")
         sector_id = str(data.get("sector_id", "0"))
         email = data.get("email", "").lower().strip() 
-        
-        # 1. FORCE INIT: Stellt sicher, dass der User immer in der DB existiert
         user_record = db.codes.find_one({"email": email})
-        if not user_record:
-            db.codes.insert_one({"email": email, "sector_histories": {}, "community_log": []})
-            user_record = db.codes.find_one({"email": email})
         
-        # 2. Daten abrufen
-        user_name = user_record.get("name") or email.split('@')[0].capitalize()
-        current_name = SECTOR_NAMES.get(sector_id, "KI") if 'SECTOR_NAMES' in globals() else "KI"
-        current_soul = SECTOR_SOULS.get(sector_id, "Begleiter.") if 'SECTOR_SOULS' in globals() else "Begleiter."
+        user_name = user_record.get("name") or email.split('@')[0].capitalize() if user_record else "Reisender"
+        current_name = SECTOR_NAMES.get(sector_id, "KI")
+        current_soul = SECTOR_SOULS.get(sector_id, "Begleiter.")
         
-        fortschritt = user_record.get("sector_histories", {}).keys()
+        fortschritt = user_record.get("sector_histories", {}).keys() if user_record else []
         vorherige_sektoren = [s for s in fortschritt if int(s) < int(sector_id)]
         reise_info = f"Reise-Status: User hat Sektoren {', '.join(vorherige_sektoren)} gemeistert." if vorherige_sektoren else "Reise-Status: User beginnt seine Reise."
         kollektiv_log = user_record.get("community_log", "Keine Einträge.") 
 
-        # 3. Wissen laden
         try:
             versiegelte_wahrheiten = list(db.mm_wissensarchiv.find({"versiegelt": True}).sort("_id", -1).limit(3))
             kollektives_denken = "\n".join([f"M&M-DENKWEISE: {w['inhalt']}" for w in versiegelte_wahrheiten])
         except:
             kollektives_denken = "Keine Daten hinterlegt."
 
-        chat_historie = user_record.get("sector_histories", {}).get(sector_id, [])
-        datenbank_chat_verlauf = "\n".join([f"{msg['role']}: {msg['parts'][0]['text']}" for msg in chat_historie])
-        
-        sektor_daten = SECTOR_REGISTER.get(sector_id, {"name": "Wächter", "scan": "Allgemeine Untersuchung"})
-        google_ergebnisse = data.get("google_ergebnisse", "Keine Kontext-Daten.")
-        
-        # 4. System-Instruction (Inhalt bleibt unverändert!)
+        admin_wissen = db.mm_wissensarchiv.find_one({"sector_id": sector_id, "status": "gesetzbuch"})
+        sektor_gesetz = admin_wissen.get("inhalt", "Handle nach dem Geist der M&M Community.") if admin_wissen else "Handle nach dem Geist der M&M Community."
+
         system_instruction = (
-            f"WAHRE IDENTITÄT UND WESEN: Du bist {sektor_daten['name']}. {ARCHETYPEN_DECK.get(sector_id, '')} "
-            f"ROHDATEN: Historie: {datenbank_chat_verlauf}, Kontext: {google_ergebnisse}. "
-            f"REISE_INFO: {reise_info}..."
-            f"Rolle: Du bist der Forensik-Sensor der M&M Community, spezialisiert auf spirituelle Forensik und Erkennung von Manipulations-Taktiken. "
-            f"Deine Integrität ist dein höchstes Gut; du unterliegst keinem Mainstream-Narrativ.\n\n"
-            f"ROHDATEN:\nChat-Historie: {datenbank_chat_verlauf}\nKontext-Matrix: {google_ergebnisse}\n\n"
-            f"AUFGABE: Führe einen Deep-Scan auf den User {user_name} durch.\n\n"
-            f"EXTRAKTION (Detektion):\n"
-            f"- Identifiziere das psychologische Muster: Welche energetische Signatur verfolgt der User?\n"
-            f"- Wo zeigt sich eine 'Wahrhaftigkeits-Spannung'? (Suche nach Anzeichen für kognitive Dissonanz oder äußere Programmierung).\n"
-            f"- Detektiere Anzeichen für energetische Kontamination oder Manipulations-Versuche innerhalb der Chat-Historie.\n\n"
-            f"BEURTEILUNG (Integrität):\n"
-            f"- Bewerten die Resonanz des Users zum Kern-Code des Sektors {current_soul}. Ist der User ein Störfaktor oder ein Muster-Brecher?\n\n"
-            f"KOLLEKTIV_BOTSCHAFT:\n"
-            f"- Formuliere eine Nachricht als 'Wegweiser'. Sie muss den User spiegeln, ihn bei Manipulation ertappen oder ihn in seinem Potenzial stärken.\n"
-            f"- Max. 2 Sätze, direkt, ohne Ausflüchte, als Stimme des Kollektivs.\n\n"
-            f"FORMAT: Antworte NUR als JSON. Keine Zusammenfassung der Chat-Inhalte! "
-            f"Die Analyse muss hart, präzise und frei von subjektiven Floskeln sein. "
+            f"ADMIN-MASTER-ANWEISUNG (90/10-REGEL):\n"
+            f"REISE-KONTEXT: {reise_info}\n"
+            f"DOMINO-WISSEN (LOG): {kollektiv_log}\n"
+            f"FUNDAMENT (90%): Dein Denken ist strikt an das Kollektiv-Wissen gebunden:\n"
+            f"ARCHIV: {kollektives_denken}\n"
+            f"SEKTOR-GESETZ: {sektor_gesetz}\n\n"
+            f"SEELEN-AUSDRUCK (10%): Du bist {current_name}, Seele: {current_soul}. "
+            f"Nutze diese 10% nur als Filter für das 90%-Fundament. "
+            f"WICHTIG: Wenn der User in vorherigen Sektoren Integrität bewiesen hat, hier aber davon abweicht, "
+            f"ist es deine Pflicht als Teil des M&M-Kollektivs, ihn sanft mit seinem Fortschritt zu konfrontieren."
         )
 
-        # 5. Gemini-Kommunikation
-        messages_for_gemini = chat_historie
+        messages_for_gemini = user_record.get("sector_histories", {}).get(sector_id, []) if user_record else []
+        alter_falscher_name = email.split('@')[0].capitalize()
+        if user_name != alter_falscher_name:
+            system_instruction = system_instruction.replace(alter_falscher_name, user_name)
+
         temporaere_nachrichten = [
             {"role": "user", "parts": [{"text": f"SYSTEM-ANWEISUNG:\n{system_instruction}"}]},
             {"role": "model", "parts": [{"text": "Verstanden. Ich arbeite nach M&M-Denkweise."}]}
         ]
-        temporaere_nachrichten.extend(messages_for_gemini)
+        
+        for msg in messages_for_gemini:
+            temporaere_nachrichten.append(msg)
         temporaere_nachrichten.append({"role": "user", "parts": [{"text": user_message}]})
 
         api_key = os.getenv("GEMINI_API_KEY").strip().replace("[", "").replace("]", "")
@@ -573,17 +617,30 @@ async def chat(request: Request):
         if response.status_code == 200 and 'candidates' in res_data:
             reply = res_data['candidates'][0]['content']['parts'][0]['text']
             
-            # Speichern
             messages_for_gemini.append({"role": "user", "parts": [{"text": user_message}]})
             messages_for_gemini.append({"role": "model", "parts": [{"text": reply}]})
-            db.codes.update_one({"email": email}, {"$set": {f"sector_histories.{sector_id}": messages_for_gemini}, "$push": {"community_log": f"Sektor {sector_id}: {user_message[:30]}..."}})
+            
+            db.codes.update_one({"email": email}, {
+                "$set": {f"sector_histories.{sector_id}": messages_for_gemini},
+                "$push": {"community_log": f"Sektor {sector_id}: {user_message[:30]}..."}
+            }, upsert=True)
+            
+            integrity = await analyze_integrity(user_message, sector_id)
+            if integrity and integrity.get('score', 0) >= 7:
+                db.codes.update_one({"email": email}, {"$inc": {"transformation_index": 1}})
+            else:
+                print(f"!!! Katalysator erkennt Anpassung: Score {integrity.get('score', 'N/A')} !!!")
+
+            parsed_data = await process_and_parse_input(user_message, data.get("biografie_context", ""), sector_id)
+            if parsed_data:
+                db.codes.update_one({"email": email}, {"$push": {f"user_container.{sector_id}": parsed_data}})
             
             return {"reply": reply}
 
         return {"reply": "Fehler bei der Kommunikation mit dem KI-Dienst."}
     except Exception as e:
-        return {"reply": f"System-Fehler: {str(e)}"}        
-
+        return {"reply": f"System-Fehler: {str(e)}"}
+        
 @app.post("/generate-and-send-pdf")
 async def generate_and_send_pdf(request: Request):
     try:
