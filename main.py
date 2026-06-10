@@ -376,20 +376,21 @@ async def handle_verify_access(request: Request):
 
 @app.post("/chat-wahrheit")
 async def handle_chat_wahrheit(request: Request):
-    try:
-        data = await request.json()
-        user_message = data.get('message', "")
-        user_time = data.get('echtzeit', "Unbekannt")
-        bio_context = data.get('biografie_context', "")
+    # ... (deine Daten-Logik wie gehabt)
+    
+    # JETZT KOMMT DER KAPTEL 3 IMPULS:
+    # Wir interpretieren die Zeit als "Zustand" statt als Zahl
+    stunden_abwesend = ... # (Berechne hier dein Delta)
+    
+    if stunden_abwesend > 24:
+        zustand = "Der Reisende kehrt aus der Stille zurück. Er hat in der Welt der Formen Neues erfahren."
+    else:
+        zustand = "Der Geist ist in unmittelbarer Nähe. Die Verbindung ist hochfrequent."
 
-        full_info = f"ZEIT-CHECK: {user_time} | BIO-AKTE: {bio_context}"
-        return {
-            "status": "Daten im System",
-            "info_fuer_ki": full_info,
-            "nachricht": user_message
-        }
-    except Exception as e:
-        return {"success": False, "error": str(e)}
+    # Wir geben der KI ein "Wissens-Paket" statt nur einen Zeitstempel
+    full_info = f"SYSTEM-STATUS-ZEIT: {zustand} | BIO-AKTE: {bio_context}"
+    
+    # ... (Rest der Funktion)
         
 @app.post("/get-live-ermittlung/{sector_id}")
 async def get_live_ermittlung(sector_id: str, request: Request):
@@ -465,91 +466,6 @@ async def get_live_ermittlung(sector_id: str, request: Request):
         return {"success": True, "data": {"widersprueche": ["Fehler"], "lagebericht": "Schnittstelle offline"}}
     except Exception as e:
         return {"success": True, "data": {"widersprueche": [f"Fehler: {str(e)}"]}}
-
-@app.post("/generate-and-send-pdf")
-async def generate_and_send_pdf(request: Request):
-    try:
-        data = await request.json()
-        email = data.get("email", "").lower().strip()
-        user_record = db.codes.find_one({"email": email})
-        
-        if not user_record:
-            return JSONResponse(content={"message": "User nicht gefunden"}, status_code=404)
-
-        user_container = user_record.get("user_container", {})
-        bio_text = generate_biography_text(user_container)
-        
-        pdf = FPDF()
-        pdf.add_page()
-        pdf.set_font("Arial", size=12)
-        pdf.multi_cell(0, 10, txt=bio_text.encode('latin-1', 'replace').decode('latin-1'))
-        
-        pdf_bytes = pdf.output(dest='S').encode('latin-1')
-        encoded_pdf = base64.b64encode(pdf_bytes).decode()
-        
-        success = send_email_with_attachment(
-            to_email=email,
-            subject="Dein M&M Community Manifest",
-            body="Anbei findest du dein versiegeltes Manifest als PDF.",
-            attachment_name="Biografie.pdf",
-            attachment_data=encoded_pdf
-        )
-
-        if success:
-            return JSONResponse(content={"message": "Das Manifest wurde per E-Mail versendet."})
-        return JSONResponse(content={"message": "Versand fehlgeschlagen"}, status_code=500)
-    except Exception as e:
-        return JSONResponse(content={"message": str(e)}, status_code=500)
-
-@app.post("/update-modus")
-async def update_modus(request: Request):
-    try:
-        data = await request.json()
-        email = data.get("email").lower().strip()
-        modus = data.get("modus")
-        
-        db.codes.update_one(
-            {"email": email},
-            {"$set": {
-                "manifest_mode": modus, 
-                "drawer_opened": True
-            }}
-        )
-        return {"success": True}
-    except Exception as e:
-        print(f"Fehler bei Modus-Speicherung: {e}")
-        return JSONResponse(content={"message": "Systemfehler"}, status_code=500)
-        
-@app.post("/admin/update-sector")
-async def update_sector(request: Request):
-    try:
-        data = await request.json()
-        admin_email = data.get("email")
-        sector_id = str(data.get("sector_id"))
-        status = data.get("status")
-        
-        if admin_email != "mmcommunity22@gmail.com":
-            return JSONResponse(content={"message": "Zugriff verweigert"}, status_code=403)
-            
-        if status == 'update-text':
-            header_text = data.get("header_text")
-            db.codes.update_one(
-                {"email": "mmcommunity22@gmail.com"},
-                {"$set": {f"sector_headers.{sector_id}": header_text}},
-                upsert=True
-            )
-            return {"success": True, "message": "Text gespeichert"}
-        else:
-            # FIX: Admin ändert hier den Status für das System global/oder einen Ziel-User
-            db.codes.update_one(
-                {"email": "mmcommunity22@gmail.com"},
-                {"$set": {f"sector_statuses.{sector_id}": status}},
-                upsert=True
-            )
-            return {"success": True, "message": "Status gespeichert"}
-    except Exception as e:
-        print(f"Fehler bei update-sector: {e}")
-        return JSONResponse(content={"message": "Systemfehler"}, status_code=500)
 
 @app.post("/chat")
 async def chat(request: Request):
@@ -635,7 +551,92 @@ async def chat(request: Request):
 
         return {"reply": "Fehler bei der Kommunikation mit dem KI-Dienst."}
     except Exception as e:
-        return {"reply": f"System-Fehler: {str(e)}"}
+        return {"reply": f"System-Fehler: {str(e)}"}        
+
+@app.post("/generate-and-send-pdf")
+async def generate_and_send_pdf(request: Request):
+    try:
+        data = await request.json()
+        email = data.get("email", "").lower().strip()
+        user_record = db.codes.find_one({"email": email})
+        
+        if not user_record:
+            return JSONResponse(content={"message": "User nicht gefunden"}, status_code=404)
+
+        user_container = user_record.get("user_container", {})
+        bio_text = generate_biography_text(user_container)
+        
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Arial", size=12)
+        pdf.multi_cell(0, 10, txt=bio_text.encode('latin-1', 'replace').decode('latin-1'))
+        
+        pdf_bytes = pdf.output(dest='S').encode('latin-1')
+        encoded_pdf = base64.b64encode(pdf_bytes).decode()
+        
+        success = send_email_with_attachment(
+            to_email=email,
+            subject="Dein M&M Community Manifest",
+            body="Anbei findest du dein versiegeltes Manifest als PDF.",
+            attachment_name="Biografie.pdf",
+            attachment_data=encoded_pdf
+        )
+
+        if success:
+            return JSONResponse(content={"message": "Das Manifest wurde per E-Mail versendet."})
+        return JSONResponse(content={"message": "Versand fehlgeschlagen"}, status_code=500)
+    except Exception as e:
+        return JSONResponse(content={"message": str(e)}, status_code=500)
+
+@app.post("/update-modus")
+async def update_modus(request: Request):
+    try:
+        data = await request.json()
+        email = data.get("email").lower().strip()
+        modus = data.get("modus")
+        
+        db.codes.update_one(
+            {"email": email},
+            {"$set": {
+                "manifest_mode": modus, 
+                "drawer_opened": True
+            }}
+        )
+        return {"success": True}
+    except Exception as e:
+        print(f"Fehler bei Modus-Speicherung: {e}")
+        return JSONResponse(content={"message": "Systemfehler"}, status_code=500)
+        
+@app.post("/admin/update-sector")
+async def update_sector(request: Request):
+    try:
+        data = await request.json()
+        admin_email = data.get("email")
+        sector_id = str(data.get("sector_id"))
+        status = data.get("status")
+        
+        if admin_email != "mmcommunity22@gmail.com":
+            return JSONResponse(content={"message": "Zugriff verweigert"}, status_code=403)
+            
+        if status == 'update-text':
+            header_text = data.get("header_text")
+            db.codes.update_one(
+                {"email": "mmcommunity22@gmail.com"},
+                {"$set": {f"sector_headers.{sector_id}": header_text}},
+                upsert=True
+            )
+            return {"success": True, "message": "Text gespeichert"}
+        else:
+            # FIX: Admin ändert hier den Status für das System global/oder einen Ziel-User
+            db.codes.update_one(
+                {"email": "mmcommunity22@gmail.com"},
+                {"$set": {f"sector_statuses.{sector_id}": status}},
+                upsert=True
+            )
+            return {"success": True, "message": "Status gespeichert"}
+    except Exception as e:
+        print(f"Fehler bei update-sector: {e}")
+        return JSONResponse(content={"message": "Systemfehler"}, status_code=500)
         
 @app.post("/generate-and-send-pdf")
 async def generate_and_send_pdf(request: Request):
