@@ -577,7 +577,6 @@ async def get_live_ermittlung(sector_id: str, request: Request):
             try:
                 ergebnis_json = json.loads(raw_text)
             except json.JSONDecodeError:
-                # Fallback, wenn die KI keinen JSON-Output liefert
                 ergebnis_json = {
                     "EXTRAKTION": {"Muster": "Analysefehler", "Wahrhaftigkeits_Spannung": "Daten korrupt", "Kontaminations_Level": "0"},
                     "BEURTEILUNG": "Die KI konnte keine strukturierte Antwort liefern.",
@@ -586,7 +585,13 @@ async def get_live_ermittlung(sector_id: str, request: Request):
             
             aktualisiere_sektor_fortschritt(email, sector_id, "letzter_scan", ergebnis_json)
             return {"success": True, "data": ergebnis_json}
-            
+        
+        # HIER HAT DAS 'except' GEFEHLT:
+        return {"success": True, "data": {"widersprueche": ["Fehler"], "lagebericht": "Schnittstelle offline"}}
+
+    except Exception as e:
+        return {"success": True, "data": {"widersprueche": [f"Fehler: {str(e)}"]}}
+
 @app.post("/generate-and-send-pdf")
 async def generate_and_send_pdf(request: Request):
     try:
