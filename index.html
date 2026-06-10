@@ -934,9 +934,14 @@ async function handleVerifyAccess() {
     try {
         const response = await fetch('/verify-access', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json' 
+            },
             body: JSON.stringify({ email: emailInput, code: codeInput })
         });
+
+        if (!response.ok) throw new Error('Netzwerkantwort war nicht ok');
+
         const data = await response.json();
 
         if (data.success) {
@@ -945,15 +950,15 @@ async function handleVerifyAccess() {
             // 1. Chat laden
             chatVerlauf = data.history || []; 
             
-            // 2. DAS BETRIEBSSYSTEM AKTIVIEREN
+            // 2. Betriebssystem aktivieren
             if (data.fortschritt) {
                 synchronisiereSektoren(data.fortschritt);
             }
             
             alert("Zugang gewährt! Willkommen zurück. Sektoren-Status synchronisiert.");
 
-            // 3. NEU: SCHUBLADEN-CHECK (Hier wird er eingebaut)
-            const statusRes = await fetch(`/get-user-status?email=${userEmail}`);
+            // 3. Schubladen-Check
+            const statusRes = await fetch(`/get-user-status?email=${encodeURIComponent(userEmail)}`);
             const statusData = await statusRes.json();
             
             if (statusData.drawer_opened === false) {
@@ -964,7 +969,8 @@ async function handleVerifyAccess() {
             alert("Schlüsselcode ungültig.");
         }
     } catch (e) {
-        alert("Fehler bei der Kommunikation.");
+        console.error("Fehler bei der Kommunikation:", e);
+        alert("Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.");
     }
 }
 async function sendeChat() {
