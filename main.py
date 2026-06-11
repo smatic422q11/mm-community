@@ -422,23 +422,18 @@ async def get_live_ermittlung(sector_id: str, request: Request):
         # Globale Konstanten als Referenz für die Engine.
         # Der Scanner greift exklusiv auf den `live_chat_stream` zu.
 
-        MODUS_OPERANDI = "Hochempfindlichkeitsscanner"
-        METHODIK_KERN = "Spirituelle Forensik / Sensorische Deprivationskammer"
-        FOKUS_PROTOKOLL = "Echtzeit-Analyse: live_chat_stream (User-Daten)"
-        OPERATIVE_KONTROLLE = "Kurskorrektur / Musterbrecher"
-        ZIEL_ZUSTAND = "Reinigung & Integrität"
+MODUS_OPERANDI = "Hochempfindlichkeitsscanner"
+METHODIK_KERN = "Spirituelle Forensik"
+FOKUS_PROTOKOLL = "Echtzeit-Analyse"
+
 def scanner_engine(live_chat_stream):
-        # Konfiguration als globale Konstanten fest definiert
         forensik_ergebnis = {
                 "modus": MODUS_OPERANDI,
                 "input_quelle": live_chat_stream,
                 "methodik": METHODIK_KERN,
-                "fokus": FOKUS_PROTOKOLL,
-                "analyse_status": "AKTIV",
-                "scanner_output": f"Forensik angewendet auf: {live_chat_stream[:50]}..."
+                "fokus": FOKUS_PROTOKOLL
         }
-        
-        return forensik_ergebnis
+        return forensik_ergebnis       
 
         prompt = (
             "Entschlüsselung Vergleich. Aktiviere Hochempfindlichkeitsscanner zur Erkennung korrupter Agenten. "
