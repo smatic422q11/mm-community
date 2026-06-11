@@ -418,6 +418,31 @@ async def get_live_ermittlung(sector_id: str, request: Request):
         google_ergebnisse = perform_google_search(such_anfrage)
         datenbank_chat_verlauf = "\n".join([f"{msg['role']}: {msg['parts'][0]['text']}" for msg in chat_historie])
 
+        # --- HARDWARE-EBENE: SCANNER-KONFIGURATION ---
+        # Globale Konstanten als Referenz für die Engine.
+        # Der Scanner greift exklusiv auf den `live_chat_stream` zu.
+
+        MODUS_OPERANDI = "Hochempfindlichkeitsscanner"
+        METHODIK_KERN = "Spirituelle Forensik / Sensorische Deprivationskammer"
+        FOKUS_PROTOKOLL = "Echtzeit-Analyse: live_chat_stream (User-Daten)"
+        OPERATIVE_KONTROLLE = "Kurskorrektur / Musterbrecher"
+        ZIEL_ZUSTAND = "Reinigung & Integrität"
+
+        # --- AUSFÜHRUNGSEBENE (ENGINE) ---
+        # Hier wird die Hardware-Ebene mit dem realen Chat-Verlauf verschmolzen.
+        # Es werden keine Fantasien generiert, nur die Forensik auf Basis der 90% User-Daten.
+
+        def scanner_engine(live_chat_stream):
+        # Die Konfiguration zwingt das System zur Forensik auf den gelieferten Daten.
+        # Keine Interpretation, kein 'Geist'-Gerede, nur Daten-Validierung.
+        forensik_ergebnis = {
+           "modus": MODUS_OPERANDI,
+           "input_quelle": live_chat_stream,
+           "methodik": METHODIK_KERN,
+           "fokus": FOKUS_PROTOKLL
+       }
+       return forensik_ergebnis
+
         prompt = (
             "Entschlüsselung Vergleich. Aktiviere Hochempfindlichkeitsscanner zur Erkennung korrupter Agenten. "
             "Führe spirituelle Forensik durch. Operiere in der sensorischen Deprivationskammer. "
