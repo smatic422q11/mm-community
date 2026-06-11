@@ -418,7 +418,7 @@ async def get_live_ermittlung(sector_id: str, request: Request):
         google_ergebnisse = perform_google_search(such_anfrage)
         datenbank_chat_verlauf = "\n".join([f"{msg['role']}: {msg['parts'][0]['text']}" for msg in chat_historie])
 
-        def scanner_engine(live_chat_stream):
+     def scanner_engine(live_chat_stream):
         analyse_prompt = "Entschlüsselung. Aktiviere Hochempfindlichkeitsscanner. Forensik: " + live_chat_stream
         forensik_ergebnis = {
         "modus": MODUS_OPERANDI,
