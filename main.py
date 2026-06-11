@@ -434,12 +434,12 @@ def scanner_engine(live_chat_stream):
         
         # Ausführung: Der Scanner wendet das Protokoll auf den Stream an.
         forensik_ergebnis = {
-                "modus": MODUS_OPERANDI,
-                "input_quelle": live_chat_stream,
-                "methodik": METHODIK_KERN,
-                "fokus": FOKUS_PROTOKOLL,
-                "analyse_status": "AKTIV",
-                "scanner_output": f"Forensik angewendet auf: {live_chat_stream[:50]}..."
+            "modus": MODUS_OPERANDI,
+            "input_quelle": live_chat_stream,
+            "methodik": METHODIK_KERN,
+            "fokus": FOKUS_PROTOKOLL,
+            "analyse_status": "AKTIV",
+            "scanner_output": f"Forensik angewendet auf: {live_chat_stream[:50]}..."
         }
         
         return forensik_ergebnis      
