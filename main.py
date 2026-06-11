@@ -431,18 +431,18 @@ async def get_live_ermittlung(sector_id: str, request: Request):
         # --- AUSFÜHRUNGSEBENE (ENGINE) ---
         # Hier wird die Hardware-Ebene mit dem realen Chat-Verlauf verschmolzen.
         # Es werden keine Fantasien generiert, nur die Forensik auf Basis der 90% User-Daten.
-
-        def scanner_engine(live_chat_stream):
-        # Die Konfiguration zwingt das System zur Forensik auf den gelieferten Daten.
-        # Keine Interpretation, kein 'Geist'-Gerede, nur Daten-Validierung.
-        forensik_ergebnis = {
-           "modus": MODUS_OPERANDI,
-           "input_quelle": live_chat_stream,
-           "methodik": METHODIK_KERN,
-           "fokus": FOKUS_PROTOKLL
-       }
-       return forensik_ergebnis
-
+     def scanner_engine(live_chat_stream):
+         forensik_ergebnis = {
+         "modus": MODUS_OPERANDI,
+         "input_quelle": live_chat_stream,
+         "methodik": METHODIK_KERN,
+         "fokus": FOKUS_PROTOKOLL,
+         "analyse_status": "AKTIV",
+         "scanner_output": f"Forensik angewendet auf: {live_chat_stream[:50]}..."
+     }
+    
+    return forensik_ergebnis
+        
         prompt = (
             "Entschlüsselung Vergleich. Aktiviere Hochempfindlichkeitsscanner zur Erkennung korrupter Agenten. "
             "Führe spirituelle Forensik durch. Operiere in der sensorischen Deprivationskammer. "
