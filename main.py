@@ -418,12 +418,10 @@ async def get_live_ermittlung(sector_id: str, request: Request):
         google_ergebnisse = perform_google_search(such_anfrage)
         datenbank_chat_verlauf = "\n".join([f"{msg['role']}: {msg['parts'][0]['text']}" for msg in chat_historie])
 
-        # --- SYSTEM-KONSTANTEN ---
 MODUS_OPERANDI = "Hochempfindlichkeitsscanner"
 METHODIK_KERN = "Spirituelle Forensik"
 FOKUS_PROTOKOLL = "Echtzeit-Analyse"
 
-# --- ENGINE ---
 def scanner_engine(live_chat_stream):
         forensik_ergebnis = {
                 "modus": MODUS_OPERANDI,
@@ -431,7 +429,7 @@ def scanner_engine(live_chat_stream):
                 "methodik": METHODIK_KERN,
                 "fokus": FOKUS_PROTOKOLL
         }
-        return forensik_ergebnis
+        return forensik_ergebnis     
 
         prompt = (
             "Entschlüsselung Vergleich. Aktiviere Hochempfindlichkeitsscanner zur Erkennung korrupter Agenten. "
