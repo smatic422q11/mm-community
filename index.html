@@ -154,6 +154,38 @@
     .ss-schliessen:hover { background: var(--rot); }
     .ss-body { width: 100%; }
     .ss-card { background: var(--schwarz); border: 1px solid var(--blau); border-radius: 10px; padding: 16px; color: #fff; margin-bottom: 14px; }
+    /* ---- Zentrale Schleuse: Anmelde-Zentrale für Live-Sektoren ---- */
+    .la-wrap { display: flex; flex-direction: column; gap: 0; }
+    .la-block { margin-bottom: 14px; }
+    .la-label { display: block; font-weight: 800; color: var(--gold); font-size: 0.9rem; margin-bottom: 8px; letter-spacing: 0.02em; }
+    .la-hint { color: #9db8dd; font-size: 0.76rem; margin: 8px 0 0 0; }
+    .la-select { width: 100%; padding: 10px; border-radius: 8px; background: #08111f; color: #fff; border: 1px solid var(--blau); font-size: 0.9rem; }
+    .la-fenster-zeile { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--blau); border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: all 0.18s ease; }
+    .la-fenster-zeile:hover { border-color: var(--gold); }
+    .la-fenster-zeile.gewaehlt { border-color: var(--gold); box-shadow: 0 0 12px rgba(255,215,0,0.25); background: rgba(0,61,143,0.35); }
+    .la-fenster-info { flex: 1 1 auto; display: flex; flex-direction: column; gap: 3px; }
+    .la-fenster-info b { color: #fff; font-size: 0.86rem; }
+    .la-fenster-info span { color: #9db8dd; font-size: 0.74rem; }
+    .la-fenster-akt { flex: 0 0 auto; }
+    .la-mini { margin-top: 0 !important; width: auto !important; padding: 7px 14px !important; font-size: 0.76rem !important; }
+    .la-badge { display: inline-block; padding: 1px 7px; border-radius: 999px; font-size: 0.66rem; font-weight: 800; margin-left: 6px; }
+    .la-badge.ok { background: rgba(46,204,113,0.2); color: #46e08a; border: 1px solid #2ecc71; }
+    .la-badge.voll { background: rgba(255,107,107,0.18); color: #ff9b9b; border: 1px solid #ff6b6b; }
+    .la-vorcheck { display: flex; gap: 14px; flex-wrap: wrap; }
+    .la-preview-box { position: relative; flex: 0 0 200px; width: 200px; height: 150px; background: #050c17; border: 1px solid var(--blau); border-radius: 8px; overflow: hidden; }
+    .la-preview-box video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+    .la-preview-hint { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #6f86a8; font-size: 0.78rem; }
+    .la-pegel-box { flex: 1 1 200px; display: flex; flex-direction: column; gap: 8px; justify-content: center; }
+    .la-pegel-label { color: #cfd8e3; font-size: 0.8rem; }
+    .la-pegel { width: 100%; height: 14px; background: #08111f; border: 1px solid var(--blau); border-radius: 999px; overflow: hidden; }
+    .la-pegel-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #2ecc71, #ffd700 70%, #ff6b6b); transition: width 0.1s linear; }
+    .la-vorcheck-btns { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+    .la-vorcheck-btns .p-btn { width: auto; margin-top: 0; padding: 9px 16px; }
+    .la-status-zeile { color: #cfd8e3; font-size: 0.82rem; margin-bottom: 12px; }
+    .la-betreten { width: 100%; padding: 14px; border: none; border-radius: 10px; font-weight: 900; font-size: 0.95rem; cursor: pointer; transition: all 0.25s ease; letter-spacing: 0.03em; }
+    .la-betreten.rot { background: #7a1f1f; color: #ffcaca; cursor: not-allowed; box-shadow: inset 0 0 0 1px #ff6b6b; }
+    .la-betreten.gruen { background: #1e8f4e; color: #fff; box-shadow: 0 0 18px rgba(46,204,113,0.5); }
+    .la-betreten.gruen:hover { background: #23a75c; }
     .ss-chips { display: flex; flex-wrap: wrap; gap: 12px; }
     .ss-chip { flex: 1 1 150px; background: var(--schwarz); border: 1px solid var(--blau); color: #fff; border-radius: 10px; padding: 16px 12px; cursor: pointer; text-align: center; font-weight: 700; transition: all 0.2s ease; }
     .ss-chip:hover { border-color: var(--gold); box-shadow: 0 0 16px rgba(255,215,0,0.28); transform: translateY(-3px); }
@@ -223,7 +255,10 @@
     .bk-handle { color: #9db8dd; font-size: 0.72rem; }
     .bk-zeit { color: #666; font-size: 0.68rem; margin-left: auto; }
     .bk-text { color: #fff; font-size: 0.92rem; line-height: 1.55; white-space: pre-wrap; word-break: break-word; }
-    .bk-media { max-width: 100%; margin-top: 10px; border: 1px solid #1e3a5f; border-radius: 5px; }
+    .beitrag .bk-media { display: none; max-width: 100%; border-radius: 8px; margin-top: 10px; }
+    .beitrag.offen .bk-media { display: block; }
+    .media-trigger { color: var(--gold); cursor: pointer; font-size: 0.9em; display: inline-block; margin-top: 5px; }
+    .beitrag.offen .media-trigger { display: none; }
 
     .kommentare { margin-top: 12px; border-top: 1px solid #1e3a5f; padding-top: 10px; }
     .kommentar { display: flex; gap: 8px; margin-bottom: 8px; }
@@ -236,18 +271,18 @@
     .komm-input-row button { background: var(--blau); color: #fff; border: none; padding: 0 16px; border-radius: 5px; cursor: pointer; font-weight: 700; }
     #stream-sentinel { height: 40px; }
 
-
-    /* --- Beitrag-Erstell-Overlay (Eingabe-Masken) --- */
-    .beitrag-card { width: 100%; max-width: 560px; background: linear-gradient(135deg,#001a3a 0%,#000 100%); border: 2px solid var(--blau); border-radius: 10px; padding: 24px; color: #fff; box-shadow: 0 0 40px rgba(0,61,143,0.5); }
-    .beitrag-card h2 { color: var(--gold); letter-spacing: 1px; text-transform: uppercase; font-size: 1.1rem; margin: 0 0 4px 0; }
-    .beitrag-card .b-hint { color: #9db8dd; font-size: 0.76rem; margin-bottom: 8px; }
-    .b-label { color: #9db8dd; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; display: block; margin: 12px 0 4px 0; }
-    .b-field { width: 100%; background: #0c1a2e; border: 1px solid var(--blau); color: #fff; padding: 11px 13px; outline: none; border-radius: 5px; font-size: 0.9rem; font-family: inherit; }
-    .b-field:focus { border-color: var(--gold); }
-    textarea.b-field { resize: vertical; min-height: 70px; }
-    .b-check { display: flex; align-items: center; gap: 8px; color: #cfd8e3; font-size: 0.8rem; margin-top: 12px; }
-    #beitrag-media-vorschau { max-height: 120px; margin-top: 8px; border: 1px solid var(--blau); border-radius: 5px; display: none; }
-
+    /* --- Beitrag-Erstell-Overlay (Professionell & Erweitert) --- */
+    #beitrag-overlay { background: rgba(0, 5, 12, 0.88); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+    .beitrag-card { width: 92%; max-width: 780px; max-height: 85vh; background: linear-gradient(135deg, #001a3a 0%, #000 100%); border: 2px solid var(--gold); border-radius: 14px; padding: 32px; color: #fff; box-shadow: 0 0 50px rgba(0, 61, 143, 0.65), 0 0 20px rgba(255, 215, 0, 0.2); display: flex; flex-direction: column; overflow-y: auto; }
+    .beitrag-card h2 { color: var(--gold); letter-spacing: 2px; text-transform: uppercase; font-size: 1.3rem; margin: 0 0 6px 0; }
+    .beitrag-card .b-hint { color: #9db8dd; font-size: 0.82rem; margin-bottom: 16px; border-bottom: 1px solid rgba(0, 61, 143, 0.4); padding-bottom: 10px; }
+    .b-label { color: var(--gold); font-size: 0.76rem; text-transform: uppercase; letter-spacing: 1px; display: block; margin: 16px 0 6px 0; font-weight: 700; }
+    .b-field { width: 100%; background: #081222; border: 1px solid var(--blau); color: #fff; padding: 12px 14px; outline: none; border-radius: 7px; font-size: 0.92rem; font-family: inherit; transition: all 0.2s ease; }
+    .b-field:focus { border-color: var(--gold); box-shadow: 0 0 10px rgba(255, 215, 0, 0.25); }
+     textarea.b-field { resize: vertical; min-height: 110px; }
+    .b-check { display: flex; align-items: center; gap: 10px; color: #e2ecf9; font-size: 0.84rem; margin-top: 16px; background: rgba(0, 61, 143, 0.18); padding: 10px 12px; border-radius: 6px; border: 1px solid rgba(0, 61, 143, 0.35); cursor: pointer; }
+    #beitrag-media-vorschau { max-height: 180px; margin-top: 10px; border: 1px solid var(--blau); border-radius: 6px; display: none; object-fit: cover; }
+  
     /* --- Post-Badges, Reflektion & Ressource --- */
     .bk-badges { display: flex; gap: 6px; margin-left: 8px; align-items: center; }
     .bk-badge { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 8px; border-radius: 10px; font-weight: 800; white-space: nowrap; }
@@ -273,15 +308,38 @@
         .stream-body { position: static; inset: auto; padding: 16px 14px 40px 14px; }
         /* Schublade auf Mobil: Vollbild-Overlay unterhalb des Headers */
         .sektor-schublade { position: fixed; inset: 60px 0 0 0; }
-        .live-spalte { width: 100%; border-left: none; border-top: 2px solid var(--blau); min-height: 380px; }
+        /* Schwebendes Live-Panel bleibt auch mobil ein Slide-in (voll breit). */
+        .live-spalte { width: 100%; max-width: 100%; }
+        /* Video-Grid auf Mobil: fixiert unterhalb des Headers (Viewport ist dort statisch). */
+        #live-overlay { position: fixed; inset: 60px 0 0 0; }
         .stream-liste, .composer-gesperrt { max-width: 100%; }
         .header-titel { display: none; }
     }
 
-    /* --- RECHTS: LIVE-VIDEO-SEKTOR --- */
-    .live-spalte { width: 380px; flex: 0 0 auto; background: rgba(0,0,0,0.92); border-left: 2px solid var(--blau); display: flex; flex-direction: column; overflow: hidden; }
+    /* --- RECHTS: SCHWEBENDES LIVE-PANEL (fährt wie das Hamburger-Menü von rechts ein) --- */
+    /* Immer sichtbarer Griff am rechten Rand zum Ein-/Ausfahren. */
+    .live-panel-griff {
+        position: fixed; top: 50%; right: 0; transform: translateY(-50%); z-index: 1399;
+        background: var(--blau); color: #fff; border: none; border-radius: 10px 0 0 10px;
+        padding: 16px 7px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 7px;
+        box-shadow: -4px 0 16px rgba(0,0,0,0.45); transition: background 0.2s ease, color 0.2s ease;
+    }
+    .live-panel-griff:hover { background: var(--gold); color: #000; }
+    .live-panel-griff .lpg-icon { font-size: 1.15rem; }
+    .live-panel-griff .lpg-text { writing-mode: vertical-rl; text-orientation: mixed; font-weight: 900; letter-spacing: 3px; font-size: 0.7rem; }
+    .live-panel-griff.gruen { background: var(--gruen); color: #002; box-shadow: -4px 0 18px rgba(0,255,136,0.5); }
+
+    .live-spalte {
+        position: fixed; top: 60px; right: 0; bottom: 0; width: 360px; max-width: 88vw; z-index: 1400;
+        background: rgba(0,0,0,0.96); border-left: 2px solid var(--blau); display: flex; flex-direction: column; overflow: hidden;
+        transform: translateX(105%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); box-shadow: -10px 0 34px rgba(0,0,0,0.55);
+    }
+    .live-spalte.aktiv { transform: translateX(0); }
     .live-kopf { padding: 14px 16px; border-bottom: 1px solid var(--blau); flex: 0 0 auto; }
+    .live-kopf-zeile { display: flex; align-items: center; }
     .live-kopf h3 { color: var(--gold); margin: 0; font-size: 0.92rem; letter-spacing: 2px; text-transform: uppercase; }
+    .live-panel-zu { margin-left: auto; background: transparent; border: none; color: #9db8dd; font-size: 1rem; cursor: pointer; }
+    .live-panel-zu:hover { color: #fff; }
     .live-kopf .live-thema { color: #9db8dd; font-size: 0.74rem; margin-top: 3px; }
     .live-status { color: #cfd8e3; font-size: 0.72rem; margin-top: 6px; }
     .live-status b { color: var(--gold); }
@@ -289,16 +347,30 @@
     .live-controls button { flex: 1; border: none; padding: 10px; font-weight: 800; cursor: pointer; border-radius: 5px; font-size: 0.78rem; }
     .btn-start { background: var(--gruen); color: #000; }
     .btn-stop { background: var(--rot); color: #fff; }
+    /* Info-Ansicht ("What's up"): aktive Sektoren, Zeiten, anonyme Tischbesetzung – KEIN Video. */
+    .live-info { flex: 1; overflow-y: auto; padding: 6px 14px 18px 14px; }
+    .li-block-titel { color: var(--gold); font-weight: 800; letter-spacing: 2px; font-size: 0.68rem; text-transform: uppercase; margin: 14px 0 6px 0; }
+    .li-karte { background: rgba(0,61,143,0.14); border: 1px solid #1e3a5f; border-left: 3px solid var(--blau); border-radius: 7px; padding: 10px 12px; margin-bottom: 8px; }
+    .li-karte.live { border-left-color: var(--gruen); }
+    .li-karte .li-thema { color: #fff; font-weight: 700; font-size: 0.82rem; }
+    .li-karte .li-meta { color: #9db8dd; font-size: 0.72rem; margin-top: 4px; }
+    .li-karte .li-badge { float: right; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 8px; border-radius: 10px; font-weight: 800; }
+    .li-badge.b-live { background: rgba(0,255,136,0.16); color: #7effc0; border: 1px solid #1c6b48; }
+    .li-badge.b-plan { background: rgba(255,215,0,0.14); color: var(--gold); border: 1px solid #7a6410; }
+    .li-pausiert { background: rgba(255,77,77,0.14); border-left: 3px solid var(--rot); padding: 9px 11px; color: #ffd0d0; font-size: 0.76rem; border-radius: 5px; margin-bottom: 10px; }
     .live-tische { flex: 1; overflow-y: auto; padding: 4px 12px 16px 12px; }
     .live-tisch-titel { color: var(--gold); font-weight: 800; letter-spacing: 2px; font-size: 0.72rem; text-transform: uppercase; border-bottom: 1px solid var(--blau); padding: 8px 0 4px 0; margin-top: 8px; }
     .tisch-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-top: 6px; }
     .v-slot { aspect-ratio: 4/3; background: #111; border: 1px solid var(--blau); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.62rem; color: #666; position: relative; overflow: hidden; }
     .warteliste-box { margin-top: 12px; background: rgba(255,77,77,0.12); border-left: 3px solid var(--rot); padding: 8px 10px; color: #ffd0d0; font-size: 0.75rem; border-radius: 4px; }
     .live-gesperrt { padding: 20px; color: #9db8dd; font-size: 0.82rem; text-align: center; }
-    .live-oeffnen-btn { width: calc(100% - 32px); margin: 0 16px 8px 16px; background: var(--gold); color: #000; border: none; padding: 9px; border-radius: 5px; font-weight: 800; cursor: pointer; font-size: 0.76rem; }
+    /* "7+1 Live-Sektor öffnen": gelb = gesperrt (Schleuse noch rot), grün = scharfgeschaltet. */
+    .live-oeffnen-btn { width: calc(100% - 32px); margin: 12px 16px 10px 16px; border: none; padding: 11px; border-radius: 6px; font-weight: 800; cursor: pointer; font-size: 0.8rem; transition: all 0.2s ease; }
+    .live-oeffnen-btn.gelb { background: #f4c400; color: #201a00; box-shadow: 0 0 14px rgba(244,196,0,0.4); }
+    .live-oeffnen-btn.gruen { background: var(--gruen); color: #002; box-shadow: 0 0 16px rgba(0,255,136,0.5); }
 
-    /* --- 7+1 LIVE-SEKTOR-OVERLAY (legt sich bei aktiver Sitzung über die Seite) --- */
-    #live-overlay { position: fixed; inset: 0; z-index: 3500; background: rgba(0,0,0,0.96); display: none; flex-direction: column; }
+    /* --- 4+2 VIDEO-GRID: eingepasst in den mittleren Bereich (kein Vollbild, kein Minimieren) --- */
+    #live-overlay { position: absolute; inset: 0; z-index: 12; background: rgba(0,0,0,0.97); display: none; flex-direction: column; }
     #live-overlay.aktiv { display: flex; }
     #live-overlay .lo-kopf { display: flex; align-items: center; gap: 14px; padding: 14px 22px; border-bottom: 2px solid var(--blau); background: var(--schwarz); flex-wrap: wrap; }
     #live-overlay .lo-kopf h2 { color: var(--gold); margin: 0; font-size: 1.05rem; letter-spacing: 2px; text-transform: uppercase; }
@@ -394,6 +466,9 @@
     /* Full-Viewport: das gesamte Profil-System belegt 100vw × 100vh – keine Ränder, keine Karte. */
     #profil-overlay { padding: 0; overflow: hidden; }
     #profil-overlay.aktiv { align-items: stretch; justify-content: stretch; }
+    /* Galerie-Editor teilt sich die Full-Viewport-Hülle des Profil-Canvas (eigene IDs, eigener State). */
+    #galerie-overlay { padding: 0; overflow: hidden; }
+    #galerie-overlay.aktiv { align-items: stretch; justify-content: stretch; }
     .canvas-editor {
         position: relative;
         width: 100vw; height: 100vh; max-width: none; margin: 0;
@@ -417,7 +492,8 @@
     .ce-dock.eingeklappt .ce-geo,
     .ce-dock.eingeklappt .ce-sicht,
     .ce-dock.eingeklappt .ce-topbar-titel .p-hint,
-    .ce-dock.eingeklappt #profil-msg { display: none; }
+    .ce-dock.eingeklappt #profil-msg,
+    .ce-dock.eingeklappt #galerie-msg { display: none; }
     .ce-topbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
     .ce-topbar-titel h2 { color: var(--gold); letter-spacing: 2px; text-transform: uppercase; font-size: 1.2rem; margin: 0 0 4px 0; }
     .ce-topbar-titel .p-hint { color: #9db8dd; font-size: 0.75rem; max-width: 640px; }
@@ -442,17 +518,17 @@
     /* Bühne: der Canvas füllt die gesamte Full-Viewport-Fläche; Panels schweben darüber. */
     .ce-buehne { position: absolute; inset: 0; display: block; gap: 0; margin: 0; }
     .ce-canvas-wrap { position: absolute; inset: 0; min-width: 0; }
-    .ce-canvas { position: absolute; inset: 0; width: 100%; height: 100%; aspect-ratio: auto; min-height: 0; border-radius: 0; overflow: hidden; background: linear-gradient(135deg,#001a3a 0%,#000 100%); }
+    .ce-canvas { position: absolute; inset: 0; width: 100%; height: 100%; aspect-ratio: auto; min-height: 0; border-radius: 0; overflow: hidden; background: var(--bg-image, linear-gradient(135deg,#001a3a 0%,#000 100%)) no-repeat; background-size: cover; background-position: var(--bg-pos-x, 50%) var(--bg-pos-y, 50%); }
     .ce-canvas-hint { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); color: rgba(255,255,255,0.55); font-size: 0.72rem; pointer-events: none; text-align: center; z-index: 1; width: 92%; }
     .ce-el { position: absolute; box-sizing: border-box; display: flex; }
     .ce-el .ce-foto-fill { width: 100%; height: 100%; background: #0a1526 center/cover no-repeat; }
+    /* Malermodus (Feature 3): Freistellen entfernt die dunkle Box (transparente Verschmelzung mit dem Hintergrund),
+       Einpassen zeigt runde Logos/Sonnen komplett (contain) statt sie zu beschneiden (cover). */
+    .ce-el .ce-foto-fill.frei { background-color: transparent; }
+    .ce-el .ce-foto-fill.einpassen { background-size: contain; }
     .ce-el .ce-text { width: 100%; word-wrap: break-word; white-space: pre-wrap; text-shadow: 0 1px 3px rgba(0,0,0,0.6); outline: none; overflow: auto; }
     .ce-el .ce-text[contenteditable="true"] { cursor: text; box-shadow: 0 0 0 2px var(--gold) inset; border-radius: 4px; }
-    /* Galerie-Modul: frei gestaltbares eigenständiges Grid */
-    .ce-el .ce-gal-grid { display: grid; width: 100%; height: 100%; align-content: start; overflow: auto; }
-    .ce-el .ce-gal-bild { position: relative; width: 100%; aspect-ratio: 1 / 1; border-radius: inherit; background: #0a1526 center/cover no-repeat; }
-    .ce-el .ce-gal-del { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 50%; border: none; background: var(--rot); color: #fff; cursor: pointer; font-size: 0.68rem; line-height: 1; padding: 0; z-index: 4; }
-    .ce-el .ce-gal-add { border: 1px dashed rgba(255,215,0,0.7); background: rgba(255,215,0,0.08); color: var(--gold); border-radius: 8px; cursor: pointer; font-family: inherit; font-weight: 800; font-size: 0.72rem; aspect-ratio: 1 / 1; }
+    /* Galerie ENTKOPPELT: eigener Galerie-Canvas (Schritt 2) – kein Galerie-Modul mehr im Profil-Canvas. */
     .ce-canvas .ce-el { cursor: grab; touch-action: none; }
     .ce-canvas .ce-el:active { cursor: grabbing; }
     .ce-canvas .ce-el:hover { outline: 1px dashed rgba(255,215,0,0.6); outline-offset: 2px; }
@@ -511,6 +587,23 @@
     .ps-kachel-info { padding: 10px 12px; }
     .ps-kachel-name { color: #fff; font-weight: 800; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .ps-kachel-ort { color: #9db8dd; font-size: 0.76rem; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    /* Stöber- & Entdeckungs-Suite: Status-Quickfilter, A-Z-Kaskade, Online-Indikator, Badges. */
+    .ps-suite { display: flex; flex-direction: column; gap: 12px; }
+    .ps-status { display: flex; flex-wrap: wrap; gap: 8px; }
+    .ps-status-btn { background: var(--schwarz); border: 1px solid var(--blau); color: #cfe0ff; padding: 8px 14px; border-radius: 20px; font-family: inherit; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+    .ps-status-btn.an { background: var(--gold); color: #000; border-color: var(--gold); }
+    .ps-azleiste { display: flex; flex-wrap: wrap; gap: 3px; }
+    .ps-az-btn { min-width: 24px; padding: 4px 6px; background: transparent; border: 1px solid rgba(255,255,255,0.14); color: #9db8dd; border-radius: 5px; font-family: inherit; font-size: 0.72rem; cursor: pointer; }
+    .ps-az-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .ps-az-btn.an { background: var(--gold); color: #000; border-color: var(--gold); font-weight: 800; }
+    .ps-kachel { position: relative; }
+    .ps-dot { position: absolute; top: 8px; right: 8px; width: 12px; height: 12px; border-radius: 50%; background: #6b7787; border: 2px solid #000; z-index: 2; }
+    .ps-dot.on { background: #34d058; box-shadow: 0 0 8px #34d058; }
+    .ps-badge { font-size: 0.72rem; }
+    .ps-badge.ver { color: #34d058; }
+    .ps-badge.neu { color: var(--gold); }
+    .ps-status-text { text-align: center; color: #9db8dd; font-size: 0.8rem; padding: 12px; }
+    #ps-sentinel { height: 1px; }
 
     /* ===== SYSTEM 2 · FREMDPROFIL-ANSICHT (fremder Canvas, read-only · Full-Viewport, 1:1 zum Editor) ===== */
     #fremdprofil-overlay { padding: 0; overflow: hidden; }
@@ -525,6 +618,31 @@
     .fp-canvas .ce-el:hover { outline: none; }
     .fp-galerie { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
     .fp-gal { width: 110px; height: 110px; border-radius: 8px; background: #0c1a2e center/cover no-repeat; border: 1px solid var(--blau); }
+    /* Entkoppelte Galerie – Besucher-Umschalter + Read-only-Ansicht (eigener Raum). */
+    .fp-galerie-btn { position: absolute; left: 14px; bottom: 14px; z-index: 41; width: auto; margin: 0; padding: 10px 18px; }
+    .ga-ansicht { overflow: auto; }
+    .ga-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; padding: 70px 24px 90px; }
+    .ga-kachel { margin: 0; background: rgba(6,14,28,0.72); border: 1px solid var(--blau); border-radius: 12px; overflow: hidden; }
+    .ga-bild { width: 100%; aspect-ratio: 4 / 3; background: #0a1526 center/cover no-repeat; }
+    .ga-titel { padding: 8px 12px; color: #dceaff; font-size: 0.82rem; }
+    /* Galerie-Bild-Modul: Titel als Overlay am unteren Rand (Editor + Ansicht identisch). */
+    .ce-el .ge-cap { position: absolute; left: 0; right: 0; bottom: 0; margin: 0; padding: 6px 9px; background: linear-gradient(0deg, rgba(0,0,0,0.62), transparent); font-size: 0.8rem; text-align: center; text-shadow: 0 1px 3px rgba(0,0,0,0.85); pointer-events: none; }
+    /* Zwei-Button-Umschalter auf dem Fremdprofil: Profil <-> Galerie. */
+    .fp-umschalter { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); z-index: 42; display: flex; gap: 6px; background: rgba(6,14,28,0.85); backdrop-filter: blur(9px); -webkit-backdrop-filter: blur(9px); border: 1px solid var(--blau); border-radius: 24px; padding: 5px; box-shadow: 0 8px 28px rgba(0,0,0,0.5); }
+    .fp-um-btn { background: transparent; border: none; color: #9db8dd; padding: 8px 16px; border-radius: 20px; font-family: inherit; font-weight: 800; font-size: 0.82rem; cursor: pointer; }
+    .fp-um-btn.an { background: var(--gold); color: #000; }
+    .fp-um-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    /* Profil-Hub (Auswahlkarten). */
+    .hub-box { position: relative; background: linear-gradient(135deg,#0a1a30,#060e1c); border: 1px solid var(--blau); border-radius: 18px; padding: 30px; max-width: 640px; width: 92%; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+    .hub-close { position: absolute; top: 12px; right: 12px; width: auto; margin: 0; padding: 6px 12px; }
+    .hub-titel { color: var(--gold); letter-spacing: 2px; text-transform: uppercase; font-size: 1.2rem; margin: 0 0 4px; }
+    .hub-hint { color: #9db8dd; font-size: 0.85rem; margin: 0 0 20px; }
+    .hub-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; }
+    .hub-karte { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; background: #0c1a2e; border: 1px solid var(--blau); border-radius: 14px; padding: 22px 14px; color: #fff; cursor: pointer; font-family: inherit; transition: transform .15s, border-color .15s, box-shadow .15s; }
+    .hub-karte:hover { transform: translateY(-4px); border-color: var(--gold); box-shadow: 0 12px 30px rgba(0,0,0,0.5); }
+    .hub-karte b { font-size: 0.95rem; }
+    .hub-icon { font-size: 2rem; }
+    .hub-sub { color: #9db8dd; font-size: 0.72rem; }
 
     @media (max-width: 980px) {
         /* Attributpanel wird zum schwebenden Bodenblatt – Bühne bleibt Vollbild. */
@@ -631,7 +749,7 @@
         <div class="header-spacer"></div>
         <div id="google_translate_element" title="Inhalte übersetzen"></div>
         <span id="header-rolle" class="header-rolle rolle-basis" title="Deine Mitgliedsstufe">• Basis</span>
-        <div id="header-avatar" class="header-avatar" title="Profileinstellungen" onclick="oeffneProfil()"></div>
+        <div id="header-avatar" class="header-avatar" title="Profileinstellungen" onclick="oeffneProfilHub()"></div>
         <button class="header-exit" onclick="window.location.reload()">Abmelden</button>
     </div>
 
@@ -694,23 +812,38 @@
                     </div>
                     <div class="ss-body" id="ss-body"></div>
                 </div>
+
+                <!-- 4+2 VIDEO-GRID: eingepasst in die Mittel-Fläche (Regie-Größe, kein Vollbild, kein Minimieren) -->
+                <div id="live-overlay">
+                    <div class="lo-kopf">
+                        <h2>🎥 7+1 Live-Sektor</h2>
+                        <span class="lo-thema" id="lo-thema"></span>
+                        <span class="lo-status">Tische: <b id="lo-tisch-count">0</b> · Teilnehmer: <b id="lo-teil-count">0</b> · Warteliste: <b id="lo-warte-count">0</b></span>
+                    </div>
+                    <div class="lo-body"><div id="live-overlay-tische"></div></div>
+                    <div class="lo-controls">
+                        <button class="btn-stop" style="width:auto; padding:11px 22px;" onclick="stoppeVideo()">◀ Live verlassen</button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- RECHTS: Live-Video-Sektor -->
+        <!-- RECHTS: Schwebendes Live-Panel (Griff + Info-Ansicht "What's up", KEIN Video) -->
+        <button class="live-panel-griff" id="live-panel-griff" onclick="toggleLivePanel()" title="Live-Sektor ein-/ausblenden">
+            <span class="lpg-icon">🎥</span><span class="lpg-text">LIVE-SEKTOR</span>
+        </button>
         <div class="live-spalte" id="live-spalte">
             <div class="live-kopf">
-                <h3>🎥 Live-Sektor</h3>
-                <div class="live-thema" id="live-thema">Wähle ein Thema</div>
-                <div class="live-status" id="live-status">Tische: <b id="live-tisch-count">0</b> · Teilnehmer: <b id="live-teil-count">0</b></div>
+                <div class="live-kopf-zeile">
+                    <h3>🎥 Live-Sektor</h3>
+                    <button class="live-panel-zu" onclick="schliesseLivePanel()" title="Panel schließen">✕</button>
+                </div>
+                <div class="live-thema" id="live-thema">Info-Ansicht: was gerade läuft</div>
+                <div class="live-status" id="live-status">Aktive Sektoren, Zeiten &amp; anonyme Tischbesetzung — noch kein Video.</div>
             </div>
-            <button class="live-oeffnen-btn" onclick="oeffneLiveOverlay()">⛶ 7+1 Live-Sektor öffnen</button>
-            <div class="live-controls">
-                <button class="btn-start" onclick="starteVideo()">START</button>
-                <button class="btn-stop" onclick="stoppeVideo()">STOP</button>
-            </div>
-            <div class="live-tische" id="live-tische">
-                <div class="live-gesperrt">Wähle links ein Thema, um dem themen-eigenen Live-Raum beizutreten.</div>
+            <button class="live-oeffnen-btn gelb" id="live-oeffnen-btn" onclick="klickLiveOeffnen()">🔒 7+1 Live-Sektor öffnen</button>
+            <div class="live-info" id="live-info">
+                <div class="live-gesperrt">Öffne das Panel, um die Live-Übersicht zu laden.</div>
             </div>
         </div>
     </div>
@@ -746,6 +879,13 @@
                         <option value="neon">Neon</option>
                         <option value="weich">Weich (Schatten)</option>
                     </select></label>
+                <!-- Malermodus (Feature 1): Hintergrund (Berg/Landschaft) live verschieben/skalieren, um oben Platz (z. B. für eine Sonne) zu schaffen. -->
+                <label class="ce-tool">⬍ Hintergrund Y <span id="ce-bg-posy-lab">50%</span>
+                    <input type="range" id="ce-bg-posy" min="0" max="100" step="1" value="50" oninput="ceCanvasStil()"></label>
+                <label class="ce-tool">⬌ Hintergrund X <span id="ce-bg-posx-lab">50%</span>
+                    <input type="range" id="ce-bg-posx" min="0" max="100" step="1" value="50" oninput="ceCanvasStil()"></label>
+                <label class="ce-tool">🔍 Hintergrund skalieren <span id="ce-bg-skala-lab">100%</span>
+                    <input type="range" id="ce-bg-skala" min="30" max="300" step="1" value="100" oninput="ceCanvasStil()"></label>
                 <div class="ce-tool-hinweis">Module hinzufügen: <b>Klick auf die freie Bühne</b> öffnet das Auswahlmenü genau am Klickpunkt. Ein Modul anklicken zeigt sein <b>Kontextmenü</b>; ziehen verschiebt es.</div>
             </div>
             <div class="ce-geo">
@@ -767,6 +907,81 @@
             </div>
             <!-- Schwebendes Kontextmenü: erscheint am angeklickten Modul bzw. am Bühnen-Klickpunkt. -->
             <div class="ce-ctx" id="ce-ctx"></div>
+        </div>
+    </div>
+
+    <!-- ===================== PROFIL-HUB (Auswahl: Profil / Galerie / Design-Vorschau) ===================== -->
+    <div id="profil-hub-overlay" class="overlay">
+        <div class="hub-box">
+            <button class="p-btn schliessen hub-close" onclick="schliesseProfilHub()">✕</button>
+            <h2 class="hub-titel">Profil-Einstellungen</h2>
+            <p class="hub-hint">Wähle, was du gestalten möchtest.</p>
+            <div class="hub-grid">
+                <button class="hub-karte" onclick="hubOeffne('profil')"><span class="hub-icon">👤</span><b>Profil bearbeiten</b><span class="hub-sub">Dein freier Profil-Canvas</span></button>
+                <button class="hub-karte" onclick="hubOeffne('galerie')"><span class="hub-icon">🖼️</span><b>Galerie bearbeiten</b><span class="hub-sub">Eigener Bild-Raum</span></button>
+                <button class="hub-karte" onclick="hubOeffne('vorschau')"><span class="hub-icon">👁️</span><b>Design-Vorschau</b><span class="hub-sub">So sehen dich Besucher</span></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== GALERIE-CANVAS (eigenständige Galerie-Suite · getrennt vom Profil) ===================== -->
+    <div id="galerie-overlay" class="overlay">
+        <div class="canvas-editor" id="galerie-editor">
+            <div class="ce-dock" id="ge-dock">
+            <div class="ce-topbar">
+                <div class="ce-topbar-titel">
+                    <h2>Meine Galerie</h2>
+                    <div class="p-hint">Eigener Bild-Raum – frei gestaltbar wie dein Profil-Canvas, aber komplett getrennt. Editor und Besucheransicht sind 1:1 identisch.</div>
+                </div>
+                <div class="ce-topbar-actions">
+                    <button class="p-btn sekundaer" id="ge-dock-btn" onclick="geDockToggle()" title="Werkzeuge ein-/ausblenden">▲ Werkzeuge</button>
+                    <button class="p-btn" onclick="speichereGalerie()">Speichern</button>
+                    <button class="p-btn schliessen" onclick="schliesseGalerieEditor()">Schließen</button>
+                </div>
+            </div>
+            <div class="ce-werkzeuge">
+                <label class="ce-tool">🌄 Hintergrundbild-URL
+                    <input type="text" id="ge-bg-url" placeholder="https://…/bild.jpg" autocomplete="off" onchange="geCanvasStil()"></label>
+                <label class="ce-tool">🎨 Hintergrundfarbe
+                    <input type="color" id="ge-bg-farbe" value="#0c1a2e" oninput="geCanvasStil()"></label>
+                <label class="ce-tool">🖼️ Farbschema
+                    <select id="ge-schema" onchange="geSchemaWechsel(this.value)"></select></label>
+                <label class="ce-tool">🔲 Rahmen
+                    <select id="ge-rahmen" onchange="geCanvasStil()">
+                        <option value="">ohne</option>
+                        <option value="gold">Gold</option>
+                        <option value="doppelt">Doppelt</option>
+                        <option value="neon">Neon</option>
+                        <option value="weich">Weich (Schatten)</option>
+                    </select></label>
+                <!-- Malermodus (Feature 1): Galerie-Hintergrund live verschieben/skalieren. -->
+                <label class="ce-tool">⬍ Hintergrund Y <span id="ge-bg-posy-lab">50%</span>
+                    <input type="range" id="ge-bg-posy" min="0" max="100" step="1" value="50" oninput="geCanvasStil()"></label>
+                <label class="ce-tool">⬌ Hintergrund X <span id="ge-bg-posx-lab">50%</span>
+                    <input type="range" id="ge-bg-posx" min="0" max="100" step="1" value="50" oninput="geCanvasStil()"></label>
+                <label class="ce-tool">🔍 Hintergrund skalieren <span id="ge-bg-skala-lab">100%</span>
+                    <input type="range" id="ge-bg-skala" min="30" max="300" step="1" value="100" oninput="geCanvasStil()"></label>
+                <div class="ce-tool-btns">
+                    <button onclick="geBildHinzufuegen()">＋ Bild laden</button>
+                    <button onclick="geLayoutPreset('2x2')">▦ 2×2</button>
+                    <button onclick="geLayoutPreset('3er')">▤ 3er-Reihe</button>
+                    <button onclick="geLayoutPreset('hero')">▛ Hero+Streifen</button>
+                    <button onclick="geLayoutPreset('raster')">▓ Raster (alle)</button>
+                </div>
+                <div class="ce-tool-hinweis"><b>＋ Bild laden</b> legt je Datei ein frei platzierbares Modul an · Klick auf die freie Bühne fügt ebenfalls ein Bild hinzu · Modul anklicken zeigt sein Menü.</div>
+            </div>
+            <div id="galerie-msg" class="p-msg"></div>
+            </div><!-- /ge-dock -->
+            <div class="ce-buehne">
+                <div class="ce-canvas-wrap">
+                    <div class="ce-canvas" id="ge-canvas">
+                        <div class="ce-canvas-hint">Klick auf die freie Bühne fügt ein Bild hinzu · Bild anklicken öffnet sein Menü · ziehen verschiebt · Ecke ⭜ skaliert.</div>
+                    </div>
+                </div>
+                <div class="ce-attr-panel" id="ge-attr"></div>
+            </div>
+            <!-- Schwebendes Kontextmenü der Galerie (eigene ID, getrennt vom Profil-Canvas). -->
+            <div class="ce-ctx" id="ge-ctx"></div>
         </div>
     </div>
 
@@ -802,21 +1017,6 @@
         </div>
     </div>
 
-    <!-- ===================== 7+1 LIVE-SEKTOR-OVERLAY ===================== -->
-    <div id="live-overlay">
-        <div class="lo-kopf">
-            <h2>🎥 7+1 Live-Sektor</h2>
-            <span class="lo-thema" id="lo-thema"></span>
-            <span class="lo-status">Tische: <b id="lo-tisch-count">0</b> · Teilnehmer: <b id="lo-teil-count">0</b> · Warteliste: <b id="lo-warte-count">0</b></span>
-        </div>
-        <div class="lo-body"><div id="live-overlay-tische"></div></div>
-        <div class="lo-controls">
-            <button class="btn-start" onclick="starteVideo()">START / Beitreten</button>
-            <button class="btn-stop" onclick="stoppeVideo()">Sitzung verlassen</button>
-            <button class="p-btn schliessen" style="margin:0 0 0 auto; width:auto; padding:11px 22px;" onclick="schliesseLiveOverlay()">Minimieren</button>
-        </div>
-    </div>
-
     <!-- ===================== ADMIN-PANEL ===================== -->
     <div id="admin-panel">
         <div class="admin-kopf">
@@ -849,6 +1049,24 @@
                 <button class="admin-btn grau" onclick="ladeAdminVideoConfig()">Aktualisieren</button>
             </div>
 
+            <!-- LIVE-REGIE: Echtzeit-Monitoring + Last-Steuerung + manuelle Freigabe + Spontan-Slot -->
+            <div class="admin-card c-cyan voll">
+                <h3>🎛️ LIVE-REGIE (Echtzeit-Steuerung)</h3>
+                <div style="display:flex; gap:14px; flex-wrap:wrap; align-items:flex-end; margin-bottom:8px;">
+                    <label style="display:flex; align-items:center; gap:8px; color:#fff; font-size:0.82rem;"><input type="checkbox" id="lr-pausiert" onchange="adminSetLiveRegie()"> ⛔ Not-Aus (neue Beitritte pausieren)</label>
+                    <div><label>Last-Regler: max. Tische/Thema (0 = unbegrenzt)</label><input type="number" id="lr-maxtische" min="0" max="999" value="0" style="width:130px;"></div>
+                    <button class="admin-btn cyan" onclick="adminSetLiveRegie()">Regie speichern</button>
+                    <button class="admin-btn grau" onclick="ladeAdminLiveRegie()">Aktualisieren</button>
+                    <span style="color:#9db8dd; font-size:0.76rem; margin-left:auto;">Aktiv im Video: <b id="lr-aktiv" style="color:#00ffcc;">0</b></span>
+                </div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:flex-end; border-top:1px solid #333; padding-top:8px; margin-bottom:8px;">
+                    <div><label>Spontan-Slot: Sektor</label><input type="number" id="lr-slot-sektor" min="1" max="22" value="1" style="width:80px;"></div>
+                    <div><label>Dauer (Min)</label><input type="number" id="lr-slot-dauer" min="15" max="180" value="60" style="width:90px;"></div>
+                    <button class="admin-btn gruen" onclick="adminSpontanSlot()">＋ Slot jetzt öffnen (sofort freigegeben)</button>
+                </div>
+                <div id="lr-sessions" style="max-height:260px; overflow-y:auto;"><p style="color:#666; padding:8px;">Klicke „Aktualisieren".</p></div>
+            </div>
+
             <!-- Reservierungen & Einladungen (Echtzeit) -->
             <div class="admin-card c-gold voll">
                 <h3>🗓️ TISCH-RESERVIERUNGEN & EINLADUNGEN (LIVE)</h3>
@@ -873,6 +1091,14 @@
                         <div><label>Sektor</label><input type="number" id="admin-zert-sektor" min="1" max="22" value="1" style="width:70px;"></div>
                         <button class="admin-btn" onclick="adminSetzeUserProgress()">Sektor übernehmen</button>
                         <button class="admin-btn gruen" onclick="adminSendeZertifikat()">📜 Zertifikat senden</button>
+                    </div>
+                    <div style="margin-top:10px; border-top:1px solid #333; padding-top:8px;">
+                        <h4 style="color:#fff; margin:0 0 6px 0; font-size:0.82rem;">🎖️ Mitglieder-Stufe für: <span id="admin-stufe-user" style="color:#00ff88;">— keiner —</span> <span style="color:#9db8dd;">(aktuell: <b id="admin-stufe-akt" style="color:#ffd700;">—</b>)</span></h4>
+                        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                            <button class="admin-btn grau" onclick="adminSetzeStufe('basis')">Basis</button>
+                            <button class="admin-btn" onclick="adminSetzeStufe('verifiziert')">✅ Verifiziert</button>
+                            <button class="admin-btn gruen" onclick="adminSetzeStufe('premium')">⭐ Premium</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -983,6 +1209,26 @@
     let streamGerendert = 0;
     const STREAM_BATCH = 6;
     let streamObserver = null;
+    let currentSocket = null;
+
+    window.verbindeLive = function(beitragId) {
+    if (currentSocket) currentSocket.close();
+    currentSocket = new WebSocket(`ws://${window.location.host}/ws/forum/${beitragId}`);
+    currentSocket.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        if (data.type === "neuer_kommentar") {
+            const kContainer = document.getElementById('komm-' + data.beitrag_id);
+            const box = document.getElementById('komm-box-' + data.beitrag_id);
+            const postHandle = box ? box.getAttribute('data-ersteller-handle') : '';
+            const postName = box ? box.getAttribute('data-ersteller-name') : '';
+            if (kContainer) {
+                kContainer.insertAdjacentHTML('beforeend', renderKommentar(data.kommentar, postHandle, postName, data.beitrag_id));
+                const zaehlerSpan = document.getElementById('komm-zaehler-' + data.beitrag_id);
+                if (zaehlerSpan) zaehlerSpan.textContent = parseInt(zaehlerSpan.textContent) + 1;
+            }
+        }
+    };
+};
 
     function backendSektor() { return (aktivesThemaIdx === null) ? null : (aktivesThemaIdx + 1); }
     function escapeHtml(s) { return (s || "").replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -1102,6 +1348,8 @@
         document.getElementById('app-header').classList.add('aktiv');
         document.getElementById('dashboard').classList.add('aktiv');
         ladeMeineRolle();
+        // Griff/Button des schwebenden Live-Panels initial setzen (Admin = sofort grün).
+        aktualisiereLivePanelStatus();
     }
 
     // SYSTEM 3: Rolle + Rechte vom Server holen und im Header anzeigen.
@@ -1166,12 +1414,12 @@
     const SIDEBAR_KACHELN = [
         { id: 'themen',       titel: '🗂️ Themen-Hub',                        offen: true, bauInhalt: baueThemenHubInhalt },
         { id: 'gemeinschaft', titel: '🤝 Gemeinschaft & Transparenz',        bauInhalt: baueGemeinschaftInhalt },
-        { id: 'profil',       titel: '👤 Profil-Einstellungen',              action: oeffneProfil },
+        { id: 'profil',       titel: '👤 Profil-Einstellungen',              action: oeffneProfilHub },
         { id: 'konto',        titel: '🔐 Konto & Sicherheit',                action: () => oeffnePanel('konto-sicherheit') },
         { id: 'account',      titel: '📇 Mein Account',                      action: () => oeffnePanel('mein-account') },
         { id: 'zugang',       titel: '🪪 Zugangsdaten',                      action: () => oeffnePanel('zugangsdaten') },
         { id: 'tisch',        titel: '🍽️ Tisch-Reservierungen',             action: () => oeffneSchublade('reservierung') },
-        { id: 'live',         titel: '🎥 Anmeldeoptionen für Live-Sektoren', action: () => oeffnePanel('live-optionen') },
+        { id: 'live',         titel: '🎥 Anmeldeoptionen für Live-Sektoren', action: () => oeffneSchublade('live-anmeldung') },
     ];
 
     function baueSidebar() {
@@ -1240,6 +1488,8 @@
     function oeffneSchublade(key) {
         const handler = SCHUBLADE_HANDLER[key];
         if (!handler) return;
+        // Beim Wechsel WEG von der Live-Schleuse deren Kamera/Mikro/Timer freigeben.
+        if (aktiveSchublade === 'live-anmeldung' && key !== 'live-anmeldung' && typeof laTeardown === 'function') laTeardown();
         aktiveSchublade = key;
         document.querySelectorAll('.sn-kachel').forEach(b => b.classList.toggle('aktiv', b.dataset.key === key));
         const body = document.getElementById('ss-body');
@@ -1248,6 +1498,8 @@
         document.getElementById('sektor-schublade').classList.add('offen');
     }
     function schliesseSchublade() {
+        // Live-Schleuse sauber herunterfahren (Kamera/Mikro-Vorschau + Poll-Timer).
+        if (aktiveSchublade === 'live-anmeldung' && typeof laTeardown === 'function') laTeardown();
         const sch = document.getElementById('sektor-schublade');
         if (sch) sch.classList.remove('offen');
         aktiveSchublade = null;
@@ -1303,55 +1555,129 @@
 
     // ---- 6) Profilsuche (Mitglieder, nur öffentliche Felder) ----
     // ---- 6) Profilsuche (SYSTEM 2: geleerte Fläche · Land/Stadt · Fotokacheln) ----
+    // ===== STÖBER- & ENTDECKUNGS-SUITE (Zwei-Modus: gezielte Suche <-> Radar) =====
+    let psState = null, psDebounce = null, psObserver = null;
     function schubladeProfilsuche(body) {
-        setzeSchubladeKopf('Profilsuche', 'Suche gezielt nach Land und Stadt. Ergebnisse erscheinen erst nach Klick auf „Suchen".');
-        // Basis-Mitglieder: Profilsuche ist komplett gesperrt.
+        setzeSchubladeKopf('Community-Radar', 'Tippe einen Namen für die gezielte Suche – oder lass das Feld leer und stöbere per Ort, Umkreis, Status und Buchstabe.');
         if (!(meineRechte.darf_profilsuche || isAdmin)) {
             body.innerHTML = ssHinweis('🔒 Die Profilsuche ist erst für verifizierte Mitglieder verfügbar. Vervollständige dein Profil inklusive Profilbild, um freigeschaltet zu werden.');
             return;
         }
-        // Mittlere Fläche ist zu Beginn LEER – es werden KEINE Profile automatisch geladen.
+        psState = { q:'', land:'', stadt:'', umkreis:'land', status:'alle', buchstabe:'', offset:0, mehr:false, laden:false };
+        const statusLabels = { alle:'Alle', online:'🟢 Online', verifiziert:'✔ Verifiziert', neu:'✨ Neu' };
         body.innerHTML = `
-            <div class="ps-filter">
-                <div class="ps-feld"><label class="b-label">Land</label>
-                    <input type="text" id="ps-land" placeholder="z. B. Österreich oder Mexiko" autocomplete="off"></div>
-                <div class="ps-feld"><label class="b-label">Stadt</label>
-                    <input type="text" id="ps-stadt" placeholder="z. B. Bregenz" autocomplete="off"></div>
-                <div class="ps-feld"><label class="b-label">Name / @Handle (optional)</label>
-                    <input type="text" id="ps-q" placeholder="optional" autocomplete="off"></div>
-                <button class="p-btn ps-btn" onclick="ladeProfilsuche()">🔎 Suchen</button>
-            </div>
-            <div id="ps-ergebnis" class="ps-ergebnis"><p style="color:#123; text-align:center; margin-top:30px;">Gib Land/Stadt ein und drücke „Suchen“.</p></div>`;
+            <div class="ps-suite">
+                <div class="ps-filter">
+                    <div class="ps-feld"><label class="b-label">Name / @Handle</label>
+                        <input type="text" id="ps-q" placeholder="leer = Radar-Modus (stöbern)" autocomplete="off" oninput="psFilterGeaendert()"></div>
+                    <div class="ps-feld"><label class="b-label">Land</label>
+                        <input type="text" id="ps-land" placeholder="z. B. Österreich" autocomplete="off" oninput="psFilterGeaendert()"></div>
+                    <div class="ps-feld"><label class="b-label">Stadt</label>
+                        <input type="text" id="ps-stadt" placeholder="z. B. Bregenz" autocomplete="off" oninput="psFilterGeaendert()"></div>
+                    <div class="ps-feld"><label class="b-label">Umkreis</label>
+                        <select id="ps-umkreis" onchange="psFilterGeaendert()">
+                            <option value="stadt">Nur Stadt</option>
+                            <option value="5">5 km</option><option value="20">20 km</option>
+                            <option value="50">50 km</option><option value="100">100 km</option>
+                            <option value="land" selected>Ganzes Land</option>
+                        </select></div>
+                </div>
+                <div class="ps-status" id="ps-status">${
+                    Object.keys(statusLabels).map(s => `<button class="ps-status-btn ${s==='alle'?'an':''}" data-s="${s}" onclick="psStatus('${s}')">${statusLabels[s]}</button>`).join('')
+                }</div>
+                <div class="ps-azleiste" id="ps-az">${
+                    ['#'].concat('ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')).map(b => `<button class="ps-az-btn" data-b="${b}" onclick="psBuchstabe('${b}')">${b}</button>`).join('')
+                }</div>
+                <div id="ps-ergebnis" class="ps-ergebnis">
+                    <div class="ps-grid" id="ps-grid"></div>
+                    <div id="ps-status-text" class="ps-status-text"></div>
+                    <div id="ps-sentinel"></div>
+                </div>
+            </div>`;
+        praesenzPing();
+        psInfiniteScrollBinden();
+        psNeuLaden();   // Radar startet sofort -> die Community ist direkt sichtbar
     }
-    async function ladeProfilsuche() {
-        const land = (document.getElementById('ps-land')||{}).value || "";
-        const stadt = (document.getElementById('ps-stadt')||{}).value || "";
-        const q = (document.getElementById('ps-q')||{}).value || "";
-        const box = document.getElementById('ps-ergebnis');
-        if (!box) return;
-        box.innerHTML = `<p style="color:#123; text-align:center;">Suche läuft …</p>`;
+    // Beim Tippen/Filtern entprellt neu laden. Gezielter Modus (Name gefüllt) entschärft die Geo-Felder optisch.
+    function psFilterGeaendert() { clearTimeout(psDebounce); psDebounce = setTimeout(psNeuLaden, 300); }
+    function psStatus(s) {
+        if (!psState) return; psState.status = s;
+        document.querySelectorAll('#ps-status .ps-status-btn').forEach(b => b.classList.toggle('an', b.dataset.s === s));
+        psNeuLaden();
+    }
+    function psBuchstabe(b) {
+        if (!psState) return; psState.buchstabe = (psState.buchstabe === b) ? '' : b;   // erneuter Klick hebt auf
+        document.querySelectorAll('#ps-az .ps-az-btn').forEach(x => x.classList.toggle('an', x.dataset.b === psState.buchstabe));
+        psNeuLaden();
+    }
+    async function psNeuLaden() {
+        if (!psState) return;
+        psState.q = (document.getElementById('ps-q')||{}).value || '';
+        psState.land = (document.getElementById('ps-land')||{}).value || '';
+        psState.stadt = (document.getElementById('ps-stadt')||{}).value || '';
+        psState.umkreis = (document.getElementById('ps-umkreis')||{}).value || 'land';
+        psState.offset = 0; psState.mehr = false;
+        const grid = document.getElementById('ps-grid'); if (grid) grid.innerHTML = '';
+        // Gezielte Suche ignoriert Geo -> Land/Stadt/Umkreis ausgrauen (reines Signal, Server ignoriert sie ohnehin).
+        const gezielt = !!psState.q.trim();
+        const felder = document.querySelectorAll('.ps-filter .ps-feld');
+        felder.forEach((f, i) => { if (i > 0) f.style.opacity = gezielt ? 0.4 : 1; });
+        await psLadeSeite();
+    }
+    async function psLadeSeite() {
+        if (!psState || psState.laden) return;
+        psState.laden = true;
+        const grid = document.getElementById('ps-grid'), stt = document.getElementById('ps-status-text');
+        if (stt && !grid.children.length) stt.textContent = 'Lade …';
         try {
-            const res = await fetch(`/api/profil/suche?email=${encodeURIComponent(userEmail)}&land=${encodeURIComponent(land)}&stadt=${encodeURIComponent(stadt)}&q=${encodeURIComponent(q)}`);
+            const p = new URLSearchParams({ email:userEmail, q:psState.q, land:psState.land, stadt:psState.stadt,
+                umkreis:psState.umkreis, status:psState.status, buchstabe:psState.buchstabe, offset:psState.offset, limit:48 });
+            const res = await fetch('/api/profil/suche?' + p.toString());
             const d = await res.json();
-            if (!d.success) { box.innerHTML = ssHinweis(escapeHtml(d.message) || 'Suche nicht verfügbar.'); return; }
-            if (!d.treffer.length) { box.innerHTML = ssHinweis('Keine Mitglieder für diese Suche gefunden.'); return; }
-            // Visuelle Fotokacheln (Vibadu-/Dating-Stil).
-            box.innerHTML = `<div class="ps-grid">` + d.treffer.map(t => {
-                const foto = t.profilbild
-                    ? `<div class="ps-kachel-foto" style="background-image:url('${t.profilbild}')"></div>`
-                    : `<div class="ps-kachel-foto ps-kein-foto">${escapeHtml((t.name||t.handle||'M').charAt(0).toUpperCase())}</div>`;
-                const ort = [t.stadt, t.land].filter(Boolean).map(escapeHtml).join(', ');
-                const ref = escapeHtml(t.ref || t.handle || '');
-                return `<div class="ps-kachel" onclick="oeffneFremdprofil('${ref}')">
-                    ${foto}
-                    <div class="ps-kachel-info">
-                        <div class="ps-kachel-name">${escapeHtml(t.name || '@'+t.handle)}${t.ich?' · du':''}</div>
-                        ${ort ? `<div class="ps-kachel-ort">📍 ${ort}</div>` : ''}
-                    </div>
-                </div>`;
-            }).join('') + `</div>`;
-        } catch (e) { box.innerHTML = ssHinweis('Fehler bei der Suche.'); }
+            if (!d.success) { if (stt) stt.textContent = ''; grid.innerHTML = ssHinweis(escapeHtml(d.message) || 'Suche nicht verfügbar.'); psState.laden = false; return; }
+            grid.insertAdjacentHTML('beforeend', (d.treffer || []).map(psKachel).join(''));
+            psState.offset += (d.treffer || []).length;
+            psState.mehr = !!d.mehr;
+            if (stt) stt.textContent = grid.children.length
+                ? (d.mehr ? '' : `Alle ${d.anzahl} Treffer geladen.`)
+                : (psState.q.trim() ? 'Kein Mitglied mit diesem Namen gefunden.' : 'Keine Mitglieder für diese Filter gefunden.');
+        } catch (e) { if (stt) stt.textContent = 'Fehler bei der Suche.'; }
+        psState.laden = false;
     }
+    function psKachel(t) {
+        const ref = escapeHtml(t.ref || t.handle || '');
+        const foto = t.profilbild
+            ? `<div class="ps-kachel-foto" style="background-image:url('${t.profilbild}')"></div>`
+            : `<div class="ps-kachel-foto ps-kein-foto">${escapeHtml((t.name||t.handle||'M').charAt(0).toUpperCase())}</div>`;
+        const ort = [t.stadt, t.land].filter(Boolean).map(escapeHtml).join(', ');
+        const badges = (t.verifiziert ? '<span class="ps-badge ver" title="Verifiziert">✔</span>' : '')
+                     + (t.neu ? '<span class="ps-badge neu" title="Neu dabei">✨</span>' : '');
+        return `<div class="ps-kachel" onclick="oeffneFremdprofil('${ref}')">
+            ${foto}
+            <span class="ps-dot ${t.online?'on':''}" title="${t.online?'Online':'Offline'}"></span>
+            <div class="ps-kachel-info">
+                <div class="ps-kachel-name">${escapeHtml(t.name || '@'+t.handle)}${t.ich?' · du':''} ${badges}</div>
+                ${ort ? `<div class="ps-kachel-ort">📍 ${ort}</div>` : ''}
+            </div>
+        </div>`;
+    }
+    // Infinite Scroll: Sentinel am Listenende beobachten (root = nächster scrollbarer Vorfahr oder Viewport).
+    function psInfiniteScrollBinden() {
+        const sentinel = document.getElementById('ps-sentinel'); if (!sentinel) return;
+        if (psObserver) psObserver.disconnect();
+        let root = sentinel.parentElement;
+        while (root && root !== document.body) { const oy = getComputedStyle(root).overflowY; if (oy === 'auto' || oy === 'scroll') break; root = root.parentElement; }
+        psObserver = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && psState && psState.mehr && !psState.laden) psLadeSeite();
+        }, { root: (root && root !== document.body) ? root : null, rootMargin: '300px' });
+        psObserver.observe(sentinel);
+    }
+    // Präsenz-Heartbeat: hält den echten Online-Indikator aktuell, solange die App offen ist.
+    function praesenzPing() {
+        if (!userEmail) return;
+        fetch('/api/praesenz', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email: userEmail }) }).catch(() => {});
+    }
+    setInterval(praesenzPing, 60000);
 
     // Zielprofil GENAU so öffnen, wie es der Besitzer auf seinem Canvas gestaltet hat.
     async function oeffneFremdprofil(ref) {
@@ -1364,10 +1690,32 @@
             const res = await fetch(`/api/profil/oeffentlich?email=${encodeURIComponent(userEmail)}&ref=${encodeURIComponent(ref)}`);
             const d = await res.json();
             if (!d.success) { inhalt.innerHTML = `<p style="color:#ff9b9b; padding:30px; text-align:center;">${escapeHtml(d.message||'Profil nicht verfügbar.')}</p>`; return; }
-            inhalt.innerHTML = rendereCanvasAnsicht(d);
+            fremdprofilDaten = d;                                   // Daten für den Zwei-Button-Umschalter merken
+            inhalt.innerHTML = fpUmschalter('profil') + rendereCanvasAnsicht(d);
         } catch (e) { inhalt.innerHTML = `<p style="color:#ff9b9b; padding:30px;">Fehler beim Laden.</p>`; }
     }
     function schliesseFremdprofil() { document.getElementById('fremdprofil-overlay').classList.remove('aktiv'); }
+
+    // ---- Besucher-Umschalter: zwei klare Buttons (Profil <-> Galerie), reine Read-only-Ansicht ----
+    let fremdprofilDaten = null;
+    function fpUmschalter(aktiv) {
+        const gs = fremdprofilDaten && fremdprofilDaten.galerie_seite;
+        const hatGalerie = gs && ((Array.isArray(gs.elemente) && gs.elemente.length) || (Array.isArray(gs.bilder) && gs.bilder.length));
+        return `<div class="fp-umschalter">
+            <button class="fp-um-btn ${aktiv==='profil'?'an':''}" onclick="fpZeigeProfil()">👤 Profil anschauen</button>
+            <button class="fp-um-btn ${aktiv==='galerie'?'an':''}" ${hatGalerie?'':'disabled'} onclick="fpZeigeGalerie()">🖼 Galerie anschauen</button>
+        </div>`;
+    }
+    function fpZeigeProfil() {
+        const inhalt = document.getElementById('fremdprofil-inhalt');
+        if (!inhalt || !fremdprofilDaten) return;
+        inhalt.innerHTML = fpUmschalter('profil') + rendereCanvasAnsicht(fremdprofilDaten);
+    }
+    function fpZeigeGalerie() {
+        const inhalt = document.getElementById('fremdprofil-inhalt');
+        if (!inhalt || !fremdprofilDaten) return;
+        inhalt.innerHTML = fpUmschalter('galerie') + rendereGalerieAnsicht(fremdprofilDaten);
+    }
 
     // ---- 7) Workflow-Cockpit (persönlicher Überblick + Schnellaktionen) ----
     async function schubladeWorkflow(body) {
@@ -1576,6 +1924,7 @@
         'workflow': schubladeWorkflow,
         'status': schubladeStatus,
         'reservierung': schubladeReservierung,
+        'live-anmeldung': schubladeLiveAnmeldung,
     };
 
     // ---- SUPPORT: sektor-sensitive KI-Seele ----
@@ -1642,6 +1991,278 @@
             <p style="color:#9db8dd; font-size:0.76rem; margin-top:12px;">Diese Optionen gelten für alle Live-Sektoren, in die du eintrittst.</p>`;
     }
     function setzeLiveOption(key, wert) { localStorage.setItem(key, wert); }
+
+    // =====================================================================
+    // ZENTRALE SCHLEUSE: Anmelde-Zentrale für Live-Sektoren (in der Mitte).
+    // Themen-Wahl -> Zeitfenster-Anmeldung -> technischer Vor-Check ->
+    // Rot→Grün-Statuslogik des "Live-betreten"-Buttons.  (Phase 1)
+    // =====================================================================
+    let laSessions = [];
+    let laGewaehlteSession = null;      // session_id des gewählten Zeitfensters
+    let laStatusTimer = null;           // Poll-Timer für die Rot→Grün-Umschaltung
+    let laVorschauStream = null;        // getUserMedia-Stream der Kamera-Vorschau
+    let laAudioCtx = null, laAnalyser = null, laPegelTimer = null;
+    const LA_SLOT_LABEL = { vormittag: 'Vormittag', nachmittag: 'Nachmittag' };
+
+    function laZeit(iso) {
+        if (!iso) return '—';
+        const d = new Date(iso);
+        return isNaN(d) ? '—' : d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+    }
+    function laDatum(iso) {
+        if (!iso) return '';
+        const d = new Date(iso);
+        return isNaN(d) ? '' : d.toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit' });
+    }
+
+    function schubladeLiveAnmeldung(body) {
+        setzeSchubladeKopf('Anmeldeoptionen für Live-Sektoren',
+            'Die zentrale Schleuse: Thema wählen · Zeitfenster buchen · Technik-Check · Live betreten.');
+        // Themen-Wahl (gesperrte Sektoren nur für Admin sichtbar).
+        let optionen = '<option value="">— Thema wählen —</option>';
+        themen.forEach((t, i) => {
+            if (GESPERRTE_THEMEN_IDX.has(i) && !isAdmin) return;
+            const sel = (i === aktivesThemaIdx) ? ' selected' : '';
+            optionen += `<option value="${i}"${sel}>${i + 1}. ${escapeHtml(t)}</option>`;
+        });
+        body.innerHTML = `
+            <div class="la-wrap">
+                <div class="ss-card la-block">
+                    <label class="la-label">1 · Themen-Wahl</label>
+                    <select id="la-thema" class="la-select" onchange="laThemaGewaehlt(this.value)">${optionen}</select>
+                    <p class="la-hint">Live-Sessions sind auf zweimal täglich (je ~1 Stunde) begrenzt. Wähle ein festes Zeitfenster.</p>
+                </div>
+                <div class="ss-card la-block">
+                    <label class="la-label">2 · Zeitliche Bindung — verfügbare Zeitfenster</label>
+                    <div id="la-fenster"><p class="la-hint">Wähle zuerst oben ein Thema.</p></div>
+                </div>
+                <div class="ss-card la-block">
+                    <label class="la-label">3 · Technischer Vor-Check</label>
+                    <div class="la-vorcheck">
+                        <div class="la-preview-box">
+                            <video id="la-vorschau" autoplay playsinline muted></video>
+                            <div class="la-preview-hint" id="la-preview-hint">Kamera-Vorschau aus</div>
+                        </div>
+                        <div class="la-pegel-box">
+                            <span class="la-pegel-label">🎤 Mikrofon-Pegel</span>
+                            <div class="la-pegel"><div class="la-pegel-fill" id="la-pegel-fill"></div></div>
+                            <div class="la-vorcheck-btns">
+                                <button class="p-btn sekundaer" id="la-preview-btn" onclick="laVorschauStart()">Kamera &amp; Mikro testen</button>
+                                <button class="p-btn" id="la-technik-btn" onclick="laTechnikBestanden()" disabled>Technik-Check bestanden ✓</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ss-card la-block la-betreten-block">
+                    <label class="la-label">4 · Status</label>
+                    <div class="la-status-zeile" id="la-status-text">Melde dich für ein Zeitfenster an und bestehe den Technik-Check.</div>
+                    <button class="la-betreten rot" id="la-betreten" onclick="laLiveBetreten()" disabled>● Live-betreten (gesperrt)</button>
+                </div>
+            </div>`;
+        // Wenn schon ein Thema aktiv ist, direkt dessen Fenster laden.
+        if (aktivesThemaIdx !== null && !(GESPERRTE_THEMEN_IDX.has(aktivesThemaIdx) && !isAdmin)) {
+            laLadeSessions(aktivesThemaIdx);
+        }
+    }
+
+    function laThemaGewaehlt(val) {
+        if (val === "") { document.getElementById('la-fenster').innerHTML = `<p class="la-hint">Wähle zuerst oben ein Thema.</p>`; return; }
+        const idx = parseInt(val, 10);
+        // Nur das aktive Thema setzen – NICHT das volle waehleThema(), da dieses die
+        // Schublade schließen würde. Die endgültige Kopplung an Stream + Live-Raum
+        // erfolgt erst beim tatsächlichen "Live-betreten".
+        aktivesThemaIdx = idx;
+        laGewaehlteSession = null; laStoppeStatusPoll(); laStatusAnwenden(null);
+        laLadeSessions(idx);
+    }
+
+    async function laLadeSessions(themaIdx) {
+        const box = document.getElementById('la-fenster');
+        if (!box) return;
+        box.innerHTML = `<p class="la-hint">Lade Zeitfenster …</p>`;
+        try {
+            const res = await fetch(`/api/live/sessions?email=${encodeURIComponent(userEmail)}&sektor=${themaIdx + 1}`);
+            const d = await res.json();
+            if (!d.success) { box.innerHTML = `<p class="la-hint" style="color:#ff9b9b;">${escapeHtml(d.error || 'Zeitfenster konnten nicht geladen werden.')}</p>`; return; }
+            laSessions = d.sessions || [];
+            laRenderFenster();
+        } catch (e) { box.innerHTML = `<p class="la-hint" style="color:#ff9b9b;">Server-Verbindung fehlgeschlagen.</p>`; }
+    }
+
+    function laRenderFenster() {
+        const box = document.getElementById('la-fenster');
+        if (!box) return;
+        if (!laSessions.length) {
+            box.innerHTML = `<p class="la-hint">Für dieses Thema ist aktuell kein Zeitfenster geplant. Schau später wieder vorbei.</p>`;
+            return;
+        }
+        box.innerHTML = laSessions.map(s => {
+            const gewaehlt = (s.session_id === laGewaehlteSession);
+            const voll = s.anzahl_angemeldet >= s.max_teilnehmer && !s.angemeldet;
+            const badge = s.angemeldet ? `<span class="la-badge ok">angemeldet</span>` : (voll ? `<span class="la-badge voll">ausgebucht</span>` : "");
+            const btn = s.angemeldet
+                ? `<button class="p-btn sekundaer la-mini" onclick="laAbmelden('${s.session_id}')">Abmelden</button>`
+                : `<button class="p-btn la-mini" ${voll ? 'disabled' : ''} onclick="laAnmelden('${s.session_id}')">Anmelden</button>`;
+            return `
+                <div class="la-fenster-zeile ${gewaehlt ? 'gewaehlt' : ''}" onclick="laWaehleSession('${s.session_id}')">
+                    <div class="la-fenster-info">
+                        <b>${LA_SLOT_LABEL[s.slot] || s.slot || ''} · ${laDatum(s.start)}</b>
+                        <span>${laZeit(s.start)}–${laZeit(s.ende)} Uhr · ${s.anzahl_angemeldet}/${s.max_teilnehmer} Plätze ${badge}</span>
+                    </div>
+                    <div class="la-fenster-akt" onclick="event.stopPropagation()">${btn}</div>
+                </div>`;
+        }).join("");
+        // Auswahl-Status auffrischen (Button + Poll).
+        if (laGewaehlteSession) laStatusAnwenden(laSessions.find(s => s.session_id === laGewaehlteSession));
+    }
+
+    function laWaehleSession(sid) {
+        laGewaehlteSession = sid;
+        laRenderFenster();
+        laStartStatusPoll();
+    }
+
+    async function laAnmelden(sid) {
+        try {
+            const res = await fetch('/api/live/anmelden', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email: userEmail, session_id: sid }) });
+            const d = await res.json();
+            if (!d.success) { alert(d.error || 'Anmeldung fehlgeschlagen.'); return; }
+            laGewaehlteSession = sid;
+            if (d.session) laMergeSession(d.session);
+            laRenderFenster();
+            laStartStatusPoll();
+        } catch (e) { alert('Server-Verbindung fehlgeschlagen.'); }
+    }
+
+    async function laAbmelden(sid) {
+        try {
+            const res = await fetch('/api/live/abmelden', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email: userEmail, session_id: sid }) });
+            const d = await res.json();
+            if (d.session) laMergeSession(d.session);
+            if (laGewaehlteSession === sid) { laGewaehlteSession = null; laStoppeStatusPoll(); }
+            laRenderFenster();
+            laStatusAnwenden(null);
+        } catch (e) { alert('Server-Verbindung fehlgeschlagen.'); }
+    }
+
+    function laMergeSession(sess) {
+        const i = laSessions.findIndex(s => s.session_id === sess.session_id);
+        if (i >= 0) laSessions[i] = sess; else laSessions.push(sess);
+    }
+
+    // ---- Technischer Vor-Check: Kamera-Vorschau + Mikro-Pegel ----
+    async function laVorschauStart() {
+        if (laVorschauStream) { laVorschauStop(); return; }
+        try {
+            laVorschauStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        } catch (e) { alert('Kamera-/Mikrofon-Zugriff wurde verweigert.'); return; }
+        const vid = document.getElementById('la-vorschau');
+        if (vid) { vid.srcObject = laVorschauStream; vid.play().catch(()=>{}); }
+        const hint = document.getElementById('la-preview-hint'); if (hint) hint.style.display = 'none';
+        const pb = document.getElementById('la-preview-btn'); if (pb) pb.textContent = 'Vorschau stoppen';
+        // Mikro-Pegel-Meter über WebAudio.
+        try {
+            laAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const quelle = laAudioCtx.createMediaStreamSource(laVorschauStream);
+            laAnalyser = laAudioCtx.createAnalyser();
+            laAnalyser.fftSize = 512;
+            quelle.connect(laAnalyser);
+            const daten = new Uint8Array(laAnalyser.frequencyBinCount);
+            laPegelTimer = setInterval(() => {
+                laAnalyser.getByteTimeDomainData(daten);
+                let summe = 0;
+                for (let i = 0; i < daten.length; i++) { const v = (daten[i] - 128) / 128; summe += v * v; }
+                const rms = Math.sqrt(summe / daten.length);
+                const proz = Math.min(100, Math.round(rms * 240));
+                const fill = document.getElementById('la-pegel-fill');
+                if (fill) fill.style.width = proz + '%';
+            }, 100);
+        } catch (e) {}
+        // Technik-Check-Button freigeben, sobald ein Zeitfenster gewählt ist.
+        const tb = document.getElementById('la-technik-btn'); if (tb) tb.disabled = false;
+    }
+
+    function laVorschauStop() {
+        if (laPegelTimer) { clearInterval(laPegelTimer); laPegelTimer = null; }
+        if (laAudioCtx) { try { laAudioCtx.close(); } catch(e){} laAudioCtx = null; laAnalyser = null; }
+        if (laVorschauStream) { laVorschauStream.getTracks().forEach(t => t.stop()); laVorschauStream = null; }
+        const vid = document.getElementById('la-vorschau'); if (vid) vid.srcObject = null;
+        const hint = document.getElementById('la-preview-hint'); if (hint) hint.style.display = 'flex';
+        const pb = document.getElementById('la-preview-btn'); if (pb) pb.textContent = 'Kamera & Mikro testen';
+        const fill = document.getElementById('la-pegel-fill'); if (fill) fill.style.width = '0%';
+    }
+
+    async function laTechnikBestanden() {
+        if (!laGewaehlteSession) { alert('Bitte zuerst ein Zeitfenster wählen und dich anmelden.'); return; }
+        if (!laVorschauStream) { alert('Bitte zuerst Kamera & Mikro testen.'); return; }
+        try {
+            const res = await fetch('/api/live/technik-check', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email: userEmail, session_id: laGewaehlteSession, ok: true }) });
+            const d = await res.json();
+            if (!d.success) { alert(d.error || 'Technik-Check konnte nicht gespeichert werden.'); return; }
+            if (d.session) { laMergeSession(d.session); laStatusAnwenden(d.session); }
+            const tb = document.getElementById('la-technik-btn'); if (tb) { tb.textContent = 'Technik-Check bestanden ✓'; tb.disabled = true; }
+        } catch (e) { alert('Server-Verbindung fehlgeschlagen.'); }
+    }
+
+    // ---- Rot→Grün-Statuslogik ----
+    function laStartStatusPoll() {
+        laStoppeStatusPoll();
+        laStatusJetzt();
+        laStatusTimer = setInterval(laStatusJetzt, 8000);
+    }
+    function laStoppeStatusPoll() { if (laStatusTimer) { clearInterval(laStatusTimer); laStatusTimer = null; } }
+
+    async function laStatusJetzt() {
+        if (!laGewaehlteSession) return;
+        try {
+            const res = await fetch(`/api/live/status?email=${encodeURIComponent(userEmail)}&session_id=${encodeURIComponent(laGewaehlteSession)}`);
+            const d = await res.json();
+            if (d.success && d.session) { laMergeSession(d.session); laStatusAnwenden(d.session); }
+        } catch (e) {}
+    }
+
+    function laStatusAnwenden(sess) {
+        const btn = document.getElementById('la-betreten');
+        const txt = document.getElementById('la-status-text');
+        // Schleuse-Status -> rechtes Panel koppeln (gelb->grün "Scharfschaltung").
+        liveBetretenFrei = !!(sess && sess.betreten_frei);
+        aktualisiereLivePanelStatus();
+        if (!btn || !txt) return;
+        if (!sess) {
+            btn.disabled = true; btn.className = 'la-betreten rot'; btn.textContent = '● Live-betreten (gesperrt)';
+            txt.textContent = 'Melde dich für ein Zeitfenster an und bestehe den Technik-Check.';
+            return;
+        }
+        if (sess.betreten_frei) {
+            btn.disabled = false; btn.className = 'la-betreten gruen'; btn.textContent = '● Live-betreten (bereit)';
+            txt.textContent = 'Dein Zeitfenster ist freigegeben und läuft. Öffne rechts das grüne „7+1 Live-Sektor öffnen".';
+        } else {
+            btn.disabled = true; btn.className = 'la-betreten rot'; btn.textContent = '● Live-betreten (gesperrt)';
+            let grund = 'Warte auf die Freigabe des Zeitfensters.';
+            if (!sess.angemeldet) grund = 'Melde dich zuerst für dieses Zeitfenster an.';
+            else if (!sess.technik_ok) grund = 'Bestehe zuerst den technischen Vor-Check.';
+            else if (!sess.freigegeben) grund = 'Deine Anmeldung wartet auf die Freigabe durch die Regie.';
+            else if (!sess.im_fenster) grund = 'Freigegeben – der Button wird grün, sobald das Zeitfenster beginnt.';
+            txt.textContent = grund;
+        }
+    }
+
+    function laLiveBetreten() {
+        const sess = laSessions.find(s => s.session_id === laGewaehlteSession);
+        // Admin-Ausnahme: darf ohne Freigabe/Fenster betreten.
+        if (!isAdmin && (!sess || !sess.betreten_frei)) return;
+        // Sicherstellen, dass das aktive Thema zum Zeitfenster passt.
+        if (sess && aktivesThemaIdx !== (sess.sektor - 1)) waehleThema(sess.sektor - 1);
+        laTeardown();
+        schliesseSchublade();
+        starteVideo();     // bestehender PeerJS-Beitritt + eingepasstes Video-Grid
+    }
+
+    // Vollständiges Aufräumen beim Schließen der Schleuse.
+    function laTeardown() {
+        laVorschauStop();
+        laStoppeStatusPoll();
+    }
 
     // ---- KONTO & SICHERHEIT (Passwort ändern + E-Mail-Änderung + Zugangsdaten) ----
     function ksMsg(text, ok) { const el = document.getElementById('ks-msg'); if (!el) return; el.textContent = text||""; el.classList.toggle('ok', !!ok); }
@@ -1749,8 +2370,8 @@
         document.getElementById('stream-titel').textContent = `${i+1}. ${themen[i]}`;
         document.getElementById('stream-sub').textContent = "Content-Stream · Fotos, Artikel und Diskussion";
 
-        // Live-Sektor an das aktive Thema koppeln.
-        document.getElementById('live-thema').textContent = themen[i];
+        // Live-Sektor an das aktive Thema koppeln (Info-Panel-Kopf).
+        setText('live-thema', `Sektor ${i+1}: ${themen[i]}`);
         await stoppeVideo(true);   // evtl. laufenden Raum sauber verlassen (stiller Wechsel)
 
         const gesperrt = GESPERRTE_THEMEN_IDX.has(i) && !isAdmin;
@@ -1758,15 +2379,11 @@
         // Beim Themenwechsel eine ggf. offene Schublade auf den frischen Stream zurücksetzen.
         if (typeof schliesseSchublade === 'function') schliesseSchublade();
 
-        if (gesperrt) {
-            document.getElementById('live-tische').innerHTML = `<div class="live-gesperrt">Dieses Thema wird gerade vorbereitet – noch kein Live-Raum.</div>`;
-            document.getElementById('live-tisch-count').textContent = "0";
-            document.getElementById('live-teil-count').textContent = "0";
-        } else {
-            initLiveSektor();
-            // Anmeldeoption: beim Themen-Wechsel automatisch dem Live-Sektor beitreten.
-            if (localStorage.getItem('mm_live_autojoin') === 'an') starteVideo();
+        if (!gesperrt && localStorage.getItem('mm_live_autojoin') === 'an' && (liveBetretenFrei || isAdmin)) {
+            starteVideo();   // Auto-Beitritt nur wenn scharfgeschaltet (oder Admin)
         }
+        // Rechtes Info-Panel auffrischen, falls offen.
+        if (livePanelOffen) ladeLiveInfo();
         await ladeStream(i+1);
     }
 
@@ -1785,44 +2402,46 @@
             </select>`;
     }
 
-    // Eingabe-Masken je Beitragsart (modular erweiterbar).
     const BEITRAG_MASKEN = {
         gedanke: {
-            titel: '💭 Gedanke', hint: 'Teile einen Gedanken – mit optionaler Reflektion (Gefühlsvorderung).',
+            titel: '💭 Gedanke', hint: 'Teile einen Gedanken – mit optionaler Reflektion (Recht auf Gefühlsvorderung).',
             body: () => `
                 <label class="b-label">Dein Gedanke</label>
-                <textarea class="b-field" id="beitrag-text" placeholder="Was bewegt dich gerade?"></textarea>
+                <textarea class="b-field" id="beitrag-text" placeholder="Was bewegt dich gerade?" style="min-height: 120px;"></textarea>
                 <label class="b-label">Kurze Reflektion (Recht auf Gefühlsvorderung)</label>
-                <textarea class="b-field" id="beitrag-reflektion" placeholder="Wie fühlt sich das für dich an? (optional)"></textarea>
+                <textarea class="b-field" id="beitrag-reflektion" placeholder="Wie fühlt sich das für dich an? (optional)" style="min-height: 90px;"></textarea>
                 <label class="b-check"><input type="checkbox" id="beitrag-einspeisen"> Reflektion direkt in den Sektoren-Support einspeisen</label>
+                <label class="b-check"><input type="checkbox" id="beitrag-kommentare-erlauben" checked> Kommentare für diesen Gedanken erlauben</label>
                 ${sichtbarkeitSelect()}`
         },
         medien: {
-            titel: '🖼️ Medien', hint: 'Lade ein Foto oder kurzes Video hoch.',
+            titel: '🖼️ Medien', hint: 'Lade ein Foto oder kurzes Video hoch und gib ihm einen Rahmen.',
             body: () => `
                 <label class="b-label">Foto / kurzes Video</label>
-                <input type="file" id="beitrag-media" accept="image/*,video/*" onchange="beitragDateiVorschau()" style="color:#9db8dd; font-size:0.8rem;">
+                <input type="file" id="beitrag-media" accept="image/*,video/*" onchange="beitragDateiVorschau()" class="b-field" style="padding: 10px;">
                 <img id="beitrag-media-vorschau" alt="Vorschau">
                 <label class="b-label">Bildunterschrift / Kontext (optional)</label>
-                <textarea class="b-field" id="beitrag-text" placeholder="Beschreibe dein Medium …"></textarea>
+                <textarea class="b-field" id="beitrag-text" placeholder="Beschreibe dein Medium …" style="min-height: 90px;"></textarea>
+                <!-- HIER DAS HÄCKCHEN FÜR KOMMENTARE EINFÜGEN -->
+                <label class="b-check"><input type="checkbox" id="beitrag-kommentare-erlauben" checked> Kommentare für diese Medien erlauben</label>
                 ${sichtbarkeitSelect()}`
         },
         diskurs: {
-            titel: '💬 Diskurs', hint: 'Starte eine Diskussion mit einer klaren Leitfrage.',
+            titel: '💬 Diskurs', hint: 'Starte eine tiefgreifende Diskussion mit einer klaren Leitfrage.',
             body: () => `
                 <label class="b-label">Diskurs-Frage / Titel</label>
                 <input type="text" class="b-field" id="beitrag-diskurs-titel" placeholder="Deine Leitfrage …">
                 <label class="b-label">Beschreibung</label>
-                <textarea class="b-field" id="beitrag-text" placeholder="Worüber möchtest du diskutieren?"></textarea>
+                <textarea class="b-field" id="beitrag-text" placeholder="Worüber möchtest du diskutieren?" style="min-height: 110px;"></textarea>
                 ${sichtbarkeitSelect()}`
         },
         ressource: {
-            titel: '🔗 Ressource', hint: 'Teile eine hilfreiche Quelle oder einen Link.',
+            titel: '🔗 Ressource', hint: 'Teile eine hilfreiche Quelle oder einen stabilen Link.',
             body: () => `
                 <label class="b-label">Link zur Ressource (URL)</label>
                 <input type="text" class="b-field" id="beitrag-url" placeholder="https://…">
                 <label class="b-label">Beschreibung</label>
-                <textarea class="b-field" id="beitrag-text" placeholder="Warum ist diese Ressource wertvoll?"></textarea>
+                <textarea class="b-field" id="beitrag-text" placeholder="Warum ist diese Ressource wertvoll?" style="min-height: 110px;"></textarea>
                 ${sichtbarkeitSelect()}`
         },
     };
@@ -1852,54 +2471,58 @@
     }
 
     async function sendeBeitrag() {
-        const sektor = backendSektor(); if (!sektor) return;
-        const typ = aktiveBeitragTyp;
-        let text = (document.getElementById('beitrag-text') ? document.getElementById('beitrag-text').value : "").trim();
-        let reflektion = "", ressource_url = "", einspeisen = false;
+    const sektor = backendSektor(); if (!sektor) return;
+    const typ = aktiveBeitragTyp;
+    let text = (document.getElementById('beitrag-text') ? document.getElementById('beitrag-text').value : "").trim();
+    let reflektion = "", ressource_url = "", einspeisen = false;
 
-        if (typ === 'diskurs') {
-            const el = document.getElementById('beitrag-diskurs-titel');
-            const titel = el ? el.value.trim() : "";
-            if (titel) text = text ? (titel + "\n\n" + text) : titel;
-        }
-        if (typ === 'gedanke') {
-            const rEl = document.getElementById('beitrag-reflektion');
-            reflektion = rEl ? rEl.value.trim() : "";
-            const cEl = document.getElementById('beitrag-einspeisen');
-            einspeisen = cEl ? cEl.checked : false;
-        }
-        if (typ === 'ressource') {
-            const uEl = document.getElementById('beitrag-url');
-            ressource_url = uEl ? uEl.value.trim() : "";
-        }
-        const sEl = document.getElementById('beitrag-sicht');
-        const sichtbarkeit = sEl ? sEl.value : "oeffentlich";
+    // Kommentare erlauben gilt jetzt universell für alle Typen (Gedanke, Medien, Diskurs, Ressource)
+    const kEl = document.getElementById('beitrag-kommentare-erlauben');
+    const kommentareErlaubt = kEl ? kEl.checked : true; // Standardmäßig auf true, falls nicht vorhanden
 
-        if (typ === 'medien' && !beitragMediaBase64) { beitragMsg("Bitte ein Foto oder Video wählen."); return; }
-        if (typ === 'ressource' && !ressource_url && !text) { beitragMsg("Bitte einen Link oder eine Beschreibung angeben."); return; }
-        if ((typ === 'gedanke' || typ === 'diskurs') && !text) { beitragMsg("Bitte einen Text schreiben."); return; }
-
-        beitragMsg("Sende …", true);
-        const payload = {
-            email: userEmail,
-            profil_id: localStorage.getItem('mm_profil_id') || userEmail,   // temporär bis DB-Migration
-            sektor, beitrag_typ: typ, sichtbarkeit, text, reflektion, ressource_url,
-            media: beitragMediaBase64, media_typ: beitragMediaTyp,
-        };
-        try {
-            const res = await fetch('/api/forum/post', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
-            const data = await res.json();
-            if (data.success) {
-                schliesseBeitrag();
-                await ladeStream(sektor);
-                // Ein offenes Schubfach (z. B. ein Archiv) nach dem Posten aktualisieren.
-                if (aktiveSchublade) oeffneSchublade(aktiveSchublade);
-                // Gefühlsvorderung: Reflektion direkt in den Sektoren-Support-Flow einspeisen.
-                if (typ === 'gedanke' && einspeisen && reflektion) speiseSupportEin(reflektion);
-            } else beitragMsg(data.message || "Beitrag konnte nicht gesendet werden.");
-        } catch (e) { beitragMsg("Server-Verbindung fehlgeschlagen."); }
+    if (typ === 'diskurs') {
+        const el = document.getElementById('beitrag-diskurs-titel');
+        const titel = el ? el.value.trim() : "";
+        if (titel) text = text ? (titel + "\n\n" + text) : titel;
     }
+    if (typ === 'gedanke') {
+        const rEl = document.getElementById('beitrag-reflektion');
+        reflektion = rEl ? rEl.value.trim() : "";
+        const cEl = document.getElementById('beitrag-einspeisen');
+        einspeisen = cEl ? cEl.checked : false;
+    }
+    if (typ === 'ressource') {
+        const uEl = document.getElementById('beitrag-url');
+        ressource_url = uEl ? uEl.value.trim() : "";
+    }
+    const sEl = document.getElementById('beitrag-sicht');
+    const sichtbarkeit = sEl ? sEl.value : "oeffentlich";
 
+    if (typ === 'medien' && !beitragMediaBase64) { beitragMsg("Bitte ein Foto oder Video wählen."); return; }
+    if (typ === 'ressource' && !ressource_url && !text) { beitragMsg("Bitte einen Link oder eine Beschreibung angeben."); return; }
+    if ((typ === 'gedanke' || typ === 'diskurs') && !text) { beitragMsg("Bitte einen Text schreiben."); return; }
+
+    beitragMsg("Sende …", true);
+    const payload = {
+        email: userEmail,
+        profil_id: localStorage.getItem('mm_profil_id') || userEmail,   // temporär bis DB-Migration
+        sektor, beitrag_typ: typ, sichtbarkeit, text, reflektion, ressource_url,
+        media: beitragMediaBase64, media_typ: beitragMediaTyp,
+        kommentare_erlauben: kommentareErlaubt,
+    };
+    try {
+        const res = await fetch('/api/forum/post', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+        const data = await res.json();
+        if (data.success) {
+            schliesseBeitrag();
+            await ladeStream(sektor);
+            // Ein offenes Schubfach (z. B. ein Archiv) nach dem Posten aktualisieren.
+            if (aktiveSchublade) oeffneSchublade(aktiveSchublade);
+            // Gefühlsvorderung: Reflektion direkt in den Sektoren-Support-Flow einspeisen.
+            if (typ === 'gedanke' && einspeisen && reflektion) speiseSupportEin(reflektion);
+        } else beitragMsg(data.message || "Beitrag konnte nicht gesendet werden.");
+    } catch (e) { beitragMsg("Server-Verbindung fehlgeschlagen."); }
+}
     function speiseSupportEin(reflektion) {
         oeffnePanel('support');
         setTimeout(() => {
@@ -1979,27 +2602,294 @@
         </div>`;
     }
 
-    function renderKommentar(k) {
+   // Globaler State für offene Beitrags-Ansichten
+    const geöffneteKommentare = new Set();
+
+    window.toggleBeitrag = function(beitragId) {
+        const beitragEl = document.getElementById('beitrag-' + beitragId);
+        const kommBox = document.getElementById('komm-box-' + beitragId);
+        if (!kommBox) return;
+        
+        if (geöffneteKommentare.has(beitragId)) {
+            geöffneteKommentare.delete(beitragId);
+            kommBox.style.display = 'none';
+            if (beitragEl) beitragEl.classList.remove('offen');
+        } else {
+            geöffneteKommentare.add(beitragId);
+            kommBox.style.display = 'block';
+            if (beitragEl) beitragEl.classList.add('offen');
+            window.verbindeLive(beitragId);
+        }
+    };
+
+    function renderBeitrag(b) {
+        const name = escapeHtml(b.autor_name || "Mensch");
+        const handle = b.autor_handle ? escapeHtml(b.autor_handle) : "";
+        const avatar = b.autor_bild ? `<div class="avatar-klein" style="background-image:url('${b.autor_bild}');"></div>` : `<div class="avatar-klein">${name.charAt(0).toUpperCase()}</div>`;
+        let zeit = ""; try { zeit = new Date(b.erstellt_am).toLocaleString('de-DE'); } catch(e){ zeit = b.erstellt_am || ""; }
+
+        const typLabel = TYP_LABEL[b.beitrag_typ] || TYP_LABEL.gedanke;
+        const tisch = (b.sichtbarkeit === 'tisch-gruppe');
+        const sichtBadge = tisch ? `<span class="bk-badge badge-sicht-tisch">👥 Tisch-Gruppe</span>` : `<span class="bk-badge badge-sicht-oeffentlich">🌍 Öffentlich</span>`;
+        const badges = `<span class="bk-badges"><span class="bk-badge badge-typ">${typLabel}</span>${sichtBadge}</span>`;
+
+        let media = b.media ? `<div class="media-container">${(b.media_typ === 'video') ? `<video class="bk-media" src="${b.media}" controls></video>` : `<img class="bk-media" src="${b.media}" alt="Beitragsbild">`}</div>` : "";
+        const text = b.text ? `<div class="bk-text">${escapeHtml(b.text)}</div>` : "";
+        const reflektion = b.reflektion ? `<div class="bk-reflektion"><span class="r-label">Reflektion · Recht auf Gefühlsvorderung</span>${escapeHtml(b.reflektion)}</div>` : "";
+        let ressource = "";
+        if (b.ressource_url) {
+            const safeUrl = escapeHtml(b.ressource_url);
+            ressource = `<div class="bk-ressource">🔗 <a href="${safeUrl}" target="_blank" rel="noopener noreferrer">${safeUrl}</a></div>`;
+        }
+
+        const bId = String(b.id);
+        const kommentareListe = b.kommentare || [];
+        const anzahl = kommentareListe.length;
+        const istOffen = geöffneteKommentare.has(bId);
+        
+        const kommentareErlaubt = (b.kommentare_erlauben !== false);
+        const istErsteller = (b.autor_email === userEmail) || (handle && handle === meinProfil.benutzername);
+        const kommHtml = kommentareListe.map(k => renderKommentar(k, handle, name, bId)).join('');
+        const inputDisplay = istErsteller ? 'none' : 'flex';
+
+        // Typ-Erkennung für die saubere sprachliche Trennung
+        const isDiskurs = (b.beitrag_typ === 'diskurs');
+        const isRessource = (b.beitrag_typ === 'ressource');
+        
+        const labelZaehler = isDiskurs ? `${anzahl} Diskurs-Beiträge` : (isRessource ? `${anzahl} Anwendungs-Hinweise` : `${anzahl} Kommentare`);
+        const placeholderText = isDiskurs ? "Deine Antwort zum Diskurs formulieren ..." : (isRessource ? "Wie hast du diese Ressource angewendet?" : "Kommentar schreiben …");
+        const buttonText = isDiskurs ? "Absenden" : (isRessource ? "Hinweis teilen" : "Senden");
+
+        const interaktionsHtml = kommentareErlaubt ? `
+            <div style="margin-top:10px; color:var(--gold); font-weight:bold; font-size:0.85rem;">
+                💬 <span id="komm-zaehler-${bId}">${labelZaehler}</span> (Klick auf Kachel zum Öffnen)
+            </div>
+        ` : `
+            <div style="margin-top:10px; color:#888; font-weight:normal; font-size:0.85rem;">
+                🚫 ${isDiskurs ? 'Diskurs geschlossen' : (isRessource ? 'Ressource gesperrt' : 'Kommentare nicht erlaubt')}
+            </div>
+        `;
+
+        const kommBoxHtml = kommentareErlaubt ? `
+            <div id="komm-box-${bId}" data-ersteller-handle="${handle}" data-ersteller-name="${name}" style="display: ${istOffen ? 'block' : 'none'}; border-top:1px solid #1e3a5f; padding-top:10px; margin-top:10px;" onclick="event.stopPropagation()">
+                <div class="kommentare" id="komm-${bId}">${kommHtml}</div>
+                <div class="komm-input-row" style="display: ${inputDisplay}; margin-top:10px; gap:8px;">
+                    <input type="text" id="komm-in-${bId}" placeholder="${placeholderText}">
+                    <button type="button" onclick="window.sendeKommentar('${bId}')">${buttonText}</button>
+                </div>
+            </div>
+        ` : '';
+
+        return `<div class="beitrag ${istOffen ? 'offen' : ''}" id="beitrag-${bId}" onclick="window.toggleBeitrag('${bId}')" style="cursor:pointer;">
+            <div class="bk-kopf">${avatar}<div><span class="bk-name">${name}</span> ${handle ? `<span class="bk-handle">@${handle}</span>` : ''}</div>${badges}<span class="bk-zeit">${escapeHtml(zeit)}</span></div>
+            <div class="bk-text">${escapeHtml(b.text || "")}</div>
+            ${reflektion}${ressource}${media}
+            ${interaktionsHtml}
+            ${kommBoxHtml}
+        </div>`;
+}
+    function renderKommentar(k, postHandle, postName, beitragId) {
         const name = escapeHtml(k.autor_name || "Mensch");
+        const handle = k.autor_handle ? escapeHtml(k.autor_handle) : "";
         const avatar = k.autor_bild ? `<div class="avatar-mini" style="background-image:url('${k.autor_bild}');"></div>` : `<div class="avatar-mini">${name.charAt(0).toUpperCase()}</div>`;
-        const handle = k.autor_handle ? `@${escapeHtml(k.autor_handle)}` : "";
-        return `<div class="kommentar">${avatar}<div class="k-body"><span class="k-name">${name}</span> <span class="bk-handle">${handle}</span><div class="k-text">${escapeHtml(k.text)}</div></div></div>`;
+        
+        // 1. BOMBENFESTER ERSTELLER-CHECK über Handle (oder Name als Fallback)
+        let istVomErsteller = false;
+        if (handle && postHandle && handle === postHandle) {
+            istVomErsteller = true;
+        } else if (name && postName && name === postName) {
+            istVomErsteller = true;
+        }
+        
+        const erstellerBadge = istVomErsteller ? `<span style="background:var(--gold); color:#000; font-size:0.55rem; padding:2px 6px; border-radius:10px; margin-left:6px; font-weight:bold;">Ersteller</span>` : "";
+
+        // 2. KLARES ANTWORT-DESIGN (Verhindert Verwirrung)
+        let textInhalt = escapeHtml(k.text || "");
+        let replyTo = "";
+        
+        // Prüft, ob der Text mit @ beginnt (z.B. "@sasa Hallo")
+        const match = textInhalt.match(/^@([^\s]+)/i);
+        if (match) {
+            replyTo = match[1]; // Schneidet den Namen aus
+            textInhalt = textInhalt.replace(/^@([^\s]+)\s*/i, ''); // Entfernt das @Sasa aus dem Haupttext
+        }
+
+        // Wenn es eine Antwort ist, bekommt sie eine klare Überschrift und wird eingerückt
+        const replyHeader = replyTo ? `<div style="font-size: 0.7rem; color: #7ab8ff; margin-bottom: 4px; font-weight: 600;">↳ Antwort an @${replyTo}</div>` : "";
+        const indentStyle = replyTo ? "margin-left: 24px; border-left: 2px solid #1e3a5f; padding-left: 10px;" : "";
+
+        // 3. GESAMTE KOMMENTAR-BLASE KLICKBAR MACHEN (Mit Selbstantwort-Sperre)
+        const istMeinEigenerKommentar = (k.autor_email === userEmail) || (handle && handle === meinProfil.benutzername);
+        
+        const klickAktion = istMeinEigenerKommentar 
+            ? `style="background: #091321; border-radius: 6px; padding: 8px 12px; flex: 1;"`
+            : `onclick="window.toggleAntwortFeld(event, '${beitragId}', '${handle || name}', this)" style="background: #0c1a2e; border-radius: 6px; padding: 8px 12px; flex: 1; cursor: pointer; transition: all 0.2s ease; border: 1px solid transparent;" onmouseover="this.style.borderColor='rgba(255,215,0,0.4)'" onmouseout="this.style.borderColor='transparent'" title="Klicken zum Öffnen/Schließen der Antwort"`;
+
+        const klickHinweis = istMeinEigenerKommentar ? "" : `<span style="margin-left:auto; font-size:0.65rem; color:#4a658a; font-style:italic;">Antworten</span>`;
+
+        return `<div class="kommentar-wrapper" style="margin-bottom: 10px; ${indentStyle}">
+            <div class="kommentar" style="display: flex; gap: 8px;">
+                ${avatar}
+                <div class="k-body" ${klickAktion}>
+                    ${replyHeader}
+                    <div style="display:flex; align-items:center;">
+                        <span class="k-name" style="color: var(--gold); font-weight: 700; font-size: 0.76rem;">${name}</span> 
+                        ${handle ? `<span class="bk-handle" style="font-size: 0.7rem; color: #6f8fbf; margin-left:4px;">@${handle}</span>` : ''}
+                        ${erstellerBadge}
+                        ${klickHinweis}
+                    </div>
+                    <div class="k-text" style="color: #dfe8f3; font-size: 0.85rem; margin-top: 5px; line-height: 1.4;">${textInhalt}</div>
+                </div>
+            </div>
+        </div>`;
     }
 
-    async function sendeKommentar(beitragId) {
-        const input = document.getElementById('komm-in-'+beitragId);
-        const text = (input.value || "").trim();
-        if (!text) return;
+    // Toggle-Funktion für die klickbare Kommentar-Blase (öffnen oder schließen mit einem Klick/Tap)
+    window.toggleAntwortFeld = function(event, beitragId, replyTarget, element) {
+        event.stopPropagation();
+        
+        const wrapper = element.closest('.kommentar-wrapper');
+        const existierendeBox = wrapper.querySelector('.inline-antwort-box');
+        const warOffen = !!existierendeBox;
+        
+        // Alle anderen offenen Antwortfelder im Dokument schließen
+        document.querySelectorAll('.inline-antwort-box').forEach(el => el.remove());
+        
+        // Wenn es bereits offen war, schließt es sich hiermit wieder
+        if (warOffen) return;
+
+        // Andernfalls das neue Inline-Antwortfeld direkt erzeugen und einhängen
+        const box = document.createElement('div');
+        box.className = 'inline-antwort-box';
+        box.style.display = 'flex';
+        box.style.gap = '8px';
+        box.style.marginTop = '8px';
+        box.onclick = e => e.stopPropagation();
+        
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = `Antwort an @${replyTarget} schreiben...`;
+        input.style.flex = '1';
+        input.style.background = '#050a14';
+        input.style.border = '1px solid #1e3a5f';
+        input.style.borderLeft = '2px solid var(--gold)';
+        input.style.color = '#fff';
+        input.style.padding = '8px 10px';
+        input.style.borderRadius = '5px';
+        input.style.outline = 'none';
+        input.style.fontSize = '0.8rem';
+
+        input.onkeypress = e => {
+            if (e.key === 'Enter') {
+                e.stopPropagation();
+                window.sendeAntwortInline(beitragId, replyTarget, input.value, element);
+            }
+        };
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = 'Senden';
+        btn.style.background = 'var(--gold)';
+        btn.style.color = '#000';
+        btn.style.border = 'none';
+        btn.style.padding = '0 14px';
+        btn.style.borderRadius = '5px';
+        btn.style.fontWeight = 'bold';
+        btn.style.cursor = 'pointer';
+
+        btn.onclick = e => {
+            e.stopPropagation();
+            window.sendeAntwortInline(beitragId, replyTarget, input.value, element);
+        };
+
+        box.appendChild(input);
+        box.appendChild(btn);
+
+        wrapper.appendChild(box);
+        input.focus();
+    };
+
+    // Sendet die Antwort, die beim Klick auf einen Kommentar geschrieben wurde
+    window.sendeAntwortInline = async function(beitragId, replyTarget, text, element) {
+        if (!text.trim()) return;
+        
+        const finalerText = `@${replyTarget} ${text.trim()}`;
+
+        const box = document.getElementById('komm-box-' + beitragId);
+        const postHandle = box ? box.getAttribute('data-ersteller-handle') : '';
+        const postName = box ? box.getAttribute('data-ersteller-name') : '';
+
         try {
-            const res = await fetch('/api/forum/kommentar', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email: userEmail, beitrag_id: beitragId, text }) });
+            const res = await fetch('/api/forum/kommentar', { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify({ email: userEmail, beitrag_id: beitragId, text: finalerText }) 
+            });
             const data = await res.json();
+            
             if (data.success && data.kommentar) {
-                document.getElementById('komm-'+beitragId).insertAdjacentHTML('beforeend', renderKommentar(data.kommentar));
-                input.value = "";
-            } else alert(data.message || "Kommentar fehlgeschlagen.");
-        } catch (e) { alert("Server-Verbindung fehlgeschlagen."); }
-    }
+                document.querySelectorAll('.inline-antwort-box').forEach(el => el.remove());
+                
+                const wrapper = element.closest('.kommentar-wrapper');
+                const neuHtml = renderKommentar(data.kommentar, postHandle, postName, beitragId);
+                wrapper.insertAdjacentHTML('afterend', neuHtml); // Platziert die Antwort exakt darunter
+                
+                const zaehlerSpan = document.getElementById('komm-zaehler-' + beitragId);
+                if (zaehlerSpan) zaehlerSpan.textContent = parseInt(zaehlerSpan.textContent) + 1;
+            } else {
+                alert(data.message || "Antwort fehlgeschlagen.");
+            }
+        } catch (e) {
+            alert("Server-Verbindung fehlgeschlagen.");
+        }
+    };
 
+    // Die Standard-Senden-Funktion für das Hauptfeld unten (nur für Besucher)
+    window.sendeKommentar = async function(beitragId) {
+        const input = document.getElementById('komm-in-' + beitragId);
+        if (!input) return;
+        const text = input.value.trim();
+        if (!text) return;
+        
+        const box = document.getElementById('komm-box-' + beitragId);
+        const postHandle = box ? box.getAttribute('data-ersteller-handle') : '';
+        const postName = box ? box.getAttribute('data-ersteller-name') : '';
+
+        try {
+            const res = await fetch('/api/forum/kommentar', { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify({ email: userEmail, beitrag_id: beitragId, text: text }) 
+            });
+            const data = await res.json();
+            
+            if (data.success && data.kommentar) {
+                const kContainer = document.getElementById('komm-' + beitragId);
+                if (kContainer) {
+                    kContainer.insertAdjacentHTML('beforeend', renderKommentar(data.kommentar, postHandle, postName, beitragId));
+                }
+                
+                input.value = "";
+                const zaehlerSpan = document.getElementById('komm-zaehler-' + beitragId);
+                if (zaehlerSpan) zaehlerSpan.textContent = parseInt(zaehlerSpan.textContent) + 1;
+            } else {
+                alert(data.message || "Kommentar fehlgeschlagen.");
+            }
+        } catch (e) {
+            alert("Server-Verbindung fehlgeschlagen.");
+        }
+    };
+
+    // Globaler Listener für Enter-Taste (Hauptfeld)
+    document.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            const activeEl = document.activeElement;
+            if (activeEl && activeEl.id && activeEl.id.startsWith('komm-in-')) {
+                const beitragId = activeEl.id.replace('komm-in-', '');
+                window.sendeKommentar(beitragId);
+            }
+        }
+    });
     // =====================================================================
     // RECHTS: LIVE-VIDEO-SEKTOR (PeerJS-Mesh, 7+1 pro Thema)
     // =====================================================================
@@ -2008,8 +2898,8 @@
     let videoTeilnehmer = [], videoRemoteStreams = {}, meinPeerId = null, meinVideoRaum = null;
 
     async function initLiveSektor() {
+        // Stiller Heartbeat-Probe nach Themenwechsel/Verlassen: hält den Belegungsstand aktuell.
         const sektor = backendSektor(); if (!sektor) return;
-        document.getElementById('live-tische').innerHTML = `<div class="live-gesperrt">Drücke START, um dem Live-Raum dieses Themas beizutreten.</div>`;
         try {
             const res = await fetch('/api/video/heartbeat', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email: userEmail, sektor }) });
             const data = await res.json();
@@ -2026,14 +2916,11 @@
         const tische = seated.length ? Math.max(...seated.map(t => t.tisch)) + 1 : (videoStream ? 1 : 0);
         const anzTische = Math.max(tische, videoStream ? 1 : 0);
 
-        // Zähler in Sidebar UND Overlay konsistent halten.
-        setText('live-tisch-count', anzTische); setText('live-teil-count', videoTeilnehmer.length);
+        // Zähler im eingepassten Video-Grid aktuell halten.
         setText('lo-tisch-count', anzTische); setText('lo-teil-count', videoTeilnehmer.length); setText('lo-warte-count', warteliste || 0);
 
-        // Genau EIN Container hält die Slots (verhindert doppelte Element-IDs).
-        const container = document.getElementById(liveOverlayOffen ? 'live-overlay-tische' : 'live-tische');
-        const anderer = document.getElementById(liveOverlayOffen ? 'live-tische' : 'live-overlay-tische');
-        if (anderer) anderer.innerHTML = liveOverlayOffen ? `<div class="live-gesperrt">Läuft im 7+1 Live-Overlay …</div>` : "";
+        // Das Video-Grid lebt ausschließlich im eingepassten Overlay (kein Video im Info-Panel).
+        const container = document.getElementById('live-overlay-tische');
         if (!container) return;
 
         if (!videoStream && !videoTeilnehmer.length) {
@@ -2066,6 +2953,94 @@
         liveOverlayOffen = false;
         document.getElementById('live-overlay').classList.remove('aktiv');
         renderLiveTische(0);
+    }
+
+    // =====================================================================
+    // SCHWEBENDES LIVE-PANEL (rechts): Info-Ansicht + gelb→grün-Scharfschaltung.
+    // Fährt wie das Hamburger-Menü ein/aus. Zeigt "What's up" (aktive Sektoren,
+    // Zeiten, anonyme Tischbesetzung) – KEIN Video. Das Video-Grid öffnet erst
+    // über das grüne "7+1 Live-Sektor öffnen".
+    // =====================================================================
+    let liveBetretenFrei = false;    // von der mittleren Schleuse gekoppelt (Rot→Grün)
+    let livePanelOffen = false;
+    let liveInfoTimer = null;
+
+    function toggleLivePanel() { livePanelOffen ? schliesseLivePanel() : oeffneLivePanel(); }
+    function oeffneLivePanel() {
+        livePanelOffen = true;
+        const p = document.getElementById('live-spalte'); if (p) p.classList.add('aktiv');
+        aktualisiereLivePanelStatus();
+        ladeLiveInfo();
+        if (!liveInfoTimer) liveInfoTimer = setInterval(ladeLiveInfo, 15000);
+    }
+    function schliesseLivePanel() {
+        livePanelOffen = false;
+        const p = document.getElementById('live-spalte'); if (p) p.classList.remove('aktiv');
+        if (liveInfoTimer) { clearInterval(liveInfoTimer); liveInfoTimer = null; }
+    }
+
+    // Gelb (gesperrt) ↔ Grün (scharf). Admin ist immer scharf (Admin-Ausnahme).
+    function aktualisiereLivePanelStatus() {
+        const btn = document.getElementById('live-oeffnen-btn');
+        const griff = document.getElementById('live-panel-griff');
+        const frei = liveBetretenFrei || isAdmin;
+        if (btn) {
+            btn.className = 'live-oeffnen-btn ' + (frei ? 'gruen' : 'gelb');
+            btn.textContent = (frei ? '▶ 7+1 Live-Sektor öffnen' : '🔒 7+1 Live-Sektor öffnen');
+        }
+        if (griff) griff.classList.toggle('gruen', frei);
+    }
+
+    function klickLiveOeffnen() {
+        if (!(liveBetretenFrei || isAdmin)) {
+            alert('Noch gesperrt: Durchlaufe zuerst in der Mitte die Schleuse „Anmeldeoptionen für Live-Sektor" (Thema → Zeitfenster → Technik-Check). Sobald „Live-betreten" grün ist, wird dieses Element scharfgeschaltet.');
+            return;
+        }
+        if (aktivesThemaIdx === null) { alert('Bitte zuerst ein Thema wählen.'); return; }
+        starteVideo();   // öffnet das eingepasste 7+1-Video-Grid in der Mittel-Fläche
+    }
+
+    function liveSlotLabel(slot) { return ({ vormittag: 'Vormittag', nachmittag: 'Nachmittag' })[slot] || slot || ''; }
+    function liveUhr(iso) { if (!iso) return '—'; const d = new Date(iso); return isNaN(d) ? '—' : d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }); }
+
+    async function ladeLiveInfo() {
+        const box = document.getElementById('live-info');
+        if (!box) return;
+        try {
+            const res = await fetch(`/api/live/uebersicht?email=${encodeURIComponent(userEmail)}`);
+            const d = await res.json();
+            if (!d.success) { box.innerHTML = `<div class="live-gesperrt">Übersicht nicht verfügbar.</div>`; return; }
+            let html = "";
+            if (d.pausiert) html += `<div class="li-pausiert">⛔ Der Live-Sektor ist gerade durch die Regie pausiert (Not-Aus).</div>`;
+            // Heutige Zeitfenster (Termine).
+            html += `<div class="li-block-titel">🗓️ Heutige Zeitfenster</div>`;
+            const sessions = d.sessions || [];
+            if (!sessions.length) {
+                html += `<div class="li-karte"><div class="li-meta">Für heute sind keine Zeitfenster geplant.</div></div>`;
+            } else {
+                sessions.forEach(s => {
+                    const live = (s.status === 'live' || s.im_fenster);
+                    const badge = live ? `<span class="li-badge b-live">läuft</span>` : `<span class="li-badge b-plan">geplant</span>`;
+                    html += `<div class="li-karte ${live ? 'live' : ''}">${badge}
+                        <div class="li-thema">Sektor ${s.sektor}: ${escapeHtml(s.thema || '')}</div>
+                        <div class="li-meta">${liveSlotLabel(s.slot)} · ${liveUhr(s.start)}–${liveUhr(s.ende)} Uhr · ${s.anzahl_angemeldet}/${s.max_teilnehmer} angemeldet</div></div>`;
+                });
+            }
+            // Aktive Sektoren mit anonymer Tischbesetzung (keine Namen).
+            html += `<div class="li-block-titel">🎥 Aktive Live-Sektoren</div>`;
+            const raeume = (d.raeume || []).filter(r => r.teilnehmer > 0);
+            if (!raeume.length) {
+                html += `<div class="li-karte"><div class="li-meta">Aktuell ist kein Live-Sektor besetzt.</div></div>`;
+            } else {
+                raeume.forEach(r => {
+                    html += `<div class="li-karte live">
+                        <div class="li-thema">Sektor ${r.sektor}: ${escapeHtml(r.thema || '')}</div>
+                        <div class="li-meta">${r.tische} Tisch(e) · ${r.teilnehmer} Teilnehmer (anonym)</div></div>`;
+                });
+            }
+            html += `<div class="li-meta" style="margin-top:12px; color:#66788f;">Gesamt aktiv: ${d.aktive_teilnehmer || 0} · Info-Ansicht, kein Video.</div>`;
+            box.innerHTML = html;
+        } catch (e) { box.innerHTML = `<div class="live-gesperrt">Server-Verbindung fehlgeschlagen.</div>`; }
     }
 
     function platziereStreams() {
@@ -2166,6 +3141,9 @@
     let profilNeuesBild = null;          // neues Profilbild (Data-URL) oder null
     let profilGeburtsdatum = "";
     let profilGalerie = [];
+    // ENTKOPPELTE GALERIE (eigener Raum, unabhängig vom Profil-Canvas). Verlustsicherer Bild-Pool +
+    // reservierte Canvas-Elemente (elemente[] befüllt der Galerie-Editor in Schritt 2). Persistiert als 'galerie_seite'.
+    let galerieSeite = { hintergrund_url: '', hintergrund_farbe: '#0c1a2e', farbschema: 'nachtblau', rahmen: '', bilder: [], elemente: [] };
     let profilSichtbarkeit = {};
     let profilSchema = 'nachtblau';
     let profilLand = "", profilStadt = "";
@@ -2173,8 +3151,11 @@
     // Dimension (w,h) und alle WYSIWYG-Design-Attribute – wie eine eigene Mini-Webseite.
     let canvasElemente = [];
     let canvasBgUrl = "", canvasBgFarbe = "#0c1a2e", canvasRahmen = "";
+    // Malermodus (Feature 1): Hintergrund-Verschiebung (X/Y %) + Skalierung (% der Breite). 50/50/100 == altes center/cover.
+    let canvasBgPosX = 50, canvasBgPosY = 50, canvasBgSkala = 100;
     let ceElementSeq = 1, ceAktion = null, ceSelektiert = null, ceCtxNeuPos = null;
-    const CANVAS_TYPEN = ['bio','motto','text','foto','galerie','name','datum','standort'];
+    // Galerie ist KEIN Profil-Canvas-Typ mehr (entkoppelt -> eigener Galerie-Canvas, Schritt 2).
+    const CANVAS_TYPEN = ['bio','motto','text','foto','name','datum','standort'];
 
     const PROFIL_SICHT_STANDARD = { foto:'oeffentlich', vorname:'oeffentlich', nachname:'privat', geburtsdatum:'privat', biografie:'oeffentlich', galerie:'oeffentlich', standort:'oeffentlich' };
     const PROFIL_SICHT_FELDER = [ ['foto','Foto'], ['vorname','Name'], ['geburtsdatum','Geburtsdatum'], ['biografie','Biografie'], ['galerie','Galerie'], ['standort','Standort'] ];
@@ -2187,8 +3168,46 @@
         graphit:   { label: 'Graphit',    bg: 'linear-gradient(135deg,#161a1f 0%,#000 100%)', accent: '#8fd0ff', rand: '#3a4656' },
     };
 
+    // ---- Galerie-Datenmodell + verlustfreie Migration aus Alt-Canvas-Modulen ----
+    function galerieStandardSeite() {
+        return { hintergrund_url: '', hintergrund_farbe: '#0c1a2e', farbschema: 'nachtblau', rahmen: '', bilder: [], elemente: [] };
+    }
+    // Ein Galerie-Bild normalisieren: akzeptiert String (nur URL) ODER {url,titel,filter}. -> {url,titel,filter} | null
+    function ceGalerieBildNorm(b) {
+        if (typeof b === 'string') return b ? { url: b, titel: '', filter: '' } : null;
+        if (b && typeof b === 'object' && b.url) return { url: String(b.url), titel: String(b.titel || ''), filter: String(b.filter || '') };
+        return null;
+    }
+    // Löst Alt-Galerie-Module aus dem Profil-Canvas heraus und schmilzt alle Bildquellen verlustfrei
+    // (deduped nach url) in galerie_seite ein. -> { profilElemente (ohne Galerie), galerieSeite }
+    function galerieMigrieren(rohElemente, d) {
+        d = d || {};
+        const vorhanden = (d.galerie_seite && typeof d.galerie_seite === 'object') ? d.galerie_seite : {};
+        const gs = galerieStandardSeite();
+        gs.hintergrund_url = vorhanden.hintergrund_url || '';
+        gs.hintergrund_farbe = vorhanden.hintergrund_farbe || '#0c1a2e';
+        gs.farbschema = (vorhanden.farbschema && PROFIL_SCHEMATA[vorhanden.farbschema]) ? vorhanden.farbschema : 'nachtblau';
+        gs.rahmen = vorhanden.rahmen || '';
+        gs.elemente = Array.isArray(vorhanden.elemente) ? vorhanden.elemente.slice() : [];
+        gs.bilder = Array.isArray(vorhanden.bilder) ? vorhanden.bilder.map(ceGalerieBildNorm).filter(Boolean) : [];
+        const gesehen = new Set(gs.bilder.map(b => b.url));
+        const uebernehmen = (b, filter) => {
+            const bild = ceGalerieBildNorm(b); if (!bild) return;
+            if (filter && !bild.filter) bild.filter = filter;
+            if (!gesehen.has(bild.url)) { gs.bilder.push(bild); gesehen.add(bild.url); }
+        };
+        const profilElemente = [];
+        (rohElemente || []).forEach(el => {
+            if (el && el.typ === 'galerie') (el.bilder || []).forEach(b => uebernehmen(b, el.filter || ''));  // Alt-Modul -> Pool
+            else if (el) profilElemente.push(el);                                                             // Rest bleibt 100% unverändert
+        });
+        if (Array.isArray(d.galerie)) d.galerie.forEach(b => uebernehmen(b, ''));    // Legacy-Flachliste einschmelzen
+        return { profilElemente, galerieSeite: gs };
+    }
+
     async function oeffneProfil() {
         profilNeuesBild = null; profilMsg(""); canvasElemente = []; ceElementSeq = 1; ceSelektiert = null;
+        galerieSeite = galerieStandardSeite();
         try {
             const res = await fetch(`/auth/profil-daten?email=${encodeURIComponent(userEmail)}`);
             const d = await res.json();
@@ -2203,8 +3222,16 @@
                 canvasBgUrl = c.hintergrund_url || "";
                 canvasBgFarbe = c.hintergrund_farbe || "#0c1a2e";
                 canvasRahmen = c.rahmen || "";
+                // Malermodus (Feature 1): Hintergrund-Offset/Skalierung laden (Fallback = altes center/cover).
+                canvasBgPosX = (typeof c.hintergrund_pos_x === 'number') ? c.hintergrund_pos_x : 50;
+                canvasBgPosY = (typeof c.hintergrund_pos_y === 'number') ? c.hintergrund_pos_y : 50;
+                canvasBgSkala = (typeof c.hintergrund_skala === 'number') ? c.hintergrund_skala : 100;
                 profilSchema = (c.farbschema && PROFIL_SCHEMATA[c.farbschema]) ? c.farbschema : ((d.farbschema && PROFIL_SCHEMATA[d.farbschema]) ? d.farbschema : 'nachtblau');
-                canvasElemente = (Array.isArray(c.elemente) ? c.elemente : []).map(el => ceNorm(el));
+                // ENTKOPPLUNG + verlustfreie Migration: Alt-Galerie-Module VOR ceNorm herauslösen
+                // (galerie ist kein gültiger Canvas-Typ mehr) und ihre Bilder in galerie_seite überführen.
+                const mig = galerieMigrieren(Array.isArray(c.elemente) ? c.elemente : [], d);
+                canvasElemente = mig.profilElemente.map(el => ceNorm(el));
+                galerieSeite = mig.galerieSeite;
             }
         } catch (e) {}
         if (!canvasElemente.length) {
@@ -2216,6 +3243,10 @@
         document.getElementById('ce-bg-farbe').value = /^#/.test(canvasBgFarbe) ? canvasBgFarbe : '#0c1a2e';
         document.getElementById('ce-schema').value = profilSchema;
         document.getElementById('ce-rahmen').value = canvasRahmen;
+        // Malermodus (Feature 1): Regler-Positionen aus dem geladenen Zustand setzen.
+        document.getElementById('ce-bg-posx').value = canvasBgPosX;
+        document.getElementById('ce-bg-posy').value = canvasBgPosY;
+        document.getElementById('ce-bg-skala').value = canvasBgSkala;
         document.getElementById('ce-land').value = profilLand;
         document.getElementById('ce-stadt').value = profilStadt;
         document.getElementById('ce-geburtsdatum').value = profilGeburtsdatum;
@@ -2246,10 +3277,16 @@
         canvasBgUrl = (document.getElementById('ce-bg-url')||{}).value || "";
         canvasBgFarbe = (document.getElementById('ce-bg-farbe')||{}).value || "#0c1a2e";
         canvasRahmen = (document.getElementById('ce-rahmen')||{}).value || "";
+        // Malermodus (Feature 1): Hintergrund-Verschiebung/Skalierung aus den Reglern lesen + Labels aktualisieren.
+        canvasBgPosX = parseFloat((document.getElementById('ce-bg-posx')||{}).value); if (isNaN(canvasBgPosX)) canvasBgPosX = 50;
+        canvasBgPosY = parseFloat((document.getElementById('ce-bg-posy')||{}).value); if (isNaN(canvasBgPosY)) canvasBgPosY = 50;
+        canvasBgSkala = parseFloat((document.getElementById('ce-bg-skala')||{}).value); if (isNaN(canvasBgSkala)) canvasBgSkala = 100;
+        const setLab = (id, v) => { const n = document.getElementById(id); if (n) n.textContent = Math.round(v) + '%'; };
+        setLab('ce-bg-posx-lab', canvasBgPosX); setLab('ce-bg-posy-lab', canvasBgPosY); setLab('ce-bg-skala-lab', canvasBgSkala);
         const cv = document.getElementById('ce-canvas');
         if (!cv) return;
         const schema = PROFIL_SCHEMATA[profilSchema] || PROFIL_SCHEMATA.nachtblau;
-        cv.style.background = canvasBgUrl ? `url('${canvasBgUrl}') center/cover no-repeat` : (canvasBgFarbe || schema.bg);
+        Object.assign(cv.style, ceHintergrund(canvasBgUrl, canvasBgFarbe, schema, canvasBgPosX, canvasBgPosY, canvasBgSkala));
         const rahmen = { gold: '3px solid #ffd700', doppelt: '6px double #ffd700', neon: '2px solid #00ffcc' };
         cv.style.border = rahmen[canvasRahmen] || `1px solid ${schema.rand}`;
         cv.style.boxShadow = canvasRahmen === 'neon' ? '0 0 22px rgba(0,255,204,0.55)' : (canvasRahmen === 'weich' ? '0 18px 50px rgba(0,0,0,0.6)' : 'none');
@@ -2287,6 +3324,23 @@
     // freie URLs entzerren wir von zeichen, die die CSS-Deklaration brechen könnten.
     function ceCssUrl(u) { return String(u || '').replace(/["'()\\]/g, ''); }
 
+    // Malermodus (Feature 1): EINE Wahrheit für den Canvas-Hintergrund (Editor-DOM + Read-only-Ansicht).
+    // Liefert ein Style-Objekt; bei Standardwerten (50/50/100) exakt das alte center/cover -> Bestandsprofile bleiben identisch.
+    function ceHintergrund(url, farbe, schema, px, py, sk) {
+        px = (px == null) ? 50 : +px; py = (py == null) ? 50 : +py; sk = (sk == null) ? 100 : +sk;
+        const grund = farbe || (schema && schema.bg) || '#0c1a2e';
+        if (!url) return { background: grund, backgroundImage: 'none' };
+        const basis = { background: grund, backgroundImage: `url('${ceCssUrl(url)}')`, backgroundRepeat: 'no-repeat' };
+        if (px === 50 && py === 50 && sk === 100)
+            return Object.assign(basis, { backgroundSize: 'cover', backgroundPosition: 'center' });
+        return Object.assign(basis, { backgroundSize: sk + '%', backgroundPosition: px + '% ' + py + '%' });
+    }
+    // Dasselbe Objekt als CSS-Deklarationsstring (für die read-only Besucheransicht, die per Template-String rendert).
+    function ceHintergrundStr(url, farbe, schema, px, py, sk) {
+        const o = ceHintergrund(url, farbe, schema, px, py, sk);
+        return Object.keys(o).map(k => k.replace(/[A-Z]/g, m => '-' + m.toLowerCase()) + ':' + o[k]).join('; ') + ';';
+    }
+
     // ISO-Datum (YYYY-MM-DD) hübsch als DD.MM.YYYY darstellen.
     function ceFormatDatum(iso) {
         const s = String(iso || '').trim(); if (!s) return '';
@@ -2319,9 +3373,10 @@
             radius: 12, bg_farbe: '', rahmen_farbe: '', rahmen_breite: 0, polster: (typ === 'foto') ? 0 : 12,
             farbe: '#ffffff', groesse: 1, zeilenabstand: 1.35, ausrichtung: 'links', fett: false,
             bild: '', filter: '', text: '', label: '',
+            // Malermodus: Z-Index (Feature 2) + Kreis-Maske/Freistellung/Passung (Feature 3).
+            z: 0, maske: '', freistellen: false, bild_passung: 'cover',
         };
         if (typ === 'foto') { el.w = 24; el.h = 40; el.radius = 14; }
-        else if (typ === 'galerie') { el.w = 48; el.h = 40; el.radius = 10; el.polster = 8; el.bilder = []; el.spalten = 3; el.luecke = 8; el.sichtbar = 'oeffentlich'; }
         else if (typ === 'motto') { el.text = 'Dein Motto …'; el.farbe = '#ffd700'; el.groesse = 1.8; el.fett = true; el.h = 14; }
         else if (typ === 'bio') { el.text = 'Deine Biografie …'; el.h = 40; }
         // Datengebundene Module: Inhalt kommt aus den Profildaten, frei positionierbar wie jedes andere Modul.
@@ -2358,11 +3413,6 @@
             else if (raw.rahmen === 'doppelt') { el.rahmen_farbe = '#ffd700'; el.rahmen_breite = 5; }
         }
         if (typeof el.h !== 'number' || !el.h) el.h = (t === 'foto') ? 40 : 20;
-        if (t === 'galerie') {
-            el.bilder = Array.isArray(raw.bilder) ? raw.bilder.slice() : [];
-            el.spalten = raw.spalten || 3; el.luecke = (raw.luecke != null) ? raw.luecke : 8;
-            el.sichtbar = raw.sichtbar === 'privat' ? 'privat' : 'oeffentlich';
-        }
         return el;
     }
 
@@ -2372,10 +3422,15 @@
     function ceBoxStyle(el) {
         const w = el.w || 30, h = el.h || ((el.typ === 'foto') ? 40 : 20);
         let s = `left:${el.x}%; top:${el.y}%; width:${w}%; height:${h}%;`;
-        s += `border-radius:${el.radius || 0}px;`;
+        // Malermodus (Feature 3): Kreis-Maske erzwingt einen sauberen runden Rahmen + Clipping (kein hartes Viereck),
+        // sonst der freie Radius. overflow:hidden beschneidet Bild + eckige Ränder exakt auf die Form.
+        if (el.maske === 'kreis') s += `border-radius:50%; overflow:hidden;`;
+        else s += `border-radius:${el.radius || 0}px;`;
         if (el.bg_farbe) s += `background:${el.bg_farbe};`;
         if (el.rahmen_breite) s += `border:${el.rahmen_breite}px solid ${el.rahmen_farbe || '#ffd700'};`;
         if (el.polster) s += `padding:${el.polster}px;`;
+        // Malermodus (Feature 2): expliziter Z-Index -> Bild-im-Bild-Tiefe (z. B. Sonne HINTER Gebirge/Logo legen).
+        if (el.z) s += `z-index:${el.z};`;
         return s;
     }
     function ceTextStyle(el) {
@@ -2386,14 +3441,10 @@
     // daten = Profil-Datenkontext für datengebundene Module (Editor: eigene Daten, Ansicht: Zielprofil).
     function ceInner(el, readonly, daten) {
         if (el.typ === 'foto') {
-            return `<div class="ce-foto-fill" style="background-image:url('${ceCssUrl(el.bild)}'); filter:${el.filter || 'none'};"${readonly ? '' : ` ondblclick="ceFotoWaehlen(${el.id})"`}></div>`;
-        }
-        if (el.typ === 'galerie') {
-            const bilder = (el.bilder || []).map((b, i) =>
-                `<div class="ce-gal-bild" style="background-image:url('${ceCssUrl(b)}'); filter:${el.filter || 'none'};">${readonly ? '' : `<button class="ce-gal-del" onclick="ceGalerieBildEntfernen(${el.id},${i})" title="Bild entfernen">✕</button>`}</div>`
-            ).join('');
-            const add = readonly ? '' : `<button class="ce-gal-add" onclick="ceGalerieBildWaehlen(${el.id})">＋<br>Bild</button>`;
-            return `<div class="ce-gal-grid" style="grid-template-columns:repeat(${el.spalten || 3},1fr); gap:${el.luecke != null ? el.luecke : 8}px;">${bilder}${add}</div>`;
+            // Malermodus (Feature 3): 'frei' entfernt die dunkle Box (transparente Verschmelzung),
+            // 'einpassen' (contain) zeigt runde Logos/Sonnen komplett statt sie zu beschneiden.
+            const cls = 'ce-foto-fill' + (el.freistellen ? ' frei' : '') + (el.bild_passung === 'contain' ? ' einpassen' : '');
+            return `<div class="${cls}" style="background-image:url('${ceCssUrl(el.bild)}'); filter:${el.filter || 'none'};"${readonly ? '' : ` ondblclick="ceFotoWaehlen(${el.id})"`}></div>`;
         }
         // Datengebundene Module (Name/Datum/Standort): Inhalt stammt aus den Profildaten,
         // NICHT aus frei eingegebenem Text -> eine einzige Wahrheit, Editor == Ansicht.
@@ -2454,6 +3505,15 @@
         baueCanvas();
         ceSelect(id);
     }
+    // Malermodus (Feature 2): Gegenstück – ans Array-ANFANG -> zuerst gerendert -> liegt hinten
+    // (z. B. Sonne hinter das Gebirge legen). Ergänzt den expliziten Z-Index im Attribut-Panel.
+    function ceElementNachHinten(id) {
+        const i = canvasElemente.findIndex(e => e.id === id); if (i < 0) return;
+        const [el] = canvasElemente.splice(i, 1);
+        canvasElemente.unshift(el);
+        baueCanvas();
+        ceSelect(id);
+    }
     function ceFotoWaehlen(id) {
         const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*';
         inp.onchange = () => {
@@ -2469,28 +3529,8 @@
         };
         inp.click();
     }
-    // ---- Galerie-Modul: eigene Bildverwaltung ----
-    function ceGalerieBildWaehlen(id) {
-        const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*'; inp.multiple = true;
-        inp.onchange = () => {
-            const files = Array.from(inp.files || []).slice(0, 24);
-            let fertig = 0;
-            files.forEach(f => {
-                const r = new FileReader();
-                r.onload = e => {
-                    const el = ceFindeEl(id);
-                    if (el) { el.bilder = el.bilder || []; if (el.bilder.length < 24) el.bilder.push(e.target.result); }
-                    if (++fertig === files.length) baueCanvas();
-                };
-                r.readAsDataURL(f);
-            });
-        };
-        inp.click();
-    }
-    function ceGalerieBildEntfernen(id, i) {
-        const el = ceFindeEl(id); if (!el || !el.bilder) return;
-        el.bilder.splice(i, 1); baueCanvas();
-    }
+    // Galerie-Bildverwaltung ENTKOPPELT -> eigener Galerie-Canvas (Schritt 2). Keine modul-
+    // gebundenen ceGalerie*-Funktionen mehr im Profil-Canvas.
 
     // ---- Inline-Text (WYSIWYG, contenteditable) ----
     function ceTextEdit(id, node) {
@@ -2538,7 +3578,6 @@
     function ceDragStart(e, id) {
         if (e.button !== 0) return;                                                     // nur primärer Zeiger (linke Maustaste / erster Finger)
         if (e.target.closest('.ce-el-tools') || e.target.closest('.ce-resize')) return;
-        if (e.target.closest('.ce-gal-add') || e.target.closest('.ce-gal-del')) return;
         if (e.target.getAttribute && e.target.getAttribute('contenteditable') === 'true') return;  // Textbearbeitung ≠ Drag
         const cv = document.getElementById('ce-canvas');
         const el = ceFindeEl(id); if (!el || !cv) return;
@@ -2613,9 +3652,9 @@
         let h = `<div class="ce-ctx-titel">${CE_TITEL[el.typ] || 'Modul'}</div>`;
         if (istFreitext)          h += `<button onclick="ceCtxSchliessen();ceTextViaPanel(${id})">✎ Text bearbeiten</button>`;
         if (el.typ === 'foto')    h += `<button onclick="ceCtxSchliessen();ceFotoWaehlen(${id})">🖼️ Bild wählen</button>`;
-        if (el.typ === 'galerie') h += `<button onclick="ceCtxSchliessen();ceGalerieBildWaehlen(${id})">＋ Bilder hinzufügen</button>`;
         h += `<button onclick="ceCtxSchliessen();ceSelect(${id})">⚙ Attribute formen</button>`;
         h += `<button onclick="ceCtxSchliessen();ceElementNachVorne(${id})">⬆️ Nach vorne holen</button>`;
+        h += `<button onclick="ceCtxSchliessen();ceElementNachHinten(${id})">⬇️ Nach hinten legen</button>`;
         h += `<button onclick="ceCtxSchliessen();ceElementDuplizieren(${id})">⧉ Duplizieren</button>`;
         h += `<button class="gefahr" onclick="ceCtxSchliessen();ceElementLoeschen(${id})">🗑️ Modul löschen</button>`;
         m.innerHTML = h;
@@ -2635,7 +3674,7 @@
         };
         const knopf = t => `<button onclick="ceCtxSchliessen();ceElementHinzufuegen('${t}',true)">＋ ${CE_TITEL[t] || t}</button>`;
         m.innerHTML = `<div class="ce-ctx-titel">Modul hinzufügen</div>` +
-            ['foto','name','datum','standort','bio','motto','text','galerie'].map(knopf).join('');
+            ['foto','name','datum','standort','bio','motto','text'].map(knopf).join('');
         ceCtxPositionieren(clientX, clientY);
     }
     // Klick auf die leere Bühne öffnet das Hinzufügen-Menü; Esc schließt jedes Menü.
@@ -2647,10 +3686,10 @@
     document.addEventListener('keydown', e => { if (e.key === 'Escape') ceCtxSchliessen(); });
 
     // ---- WYSIWYG-Attributpanel (live) ----
-    const CE_TITEL = { bio: 'Biografie-Modul', motto: 'Motto-Modul', text: 'Text-Modul', foto: 'Foto-Modul', galerie: 'Galerie-Modul', name: 'Name-Modul', datum: 'Geburtsdatum-Modul', standort: 'Standort-Modul' };
+    const CE_TITEL = { bio: 'Biografie-Modul', motto: 'Motto-Modul', text: 'Text-Modul', foto: 'Foto-Modul', name: 'Name-Modul', datum: 'Geburtsdatum-Modul', standort: 'Standort-Modul' };
     function ceAttr(id, feld, wert) {
         const el = ceFindeEl(id); if (!el) return;
-        if (['x','y','w','h','groesse','zeilenabstand','radius','rahmen_breite','polster','luecke','spalten'].includes(feld)) wert = parseFloat(wert);
+        if (['x','y','w','h','groesse','zeilenabstand','radius','rahmen_breite','polster','luecke','spalten','z'].includes(feld)) wert = parseFloat(wert);
         el[feld] = wert;
         ceAktualisiereElement(id);
     }
@@ -2716,18 +3755,24 @@
         if (el.typ === 'foto') {
             h += `<button class="ce-attr-btn" onclick="ceFotoWaehlen(${el.id})">🖼️ Bild wählen</button>`;
             h += ceFilterSelect(el);
+            // Malermodus (Feature 3): Freistellen (transparente Box) + Bild-Passung (Füllen/Einpassen).
+            h += `<div class="ce-attr-feld"><label>Freistellen (transparent)</label><div class="ce-attr-toggle">
+                <button class="${!el.freistellen?'an':''}" onclick="ceAttrToggle(${el.id},'freistellen',false)">Box sichtbar</button>
+                <button class="${el.freistellen?'an':''}" onclick="ceAttrToggle(${el.id},'freistellen',true)">Freigestellt</button></div></div>`;
+            const pas = el.bild_passung || 'cover';
+            h += `<div class="ce-attr-feld"><label>Bild-Passung</label><div class="ce-attr-toggle">
+                <button class="${pas!=='contain'?'an':''}" onclick="ceAttrToggle(${el.id},'bild_passung','cover')">Füllen</button>
+                <button class="${pas==='contain'?'an':''}" onclick="ceAttrToggle(${el.id},'bild_passung','contain')">Einpassen</button></div></div>`;
         }
-        // Galerie-Attribute (freies Modul)
-        if (el.typ === 'galerie') {
-            h += ceSchieber(el.id,'spalten','Spalten (Vorschaubilder pro Reihe)',el.spalten,1,8,1,'');
-            h += ceSchieber(el.id,'luecke','Abstand',el.luecke,0,40,1,'px');
-            h += ceFilterSelect(el);
-            const oeff = el.sichtbar !== 'privat';
-            h += `<div class="ce-attr-feld"><label>Sichtbarkeit</label><div class="ce-attr-toggle">
-                <button class="${oeff?'an':''}" onclick="ceAttrToggle(${el.id},'sichtbar','oeffentlich')">🌍 Öffentlich</button>
-                <button class="${!oeff?'an':''}" onclick="ceAttrToggle(${el.id},'sichtbar','privat')">🔒 Privat</button></div></div>`;
-            h += `<button class="ce-attr-btn" onclick="ceGalerieBildWaehlen(${el.id})">＋ Bilder hinzufügen (${(el.bilder||[]).length})</button>`;
-        }
+        // Malermodus (Feature 2): Z-Index für Bild-im-Bild-Tiefe (für JEDES Modul).
+        h += ceSchieber(el.id,'z','Ebene (Z-Index)',el.z||0,0,999,1,'');
+        h += `<div class="ce-attr-row">
+            <button class="ce-attr-btn" onclick="ceElementNachHinten(${el.id})">⬇️ Nach hinten</button>
+            <button class="ce-attr-btn" onclick="ceElementNachVorne(${el.id})">⬆️ Nach vorne</button></div>`;
+        // Malermodus (Feature 3): rahmenloser Kreis-Modus (für JEDES Modul) – hartes Viereck verschwindet.
+        h += `<div class="ce-attr-feld"><label>Maske / Form</label><div class="ce-attr-toggle">
+            <button class="${el.maske!=='kreis'?'an':''}" onclick="ceAttrToggle(${el.id},'maske','')">Rechteck</button>
+            <button class="${el.maske==='kreis'?'an':''}" onclick="ceAttrToggle(${el.id},'maske','kreis')">Kreis</button></div></div>`;
         // Box-Attribute (für JEDES Modul)
         h += ceSchieber(el.id,'radius','Rahmen-Radius',el.radius,0,200,1,'px');
         h += ceSchieber(el.id,'polster','Innenabstand',el.polster,0,80,1,'px');
@@ -2756,6 +3801,8 @@
         profilMsg("Speichere …", true);
         const canvas = {
             hintergrund_url: canvasBgUrl, hintergrund_farbe: canvasBgFarbe,
+            // Malermodus (Feature 1): Hintergrund-Offset/Skalierung verlustsicher mitspeichern.
+            hintergrund_pos_x: canvasBgPosX, hintergrund_pos_y: canvasBgPosY, hintergrund_skala: canvasBgSkala,
             farbschema: profilSchema, rahmen: canvasRahmen,
             elemente: canvasElemente.map(ceSerialisiere),
         };
@@ -2765,6 +3812,7 @@
             biografie: bioText, geburtsdatum: profilGeburtsdatum,
             galerie: profilGalerie, sichtbarkeit: profilSichtbarkeit, farbschema: profilSchema,
             land: profilLand, stadt: profilStadt, canvas,
+            galerie_seite: galerieSeite,   // entkoppelte Galerie verlustsicher mitspeichern
         };
         if (profilNeuesBild !== null) payload.profilbild = profilNeuesBild;
         try {
@@ -2788,11 +3836,9 @@
             zeilenabstand: e.zeilenabstand || 1.35, ausrichtung: e.ausrichtung || 'links', fett: !!e.fett,
             radius: e.radius || 0, bg_farbe: e.bg_farbe || '', rahmen_farbe: e.rahmen_farbe || '',
             rahmen_breite: e.rahmen_breite || 0, polster: e.polster || 0, filter: e.filter || '',
+            // Malermodus: Z-Index (Feature 2) + Maske/Freistellung/Passung (Feature 3).
+            z: e.z || 0, maske: e.maske || '', freistellen: !!e.freistellen, bild_passung: e.bild_passung || 'cover',
         };
-        if (e.typ === 'galerie') {
-            o.bilder = (e.bilder || []); o.spalten = e.spalten || 3;
-            o.luecke = (e.luecke != null) ? e.luecke : 8; o.sichtbar = e.sichtbar || 'oeffentlich';
-        }
         return o;
     }
 
@@ -2800,9 +3846,11 @@
     function rendereCanvasAnsicht(d) {
         const c = d.canvas || {};
         const schema = PROFIL_SCHEMATA[c.farbschema] || PROFIL_SCHEMATA.nachtblau;
-        const bg = c.hintergrund_url ? `url('${ceCssUrl(c.hintergrund_url)}') center/cover no-repeat` : (c.hintergrund_farbe || schema.bg);
+        // Malermodus (Feature 1): identischer Hintergrund-Helfer wie im Editor -> Offset/Skalierung 1:1 sichtbar.
+        const bgStil = ceHintergrundStr(c.hintergrund_url, c.hintergrund_farbe, schema, c.hintergrund_pos_x, c.hintergrund_pos_y, c.hintergrund_skala);
         const rahmen = { gold:'3px solid #ffd700', doppelt:'6px double #ffd700', neon:'2px solid #00ffcc' }[c.rahmen] || `1px solid ${schema.rand}`;
-        let roh = (c.elemente || []);
+        // Entkoppelt: etwaige Alt-Galerie-Module ignorieren (leben jetzt in galerie_seite).
+        let roh = (c.elemente || []).filter(r => r && r.typ !== 'galerie');
         if (!roh.length) {
             // Fallback nur, wenn der Nutzer NIE etwas gestaltet hat – IDENTISCH zum Editor-Start.
             roh = ceStartKomposition({ bild: d.profilbild || '', biografie: d.biografie || '' });
@@ -2814,7 +3862,487 @@
             const el = ceNorm(r);
             return `<div class="ce-el ce-el-${el.typ}" style="${ceBoxStyle(el)}">${ceInner(el, true, daten)}</div>`;
         }).join('');
-        return `<div class="ce-canvas fp-canvas" style="background:${bg}; border:${rahmen};">${els}</div>`;
+        return `<div class="ce-canvas fp-canvas" style="${bgStil} border:${rahmen};">${els}</div>`;
+    }
+
+    // ---- Read-only Galerie-Ansicht für Besucher: rendert GENAU die im Galerie-Editor gestalteten Module ----
+    function rendereGalerieAnsicht(d) {
+        const gs = (d && d.galerie_seite && typeof d.galerie_seite === 'object') ? d.galerie_seite : {};
+        const schema = PROFIL_SCHEMATA[gs.farbschema] || PROFIL_SCHEMATA.nachtblau;
+        // Malermodus (Feature 1): identischer Hintergrund-Helfer wie im Galerie-Editor -> Offset/Skalierung 1:1.
+        const bgStil = ceHintergrundStr(gs.hintergrund_url, gs.hintergrund_farbe, schema, gs.hintergrund_pos_x, gs.hintergrund_pos_y, gs.hintergrund_skala);
+        const rahmen = { gold:'3px solid #ffd700', doppelt:'6px double #ffd700', neon:'2px solid #00ffcc' }[gs.rahmen] || `1px solid ${schema.rand}`;
+        const elemente = Array.isArray(gs.elemente) ? gs.elemente : [];
+        if (elemente.length) {
+            // Editor ↔ Ansicht identisch: dieselbe Box-Mathematik (ceBoxStyle) + geInner, read-only.
+            const els = elemente.map(r => { const el = geNorm(r); return `<div class="ce-el ce-el-${el.typ}" style="${ceBoxStyle(el)}">${geInner(el, true)}</div>`; }).join('');
+            return `<div class="ce-canvas fp-canvas" style="${bgStil} border:${rahmen};">${els}</div>`;
+        }
+        // Fallback: schlichtes Grid aus dem Bild-Pool, falls noch kein Galerie-Canvas gestaltet wurde.
+        const bilder = Array.isArray(gs.bilder) ? gs.bilder : [];
+        const kacheln = bilder.map(b => {
+            const url = ceCssUrl(b && b.url); if (!url) return '';
+            const titel = escapeHtml((b && b.titel) || ''); const filter = (b && b.filter) || 'none';
+            return `<figure class="ga-kachel"><div class="ga-bild" style="background-image:url('${url}'); filter:${filter};"></div>${titel ? `<figcaption class="ga-titel">${titel}</figcaption>` : ''}</figure>`;
+        }).join('');
+        const leer = kacheln ? '' : `<p style="grid-column:1/-1; color:#cfe0ff; text-align:center; padding:40px;">Diese Galerie ist noch leer.</p>`;
+        return `<div class="ce-canvas fp-canvas ga-ansicht" style="${bgStil} border:${rahmen};"><div class="ga-grid">${kacheln}${leer}</div></div>`;
+    }
+
+    // =====================================================================
+    // PROFIL-HUB + DESIGN-VORSCHAU (Einstieg: Profil / Galerie / Vorschau)
+    // =====================================================================
+    function oeffneProfilHub() { document.getElementById('profil-hub-overlay').classList.add('aktiv'); }
+    function schliesseProfilHub() { document.getElementById('profil-hub-overlay').classList.remove('aktiv'); }
+    function hubOeffne(was) {
+        schliesseProfilHub();
+        if (was === 'profil') oeffneProfil();
+        else if (was === 'galerie') oeffneGalerieEditor();
+        else if (was === 'vorschau') oeffneDesignVorschau();
+    }
+    // Eigenes Profil read-only ansehen – exakt wie ein Besucher (inkl. Zwei-Button-Umschalter).
+    async function oeffneDesignVorschau() {
+        const ov = document.getElementById('fremdprofil-overlay'), inhalt = document.getElementById('fremdprofil-inhalt');
+        inhalt.innerHTML = `<p style="color:#fff; padding:30px; text-align:center;">Lade Vorschau …</p>`;
+        ov.classList.add('aktiv');
+        try {
+            const res = await fetch(`/auth/profil-daten?email=${encodeURIComponent(userEmail)}`);
+            const p = await res.json();
+            fremdprofilDaten = {
+                canvas: p.canvas || {}, galerie_seite: p.galerie_seite || {},
+                name: `${(p.vorname||'').trim()} ${(p.nachname||'').trim()}`.trim(),
+                geburtsdatum: p.geburtsdatum || '', land: p.land || '', stadt: p.stadt || '',
+                profilbild: p.profilbild || '', biografie: p.biografie || '',
+            };
+            inhalt.innerHTML = fpUmschalter('profil') + rendereCanvasAnsicht(fremdprofilDaten);
+        } catch (e) { inhalt.innerHTML = `<p style="color:#ff9b9b; padding:30px;">Fehler beim Laden.</p>`; }
+    }
+
+    // =====================================================================
+    // GALERIE-CANVAS-ENGINE (ge*): vollständig isoliert vom Profil-Canvas.
+    // Eigener State, eigenes DOM (#ge-canvas/#ge-attr/#ge-ctx), eigene Handler.
+    // Wiederverwendet NUR zustandslose Helfer (ceBoxStyle/ceTextStyle/ceCssUrl).
+    // Modell = galerie_seite.elemente[]  ·  Modultypen: 'bild' (+ optional 'text').
+    // =====================================================================
+    let geElemente = [];
+    let geSelektiert = null, geAktion = null, geElementSeq = 1, geCtxNeuPos = null;
+    let geBgUrl = '', geBgFarbe = '#0c1a2e', geRahmen = '', geSchema = 'nachtblau';
+    // Malermodus (Feature 1): Galerie-Hintergrund-Verschiebung/Skalierung (50/50/100 == altes center/cover).
+    let geBgPosX = 50, geBgPosY = 50, geBgSkala = 100;
+    const GE_TITEL = { bild: 'Bild-Modul', text: 'Text-Modul' };
+    const GE_PRESETS = {
+        '2x2':  [ {x:4,y:4,w:45,h:44},{x:51,y:4,w:45,h:44},{x:4,y:52,w:45,h:44},{x:51,y:52,w:45,h:44} ],
+        '3er':  [ {x:3,y:20,w:30.6,h:60},{x:34.7,y:20,w:30.6,h:60},{x:66.4,y:20,w:30.6,h:60} ],
+        'hero': [ {x:4,y:4,w:92,h:52},{x:4,y:58,w:29.3,h:38},{x:35.3,y:58,w:29.3,h:38},{x:66.6,y:58,w:29.4,h:38} ],
+    };
+
+    function geStandard(typ) {
+        typ = (typ === 'text') ? 'text' : 'bild';
+        const el = { id: geElementSeq++, typ, x: 30, y: 26, w: 30, h: 34,
+            radius: 10, bg_farbe: '', rahmen_farbe: '', rahmen_breite: 0, polster: 0,
+            bild: '', filter: '', titel: '',
+            farbe: '#ffffff', groesse: 1, ausrichtung: 'zentriert', fett: false, zeilenabstand: 1.3, text: '',
+            // Malermodus: Z-Index (Feature 2) + Kreis-Maske/Freistellung/Passung (Feature 3).
+            z: 0, maske: '', freistellen: false, bild_passung: 'cover' };
+        if (typ === 'text') { el.text = 'Beschriftung …'; el.w = 40; el.h = 8; el.polster = 6; el.groesse = 1.1; }
+        return el;
+    }
+    function geNorm(raw) {
+        const t = (raw && raw.typ === 'text') ? 'text' : 'bild';
+        const el = Object.assign(geStandard(t), raw, { id: geElementSeq++, typ: t });
+        if (typeof el.h !== 'number' || !el.h) el.h = 30;
+        return el;
+    }
+    function geFindeEl(id) { return geElemente.find(e => e.id === id); }
+    function geSerialisiere(e) {
+        return { typ: e.typ, x: e.x, y: e.y, w: e.w, h: e.h,
+            bild: e.bild || '', filter: e.filter || '', titel: e.titel || '', text: e.text || '',
+            farbe: e.farbe || '', groesse: e.groesse || 1, ausrichtung: e.ausrichtung || 'zentriert',
+            fett: !!e.fett, zeilenabstand: e.zeilenabstand || 1.3,
+            radius: e.radius || 0, bg_farbe: e.bg_farbe || '', rahmen_farbe: e.rahmen_farbe || '',
+            rahmen_breite: e.rahmen_breite || 0, polster: e.polster || 0,
+            // Malermodus: Z-Index (Feature 2) + Maske/Freistellung/Passung (Feature 3).
+            z: e.z || 0, maske: e.maske || '', freistellen: !!e.freistellen, bild_passung: e.bild_passung || 'cover' };
+    }
+    // Innerer Modul-Inhalt (readonly=true -> keine Editier-Hooks, für die Besucheransicht).
+    function geInner(el, readonly) {
+        if (el.typ === 'text') {
+            const editHook = readonly ? '' : ` ondblclick="geTextEdit(${el.id}, this)"`;
+            return `<div class="ce-text" style="${ceTextStyle(el)}"${editHook}>${escapeHtml(el.text || '')}</div>`;
+        }
+        const dbl = readonly ? '' : ` ondblclick="geBildWaehlen(${el.id})"`;
+        const titel = el.titel ? `<figcaption class="ge-cap" style="color:${el.farbe || '#fff'};">${escapeHtml(el.titel)}</figcaption>` : '';
+        // Malermodus (Feature 3): Freistellen (transparent) + Einpassen (contain) – identisch zum Profil-Canvas.
+        const cls = 'ce-foto-fill' + (el.freistellen ? ' frei' : '') + (el.bild_passung === 'contain' ? ' einpassen' : '');
+        return `<div class="${cls}"${dbl} style="background-image:url('${ceCssUrl(el.bild)}'); filter:${el.filter || 'none'};"></div>${titel}`;
+    }
+    function geChrome(el) {
+        return `<div class="ce-el-tools">
+                <button onclick="geSelect(${el.id})" title="Attribute formen">⚙</button>
+                <button onclick="geElementLoeschen(${el.id})" title="Modul löschen">✕</button>
+            </div><div class="ce-resize" onpointerdown="geResizeStart(event, ${el.id})" title="Größe ziehen"></div>`;
+    }
+    function baueGalerieCanvas() {
+        const cv = document.getElementById('ge-canvas'); if (!cv) return;
+        cv.querySelectorAll('.ce-el').forEach(n => n.remove());
+        geElemente.forEach(el => {
+            const node = document.createElement('div');
+            node.className = 'ce-el ce-el-' + el.typ + (el.id === geSelektiert ? ' ausgewaehlt' : '');
+            node.dataset.id = el.id;
+            node.setAttribute('style', ceBoxStyle(el));
+            node.innerHTML = geInner(el, false) + geChrome(el);
+            node.addEventListener('pointerdown', e => geDragStart(e, el.id));
+            cv.appendChild(node);
+        });
+        geBaueAttr();
+    }
+    function geSelect(id) {
+        geSelektiert = id;
+        const cv = document.getElementById('ge-canvas');
+        if (cv) cv.querySelectorAll('.ce-el').forEach(n => n.classList.toggle('ausgewaehlt', +n.dataset.id === id));
+        geBaueAttr();
+    }
+    function geAktualisiereElement(id) {
+        const el = geFindeEl(id), cv = document.getElementById('ge-canvas'); if (!el || !cv) return;
+        const node = cv.querySelector(`.ce-el[data-id="${id}"]`); if (!node) return;
+        node.setAttribute('style', ceBoxStyle(el));
+        node.innerHTML = geInner(el, false) + geChrome(el);
+    }
+    function geTextEdit(id, node) {
+        node.setAttribute('contenteditable', 'true'); node.focus();
+        const speichere = () => { const el = geFindeEl(id); if (el) el.text = node.innerText; };
+        node.oninput = speichere;
+        node.onblur = () => { node.removeAttribute('contenteditable'); speichere(); };
+    }
+
+    // ---- Ziehen/Skalieren in % · eigener geAktion-State, #ge-canvas-scoped (Pointer = Maus+Touch+Pen) ----
+    function geDragStart(e, id) {
+        if (e.button !== 0) return;
+        if (e.target.closest('.ce-el-tools') || e.target.closest('.ce-resize')) return;
+        if (e.target.getAttribute && e.target.getAttribute('contenteditable') === 'true') return;
+        const cv = document.getElementById('ge-canvas'); const el = geFindeEl(id); if (!el || !cv) return;
+        geSelect(id); geCtxSchliessen();
+        const rect = cv.getBoundingClientRect();
+        geAktion = { modus: 'drag', id, bewegt: false, downX: e.clientX, downY: e.clientY,
+            offx: e.clientX - (rect.left + rect.width * el.x / 100),
+            offy: e.clientY - (rect.top + rect.height * el.y / 100) };
+        try { e.currentTarget.setPointerCapture(e.pointerId); } catch (_) {}
+        e.preventDefault();
+    }
+    function geResizeStart(e, id) {
+        e.stopPropagation(); e.preventDefault();
+        const cv = document.getElementById('ge-canvas'); const el = geFindeEl(id); if (!el || !cv) return;
+        geSelect(id); geCtxSchliessen();
+        geAktion = { modus: 'resize', id, bewegt: true, startX: e.clientX, startY: e.clientY, startW: el.w, startH: el.h };
+        try { e.target.setPointerCapture(e.pointerId); } catch (_) {}
+    }
+    document.addEventListener('pointermove', e => {
+        if (!geAktion) return;
+        const cv = document.getElementById('ge-canvas'); if (!cv) return;
+        const rect = cv.getBoundingClientRect(); const el = geFindeEl(geAktion.id); if (!el) return;
+        if (!geAktion.bewegt && geAktion.modus === 'drag' &&
+            Math.abs(e.clientX - geAktion.downX) + Math.abs(e.clientY - geAktion.downY) < 3) return;
+        geAktion.bewegt = true;
+        if (geAktion.modus === 'drag') {
+            el.x = Math.max(0, Math.min(100 - el.w, ((e.clientX - geAktion.offx - rect.left) / rect.width) * 100));
+            el.y = Math.max(0, Math.min(100 - el.h, ((e.clientY - geAktion.offy - rect.top) / rect.height) * 100));
+        } else {
+            el.w = Math.max(3, Math.min(100 - el.x, geAktion.startW + ((e.clientX - geAktion.startX) / rect.width) * 100));
+            el.h = Math.max(3, Math.min(100 - el.y, geAktion.startH + ((e.clientY - geAktion.startY) / rect.height) * 100));
+        }
+        const node = cv.querySelector(`.ce-el[data-id="${geAktion.id}"]`);
+        if (node) node.setAttribute('style', ceBoxStyle(el));
+        geSyncMasze(el);
+    });
+    document.addEventListener('pointerup', e => {
+        if (!geAktion) return;
+        const war = geAktion; geAktion = null;
+        if (war.modus === 'drag' && !war.bewegt) geCtxFuerElement(war.id, e.clientX, e.clientY);
+    });
+
+    // ---- Galerie-Kontextmenü (#ge-ctx, verankert an #galerie-editor) ----
+    function geCtxSchliessen() { const m = document.getElementById('ge-ctx'); if (m) m.classList.remove('auf'); }
+    function geCtxPositionieren(clientX, clientY) {
+        const m = document.getElementById('ge-ctx'), wrap = document.getElementById('galerie-editor'); if (!m || !wrap) return;
+        const r = wrap.getBoundingClientRect(); m.classList.add('auf');
+        let x = clientX - r.left, y = clientY - r.top;
+        x = Math.min(x, r.width - m.offsetWidth - 8); y = Math.min(y, r.height - m.offsetHeight - 8);
+        m.style.left = Math.max(8, x) + 'px'; m.style.top = Math.max(8, y) + 'px';
+    }
+    function geCtxFuerElement(id, clientX, clientY) {
+        const el = geFindeEl(id), m = document.getElementById('ge-ctx'); if (!el || !m) return;
+        geSelect(id);
+        let h = `<div class="ce-ctx-titel">${GE_TITEL[el.typ] || 'Modul'}</div>`;
+        if (el.typ === 'bild') h += `<button onclick="geCtxSchliessen();geBildWaehlen(${id})">🖼️ Bild wählen</button>`;
+        if (el.typ === 'text') h += `<button onclick="geCtxSchliessen();geTextViaPanel(${id})">✎ Text bearbeiten</button>`;
+        h += `<button onclick="geCtxSchliessen();geSelect(${id})">⚙ Attribute formen</button>`;
+        h += `<button onclick="geCtxSchliessen();geElementNachVorne(${id})">⬆️ Nach vorne holen</button>`;
+        h += `<button onclick="geCtxSchliessen();geElementNachHinten(${id})">⬇️ Nach hinten legen</button>`;
+        h += `<button onclick="geCtxSchliessen();geElementDuplizieren(${id})">⧉ Duplizieren</button>`;
+        h += `<button class="gefahr" onclick="geCtxSchliessen();geElementLoeschen(${id})">🗑️ Modul löschen</button>`;
+        m.innerHTML = h;
+        const node = document.querySelector(`#ge-canvas .ce-el[data-id="${id}"]`);
+        if (node) { const b = node.getBoundingClientRect(); geCtxPositionieren(b.left, b.bottom + 6); }
+        else geCtxPositionieren(clientX, clientY);
+    }
+    function geCtxFuerCanvas(clientX, clientY) {
+        const m = document.getElementById('ge-ctx'), cv = document.getElementById('ge-canvas'); if (!m || !cv) return;
+        geSelect(null);
+        const rect = cv.getBoundingClientRect();
+        geCtxNeuPos = { x: Math.max(0, Math.min(92, ((clientX - rect.left) / rect.width) * 100)),
+                        y: Math.max(0, Math.min(88, ((clientY - rect.top) / rect.height) * 100)) };
+        m.innerHTML = `<div class="ce-ctx-titel">Hinzufügen</div>` +
+            `<button onclick="geCtxSchliessen();geBildHinzufuegen(true)">🖼️ Bild laden</button>` +
+            `<button onclick="geCtxSchliessen();geTextModulHinzufuegen(true)">✎ Textlabel</button>`;
+        geCtxPositionieren(clientX, clientY);
+    }
+    // Eigene, #ge-canvas-scoped Listener (früh-return, wenn nicht die Galerie im Fokus).
+    document.addEventListener('pointerdown', e => {
+        if (e.button !== 0) return;
+        if (e.target.closest('#ge-canvas') && !e.target.closest('.ce-el')) geCtxFuerCanvas(e.clientX, e.clientY);
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') geCtxSchliessen(); });
+
+    // ---- Galerie-Attributpanel (#ge-attr, eigener gattr-Namespace) ----
+    function geAttr(id, feld, wert) {
+        const el = geFindeEl(id); if (!el) return;
+        if (['x','y','w','h','groesse','zeilenabstand','radius','rahmen_breite','polster','z'].includes(feld)) wert = parseFloat(wert);
+        el[feld] = wert; geAktualisiereElement(id);
+    }
+    function geAttrToggle(id, feld, wert) { const el = geFindeEl(id); if (!el) return; el[feld] = wert; geAktualisiereElement(id); geBaueAttr(); }
+    function geSyncMasze(el) {
+        [['x',el.x],['y',el.y],['w',el.w],['h',el.h]].forEach(([f,v]) => {
+            const inp = document.getElementById('gattr-' + f), lab = document.getElementById('gattrlab-' + f);
+            if (inp) inp.value = Math.round(v); if (lab) lab.textContent = Math.round(v) + '%';
+        });
+    }
+    function geSchieber(id, feld, label, val, min, max, step, einheit) {
+        const v = (val != null) ? val : 0;
+        return `<div class="ce-attr-feld">
+            <label>${label}<span id="gattrlab-${feld}">${(Math.round(v*100)/100)}${einheit||''}</span></label>
+            <input type="range" id="gattr-${feld}" min="${min}" max="${max}" step="${step}" value="${v}"
+                oninput="document.getElementById('gattrlab-${feld}').textContent=(Math.round(this.value*100)/100)+'${einheit||''}'; geAttr(${id},'${feld}',this.value)">
+        </div>`;
+    }
+    function geFarbFeld(id, feld, label, val, mitTransparent) {
+        return `<div class="ce-attr-feld"><label>${label}</label>
+            <input type="color" value="${val || '#0c1a2e'}" oninput="geAttr(${id},'${feld}',this.value)">
+            ${mitTransparent ? `<button class="ce-attr-btn" onclick="geAttr(${id},'${feld}','')">Transparent</button>` : ''}
+        </div>`;
+    }
+    function geFilterSelect(el) {
+        const opts = PROFIL_FILTER.map(f => `<option value="${f}" ${el.filter===f?'selected':''}>${f||'kein Filter'}</option>`).join('');
+        return `<div class="ce-attr-feld"><label>Bildfilter</label><select onchange="geAttr(${el.id},'filter',this.value)">${opts}</select></div>`;
+    }
+    function geTextViaPanel(id) { const el = geFindeEl(id); if (!el) return; const neu = prompt('Text:', el.text || ''); if (neu !== null) { el.text = neu; geAktualisiereElement(id); } }
+    function geBaueAttr() {
+        const box = document.getElementById('ge-attr'); if (!box) return;
+        const el = geFindeEl(geSelektiert);
+        if (!el) {
+            box.innerHTML = `<div class="ce-attr-leer">Wähle ein Bild (Klick), um es frei zu formen: Position, Größe, Filter, Titel, Rahmen.<br><br>Neue Bilder: „＋ Bild laden" oben oder Klick auf die freie Bühne.</div>`;
+            return;
+        }
+        let h = `<div class="ce-attr-titel">${GE_TITEL[el.typ] || 'Modul'}</div>`;
+        h += `<div class="ce-attr-row">${geSchieber(el.id,'x','Position X',el.x,0,100,1,'%')}${geSchieber(el.id,'y','Position Y',el.y,0,100,1,'%')}</div>`;
+        h += `<div class="ce-attr-row">${geSchieber(el.id,'w','Breite',el.w,3,100,1,'%')}${geSchieber(el.id,'h','Höhe',el.h,3,100,1,'%')}</div>`;
+        if (el.typ === 'bild') {
+            h += `<button class="ce-attr-btn" onclick="geBildWaehlen(${el.id})">🖼️ Bild wählen / ersetzen</button>`;
+            h += geFilterSelect(el);
+            h += `<div class="ce-attr-feld"><label>Titel (optional)</label>
+                <input type="text" value="${escapeHtml(el.titel||'')}" oninput="geAttr(${el.id},'titel',this.value)" placeholder="Bildunterschrift …"></div>`;
+            h += geFarbFeld(el.id,'farbe','Titelfarbe',el.farbe||'#ffffff',false);
+            // Malermodus (Feature 3): Freistellen (transparente Box) + Bild-Passung (Füllen/Einpassen).
+            h += `<div class="ce-attr-feld"><label>Freistellen (transparent)</label><div class="ce-attr-toggle">
+                <button class="${!el.freistellen?'an':''}" onclick="geAttrToggle(${el.id},'freistellen',false)">Box sichtbar</button>
+                <button class="${el.freistellen?'an':''}" onclick="geAttrToggle(${el.id},'freistellen',true)">Freigestellt</button></div></div>`;
+            const gpas = el.bild_passung || 'cover';
+            h += `<div class="ce-attr-feld"><label>Bild-Passung</label><div class="ce-attr-toggle">
+                <button class="${gpas!=='contain'?'an':''}" onclick="geAttrToggle(${el.id},'bild_passung','cover')">Füllen</button>
+                <button class="${gpas==='contain'?'an':''}" onclick="geAttrToggle(${el.id},'bild_passung','contain')">Einpassen</button></div></div>`;
+        } else {
+            h += geSchieber(el.id,'groesse','Schriftgröße',el.groesse,0.4,6,0.05,'rem');
+            h += geFarbFeld(el.id,'farbe','Textfarbe',el.farbe||'#ffffff',false);
+            const al = el.ausrichtung||'zentriert';
+            h += `<div class="ce-attr-feld"><label>Ausrichtung</label><div class="ce-attr-toggle">
+                <button class="${al==='links'?'an':''}" onclick="geAttrToggle(${el.id},'ausrichtung','links')">Links</button>
+                <button class="${al==='zentriert'?'an':''}" onclick="geAttrToggle(${el.id},'ausrichtung','zentriert')">Mitte</button>
+                <button class="${al==='rechts'?'an':''}" onclick="geAttrToggle(${el.id},'ausrichtung','rechts')">Rechts</button></div></div>`;
+            h += `<button class="ce-attr-btn" onclick="geTextViaPanel(${el.id})">✎ Text bearbeiten</button>`;
+        }
+        // Malermodus (Feature 2): Z-Index + Ebenen-Buttons (für JEDES Galerie-Modul).
+        h += geSchieber(el.id,'z','Ebene (Z-Index)',el.z||0,0,999,1,'');
+        h += `<div class="ce-attr-row">
+            <button class="ce-attr-btn" onclick="geElementNachHinten(${el.id})">⬇️ Nach hinten</button>
+            <button class="ce-attr-btn" onclick="geElementNachVorne(${el.id})">⬆️ Nach vorne</button></div>`;
+        // Malermodus (Feature 3): rahmenloser Kreis-Modus (hartes Viereck verschwindet).
+        h += `<div class="ce-attr-feld"><label>Maske / Form</label><div class="ce-attr-toggle">
+            <button class="${el.maske!=='kreis'?'an':''}" onclick="geAttrToggle(${el.id},'maske','')">Rechteck</button>
+            <button class="${el.maske==='kreis'?'an':''}" onclick="geAttrToggle(${el.id},'maske','kreis')">Kreis</button></div></div>`;
+        h += geSchieber(el.id,'radius','Rahmen-Radius',el.radius,0,200,1,'px');
+        h += geSchieber(el.id,'polster','Innenabstand',el.polster,0,80,1,'px');
+        h += geSchieber(el.id,'rahmen_breite','Rahmenstärke',el.rahmen_breite,0,40,1,'px');
+        h += geFarbFeld(el.id,'rahmen_farbe','Rahmenfarbe',el.rahmen_farbe||'#ffd700',false);
+        h += geFarbFeld(el.id,'bg_farbe','Box-Hintergrund',el.bg_farbe,true);
+        h += `<button class="ce-attr-btn" style="background:var(--rot); border-color:var(--rot); color:#fff;" onclick="geElementLoeschen(${el.id})">Modul löschen</button>`;
+        box.innerHTML = h;
+    }
+
+    // ---- Galerie: Module hinzufügen / laden / anordnen ----
+    function geBildHinzufuegen(beiKlick) {
+        const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*'; inp.multiple = true;
+        inp.onchange = () => {
+            const files = Array.from(inp.files || []);
+            files.forEach((f, k) => {
+                const r = new FileReader();
+                r.onload = e => {
+                    const el = geStandard('bild'); el.bild = e.target.result;
+                    if (beiKlick && geCtxNeuPos && k === 0) { el.x = Math.min(100 - el.w, geCtxNeuPos.x); el.y = Math.min(100 - el.h, geCtxNeuPos.y); }
+                    else { el.x = Math.min(100 - el.w, 20 + (geElemente.length % 6) * 5); el.y = Math.min(100 - el.h, 14 + (geElemente.length % 6) * 5); }
+                    geElemente.push(el); baueGalerieCanvas(); geSelect(el.id);
+                };
+                r.readAsDataURL(f);
+            });
+        };
+        inp.click();
+    }
+    function geBildWaehlen(id) {
+        const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*';
+        inp.onchange = () => { const f = inp.files[0]; if (!f) return; const r = new FileReader();
+            r.onload = e => { const el = geFindeEl(id); if (!el) return; el.bild = e.target.result; baueGalerieCanvas(); geSelect(id); };
+            r.readAsDataURL(f); };
+        inp.click();
+    }
+    function geTextModulHinzufuegen(beiKlick) {
+        const el = geStandard('text');
+        if (beiKlick && geCtxNeuPos) { el.x = Math.min(100 - el.w, geCtxNeuPos.x); el.y = Math.min(100 - el.h, geCtxNeuPos.y); }
+        geElemente.push(el); baueGalerieCanvas(); geSelect(el.id);
+    }
+    function geElementLoeschen(id) { geCtxSchliessen(); geElemente = geElemente.filter(e => e.id !== id); if (geSelektiert === id) geSelektiert = null; baueGalerieCanvas(); }
+    function geElementDuplizieren(id) { const el = geFindeEl(id); if (!el) return; const k = geNorm(geSerialisiere(el)); k.x = Math.min(100 - k.w, (el.x||0) + 4); k.y = Math.min(100 - k.h, (el.y||0) + 4); geElemente.push(k); baueGalerieCanvas(); geSelect(k.id); }
+    function geElementNachVorne(id) { const i = geElemente.findIndex(e => e.id === id); if (i < 0) return; const [el] = geElemente.splice(i, 1); geElemente.push(el); baueGalerieCanvas(); geSelect(id); }
+    // Malermodus (Feature 2): ans Array-ANFANG -> liegt hinten (Bild-im-Bild-Tiefe in der Galerie).
+    function geElementNachHinten(id) { const i = geElemente.findIndex(e => e.id === id); if (i < 0) return; const [el] = geElemente.splice(i, 1); geElemente.unshift(el); baueGalerieCanvas(); geSelect(id); }
+    // Layout-Presets: ordnen die vorhandenen Bild-Module in ein Muster; 'raster' verteilt ALLE gleichmäßig.
+    function geLayoutPreset(name) {
+        if (name === 'raster') return geRasterAlle();
+        const slots = GE_PRESETS[name]; if (!slots) return;
+        const bilder = geElemente.filter(e => e.typ === 'bild');
+        slots.forEach((s, i) => { const el = bilder[i]; if (el) Object.assign(el, s); });
+        baueGalerieCanvas();
+        const fehlend = slots.length - bilder.length;
+        galerieMsg(`Layout „${name}" angewendet${fehlend > 0 ? ` – ${fehlend} Slot(s) frei (mehr Bilder laden).` : ''}.`, true);
+    }
+    function geRasterAlle() {
+        const bilder = geElemente.filter(e => e.typ === 'bild'); const n = bilder.length; if (!n) return;
+        const spalten = Math.ceil(Math.sqrt(n)), luecke = 3;
+        const zellW = (100 - luecke * (spalten + 1)) / spalten;
+        const zeilen = Math.ceil(n / spalten), zellH = Math.min(30, (100 - luecke * (zeilen + 1)) / zeilen);
+        bilder.forEach((el, i) => { const c = i % spalten, r = Math.floor(i / spalten);
+            el.x = luecke + c * (zellW + luecke); el.y = luecke + r * (zellH + luecke); el.w = zellW; el.h = zellH; });
+        baueGalerieCanvas();
+    }
+    // Brücke Schritt 1 -> Schritt 2: migrierten Bild-Pool verlustfrei in Canvas-Module überführen.
+    function geAusPoolAufbauen(pool) {
+        const spalten = 3, luecke = 3, zellW = (100 - luecke * (spalten + 1)) / spalten, zellH = 26;
+        return pool.slice(0, 60).map((b, i) => {
+            const el = geStandard('bild'); const c = i % spalten, r = Math.floor(i / spalten);
+            el.x = luecke + c * (zellW + luecke); el.y = luecke + r * (zellH + luecke); el.w = zellW; el.h = zellH;
+            el.bild = b.url; el.filter = b.filter || ''; el.titel = b.titel || '';
+            return el;
+        });
+    }
+
+    // ---- Galerie-Bühne: Stil / Schema / Dock ----
+    function geSchemaSelectBauen() {
+        const sel = document.getElementById('ge-schema'); if (!sel) return;
+        sel.innerHTML = Object.entries(PROFIL_SCHEMATA).map(([k,v]) => `<option value="${k}">${escapeHtml(v.label)}</option>`).join('');
+        sel.value = geSchema;
+    }
+    function geSchemaWechsel(key) { geSchema = key; geCanvasStil(); }
+    function geCanvasStil() {
+        geBgUrl = (document.getElementById('ge-bg-url')||{}).value || '';
+        geBgFarbe = (document.getElementById('ge-bg-farbe')||{}).value || '#0c1a2e';
+        geRahmen = (document.getElementById('ge-rahmen')||{}).value || '';
+        // Malermodus (Feature 1): Galerie-Hintergrund verschieben/skalieren aus den Reglern + Labels.
+        geBgPosX = parseFloat((document.getElementById('ge-bg-posx')||{}).value); if (isNaN(geBgPosX)) geBgPosX = 50;
+        geBgPosY = parseFloat((document.getElementById('ge-bg-posy')||{}).value); if (isNaN(geBgPosY)) geBgPosY = 50;
+        geBgSkala = parseFloat((document.getElementById('ge-bg-skala')||{}).value); if (isNaN(geBgSkala)) geBgSkala = 100;
+        const setLab = (id, v) => { const n = document.getElementById(id); if (n) n.textContent = Math.round(v) + '%'; };
+        setLab('ge-bg-posx-lab', geBgPosX); setLab('ge-bg-posy-lab', geBgPosY); setLab('ge-bg-skala-lab', geBgSkala);
+        const cv = document.getElementById('ge-canvas'); if (!cv) return;
+        const schema = PROFIL_SCHEMATA[geSchema] || PROFIL_SCHEMATA.nachtblau;
+        Object.assign(cv.style, ceHintergrund(geBgUrl, geBgFarbe, schema, geBgPosX, geBgPosY, geBgSkala));
+        const rahmen = { gold: '3px solid #ffd700', doppelt: '6px double #ffd700', neon: '2px solid #00ffcc' };
+        cv.style.border = rahmen[geRahmen] || `1px solid ${schema.rand}`;
+        cv.style.boxShadow = geRahmen === 'neon' ? '0 0 22px rgba(0,255,204,0.55)' : (geRahmen === 'weich' ? '0 18px 50px rgba(0,0,0,0.6)' : 'none');
+    }
+    function geDockToggle() {
+        const dock = document.getElementById('ge-dock'), btn = document.getElementById('ge-dock-btn'); if (!dock) return;
+        const zu = dock.classList.toggle('eingeklappt'); if (btn) btn.textContent = zu ? '▼ Werkzeuge' : '▲ Werkzeuge';
+    }
+    function galerieMsg(text, ok) { const el = document.getElementById('galerie-msg'); if (el) { el.textContent = text || ''; el.classList.toggle('ok', !!ok); } }
+
+    // ---- Galerie-Editor öffnen / speichern ----
+    async function oeffneGalerieEditor() {
+        galerieMsg(''); geElemente = []; geElementSeq = 1; geSelektiert = null; geAktion = null;
+        galerieSeite = galerieStandardSeite();
+        try {
+            const res = await fetch(`/auth/profil-daten?email=${encodeURIComponent(userEmail)}`);
+            const d = await res.json();
+            if (d.success) {
+                const gs = (d.galerie_seite && typeof d.galerie_seite === 'object') ? d.galerie_seite : {};
+                galerieSeite = {
+                    hintergrund_url: gs.hintergrund_url || '',
+                    hintergrund_farbe: gs.hintergrund_farbe || '#0c1a2e',
+                    // Malermodus (Feature 1): Hintergrund-Offset/Skalierung verlustsicher übernehmen.
+                    hintergrund_pos_x: (typeof gs.hintergrund_pos_x === 'number') ? gs.hintergrund_pos_x : 50,
+                    hintergrund_pos_y: (typeof gs.hintergrund_pos_y === 'number') ? gs.hintergrund_pos_y : 50,
+                    hintergrund_skala: (typeof gs.hintergrund_skala === 'number') ? gs.hintergrund_skala : 100,
+                    farbschema: (gs.farbschema && PROFIL_SCHEMATA[gs.farbschema]) ? gs.farbschema : 'nachtblau',
+                    rahmen: gs.rahmen || '',
+                    bilder: Array.isArray(gs.bilder) ? gs.bilder.map(ceGalerieBildNorm).filter(Boolean) : [],
+                    elemente: Array.isArray(gs.elemente) ? gs.elemente.slice() : [],
+                };
+            }
+        } catch (e) {}
+        geBgUrl = galerieSeite.hintergrund_url; geBgFarbe = galerieSeite.hintergrund_farbe || '#0c1a2e';
+        geRahmen = galerieSeite.rahmen || ''; geSchema = galerieSeite.farbschema || 'nachtblau';
+        // Malermodus (Feature 1): Offset/Skalierung in den State + Regler übernehmen.
+        geBgPosX = (typeof galerieSeite.hintergrund_pos_x === 'number') ? galerieSeite.hintergrund_pos_x : 50;
+        geBgPosY = (typeof galerieSeite.hintergrund_pos_y === 'number') ? galerieSeite.hintergrund_pos_y : 50;
+        geBgSkala = (typeof galerieSeite.hintergrund_skala === 'number') ? galerieSeite.hintergrund_skala : 100;
+        geElemente = (galerieSeite.elemente || []).map(geNorm);
+        // Verlustfreie Brücke: leerer Canvas, aber migrierter Pool -> Module aus dem Pool erzeugen.
+        if (!geElemente.length && galerieSeite.bilder.length) geElemente = geAusPoolAufbauen(galerieSeite.bilder);
+        geSchemaSelectBauen();
+        document.getElementById('ge-bg-url').value = geBgUrl;
+        document.getElementById('ge-bg-farbe').value = /^#/.test(geBgFarbe) ? geBgFarbe : '#0c1a2e';
+        document.getElementById('ge-schema').value = geSchema;
+        document.getElementById('ge-rahmen').value = geRahmen;
+        // Malermodus (Feature 1): Regler-Positionen aus dem geladenen Zustand setzen.
+        document.getElementById('ge-bg-posx').value = geBgPosX;
+        document.getElementById('ge-bg-posy').value = geBgPosY;
+        document.getElementById('ge-bg-skala').value = geBgSkala;
+        geCanvasStil();
+        baueGalerieCanvas();
+        document.getElementById('galerie-overlay').classList.add('aktiv');
+    }
+    function schliesseGalerieEditor() { document.getElementById('galerie-overlay').classList.remove('aktiv'); }
+    async function speichereGalerie() {
+        galerieMsg('Speichere …', true);
+        galerieSeite.hintergrund_url = geBgUrl; galerieSeite.hintergrund_farbe = geBgFarbe;
+        // Malermodus (Feature 1): Hintergrund-Offset/Skalierung mitspeichern.
+        galerieSeite.hintergrund_pos_x = geBgPosX; galerieSeite.hintergrund_pos_y = geBgPosY; galerieSeite.hintergrund_skala = geBgSkala;
+        galerieSeite.farbschema = geSchema; galerieSeite.rahmen = geRahmen;
+        galerieSeite.elemente = geElemente.map(geSerialisiere);
+        // Bild-Pool aus den Bild-Modulen aktuell halten (Fallback-Grid + Quelle des Sichtbarkeits-Flags).
+        galerieSeite.bilder = geElemente.filter(e => e.typ === 'bild' && e.bild).map(e => ({ url: e.bild, titel: e.titel || '', filter: e.filter || '' }));
+        try {
+            const res = await fetch('/auth/profil-update', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: userEmail, galerie_seite: galerieSeite }) });
+            const d = await res.json();
+            if (d.success) galerieMsg('Galerie gespeichert.', true);
+            else galerieMsg(d.message || 'Speichern fehlgeschlagen.');
+        } catch (e) { galerieMsg('Server-Verbindung fehlgeschlagen.'); }
     }
 
     // =====================================================================
@@ -2826,7 +4354,7 @@
     function versucheAdmin() { if (isAdmin) { oeffneAdmin(); } }
     function oeffneAdmin() {
         document.getElementById('admin-panel').classList.add('aktiv');
-        ladeAdminStats(); ladeAdminUsers(); ladeAdminVideoConfig(); ladeEthnografie(); ladeSektorConfigAlle(); ladeAdminReservierungen();
+        ladeAdminStats(); ladeAdminUsers(); ladeAdminVideoConfig(); ladeEthnografie(); ladeSektorConfigAlle(); ladeAdminReservierungen(); ladeAdminLiveRegie();
     }
     function schliesseAdmin() { document.getElementById('admin-panel').classList.remove('aktiv'); }
 
@@ -2865,22 +4393,37 @@
             const data = await res.json();
             if (!data.success) { box.innerHTML = `<p style="color:#ff4d4d; padding:10px;">${data.error || "Nicht autorisiert."}</p>`; return; }
             if (!data.users.length) { box.innerHTML = `<p style="color:#666; padding:10px;">Keine Reisenden.</p>`; return; }
-            let html = `<table><tr><th>E-Mail</th><th>Rolle</th><th>Sektor</th><th>Fertig</th><th></th></tr>`;
+            let html = `<table><tr><th>E-Mail</th><th>Stufe</th><th>Sektor</th><th>Fertig</th><th></th></tr>`;
             data.users.forEach(u => {
                 const safe = u.email.replace(/'/g, "\\'");
-                html += `<tr><td>${escapeHtml(u.email)}</td><td>${u.role}</td><td>${u.aktueller_sektor}</td><td>${(u.abgeschlossene_sektoren||[]).length}</td>
-                    <td><button class="admin-btn" style="padding:3px 9px;" onclick="adminWaehleUser('${safe}','${u.aktueller_sektor}')">Wählen</button></td></tr>`;
+                const stufe = u.rolle || u.role || '';
+                html += `<tr><td>${escapeHtml(u.email)}</td><td>${escapeHtml(stufe)}</td><td>${u.aktueller_sektor}</td><td>${(u.abgeschlossene_sektoren||[]).length}</td>
+                    <td><button class="admin-btn" style="padding:3px 9px;" onclick="adminWaehleUser('${safe}','${u.aktueller_sektor}','${escapeHtml(stufe)}')">Wählen</button></td></tr>`;
             });
             box.innerHTML = html + `</table>`;
         } catch (e) { box.innerHTML = `<p style="color:#ff4d4d; padding:10px;">Verbindungsfehler.</p>`; }
     }
 
-    function adminWaehleUser(email, sektor) {
+    function adminWaehleUser(email, sektor, stufe) {
         adminGewaehlterUser = email;
         document.getElementById('admin-ziel-user').textContent = email;
         document.getElementById('admin-ziel-sektor').value = sektor || "";
         document.getElementById('admin-zert-email').value = email;
         document.getElementById('admin-zert-sektor').value = sektor || "1";
+        // Mitglieder-Stufen-Steuerung an denselben User koppeln.
+        setText('admin-stufe-user', email);
+        setText('admin-stufe-akt', stufe || '—');
+    }
+
+    async function adminSetzeStufe(stufe) {
+        if (!adminGewaehlterUser) { alert("Bitte zuerst einen User in der Tabelle wählen."); return; }
+        try {
+            const res = await fetch('/admin/set-mitglied-stufe', { method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({ email: userEmail, ziel_email: adminGewaehlterUser, stufe }) });
+            const d = await res.json();
+            if (d.success) { setText('admin-stufe-akt', d.rolle || stufe); ladeAdminUsers(); }
+            else alert("Fehler: " + (d.error || "?"));
+        } catch (e) { alert("Verbindungsfehler."); }
     }
 
     async function adminSetzeUserProgress() {
@@ -2926,6 +4469,95 @@
             const res = await fetch('/admin/video-config', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email: userEmail, plaetze_pro_tisch: plaetze }) });
             const d = await res.json();
             alert(d.success ? `Gespeichert: ${d.plaetze_pro_tisch} Plätze/Tisch.` : "Speichern fehlgeschlagen."); ladeAdminVideoConfig();
+        } catch (e) { alert("Verbindungsfehler."); }
+    }
+
+    // ---- LIVE-REGIE: Monitoring, Last-Regler/Not-Aus, manuelle Freigabe, Spontan-Slot ----
+    let lrSessions = [];
+    async function ladeAdminLiveRegie() {
+        const box = document.getElementById('lr-sessions');
+        if (!box) return;
+        try {
+            const res = await fetch(`/admin/live-regie?email=${encodeURIComponent(userEmail)}`);
+            const d = await res.json();
+            if (!d.success) { box.innerHTML = `<p style="color:#ff4d4d; padding:8px;">${escapeHtml(d.error||'Nicht autorisiert.')}</p>`; return; }
+            lrSessions = d.sessions || [];
+            document.getElementById('lr-pausiert').checked = !!(d.regie && d.regie.pausiert);
+            document.getElementById('lr-maxtische').value = (d.regie && d.regie.max_tische) || 0;
+            setText('lr-aktiv', d.aktive_teilnehmer || 0);
+            if (!lrSessions.length) { box.innerHTML = `<p style="color:#666; padding:8px;">Für heute keine Zeitfenster.</p>`; return; }
+            box.innerHTML = lrSessions.map(s => {
+                const sid = (s.session_id||'').replace(/'/g, "\\'");
+                const kopf = `<b>Sektor ${s.sektor}</b> · ${escapeHtml(s.thema||'')} · ${escapeHtml(s.slot||'')} · ${liveUhr(s.start)}–${liveUhr(s.ende)} · Status: ${escapeHtml(s.status||'')}${s.freigegeben?' · <span style="color:#00ff88;">Runde freigegeben</span>':''}`;
+                const runde = s.freigegeben
+                    ? `<button class="admin-btn grau" style="padding:2px 8px;" onclick="adminSessionFreigeben('${sid}',false)">Freigabe zurücknehmen</button>`
+                    : `<button class="admin-btn gruen" style="padding:2px 8px;" onclick="adminSessionFreigeben('${sid}',true)">Ganze Runde freigeben</button>`;
+                const anm = (s.anmeldungen||[]).map(a => {
+                    const ae = (a.email||'').replace(/'/g, "\\'");
+                    const tech = a.technik_ok ? '🟢 Technik' : '⚪ Technik';
+                    return `<div style="display:flex; align-items:center; gap:6px; padding:3px 0; border-top:1px solid #1e2a3a; font-size:0.74rem;">
+                        <span style="flex:1;">${escapeHtml(a.email||'')} · ${tech} · ${escapeHtml(a.status||'angemeldet')}</span>
+                        <button class="admin-btn gruen" style="padding:1px 7px;" onclick="adminTeilnehmerFreigeben('${sid}','${ae}','freigeben')">Freigeben</button>
+                        <button class="admin-btn grau" style="padding:1px 7px;" onclick="adminTeilnehmerFreigeben('${sid}','${ae}','entfernen')">Entfernen</button>
+                    </div>`;
+                }).join('') || `<div style="color:#666; font-size:0.74rem; padding:3px 0;">Noch keine Anmeldungen.</div>`;
+                return `<div style="border:1px solid #1e3a5f; border-radius:6px; padding:8px 10px; margin-bottom:8px;">
+                    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; color:#cfe0ff; font-size:0.78rem;">${kopf}<span style="margin-left:auto;">${runde}</span></div>
+                    <div style="margin-top:6px;">${anm}</div></div>`;
+            }).join('');
+        } catch (e) { box.innerHTML = `<p style="color:#ff4d4d; padding:8px;">Verbindungsfehler.</p>`; }
+    }
+
+    async function adminSetLiveRegie() {
+        const pausiert = document.getElementById('lr-pausiert').checked;
+        const max_tische = parseInt(document.getElementById('lr-maxtische').value) || 0;
+        try {
+            const res = await fetch('/admin/live-regie/speichern', { method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({ email: userEmail, pausiert, max_tische }) });
+            const d = await res.json();
+            if (!d.success) alert("Fehler: " + (d.error || "?"));
+            ladeAdminLiveRegie();
+        } catch (e) { alert("Verbindungsfehler."); }
+    }
+
+    async function adminSessionFreigeben(sessionId, frei) {
+        const s = lrSessions.find(x => x.session_id === sessionId);
+        if (!s) return;
+        try {
+            const res = await fetch('/admin/live-session/speichern', { method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({ email: userEmail, session_id: sessionId, sektor: s.sektor, slot: s.slot,
+                    start: s.start, dauer_min: 60, max_teilnehmer: s.max_teilnehmer, status: frei ? 'live' : 'offen', freigegeben: frei }) });
+            const d = await res.json();
+            if (!d.success) alert("Fehler: " + (d.error || "?"));
+            ladeAdminLiveRegie();
+        } catch (e) { alert("Verbindungsfehler."); }
+    }
+
+    async function adminTeilnehmerFreigeben(sessionId, zielEmail, aktion) {
+        try {
+            const res = await fetch('/admin/live-session/teilnehmer', { method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({ email: userEmail, session_id: sessionId, ziel_email: zielEmail, aktion }) });
+            const d = await res.json();
+            if (!d.success) alert("Fehler: " + (d.error || "?"));
+            ladeAdminLiveRegie();
+        } catch (e) { alert("Verbindungsfehler."); }
+    }
+
+    async function adminSpontanSlot() {
+        const sektor = parseInt(document.getElementById('lr-slot-sektor').value) || 1;
+        const dauer = parseInt(document.getElementById('lr-slot-dauer').value) || 60;
+        // Startzeit = jetzt (lokale ISO ohne Zeitzone -> vom Server als naive datetime gelesen).
+        const jetzt = new Date();
+        const pad = n => String(n).padStart(2, '0');
+        const startIso = `${jetzt.getFullYear()}-${pad(jetzt.getMonth()+1)}-${pad(jetzt.getDate())}T${pad(jetzt.getHours())}:${pad(jetzt.getMinutes())}:00`;
+        const slot = jetzt.getHours() < 13 ? 'vormittag' : 'nachmittag';
+        try {
+            const res = await fetch('/admin/live-session/speichern', { method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({ email: userEmail, sektor, slot, start: startIso, dauer_min: dauer,
+                    max_teilnehmer: 7, status: 'live', freigegeben: true }) });
+            const d = await res.json();
+            alert(d.success ? `Spontan-Slot für Sektor ${sektor} eröffnet und freigegeben.` : ("Fehler: " + (d.error || "?")));
+            ladeAdminLiveRegie();
         } catch (e) { alert("Verbindungsfehler."); }
     }
 
