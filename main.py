@@ -65,6 +65,7 @@ class ResonanzPostfach:
         server.sendmail(self.email, empfaenger, inhalt)
         server.quit()
         print("Organismus hat Output generiert.")                
+
 import re
 import json
 import zoneinfo
@@ -75,9 +76,9 @@ import stripe
 import base64
 import hashlib
 import secrets
-from datetime import datetime
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
-from fastapi import FastAPI, Request, BackgroundTasks
+from fastapi import FastAPI, Request, BackgroundTasks, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse, FileResponse, HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pymongo import MongoClient
@@ -87,6 +88,29 @@ from fastapi.staticfiles import StaticFiles
 from typing import Dict, List
 from weasyprint import HTML
 
+# =====================================================================
+# WEBSOCKET-MANAGER: Verwaltung der Live-Verbindungen
+# =====================================================================
+class ConnectionManager:
+    def __init__(self):
+        self.active_connections: Dict[str, List[WebSocket]] = {}
+
+    async def connect(self, websocket: WebSocket, beitrag_id: str):
+        await websocket.accept()
+        if beitrag_id not in self.active_connections:
+            self.active_connections[beitrag_id] = []
+        self.active_connections[beitrag_id].append(websocket)
+
+    def disconnect(self, websocket: WebSocket, beitrag_id: str):
+        if beitrag_id in self.active_connections:
+            self.active_connections[beitrag_id].remove(websocket)
+
+    async def broadcast(self, beitrag_id: str, message: dict):
+        if beitrag_id in self.active_connections:
+            for connection in self.active_connections[beitrag_id]:
+                await connection.send_json(message)
+
+manager = ConnectionManager()
 
 # =====================================================================
 # M&M SYSTEM-KONFIGURATION: DIE NEUEN 9 ENERGETISCHEN MODULE (BACKEND)
@@ -530,7 +554,7 @@ def bestimme_rolle(email: str) -> str:
         return "gast"
     if rec.get("abo_aktiv"):
         return "premium"
-    if profil_ist_verifiziert(rec):
+    if profil_ist_verifiziert(rec) or rec.get("admin_verifiziert"):
         return "verifiziert"
     return "basis"
 
@@ -2441,6 +2465,9 @@ async def auth_status(email: str):
 # ---------------------------------------------------------------------------
 CANVAS_ELEMENT_TYPEN = {"bio", "motto", "text", "foto", "galerie", "name", "datum", "standort"}
 CANVAS_AUSRICHTUNG = {"links", "zentriert", "rechts"}
+# Malermodus: Freistell-/Masken-Whitelists (Feature 3) – rahmenloser Kreis + Bild-Passung.
+CANVAS_MASKE = {"", "kreis"}
+CANVAS_PASSUNG = {"cover", "contain"}
 MAX_CANVAS_ELEMENTE = 60
 MAX_GALERIE_BILDER = 24
 MAX_BILD_BYTES = 2_500_000
@@ -2475,6 +2502,13 @@ def normalisiere_canvas_element(el):
     ausrichtung = str(el.get("ausrichtung", "links"))[:12]
     if ausrichtung not in CANVAS_AUSRICHTUNG:
         ausrichtung = "links"
+    # Malermodus (Feature 3): Masken-/Freistell-Attribute robust klemmen.
+    maske = str(el.get("maske", ""))[:12]
+    if maske not in CANVAS_MASKE:
+        maske = ""
+    bild_passung = str(el.get("bild_passung", "cover"))[:10]
+    if bild_passung not in CANVAS_PASSUNG:
+        bild_passung = "cover"
     norm = {
         "typ": typ,
         # Position + Dimension (Prozent des Canvas -> auflösungsunabhängig identisch).
@@ -2482,6 +2516,12 @@ def normalisiere_canvas_element(el):
         "y": _canvas_zahl(el.get("y"), 5, 0, 100),
         "w": _canvas_zahl(el.get("w"), 30, 3, 100),
         "h": _canvas_zahl(el.get("h"), 18, 3, 100),
+        # Malermodus (Feature 2): expliziter Z-Index für Bild-im-Bild-Tiefe (Sonne hinter Gebirge/Logo).
+        "z": int(_canvas_zahl(el.get("z"), 0, 0, 999)),
+        # Malermodus (Feature 3): rahmenloser Kreis-Modus + transparente Freistellung + Bild-Passung.
+        "maske": maske,
+        "freistellen": bool(el.get("freistellen")),
+        "bild_passung": bild_passung,
         # Text-/Schrift-Attribute (WYSIWYG).
         "text": str(el.get("text", ""))[:6000],
         # Präfix/Beschriftung datengebundener Module (Name/Datum/Standort), z. B. "Geboren am ".
@@ -2527,8 +2567,116 @@ def normalisiere_canvas(c):
     return {
         "hintergrund_url": str(c.get("hintergrund_url", ""))[:600],
         "hintergrund_farbe": str(c.get("hintergrund_farbe", ""))[:32],
+        # Malermodus (Feature 1): Hintergrund live verschieben (X/Y in %) + skalieren (% der Breite).
+        # Default 50/50/100 == altes center/cover-Verhalten -> Bestandsprofile bleiben unverändert.
+        "hintergrund_pos_x": _canvas_zahl(c.get("hintergrund_pos_x"), 50, 0, 100),
+        "hintergrund_pos_y": _canvas_zahl(c.get("hintergrund_pos_y"), 50, 0, 100),
+        "hintergrund_skala": _canvas_zahl(c.get("hintergrund_skala"), 100, 30, 300),
         "farbschema": str(c.get("farbschema", ""))[:40],
         "rahmen": str(c.get("rahmen", ""))[:60],
+        "elemente": elemente,
+    }
+
+
+# ---------------------------------------------------------------------------
+# ENTKOPPELTE GALERIE ('galerie_seite'): eigenständiger Raum, getrennt vom Profil-Canvas.
+# Rahmenwerte + verlustsicherer Bild-Pool (url/titel/filter) + reservierte Canvas-Elemente
+# (elemente[] befüllt der Galerie-Editor in Schritt 2). Rein ADDITIV – das Alt-Feld 'galerie'
+# (Flachliste) bleibt unangetastet und dient nur noch als Migrationsquelle.
+# ---------------------------------------------------------------------------
+GALERIE_FILTER_WHITELIST = {"", "none", "grayscale(1)", "sepia(0.7)", "contrast(1.3)", "saturate(1.7)", "brightness(1.2)", "blur(1.5px)"}
+MAX_GALERIE_SEITE_BILDER = 60
+
+
+def _galerie_seite_bild(b):
+    """Ein Galerie-Bild normalisieren: akzeptiert reinen String (Migration) ODER {url,titel,filter}."""
+    if isinstance(b, str):
+        b = {"url": b}
+    if not isinstance(b, dict):
+        return None
+    url = _canvas_bild(b.get("url"))
+    if not url:
+        return None
+    filt = str(b.get("filter", ""))[:60]
+    if filt not in GALERIE_FILTER_WHITELIST:
+        filt = ""
+    return {"url": url, "titel": str(b.get("titel", ""))[:160], "filter": filt}
+
+
+GALERIE_ELEMENT_TYPEN = {"bild", "text"}
+
+
+def normalisiere_galerie_element(el):
+    """Ein Galerie-Canvas-Modul: Typ 'bild' (Bild + Filter + optionaler Titel) oder 'text' (Label).
+    BEWUSST getrennt von normalisiere_canvas_element -> Profil- und Galerie-Typ-Whitelists mischen sich nie."""
+    if not isinstance(el, dict):
+        return None
+    typ = "text" if str(el.get("typ", "bild")) == "text" else "bild"
+    ausrichtung = str(el.get("ausrichtung", "zentriert"))[:12]
+    if ausrichtung not in CANVAS_AUSRICHTUNG:
+        ausrichtung = "zentriert"
+    filt = str(el.get("filter", ""))[:60]
+    if filt not in GALERIE_FILTER_WHITELIST:
+        filt = ""
+    # Malermodus (Feature 3) auch in der Galerie: Kreis-Maske + Freistellung + Bild-Passung.
+    maske = str(el.get("maske", ""))[:12]
+    if maske not in CANVAS_MASKE:
+        maske = ""
+    bild_passung = str(el.get("bild_passung", "cover"))[:10]
+    if bild_passung not in CANVAS_PASSUNG:
+        bild_passung = "cover"
+    return {
+        "typ": typ,
+        "x": _canvas_zahl(el.get("x"), 5, 0, 100),
+        "y": _canvas_zahl(el.get("y"), 5, 0, 100),
+        "w": _canvas_zahl(el.get("w"), 30, 3, 100),
+        "h": _canvas_zahl(el.get("h"), 30, 3, 100),
+        # Malermodus (Feature 2+3): Z-Index für Bild-im-Bild + Masken-/Freistell-Attribute.
+        "z": int(_canvas_zahl(el.get("z"), 0, 0, 999)),
+        "maske": maske,
+        "freistellen": bool(el.get("freistellen")),
+        "bild_passung": bild_passung,
+        "bild": _canvas_bild(el.get("bild")),
+        "filter": filt,
+        "titel": str(el.get("titel", ""))[:160],
+        "text": str(el.get("text", ""))[:2000],
+        "farbe": str(el.get("farbe", ""))[:32],
+        "groesse": _canvas_zahl(el.get("groesse"), 1, 0.4, 8),
+        "ausrichtung": ausrichtung,
+        "fett": bool(el.get("fett")),
+        "zeilenabstand": _canvas_zahl(el.get("zeilenabstand"), 1.3, 0.8, 3.5),
+        "radius": _canvas_zahl(el.get("radius"), 10, 0, 300),
+        "bg_farbe": str(el.get("bg_farbe", ""))[:32],
+        "rahmen_farbe": str(el.get("rahmen_farbe", ""))[:32],
+        "rahmen_breite": _canvas_zahl(el.get("rahmen_breite"), 0, 0, 40),
+        "polster": _canvas_zahl(el.get("polster"), 0, 0, 100),
+    }
+
+
+def normalisiere_galerie_seite(g):
+    """Kanonische, sichere Speicherform der entkoppelten Galerie."""
+    if not isinstance(g, dict):
+        return {}
+    bilder = []
+    for b in (g.get("bilder") or [])[:MAX_GALERIE_SEITE_BILDER]:
+        nb = _galerie_seite_bild(b)
+        if nb:
+            bilder.append(nb)
+    elemente = []
+    for el in (g.get("elemente") or [])[:MAX_CANVAS_ELEMENTE]:
+        norm = normalisiere_galerie_element(el)
+        if norm:
+            elemente.append(norm)
+    return {
+        "hintergrund_url": str(g.get("hintergrund_url", ""))[:600],
+        "hintergrund_farbe": str(g.get("hintergrund_farbe", ""))[:32],
+        # Malermodus (Feature 1) auch in der Galerie: Hintergrund verschieben/skalieren.
+        "hintergrund_pos_x": _canvas_zahl(g.get("hintergrund_pos_x"), 50, 0, 100),
+        "hintergrund_pos_y": _canvas_zahl(g.get("hintergrund_pos_y"), 50, 0, 100),
+        "hintergrund_skala": _canvas_zahl(g.get("hintergrund_skala"), 100, 30, 300),
+        "farbschema": str(g.get("farbschema", ""))[:40],
+        "rahmen": str(g.get("rahmen", ""))[:60],
+        "bilder": bilder,
         "elemente": elemente,
     }
 
@@ -2584,6 +2732,7 @@ async def auth_profil_daten(email: str):
         # Erweitertes Profil-Dashboard: freie Felder, Galerie, Sichtbarkeit & Layout.
         "geburtsdatum": profil.get("geburtsdatum", ""),
         "galerie": profil.get("galerie", []),
+        "galerie_seite": profil.get("galerie_seite", {}),
         "sichtbarkeit": profil.get("sichtbarkeit", {}),
         "layout": profil.get("layout", []),
         "farbschema": profil.get("farbschema", ""),
@@ -2666,6 +2815,10 @@ async def auth_profil_update(request: Request):
                     galerie.append(bild)
             profil["galerie"] = galerie
 
+        # ENTKOPPELTE GALERIE: eigenständiger Galerie-Raum, verlustsicher (url/titel/filter + Rahmenwerte).
+        if "galerie_seite" in data and isinstance(data.get("galerie_seite"), dict):
+            profil["galerie_seite"] = normalisiere_galerie_seite(data.get("galerie_seite"))
+
         # SYSTEM 2 – Geografische Angaben (für die professionelle Profilsuche).
         if "land" in data:
             profil["land"] = (data.get("land") or "").strip()[:80]
@@ -2691,6 +2844,7 @@ async def auth_profil_update(request: Request):
             "benutzername": profil.get("benutzername", ""),
             "geburtsdatum": profil.get("geburtsdatum", ""),
             "galerie": profil.get("galerie", []),
+            "galerie_seite": profil.get("galerie_seite", {}),
             "sichtbarkeit": profil.get("sichtbarkeit", {}),
             "layout": profil.get("layout", []),
             "farbschema": profil.get("farbschema", ""),
@@ -2914,6 +3068,17 @@ def unsichtbarer_ki_scan(beitrag_id: str, sektor_int: int, email: str, roh_text:
 # mit professionellen Kommentar-Strängen. Sektor 21 & 22 sind für User gesperrt.
 # Jeder Beitrag zeigt zwingend Name + Profilbild des Autors.
 # =====================================================================
+
+@app.websocket("/ws/forum/{beitrag_id}")
+async def websocket_endpoint(websocket: WebSocket, beitrag_id: str):
+    await manager.connect(websocket, beitrag_id)
+    try:
+        while True:
+            # Hält die Verbindung offen
+            await websocket.receive_text()
+    except WebSocketDisconnect:
+        manager.disconnect(websocket, beitrag_id)
+
 @app.post("/api/forum/post")
 async def forum_post(request: Request, background_tasks: BackgroundTasks):
     """Erstellt einen Beitrag im Content-Stream (Sektor 1-20) und stößt danach
@@ -2969,6 +3134,11 @@ async def forum_post(request: Request, background_tasks: BackgroundTasks):
         reflektion = (data.get("reflektion") or "").strip()[:1000]
         # TEMPORÄR (bis zur DB-Migration): Profil-ID aus dem localStorage des Clients.
         profil_id = (data.get("profil_id") or "").strip()[:120]
+        
+        # NEU: Kommentare-Erlaubnis auslesen (Standard ist True, wenn nicht mitgeschickt)
+        kommentare_erlauben = data.get("kommentare_erlauben", False)
+        if isinstance(kommentare_erlauben, str):
+            kommentare_erlauben = kommentare_erlauben.lower() in ('true', '1', 't', 'yes')
 
         if not text and not media and not ressource_url:
             return JSONResponse(status_code=400, content={"success": False, "message": "Leerer Beitrag."})
@@ -2990,6 +3160,7 @@ async def forum_post(request: Request, background_tasks: BackgroundTasks):
             "ressource_url": ressource_url,
             "profil_id": profil_id,
             "kommentare": [],
+            "kommentare_erlauben": kommentare_erlauben, # NEU: Hier wird es in der DB gespeichert
             "erstellt_am": datetime.now(),
         })
         ergebnis = db.forum_beitraege.insert_one(beitrag)
@@ -3008,7 +3179,6 @@ async def forum_post(request: Request, background_tasks: BackgroundTasks):
     except Exception as e:
         print(f"Fehler bei /api/forum/post: {e}")
         return JSONResponse(status_code=500, content={"success": False, "message": "Systemfehler im Stream."})
-
 
 @app.post("/api/forum/kommentar")
 async def forum_kommentar(request: Request):
@@ -3044,12 +3214,23 @@ async def forum_kommentar(request: Request):
         res = db.forum_beitraege.update_one({"_id": oid}, {"$push": {"kommentare": kommentar}})
         if res.matched_count == 0:
             return JSONResponse(status_code=404, content={"success": False, "message": "Beitrag nicht gefunden."})
+        
+        # --- HIER IST DER LIVE-PUSH ERGÄNZT ---
+        await manager.broadcast(beitrag_id, {
+            "type": "neuer_kommentar",
+            "kommentar": {
+                **kommentar,
+                "erstellt_am": kommentar["erstellt_am"].isoformat()
+            },
+            "beitrag_id": beitrag_id
+        })
+        # -------------------------------------
+
         kommentar["erstellt_am"] = kommentar["erstellt_am"].isoformat()
         return {"success": True, "kommentar": kommentar}
     except Exception as e:
         print(f"Fehler bei /api/forum/kommentar: {e}")
         return JSONResponse(status_code=500, content={"success": False, "message": "Systemfehler beim Kommentar."})
-
 
 @app.get("/api/forum/posts")
 async def forum_posts(email: str = "", sektor: str = "", limit: int = 100, typ: str = ""):
@@ -3081,6 +3262,7 @@ async def forum_posts(email: str = "", sektor: str = "", limit: int = 100, typ: 
                 "autor_name": k.get("autor_name", ""),
                 "autor_handle": k.get("autor_handle", ""),
                 "autor_bild": k.get("autor_bild", ""),
+                "autor_email": k.get("autor_email", ""),  # <-- DAS HAT GEFEHLT!
                 "text": k.get("text", ""),
                 "erstellt_am": k_erstellt.isoformat() if hasattr(k_erstellt, "isoformat") else str(k_erstellt),
                 "eigener": k.get("autor_email") == email,
@@ -3092,12 +3274,14 @@ async def forum_posts(email: str = "", sektor: str = "", limit: int = 100, typ: 
             "sichtbarkeit": b.get("sichtbarkeit", "oeffentlich"),
             "autor_name": b.get("autor_name", ""),
             "autor_handle": b.get("autor_handle", ""),
+            "autor_email": b.get("autor_email", ""),   # <-- DAS HAT GEFEHLT!
             "autor_bild": b.get("autor_bild", ""),
             "text": b.get("text", ""),
             "reflektion": b.get("reflektion", ""),
             "media": b.get("media", ""),
             "media_typ": b.get("media_typ", ""),
             "ressource_url": b.get("ressource_url", ""),
+            "kommentare_erlauben": b.get("kommentare_erlauben", True),  # <--- HIER ERGÄNZEN
             "erstellt_am": erstellt.isoformat() if hasattr(erstellt, "isoformat") else str(erstellt),
             "eigener": b.get("autor_email") == email,
             "kommentare": komm,
@@ -3109,28 +3293,127 @@ async def forum_posts(email: str = "", sektor: str = "", limit: int = 100, typ: 
     }
 
 
+import math
+
+# ---------------------------------------------------------------------------
+# STÖBER- & ENTDECKUNGS-SUITE: Koordinaten-Referenzen + Distanz + Präsenz.
+# Seed-Gazetteer (Stadt -> lat/lon). Erweiterbar; unbekannte Städte fallen im
+# km-Umkreis auf reinen Stadt-Namensvergleich zurück (nie leeres Ergebnis durch Lücken).
+# ---------------------------------------------------------------------------
+STADT_KOORDINATEN = {
+    "bregenz": (47.5031, 9.7471), "dornbirn": (47.4125, 9.7417), "feldkirch": (47.2382, 9.5992),
+    "wien": (48.2082, 16.3738), "graz": (47.0707, 15.4395), "linz": (48.3069, 14.2858),
+    "salzburg": (47.8095, 13.0550), "innsbruck": (47.2692, 11.4041), "klagenfurt": (46.6247, 14.3053),
+    "berlin": (52.5200, 13.4050), "hamburg": (53.5511, 9.9937), "frankfurt": (50.1109, 8.6821),
+    "muenchen": (48.1351, 11.5820), "münchen": (48.1351, 11.5820), "koeln": (50.9375, 6.9603), "köln": (50.9375, 6.9603),
+    "stuttgart": (48.7758, 9.1829), "zuerich": (47.3769, 8.5417), "zürich": (47.3769, 8.5417), "bern": (46.9480, 7.4474),
+    "mexiko-stadt": (19.4326, -99.1332), "mexico city": (19.4326, -99.1332), "ciudad de mexico": (19.4326, -99.1332),
+    "guadalajara": (20.6597, -103.3496), "monterrey": (25.6866, -100.3161),
+}
+PRAESENZ_FENSTER_SEK = 300   # "online" = in den letzten 5 Minuten aktiv
+NEU_FENSTER_TAGE = 14        # "neu" = in den letzten 14 Tagen registriert
+
+
+def _stadt_coords(stadt):
+    return STADT_KOORDINATEN.get((stadt or "").strip().lower())
+
+
+def _distanz_km(a, b):
+    """Haversine-Distanz zwischen zwei (lat, lon)-Punkten in Kilometern."""
+    (la1, lo1), (la2, lo2) = a, b
+    p1, p2 = math.radians(la1), math.radians(la2)
+    dphi = math.radians(la2 - la1)
+    dl = math.radians(lo2 - lo1)
+    h = math.sin(dphi / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(dl / 2) ** 2
+    return 2 * 6371.0 * math.asin(math.sqrt(h))
+
+
+def markiere_praesenz(email):
+    """Stempelt 'zuletzt_gesehen' – Grundlage für den echten Online-Indikator (kein Fake)."""
+    email = (email or "").lower().strip()
+    if not email:
+        return
+    try:
+        db.codes.update_one({"email": email}, {"$set": {"zuletzt_gesehen": datetime.now()}})
+    except Exception:
+        pass
+
+
+def _ist_online(rec):
+    ts = rec.get("zuletzt_gesehen")
+    return isinstance(ts, datetime) and (datetime.now() - ts).total_seconds() <= PRAESENZ_FENSTER_SEK
+
+
+def _ist_neu(rec):
+    ts = rec.get("created_at")
+    return isinstance(ts, datetime) and (datetime.now() - ts).days <= NEU_FENSTER_TAGE
+
+
+@app.post("/api/praesenz")
+async def praesenz_ping(request: Request):
+    """Leichter Heartbeat: hält 'zuletzt_gesehen' aktuell, solange die App offen ist."""
+    try:
+        data = await request.json()
+        markiere_praesenz(data.get("email", ""))
+    except Exception:
+        pass
+    return {"success": True}
+
+
 @app.get("/api/profil/suche")
-async def profil_suche(email: str = "", q: str = "", land: str = "", stadt: str = "", limit: int = 60):
-    """SYSTEM 2 – Professionelle Profilsuche (Vibadu-/Dating-Stil). Liefert visuelle
-    Fotokacheln (Foto + Name + Ort). Startet NUR auf ausdrücklichen Wunsch (Button
-    'Suchen') mit geografischem Filter (Land/Stadt). NUR für verifizierte+ Mitglieder;
-    für Basis-Mitglieder ist die Suche komplett gesperrt. E-Mail wird nie ausgegeben –
-    das Zielprofil wird über einen anonymen Handle-Ref geöffnet."""
+async def profil_suche(email: str = "", q: str = "", land: str = "", stadt: str = "",
+                       umkreis: str = "land", status: str = "alle", buchstabe: str = "",
+                       offset: int = 0, limit: int = 48):
+    """STÖBER- & ENTDECKUNGS-SUITE (Zwei-Modus):
+    - GEZIELTE SUCHE (q gesetzt): globaler Teilstring auf Handle/Vor-/Nachname (case-insensitive),
+      ALLE Geo-Filter werden ignoriert. Behebt den 'Sasa Matic wird nicht gefunden'-Bug.
+    - RADAR (q leer): alle Mitglieder passend zu Land/Stadt/Umkreis.
+    Status ([alle|online|verifiziert|neu]) und A-Z-Buchstabe wirken in beiden Modi als Verfeinerung.
+    Serverseitig gefiltert + paginiert (offset/limit) -> kleine, flüssige Seiten für Infinite Scroll."""
     email = (email or "").lower().strip()
     if not konto_ist_aktiv(email):
         return zugang_verweigert_antwort()
     if not darf_profilsuche(email):
         return rolle_gesperrt_antwort("verifiziert")
-    begriff = (q or "").strip().lower()
+    markiere_praesenz(email)   # der Suchende ist gerade aktiv
+
+    begriff = (q or "").strip()
+    gezielt = bool(begriff)
+    try:
+        limit = max(1, min(int(limit), 100))
+        offset = max(0, int(offset))
+    except (TypeError, ValueError):
+        limit, offset = 48, 0
+
     land_f = (land or "").strip().lower()
     stadt_f = (stadt or "").strip().lower()
+    status = (status or "alle").strip().lower()
+    buchstabe = (buchstabe or "").strip().upper()[:1]
+    projektion = {"email": 1, "profil": 1, "created_at": 1, "zuletzt_gesehen": 1, "abo_aktiv": 1}
+
     treffer = []
     try:
-        cursor = db.codes.find(
-            {"konto_status": "aktiv", "profil.vollstaendig": True},
-            {"email": 1, "profil": 1, "name": 1},
-        ).limit(400)
-        for rec in cursor:
+        if gezielt:
+            # 'Enthält'-Suche direkt in MongoDB (skaliert, ignoriert Geo-Filter komplett).
+            # BEWUSST KEIN konto_status-Filter: gezielt findet JEDES existierende Konto
+            # (auch 'verified'/unvollständig/'pending') per Name/Handle.
+            rx = {"$regex": re.escape(begriff), "$options": "i"}
+            query = {"$or": [
+                {"profil.benutzername": rx}, {"profil.vorname": rx}, {"profil.nachname": rx},
+            ]}
+            kandidaten = list(db.codes.find(query, projektion).limit(600))
+        else:
+            # Radar/Stöbern: streng – nur vollständig eingerichtete, aktive Profile.
+            kandidaten = list(db.codes.find({"konto_status": "aktiv"}, projektion).limit(5000))
+
+        # Zentrum für km-Umkreis: eingegebene Stadt, sonst eigene Stadt.
+        km_radius = {"5": 5.0, "20": 20.0, "50": 50.0, "100": 100.0}.get(umkreis)
+        zentrum = None
+        if not gezielt and km_radius:
+            eigen = (db.codes.find_one({"email": email}, {"profil": 1}) or {}).get("profil", {}) or {}
+            zentrum = _stadt_coords(stadt) or _stadt_coords(eigen.get("stadt", ""))
+
+        for rec in kandidaten:
             profil = rec.get("profil", {}) or {}
             handle = profil.get("benutzername", "") or ""
             vorname = profil.get("vorname", "") or ""
@@ -3138,31 +3421,70 @@ async def profil_suche(email: str = "", q: str = "", land: str = "", stadt: str 
             p_land = (profil.get("land", "") or "").strip()
             p_stadt = (profil.get("stadt", "") or "").strip()
             voller_name = f"{vorname} {nachname}".strip()
-            if begriff and begriff not in f"{handle} {voller_name}".lower():
+
+            if not gezielt:
+                # Radar: Qualität (vollständig) + geografische Filter.
+                if not profil.get("vollstaendig"):
+                    continue
+                if land_f and land_f not in p_land.lower():
+                    continue
+                if km_radius and zentrum:
+                    coords = _stadt_coords(p_stadt)
+                    if not coords or _distanz_km(zentrum, coords) > km_radius:
+                        continue
+                elif km_radius and not zentrum:
+                    if stadt_f and stadt_f not in p_stadt.lower():   # Fallback ohne Koordinaten
+                        continue
+                elif umkreis == "stadt":
+                    if stadt_f and stadt_f not in p_stadt.lower():
+                        continue
+                # umkreis == "land": nur der Land-Filter oben
+
+            online = _ist_online(rec)
+            verifiziert = profil_ist_verifiziert(rec) or bool(rec.get("abo_aktiv"))
+            neu = _ist_neu(rec)
+            if status == "online" and not online:
                 continue
-            if land_f and land_f not in p_land.lower():
+            if status == "verifiziert" and not verifiziert:
                 continue
-            if stadt_f and stadt_f not in p_stadt.lower():
+            if status == "neu" and not neu:
                 continue
+
             sicht = profil.get("sichtbarkeit", {}) or {}
-            name_oeffentlich = sicht.get("vorname", "oeffentlich") == "oeffentlich"
-            foto_oeffentlich = sicht.get("foto", "oeffentlich") == "oeffentlich"
-            standort_oeffentlich = sicht.get("standort", "oeffentlich") != "privat"
+            name_oeff = sicht.get("vorname", "oeffentlich") == "oeffentlich"
+            foto_oeff = sicht.get("foto", "oeffentlich") == "oeffentlich"
+            standort_oeff = sicht.get("standort", "oeffentlich") != "privat"
+            anzeige = voller_name if (name_oeff and voller_name) else (handle or "Mitglied")
+            initial = (anzeige[:1] or "#").upper()
+
+            if buchstabe:
+                if buchstabe == "#":
+                    if initial.isalpha():
+                        continue
+                elif initial != buchstabe:
+                    continue
+
             treffer.append({
                 "ref": handle,   # anonymer Öffnen-Schlüssel (keine E-Mail!)
                 "handle": handle,
-                "name": voller_name if name_oeffentlich else (handle or "Mitglied"),
-                "profilbild": profil.get("profilbild", "") if foto_oeffentlich else "",
-                "land": p_land if standort_oeffentlich else "",
-                "stadt": p_stadt if standort_oeffentlich else "",
+                "name": anzeige,
+                "profilbild": profil.get("profilbild", "") if foto_oeff else "",
+                "land": p_land if standort_oeff else "",
+                "stadt": p_stadt if standort_oeff else "",
+                "online": online, "verifiziert": verifiziert, "neu": neu,
+                "initial": initial,
                 "ich": rec.get("email") == email,
             })
-            if len(treffer) >= max(1, min(int(limit), 120)):
-                break
     except Exception as e:
         print(f"Fehler bei /api/profil/suche: {e}")
         return JSONResponse(status_code=500, content={"success": False, "message": "Suche fehlgeschlagen."})
-    return {"success": True, "anzahl": len(treffer), "treffer": treffer}
+
+    # Stabile Sortierung: online zuerst, dann alphabetisch -> konsistente Pagination beim Stöbern.
+    treffer.sort(key=lambda t: (not t["online"], t["name"].lower()))
+    gesamt = len(treffer)
+    seite = treffer[offset:offset + limit]
+    return {"success": True, "anzahl": gesamt, "treffer": seite,
+            "mehr": (offset + limit) < gesamt, "gezielt": gezielt}
 
 
 @app.get("/api/profil/oeffentlich")
@@ -3198,6 +3520,8 @@ async def profil_oeffentlich(email: str = "", ref: str = ""):
         "land": profil.get("land", "") if standort_ok else "",
         "stadt": profil.get("stadt", "") if standort_ok else "",
         "galerie": profil.get("galerie", []) if sicht.get("galerie", "oeffentlich") != "privat" else [],
+        # Entkoppelte Galerie: nur ausliefern, wenn das Sichtbarkeits-Flag 'galerie' nicht auf 'privat' steht.
+        "galerie_seite": profil.get("galerie_seite", {}) if sicht.get("galerie", "oeffentlich") != "privat" else {},
         # Canvas GENAU wie im Editor gestaltet – die Sichtbarkeits-Flags (Foto, Name, Datum,
         # Bio, Galerie, Standort) werden hart auf die Module durchgesetzt.
         "canvas": canvas_oeffentlich_filtern(profil.get("canvas", {}) or {}, sicht),
@@ -3522,10 +3846,13 @@ async def admin_users(email: str = "", suche: str = ""):
         for u in db.codes.find(query, {
             "email": 1, "role": 1, "aktueller_sektor": 1, "manifest_mode": 1,
             "aktuelles_modul": 1, "abgeschlossene_sektoren": 1, "created_at": 1,
+            "abo_aktiv": 1, "admin_verifiziert": 1, "profil": 1,
         }).limit(500):
             users.append({
                 "email": u.get("email"),
                 "role": u.get("role", "user"),
+                "rolle": bestimme_rolle(u.get("email", "")),
+                "abo_aktiv": bool(u.get("abo_aktiv")),
                 "aktueller_sektor": str(u.get("aktueller_sektor", "1")),
                 "aktuelles_modul": normalisiere_modul_kurz(u.get("manifest_mode") or u.get("aktuelles_modul")),
                 "abgeschlossene_sektoren": u.get("abgeschlossene_sektoren", []) or [],
@@ -3836,33 +4163,46 @@ def _video_config() -> dict:
     return {"plaetze_pro_tisch": int(cfg.get("plaetze_pro_tisch", VIDEO_DEFAULT_PLAETZE_PRO_TISCH))}
 
 
+def _live_regie_config() -> dict:
+    """LAST-REGLER / NOT-AUS der Admin-Live-Regie.
+    max_tische = 0 -> unbegrenzt (Auto-Skalierung); >0 -> harte Obergrenze pro Raum.
+    pausiert = True -> keine neuen Beitritte (Server-Last-Notbremse)."""
+    cfg = db.system_config.find_one({"_id": "live_regie"}) or {}
+    return {"max_tische": int(cfg.get("max_tische", 0)), "pausiert": bool(cfg.get("pausiert", False))}
+
+
 def _prune_video_raum():
     """Entfernt inaktive Teilnehmer (kein Heartbeat seit VIDEO_TIMEOUT_SEKUNDEN)."""
     grenze = datetime.now().timestamp() - VIDEO_TIMEOUT_SEKUNDEN
     db.video_raum.delete_many({"last_seen_ts": {"$lt": grenze}})
 
 
-def _anzahl_tische(count: int, plaetze: int) -> int:
+def _anzahl_tische(count: int, plaetze: int, max_tische: int = 0) -> int:
     """
     7+1-SKALIERUNG: max 8 Plätze pro Tisch. Person 9 landet auf der Warteliste.
     Ein NEUER Tisch öffnet erst, sobald count >= plaetze*tische + 2 (also 8+2=10,
     16+2=18, 24+2=26 ...). So bleibt der 9. Gast wartend, bis der 10. den Split auslöst.
+    max_tische > 0 = harte Obergrenze der Live-Regie (Last-Regler): darüber hinaus
+    bleiben weitere Gäste auf der Warteliste, statt neue Tische zu öffnen.
     """
     tische = 1
     while count >= plaetze * tische + 2:
         tische += 1
+    if max_tische and max_tische > 0:
+        tische = min(tische, max_tische)
     return tische
 
 
-def _raum_neu_berechnen(raum: str, plaetze: int) -> dict:
+def _raum_neu_berechnen(raum: str, plaetze: int, max_tische: int = 0) -> dict:
     """
     Verteilt ALLE aktiven Teilnehmer eines Themen-Raums (nach Beitritts-Reihenfolge)
     frisch auf Tische + Warteliste und schreibt tisch/platz_am_tisch/status zurück.
     Wird bei jedem join/heartbeat aufgerufen -> ein Split reseatet Wartende automatisch.
+    max_tische deckelt die Tischanzahl (Last-Regler der Live-Regie).
     """
     teilnehmer = list(db.video_raum.find({"raum": raum}).sort("platz", 1))
     count = len(teilnehmer)
-    tische = _anzahl_tische(count, plaetze)
+    tische = _anzahl_tische(count, plaetze, max_tische)
     sitzplaetze = tische * plaetze
 
     liste = []
@@ -3971,11 +4311,19 @@ async def video_join(request: Request):
                     "error": "Der Live-Sektor ist Premium-Mitgliedern vorbehalten. Als Gast brauchst du "
                              "eine angenommene Einladung an einen live geschalteten Tisch dieses Themas."}
 
+        # LIVE-REGIE: Not-Aus (pausiert) blockt NEUE Beitritte; bereits Anwesende und
+        # der Admin dürfen weiter beitreten. Der Last-Regler (max_tische) deckelt später
+        # die Sitzverteilung. Not-Bremse bei Serverlast.
+        regie = _live_regie_config()
         _prune_video_raum()
         plaetze = _video_config()["plaetze_pro_tisch"]
         jetzt = datetime.now()
 
         bestehend = db.video_raum.find_one({"email": email, "raum": raum})
+        if regie.get("pausiert") and not bestehend and not ist_admin(email):
+            return {"success": False, "pausiert": True,
+                    "error": "Der Live-Sektor ist gerade durch die Regie pausiert (Not-Aus). "
+                             "Bitte versuche es in Kürze erneut."}
         if bestehend:
             platz = int(bestehend.get("platz", 0))
         else:
@@ -3998,7 +4346,7 @@ async def video_join(request: Request):
             upsert=True,
         )
 
-        info = _raum_neu_berechnen(raum, plaetze)
+        info = _raum_neu_berechnen(raum, plaetze, regie.get("max_tische", 0))
         ich = db.video_raum.find_one({"email": email, "raum": raum}) or {}
         mein_tisch = int(ich.get("tisch", -1))
         # Nur Peers am EIGENEN Tisch anrufen (ein Tisch = eine Video-Runde).
@@ -4043,7 +4391,7 @@ async def video_heartbeat(request: Request):
         plaetze = _video_config()["plaetze_pro_tisch"]
         if not raum:
             return {"success": True, "teilnehmer": [], "plaetze_pro_tisch": plaetze, "anzahl_tische": 1, "warteliste": 0}
-        info = _raum_neu_berechnen(raum, plaetze)
+        info = _raum_neu_berechnen(raum, plaetze, _live_regie_config().get("max_tische", 0))
         return {
             "success": True,
             "raum": raum,
@@ -4066,6 +4414,375 @@ async def video_leave(request: Request):
         return {"success": True}
     except Exception as e:
         return {"success": False, "error": str(e)}
+
+
+# =====================================================================
+# LIVE-SESSIONS: Admin-geplante, themengebundene Zeitfenster (2×/Tag, je ~1 h).
+# Die "zentrale Schleuse": Themen-Wahl -> Anmeldung -> Vor-Check -> Freigabe ->
+# Rot→Grün-Button "Live-betreten". Collection: db.live_sessions.
+# (Phase 1: Schleuse + Vor-Check. Die volle Admin-Live-Regie folgt separat –
+#  hier nur ein minimales Admin-Gerüst zum Anlegen von Zeitfenstern.)
+# =====================================================================
+LIVE_SLOTS = {"vormittag", "nachmittag"}
+LIVE_DEFAULT_DAUER_MIN = 60
+
+
+def _live_session_public(doc: dict, email: str = "", fuer_admin: bool = False) -> dict:
+    """Formt ein Session-Dokument für die Auslieferung und berechnet die
+    Rot→Grün-Logik ('betreten_frei') für den anfragenden Nutzer.
+
+    betreten_frei verlangt: Zeitfenster aktiv + angemeldet + Vor-Check bestanden +
+    (ganze Runde freigegeben ODER Teilnehmer einzeln durch die Regie freigegeben)
+    und der Teilnehmer wurde nicht entfernt.
+    Mit fuer_admin=True wird die vollständige Anmeldeliste mitgeliefert (Monitoring).
+    """
+    email = (email or "").lower().strip()
+    anmeldungen = doc.get("anmeldungen", []) or []
+    meine = next((a for a in anmeldungen if a.get("email") == email), None)
+    start = doc.get("start")
+    ende = doc.get("ende")
+    jetzt = datetime.now()
+    im_fenster = bool(isinstance(start, datetime) and isinstance(ende, datetime) and start <= jetzt <= ende)
+    freigegeben = bool(doc.get("freigegeben"))
+    angemeldet = meine is not None
+    technik_ok = bool(meine and meine.get("technik_ok"))
+    mein_status = (meine or {}).get("status", "")
+    freigabe_ok = freigegeben or mein_status == "freigegeben"
+    betreten_frei = (
+        doc.get("status") in ("offen", "live")
+        and angemeldet
+        and technik_ok
+        and im_fenster
+        and freigabe_ok
+        and mein_status != "entfernt"
+    )
+    anzahl_technik = sum(1 for a in anmeldungen if a.get("technik_ok"))
+    ausgabe = {
+        "session_id": doc.get("session_id"),
+        "sektor": doc.get("sektor"),
+        "thema": doc.get("thema"),
+        "datum": doc.get("datum"),
+        "slot": doc.get("slot"),
+        "start": start.isoformat() if isinstance(start, datetime) else start,
+        "ende": ende.isoformat() if isinstance(ende, datetime) else ende,
+        "status": doc.get("status", "geplant"),
+        "freigegeben": freigegeben,
+        "max_teilnehmer": int(doc.get("max_teilnehmer", 7)),
+        "anzahl_angemeldet": len(anmeldungen),
+        "anzahl_technik_ok": anzahl_technik,
+        "angemeldet": angemeldet,
+        "technik_ok": technik_ok,
+        "mein_status": mein_status,
+        "im_fenster": im_fenster,
+        "betreten_frei": betreten_frei,
+    }
+    if fuer_admin:
+        ausgabe["anmeldungen"] = [
+            {
+                "email": a.get("email"),
+                "handle": a.get("handle"),
+                "technik_ok": bool(a.get("technik_ok")),
+                "status": a.get("status", "angemeldet"),
+                "angemeldet_am": a["angemeldet_am"].isoformat() if isinstance(a.get("angemeldet_am"), datetime) else a.get("angemeldet_am"),
+            }
+            for a in anmeldungen
+        ]
+    return ausgabe
+
+
+@app.get("/api/live/sessions")
+async def live_sessions(email: str = "", sektor: str = ""):
+    """Verfügbare Zeitfenster (optional nach Thema gefiltert) + eigener Status."""
+    email = (email or "").lower().strip()
+    if not konto_ist_aktiv(email):
+        return {"success": False, "error": "Kein Zugriff. Bitte zuerst das Profil vollständig freischalten."}
+    query: Dict[str, object] = {"status": {"$ne": "beendet"}}
+    if sektor:
+        try:
+            query["sektor"] = int(sektor)
+        except ValueError:
+            pass
+    docs = list(db.live_sessions.find(query).sort("start", 1))
+    return {"success": True, "sessions": [_live_session_public(d, email) for d in docs]}
+
+
+@app.post("/api/live/anmelden")
+async def live_anmelden(request: Request):
+    """Meldet den Nutzer für ein festes Zeitfenster an (zeitliche Bindung)."""
+    try:
+        data = await request.json()
+        email = (data.get("email") or "").lower().strip()
+        session_id = (data.get("session_id") or "").strip()
+        if not konto_ist_aktiv(email):
+            return {"success": False, "error": "Kein Zugriff. Bitte zuerst das Profil vollständig freischalten."}
+        doc = db.live_sessions.find_one({"session_id": session_id})
+        if not doc:
+            return {"success": False, "error": "Zeitfenster nicht gefunden."}
+        if thema_fuer_user_gesperrt(int(doc.get("sektor", 0)), email):
+            return {"success": False, "error": "Dieses Thema hat noch keinen Live-Raum."}
+        anmeldungen = doc.get("anmeldungen", []) or []
+        if any(a.get("email") == email for a in anmeldungen):
+            return {"success": True, "bereits_angemeldet": True, "session": _live_session_public(doc, email)}
+        if len(anmeldungen) >= int(doc.get("max_teilnehmer", 7)):
+            return {"success": False, "voll": True, "error": "Dieses Zeitfenster ist ausgebucht."}
+        rec = db.codes.find_one({"email": email}) or {}
+        handle = ((rec.get("profil") or {}).get("benutzername")) or email.split("@")[0]
+        jetzt = datetime.now()
+        db.live_sessions.update_one(
+            {"session_id": session_id},
+            {"$push": {"anmeldungen": {
+                "email": email, "handle": handle, "angemeldet_am": jetzt,
+                "technik_ok": False, "technik_am": None, "status": "angemeldet",
+            }}},
+        )
+        markiere_praesenz(email)
+        doc = db.live_sessions.find_one({"session_id": session_id})
+        return {"success": True, "session": _live_session_public(doc, email)}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@app.post("/api/live/abmelden")
+async def live_abmelden(request: Request):
+    """Nimmt die Anmeldung des Nutzers aus einem Zeitfenster zurück."""
+    try:
+        data = await request.json()
+        email = (data.get("email") or "").lower().strip()
+        session_id = (data.get("session_id") or "").strip()
+        db.live_sessions.update_one(
+            {"session_id": session_id},
+            {"$pull": {"anmeldungen": {"email": email}}},
+        )
+        doc = db.live_sessions.find_one({"session_id": session_id})
+        return {"success": True, "session": _live_session_public(doc, email) if doc else None}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@app.post("/api/live/technik-check")
+async def live_technik_check(request: Request):
+    """Markiert den technischen Vor-Check (Mikro/Kamera) als bestanden."""
+    try:
+        data = await request.json()
+        email = (data.get("email") or "").lower().strip()
+        session_id = (data.get("session_id") or "").strip()
+        ok = bool(data.get("ok", True))
+        res = db.live_sessions.update_one(
+            {"session_id": session_id, "anmeldungen.email": email},
+            {"$set": {"anmeldungen.$.technik_ok": ok, "anmeldungen.$.technik_am": datetime.now()}},
+        )
+        if not res.matched_count:
+            return {"success": False, "error": "Du bist für dieses Zeitfenster nicht angemeldet."}
+        doc = db.live_sessions.find_one({"session_id": session_id})
+        return {"success": True, "session": _live_session_public(doc, email)}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@app.get("/api/live/status")
+async def live_status(email: str = "", session_id: str = ""):
+    """Leichter Poll-Endpunkt für die Rot→Grün-Umschaltung des Betreten-Buttons."""
+    email = (email or "").lower().strip()
+    doc = db.live_sessions.find_one({"session_id": (session_id or "").strip()})
+    if not doc:
+        return {"success": False, "error": "Zeitfenster nicht gefunden."}
+    if email:
+        markiere_praesenz(email)
+    return {"success": True, "session": _live_session_public(doc, email)}
+
+
+@app.post("/admin/live-session/speichern")
+async def admin_live_session_speichern(request: Request):
+    """MINIMALES Admin-Gerüst: legt ein Zeitfenster an bzw. aktualisiert es.
+    Die vollwertige 'Live-Regie' (Übersicht, Last-Regler, manuelle Freigabe)
+    folgt in einer eigenen Phase."""
+    try:
+        data = await request.json()
+        email = (data.get("email") or "").lower().strip()
+        guard = _admin_guard(email)
+        if guard:
+            return guard
+        try:
+            sektor = int(data.get("sektor"))
+        except (TypeError, ValueError):
+            return {"success": False, "error": "Ungültiger Sektor."}
+        slot = (data.get("slot") or "vormittag").strip().lower()
+        if slot not in LIVE_SLOTS:
+            slot = "vormittag"
+        try:
+            start = datetime.fromisoformat((data.get("start") or "").strip())
+        except ValueError:
+            return {"success": False, "error": "Ungültiger Startzeitpunkt (ISO-Format erwartet)."}
+        dauer = int(data.get("dauer_min", LIVE_DEFAULT_DAUER_MIN))
+        ende = start + timedelta(minutes=max(15, min(dauer, 180)))
+        session_id = (data.get("session_id") or "").strip() or secrets.token_hex(8)
+        thema = (data.get("thema") or SEKTOR_THEMEN.get(str(sektor), "")).strip()[:160]
+        setz = {
+            "sektor": sektor, "thema": thema, "slot": slot,
+            "datum": start.date().isoformat(), "start": start, "ende": ende,
+            "max_teilnehmer": max(1, min(int(data.get("max_teilnehmer", 7)), 7)),
+            "status": (data.get("status") or "offen").strip().lower(),
+            "freigegeben": bool(data.get("freigegeben", False)),
+            "letztes_update": datetime.now(),
+        }
+        bestehend = db.live_sessions.find_one({"session_id": session_id})
+        if bestehend:
+            db.live_sessions.update_one({"session_id": session_id}, {"$set": setz})
+        else:
+            setz.update({"session_id": session_id, "anmeldungen": [],
+                         "erstellt_am": datetime.now(), "erstellt_von": email})
+            db.live_sessions.insert_one(setz)
+        doc = db.live_sessions.find_one({"session_id": session_id})
+        return {"success": True, "session": _live_session_public(doc, email)}
+    except Exception as e:
+        return JSONResponse(content={"success": False, "error": str(e)}, status_code=500)
+
+
+@app.get("/admin/live-sessions")
+async def admin_live_sessions(email: str = ""):
+    """MINIMALES Admin-Gerüst: alle Zeitfenster (Grundlage für die spätere Regie)."""
+    guard = _admin_guard(email)
+    if guard:
+        return guard
+    docs = list(db.live_sessions.find().sort("start", 1))
+    return {"success": True, "sessions": [_live_session_public(d, email) for d in docs]}
+
+
+def _live_raum_belegung(plaetze: int, max_tische: int) -> list:
+    """Anonymisierte Live-Belegung pro Themen-Raum (nur Zahlen, KEINE Namen)."""
+    zaehler: Dict[str, int] = {}
+    for t in db.video_raum.find({}, {"raum": 1}):
+        r = str(t.get("raum", "?"))
+        zaehler[r] = zaehler.get(r, 0) + 1
+    return [
+        {"sektor": r, "thema": SEKTOR_THEMEN.get(r, ""), "teilnehmer": n,
+         "tische": _anzahl_tische(n, plaetze, max_tische)}
+        for r, n in sorted(zaehler.items(), key=lambda x: (len(x[0]), x[0]))
+    ]
+
+
+@app.get("/api/live/uebersicht")
+async def live_uebersicht(email: str = ""):
+    """Öffentliche 'What's up'-Daten für das schwebende Live-Panel: heute geplante /
+    laufende Zeitfenster + anonymisierte Tischbelegung pro Thema. KEINE Namen, KEIN Video."""
+    email = (email or "").lower().strip()
+    _prune_video_raum()
+    heute = datetime.now().date().isoformat()
+    regie = _live_regie_config()
+    plaetze = _video_config()["plaetze_pro_tisch"]
+    docs = list(db.live_sessions.find({"datum": heute}).sort("start", 1))
+    sessions = [_live_session_public(d, email) for d in docs]
+    raeume = _live_raum_belegung(plaetze, regie.get("max_tische", 0))
+    return {"success": True, "heute": heute, "pausiert": regie.get("pausiert", False),
+            "sessions": sessions, "raeume": raeume,
+            "aktive_teilnehmer": sum(r["teilnehmer"] for r in raeume)}
+
+
+@app.get("/admin/live-regie")
+async def admin_live_regie(email: str = ""):
+    """LIVE-REGIE (Monitoring): heutige Zeitfenster mit voller Anmeldeliste (Technik-
+    Status, Tisch-Zuweisung) + Last-Regler/Not-Aus-Konfig + Tisch-Belegung pro Thema."""
+    guard = _admin_guard(email)
+    if guard:
+        return guard
+    _prune_video_raum()
+    heute = datetime.now().date().isoformat()
+    regie = _live_regie_config()
+    plaetze = _video_config()["plaetze_pro_tisch"]
+    docs = list(db.live_sessions.find({"datum": heute}).sort("start", 1))
+    sessions = [_live_session_public(d, email, fuer_admin=True) for d in docs]
+    raeume = _live_raum_belegung(plaetze, regie.get("max_tische", 0))
+    return {"success": True, "heute": heute, "regie": regie, "sessions": sessions,
+            "raeume": raeume, "aktive_teilnehmer": sum(r["teilnehmer"] for r in raeume)}
+
+
+@app.post("/admin/live-regie/speichern")
+async def admin_live_regie_speichern(request: Request):
+    """Last-Regler (max_tische, 0 = unbegrenzt) + Not-Aus (pausiert) der Live-Regie."""
+    try:
+        data = await request.json()
+        guard = _admin_guard((data.get("email") or "").lower().strip())
+        if guard:
+            return guard
+        max_tische = max(0, min(int(data.get("max_tische", 0)), 999))
+        pausiert = bool(data.get("pausiert", False))
+        db.system_config.update_one(
+            {"_id": "live_regie"},
+            {"$set": {"max_tische": max_tische, "pausiert": pausiert,
+                      "letztes_update": datetime.now()}},
+            upsert=True,
+        )
+        return {"success": True, "regie": _live_regie_config()}
+    except Exception as e:
+        return JSONResponse(content={"success": False, "error": str(e)}, status_code=500)
+
+
+@app.post("/admin/live-session/teilnehmer")
+async def admin_live_session_teilnehmer(request: Request):
+    """Manuelle Freigabe/Sperre EINES Teilnehmers in einem Zeitfenster.
+    aktion: 'freigeben' -> status='freigegeben' (schaltet betreten_frei),
+            'entfernen' -> status='entfernt' (gesperrt),
+            'zuruecksetzen' -> status='angemeldet'."""
+    try:
+        data = await request.json()
+        admin_email = (data.get("email") or "").lower().strip()
+        guard = _admin_guard(admin_email)
+        if guard:
+            return guard
+        session_id = (data.get("session_id") or "").strip()
+        ziel = (data.get("ziel_email") or "").lower().strip()
+        aktion = (data.get("aktion") or "freigeben").strip().lower()
+        status_map = {"freigeben": "freigegeben", "entfernen": "entfernt", "zuruecksetzen": "angemeldet"}
+        neuer_status = status_map.get(aktion)
+        if not session_id or not ziel or not neuer_status:
+            return {"success": False, "error": "session_id, ziel_email und gültige aktion erforderlich."}
+        res = db.live_sessions.update_one(
+            {"session_id": session_id, "anmeldungen.email": ziel},
+            {"$set": {"anmeldungen.$.status": neuer_status, "letztes_update": datetime.now()}},
+        )
+        if not res.matched_count:
+            return {"success": False, "error": "Teilnehmer in diesem Zeitfenster nicht gefunden."}
+        doc = db.live_sessions.find_one({"session_id": session_id})
+        return {"success": True, "session": _live_session_public(doc, admin_email, fuer_admin=True)}
+    except Exception as e:
+        return JSONResponse(content={"success": False, "error": str(e)}, status_code=500)
+
+
+@app.post("/admin/set-mitglied-stufe")
+async def admin_set_mitglied_stufe(request: Request):
+    """Mitglieder-Steuerung: Basis / Verifiziert / Premium setzen.
+    Premium = abo_aktiv. 'admin_verifiziert' erzwingt die Verifiziert-Stufe
+    (sonst wird Verifiziert automatisch aus dem Profil abgeleitet). Basis = Default."""
+    try:
+        data = await request.json()
+        guard = _admin_guard((data.get("email") or "").lower().strip())
+        if guard:
+            return guard
+        ziel = (data.get("ziel_email") or "").lower().strip()
+        if not ziel:
+            return {"success": False, "error": "ziel_email fehlt."}
+        if not db.codes.find_one({"email": ziel}):
+            return {"success": False, "error": "Mitglied nicht gefunden."}
+        stufe = (data.get("stufe") or "").strip().lower()
+        setz: dict = {"letztes_update": datetime.now()}
+        if stufe == "premium":
+            setz.update({"abo_aktiv": True})
+        elif stufe == "verifiziert":
+            setz.update({"abo_aktiv": False, "admin_verifiziert": True})
+        elif stufe == "basis":
+            setz.update({"abo_aktiv": False, "admin_verifiziert": False})
+        else:
+            if "premium" in data:
+                setz["abo_aktiv"] = bool(data.get("premium"))
+            if "verifiziert" in data:
+                setz["admin_verifiziert"] = bool(data.get("verifiziert"))
+        db.codes.update_one({"email": ziel}, {"$set": setz})
+        rec = db.codes.find_one({"email": ziel}) or {}
+        return {"success": True, "ziel_email": ziel, "rolle": bestimme_rolle(ziel),
+                "abo_aktiv": bool(rec.get("abo_aktiv"))}
+    except Exception as e:
+        return JSONResponse(content={"success": False, "error": str(e)}, status_code=500)
+
 
 def _kurz_name(email: str) -> str:
     rec = db.codes.find_one({"email": email}, {"profil": 1, "name": 1}) or {}
