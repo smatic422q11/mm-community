@@ -1004,15 +1004,14 @@ def validiere_abschlusszeugnis_community(user_id):
 # =====================================================================
 @app.get("/", response_class=HTMLResponse)
 def read_root():
-    # SYSTEM 2: autocomplete-off/no-store – das Frontend unterbindet Browser-Autofill
-    # ("Adressen verwalten …"-Popups); no-store stellt sicher, dass diese Logik immer
-    # frisch (nie aus einem autofill-anfälligen Cache) ausgeliefert wird.
-    return FileResponse("index.html", headers={
+    # Wir sagen dem System ganz genau, dass die Datei jetzt im Ordner "templates" liegt!
+    pfad = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates", "index.html")
+    
+    return FileResponse(pfad, headers={
         "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
         "Pragma": "no-cache",
         "Expires": "0",
     })
-
 
 # =====================================================================
 # STATISCHE RECHTSSEITEN: werden EXPLIZIT aus dem static/-Ordner bezogen.
