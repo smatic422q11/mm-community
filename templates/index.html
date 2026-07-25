@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="some value" />
+    <title>M&M-COMMUNITY 3.0</title>
+
+    <!-- GOOGLE FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+
+    <!-- DIE BRÜCKEN ZU DEINEN DATEIEN -->
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="/static/script.js" defer></script>
+
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    
+    <!-- ENTITY SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "Person",
+      "name": "Goran Petrovic",
+      "email": "info@mm-community.online",
+      "jobTitle": "Aspiring Fullstack Developer & Founder of M&M Community",
+      "image": "https://mm-community.online/images/goran-petrovic.jpg",
+      "description": "Gründer der M&M Community & Aspiring Fullstack Developer. Ich baue digitale Räume für Zusammenarbeit und widme mich derzeit intensiv meiner Ausbildung zum Fullstack Developer.",
+      "url": "https://mm-community.online",
+      "sameAs": [
+        "https://www.linkedin.com/in/goran-petrovic-115aa8405",
+        "https://github.com/smatic422q11",
+        "https://x.com/GoranXpetrovic"
+      ]
+    }
+    </script>
+</head>
+<body>
+
+    <!-- ===================== AUTH-SCHLEUSE (Identity-First) ===================== -->
+    <div id="auth-gate">
+        <div class="auth-card">
+            <div class="auth-logo">M&M</div>
+            <div class="auth-sub">Community</div>
+
+            <div id="auth-panel-login" class="auth-panel aktiv">
+                <h2>Anmelden</h2>
+                <p class="auth-hint">Zugang nur für verifizierte Mitglieder. Melde dich mit E-Mail und Passwort an.</p>
+                <input type="email" id="login-email" class="auth-field" placeholder="E-Mail-Adresse" autocomplete="off">
+                <input type="password" id="login-pass" class="auth-field" placeholder="Passwort" autocomplete="off">
+                <button class="auth-primary" onclick="authLogin()">Einloggen</button>
+                <div id="login-msg" class="auth-msg"></div>
+                <div class="auth-link">Noch kein Konto? <a onclick="authZeige('register')">Jetzt registrieren</a></div>
+            </div>
+
+            <div id="auth-panel-register" class="auth-panel">
+                <h2>Registrieren</h2>
+                <p class="auth-hint">Erstelle deinen Zugang. Danach senden wir dir einen 6-stelligen Bestätigungscode.</p>
+                <input type="text" id="reg-name" class="auth-field" placeholder="Echter Vor- und Nachname" autocomplete="off">
+                <input type="email" id="reg-email" class="auth-field" placeholder="E-Mail-Adresse" autocomplete="off">
+                <input type="password" id="reg-pass" class="auth-field" placeholder="Passwort (min. 6 Zeichen)" autocomplete="off">
+                <button class="auth-primary" onclick="authRegister()">Konto erstellen</button>
+                <div id="reg-msg" class="auth-msg"></div>
+                <div class="auth-link">Bereits registriert? <a onclick="authZeige('login')">Zum Login</a></div>
+            </div>
+
+            <div id="auth-panel-verify" class="auth-panel">
+                <h2>E-Mail bestätigen</h2>
+                <p class="auth-hint">Wir haben dir einen 6-stelligen Code an <span id="verify-email-anzeige" style="color:#ffd700;"></span> gesendet.</p>
+                <input type="text" id="verify-code" class="auth-field auth-code-input" maxlength="6" inputmode="numeric" placeholder="––––––">
+                <button class="auth-primary" onclick="authVerify()">Bestätigen</button>
+                <div id="verify-msg" class="auth-msg"></div>
+                <div class="auth-link"><a onclick="authResend()">Code erneut senden</a></div>
+            </div>
+
+            <div id="auth-panel-profil" class="auth-panel">
+                <h2>Profil vervollständigen</h2>
+                <p class="auth-hint">Pflichtschritt: Ohne vollständiges Profil bleibt der Zugang gesperrt.</p>
+                <input type="text" id="prof-vorname" class="auth-field" placeholder="Vorname (Pflicht)" autocomplete="off">
+                <input type="text" id="prof-nachname" class="auth-field" placeholder="Nachname (Pflicht)" autocomplete="off">
+                <input type="text" id="prof-handle" class="auth-field" placeholder="Benutzername / Handle (frei wählbar)" autocomplete="off">
+                <div class="auth-avatar-row">
+                    <div id="auth-avatar-vorschau"></div>
+                    <label>Profilbild (optional)<br>
+                        <input type="file" id="prof-bild" accept="image/*" onchange="authBildVorschau()" style="color:#9db8dd; font-size:0.72rem; margin-top:4px;">
+                    </label>
+                </div>
+                <button class="auth-primary" onclick="authProfil()">Profil speichern & Zugang freischalten</button>
+                <div id="prof-msg" class="auth-msg"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== APP-HEADER ===================== -->
+    <div id="app-header">
+        <div class="header-logo" title="M&M Community" onclick="schubladeToggle()" ondblclick="versucheAdmin()">
+            <div class="mm">M&M</div><div class="co">COMMUNITY</div>
+        </div>
+        <div class="header-titel">M&<span>M</span> Community</div>
+        <div class="header-spacer"></div>
+        <div id="google_translate_element" title="Inhalte übersetzen"></div>
+        <span id="header-rolle" class="header-rolle rolle-basis" title="Deine Mitgliedsstufe">• Basis</span>
+        <div id="header-avatar" class="header-avatar" title="Profileinstellungen" onclick="oeffneProfilHub()"></div>
+        <button class="header-exit" onclick="window.location.reload()">Abmelden</button>
+    </div>
+
+    <!-- ===================== 3-SPALTEN-DASHBOARD ===================== -->
+    <div id="dashboard">
+        <!-- LINKS: Themen-Schublade -->
+        <div id="drawer" class="drawer">
+            <div class="drawer-kopf" onclick="schubladeToggle()">
+                <span class="drawer-toggle">☰</span>
+                <span class="drawer-kopf-titel">Menü</span>
+            </div>
+            <div class="drawer-liste" id="drawer-liste"></div>
+        </div>
+
+        <!-- MITTE: Content-Stream (hellblauer Bereich) -->
+        <div class="stream-spalte" id="stream-spalte">
+            <!-- Fixierte Topbar: Überschrift + horizontale 8er-Navigationsleiste -->
+            <div class="stream-topbar" id="stream-topbar">
+                <div class="stream-kopf">
+                    <h1 id="stream-titel">Content-Stream</h1>
+                    <div class="stream-sub" id="stream-sub">Wähle links ein Thema, um den Stream zu betreten und live mitzudiskutieren.</div>
+                </div>
+                <nav class="sektor-nav" id="sektor-nav">
+                    <button class="sn-kachel" data-key="support"     onclick="oeffneSchublade('support')"><span class="sn-icon">🧭</span>Sektoren-Support</button>
+                    <button class="sn-kachel" data-key="beitrag"     onclick="oeffneSchublade('beitrag')"><span class="sn-icon">➕</span>Beitrag erstellen</button>
+                    <button class="sn-kachel" data-key="medien"      onclick="oeffneSchublade('medien')"><span class="sn-icon">🖼️</span>Medien-Archiv</button>
+                    <button class="sn-kachel" data-key="diskurs"     onclick="oeffneSchublade('diskurs')"><span class="sn-icon">💬</span>Diskurs-Forum</button>
+                    <button class="sn-kachel" data-key="ressourcen"  onclick="oeffneSchublade('ressourcen')"><span class="sn-icon">🔗</span>Ressourcen-Datenbank</button>
+                    <button class="sn-kachel" data-key="profilsuche" onclick="oeffneSchublade('profilsuche')"><span class="sn-icon">🔎</span>Profilsuche</button>
+                    <button class="sn-kachel" data-key="workflow"    onclick="oeffneSchublade('workflow')"><span class="sn-icon">🗺️</span>Workflow-Cockpit</button>
+                    <button class="sn-kachel" data-key="status"      onclick="oeffneSchublade('status')"><span class="sn-icon">📊</span>Sektoren-Status</button>
+                </nav>
+            </div>
+
+            <!-- Viewport unter der fixierten Navigation: Standard-Stream ODER Schublade -->
+            <div class="stream-viewport" id="stream-viewport">
+                <!-- Standard-Inhalt: Content-Stream (100% Breite dieses Bereichs) -->
+                <div class="stream-body" id="stream-body">
+                    <div id="stream-willkommen" class="stream-willkommen">
+                        <div class="gross">Willkommen in der M&M Community</div>
+                        <p style="font-size:1rem; color:#123; margin-top:10px;">Wähle links ein Thema aus der Schublade, um den Stream zu betreten. Über die Leiste oben erreichst du Beiträge, Archive, Profilsuche und den Sektoren-Status.</p>
+                    </div>
+                    <div id="stream-inhalt" style="display:none;">
+                        <div class="composer-gesperrt" id="composer-gesperrt" style="display:none;">
+                            🔒 Dieses Thema wird gerade vorbereitet und ist noch nicht zum Posten freigeschaltet.
+                        </div>
+                        <div class="stream-liste" id="stream-liste"></div>
+                        <div id="stream-sentinel"></div>
+                    </div>
+                </div>
+
+                <!-- In-Spalten-Schublade: Overlay NUR über dem hellblauen Bereich, entfaltet von oben -->
+                <div class="sektor-schublade" id="sektor-schublade">
+                    <div class="ss-kopf">
+                        <div>
+                            <h2 id="ss-titel">Titel</h2>
+                            <div class="ss-hint" id="ss-hint"></div>
+                        </div>
+                        <button class="ss-schliessen" onclick="schliesseSchublade()">✕ Schließen</button>
+                    </div>
+                    <div class="ss-body" id="ss-body"></div>
+                </div>
+
+                <!-- 4+2 VIDEO-GRID: eingepasst in die Mittel-Fläche (Regie-Größe, kein Vollbild, kein Minimieren) -->
+                <div id="live-overlay">
+                    <div class="lo-kopf">
+                        <h2>🎥 7+1 Live-Sektor</h2>
+                        <span class="lo-thema" id="lo-thema"></span>
+                        <span class="lo-status">Tische: <b id="lo-tisch-count">0</b> · Teilnehmer: <b id="lo-teil-count">0</b> · Warteliste: <b id="lo-warte-count">0</b></span>
+                    </div>
+                    <div class="lo-body"><div id="live-overlay-tische"></div></div>
+                    <div class="lo-controls">
+                        <button class="btn-stop" style="width:auto; padding:11px 22px;" onclick="stoppeVideo()">◀ Live verlassen</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RECHTS: Schwebendes Live-Panel (Griff + Info-Ansicht "What's up", KEIN Video) -->
+        <button class="live-panel-griff" id="live-panel-griff" onclick="toggleLivePanel()" title="Live-Sektor ein-/ausblenden">
+            <span class="lpg-icon">🎥</span><span class="lpg-text">LIVE-SEKTOR</span>
+        </button>
+        <div class="live-spalte" id="live-spalte">
+            <div class="live-kopf">
+                <div class="live-kopf-zeile">
+                    <h3>🎥 Live-Sektor</h3>
+                    <button class="live-panel-zu" onclick="schliesseLivePanel()" title="Panel schließen">✕</button>
+                </div>
+                <div class="live-thema" id="live-thema">Info-Ansicht: was gerade läuft</div>
+                <div class="live-status" id="live-status">Aktive Sektoren, Zeiten &amp; anonyme Tischbesetzung — noch kein Video.</div>
+            </div>
+            <button class="live-oeffnen-btn gelb" id="live-oeffnen-btn" onclick="klickLiveOeffnen()">🔒 7+1 Live-Sektor öffnen</button>
+            <div class="live-info" id="live-info">
+                <div class="live-gesperrt">Öffne das Panel, um die Live-Übersicht zu laden.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== PROFIL-CANVAS (freies Gestaltungssystem, wie eine eigene Webseite) ===================== -->
+    <!-- Keine starren Kasten-in-Kasten-Formulare mehr -> freier Canvas. -->
+    <div id="profil-overlay" class="overlay">
+        <div class="canvas-editor" id="canvas-editor">
+            <div class="ce-dock" id="ce-dock">
+            <div class="ce-topbar">
+                <div class="ce-topbar-titel">
+                    <h2>Mein Profil-Canvas</h2>
+                    <div class="p-hint">Vollbild-Bühne: Gestalte dein Profil frei wie eine eigene Webseite – jeder Pixel gehört dir. Editor und Ansicht sind 1:1 identisch.</div>
+                </div>
+                <div class="ce-topbar-actions">
+                    <button class="p-btn sekundaer" id="ce-dock-btn" onclick="ceDockToggle()" title="Werkzeuge ein-/ausblenden">▲ Werkzeuge</button>
+                    <button class="p-btn" onclick="speichereProfil()">Speichern</button>
+                    <button class="p-btn schliessen" onclick="schliesseProfil()">Schließen</button>
+                </div>
+            </div>
+            <div class="ce-werkzeuge">
+                <label class="ce-tool">🌄 Hintergrundbild-URL
+                    <input type="text" id="ce-bg-url" placeholder="https://…/bild.jpg" autocomplete="off" onchange="ceCanvasStil()"></label>
+                <label class="ce-tool">🎨 Hintergrundfarbe
+                    <input type="color" id="ce-bg-farbe" value="#0c1a2e" oninput="ceCanvasStil()"></label>
+                <label class="ce-tool">🖼️ Farbschema
+                    <select id="ce-schema" onchange="ceSchemaWechsel(this.value)"></select></label>
+                <label class="ce-tool">🔲 Rahmen
+                    <select id="ce-rahmen" onchange="ceCanvasStil()">
+                        <option value="">ohne</option>
+                        <option value="gold">Gold</option>
+                        <option value="doppelt">Doppelt</option>
+                        <option value="neon">Neon</option>
+                        <option value="weich">Weich (Schatten)</option>
+                    </select></label>
+                <!-- Malermodus (Feature 1): Hintergrund (Berg/Landschaft) live verschieben/skalieren, um oben Platz (z. B. für eine Sonne) zu schaffen. -->
+                <label class="ce-tool">⬍ Hintergrund Y <span id="ce-bg-posy-lab">50%</span>
+                    <input type="range" id="ce-bg-posy" min="0" max="100" step="1" value="50" oninput="ceCanvasStil()"></label>
+                <label class="ce-tool">⬌ Hintergrund X <span id="ce-bg-posx-lab">50%</span>
+                    <input type="range" id="ce-bg-posx" min="0" max="100" step="1" value="50" oninput="ceCanvasStil()"></label>
+                <label class="ce-tool">🔍 Hintergrund skalieren <span id="ce-bg-skala-lab">100%</span>
+                    <input type="range" id="ce-bg-skala" min="30" max="300" step="1" value="100" oninput="ceCanvasStil()"></label>
+                <div class="ce-tool-hinweis">Module hinzufügen: <b>Klick auf die freie Bühne</b> öffnet das Auswahlmenü genau am Klickpunkt. Ein Modul anklicken zeigt sein <b>Kontextmenü</b>; ziehen verschiebt es.</div>
+            </div>
+            <div class="ce-geo">
+                <label class="b-label">Land</label><input type="text" id="ce-land" placeholder="z. B. Österreich" autocomplete="off" style="max-width:200px;" oninput="ceDatenGeaendert()">
+                <label class="b-label">Stadt</label><input type="text" id="ce-stadt" placeholder="z. B. Bregenz" autocomplete="off" style="max-width:200px;" oninput="ceDatenGeaendert()">
+                <label class="b-label">Geburtsdatum</label><input type="date" id="ce-geburtsdatum" autocomplete="off" style="max-width:180px;" oninput="ceDatenGeaendert()">
+            </div>
+            <div class="ce-sicht" id="ce-sicht"></div>
+            <div id="profil-msg" class="p-msg"></div>
+            </div><!-- /ce-dock -->
+            <div class="ce-buehne">
+                <div class="ce-canvas-wrap">
+                    <div class="ce-canvas" id="ce-canvas">
+                        <div class="ce-canvas-hint">Klick auf die freie Bühne fügt ein Modul hinzu · Modul anklicken öffnet sein Menü · ziehen verschiebt · Ecke ⭜ skaliert · Doppelklick auf Text schreibt.</div>
+                    </div>
+                </div>
+                <!-- WYSIWYG-Attributpanel: formt das gewählte Modul mit Live-Vorschau. -->
+                <div class="ce-attr-panel" id="ce-attr"></div>
+            </div>
+            <!-- Schwebendes Kontextmenü: erscheint am angeklickten Modul bzw. am Bühnen-Klickpunkt. -->
+            <div class="ce-ctx" id="ce-ctx"></div>
+        </div>
+    </div>
+
+    <!-- ===================== PROFIL-HUB (Auswahl: Profil / Galerie / Design-Vorschau) ===================== -->
+    <div id="profil-hub-overlay" class="overlay">
+        <div class="hub-box">
+            <button class="p-btn schliessen hub-close" onclick="schliesseProfilHub()">✕</button>
+            <h2 class="hub-titel">Profil-Einstellungen</h2>
+            <p class="hub-hint">Wähle, was du gestalten möchtest.</p>
+            <div class="hub-grid">
+                <button class="hub-karte" onclick="hubOeffne('profil')"><span class="hub-icon">👤</span><b>Profil bearbeiten</b><span class="hub-sub">Dein freier Profil-Canvas</span></button>
+                <button class="hub-karte" onclick="hubOeffne('galerie')"><span class="hub-icon">🖼️</span><b>Galerie bearbeiten</b><span class="hub-sub">Eigener Bild-Raum</span></button>
+                <button class="hub-karte" onclick="hubOeffne('vorschau')"><span class="hub-icon">👁️</span><b>Design-Vorschau</b><span class="hub-sub">So sehen dich Besucher</span></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== GALERIE-CANVAS (eigenständige Galerie-Suite · getrennt vom Profil) ===================== -->
+    <div id="galerie-overlay" class="overlay">
+        <div class="canvas-editor" id="galerie-editor">
+            <div class="ce-dock" id="ge-dock">
+            <div class="ce-topbar">
+                <div class="ce-topbar-titel">
+                    <h2>Meine Galerie</h2>
+                    <div class="p-hint">Eigener Bild-Raum – frei gestaltbar wie dein Profil-Canvas, aber komplett getrennt. Editor und Besucheransicht sind 1:1 identisch.</div>
+                </div>
+                <div class="ce-topbar-actions">
+                    <button class="p-btn sekundaer" id="ge-dock-btn" onclick="geDockToggle()" title="Werkzeuge ein-/ausblenden">▲ Werkzeuge</button>
+                    <button class="p-btn" onclick="speichereGalerie()">Speichern</button>
+                    <button class="p-btn schliessen" onclick="schliesseGalerieEditor()">Schließen</button>
+                </div>
+            </div>
+            <div class="ce-werkzeuge">
+                <label class="ce-tool">🌄 Hintergrundbild-URL
+                    <input type="text" id="ge-bg-url" placeholder="https://…/bild.jpg" autocomplete="off" onchange="geCanvasStil()"></label>
+                <label class="ce-tool">🎨 Hintergrundfarbe
+                    <input type="color" id="ge-bg-farbe" value="#0c1a2e" oninput="geCanvasStil()"></label>
+                <label class="ce-tool">🖼️ Farbschema
+                    <select id="ge-schema" onchange="geSchemaWechsel(this.value)"></select></label>
+                <label class="ce-tool">🔲 Rahmen
+                    <select id="ge-rahmen" onchange="geCanvasStil()">
+                        <option value="">ohne</option>
+                        <option value="gold">Gold</option>
+                        <option value="doppelt">Doppelt</option>
+                        <option value="neon">Neon</option>
+                        <option value="weich">Weich (Schatten)</option>
+                    </select></label>
+                <!-- Malermodus (Feature 1): Galerie-Hintergrund live verschieben/skalieren. -->
+                <label class="ce-tool">⬍ Hintergrund Y <span id="ge-bg-posy-lab">50%</span>
+                    <input type="range" id="ge-bg-posy" min="0" max="100" step="1" value="50" oninput="geCanvasStil()"></label>
+                <label class="ce-tool">⬌ Hintergrund X <span id="ge-bg-posx-lab">50%</span>
+                    <input type="range" id="ge-bg-posx" min="0" max="100" step="1" value="50" oninput="geCanvasStil()"></label>
+                <label class="ce-tool">🔍 Hintergrund skalieren <span id="ge-bg-skala-lab">100%</span>
+                    <input type="range" id="ge-bg-skala" min="30" max="300" step="1" value="100" oninput="geCanvasStil()"></label>
+                <div class="ce-tool-btns">
+                    <button onclick="geBildHinzufuegen()">＋ Bild laden</button>
+                    <button onclick="geLayoutPreset('2x2')">▦ 2×2</button>
+                    <button onclick="geLayoutPreset('3er')">▤ 3er-Reihe</button>
+                    <button onclick="geLayoutPreset('hero')">▛ Hero+Streifen</button>
+                    <button onclick="geLayoutPreset('raster')">▓ Raster (alle)</button>
+                </div>
+                <div class="ce-tool-hinweis"><b>＋ Bild laden</b> legt je Datei ein frei platzierbares Modul an · Klick auf die freie Bühne fügt ebenfalls ein Bild hinzu · Modul anklicken zeigt sein Menü.</div>
+            </div>
+            <div id="galerie-msg" class="p-msg"></div>
+            </div><!-- /ge-dock -->
+            <div class="ce-buehne">
+                <div class="ce-canvas-wrap">
+                    <div class="ce-canvas" id="ge-canvas">
+                        <div class="ce-canvas-hint">Klick auf die freie Bühne fügt ein Bild hinzu · Bild anklicken öffnet sein Menü · ziehen verschiebt · Ecke ⭜ skaliert.</div>
+                    </div>
+                </div>
+                <div class="ce-attr-panel" id="ge-attr"></div>
+            </div>
+            <!-- Schwebendes Kontextmenü der Galerie (eigene ID, getrennt vom Profil-Canvas). -->
+            <div class="ce-ctx" id="ge-ctx"></div>
+        </div>
+    </div>
+
+    <!-- ===================== FREMDPROFIL-ANSICHT (Canvas-Profil eines Mitglieds) ===================== -->
+    <div id="fremdprofil-overlay" class="overlay">
+        <div class="fremdprofil-box">
+            <button class="p-btn schliessen fremdprofil-close" onclick="schliesseFremdprofil()">✕ Schließen</button>
+            <div id="fremdprofil-inhalt"></div>
+        </div>
+    </div>
+
+    <!-- ===================== GENERISCHES MENÜ-PANEL (modular andockbar) ===================== -->
+    <div id="menu-panel" class="overlay">
+        <div class="menu-panel-card">
+            <h2 id="menu-panel-titel">Panel</h2>
+            <div class="mp-hint" id="menu-panel-hint"></div>
+            <div id="menu-panel-body"></div>
+            <button class="p-btn schliessen" onclick="schliesseMenuPanel()">Schließen</button>
+        </div>
+    </div>
+
+    <!-- ===================== BEITRAG-ERSTELL-OVERLAY (Content-Schublade) ===================== -->
+    <div id="beitrag-overlay" class="overlay">
+        <div class="beitrag-card">
+            <h2 id="beitrag-titel">Beitrag</h2>
+            <div class="b-hint" id="beitrag-hint"></div>
+            <div id="beitrag-body"></div>
+            <div id="beitrag-msg" class="p-msg"></div>
+            <div style="display:flex; gap:10px; margin-top:14px;">
+                <button class="p-btn" style="flex:1; margin-top:0;" onclick="sendeBeitrag()">Veröffentlichen</button>
+                <button class="p-btn schliessen" style="flex:0 0 auto; margin-top:0;" onclick="schliesseBeitrag()">Abbrechen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== ADMIN-PANEL ===================== -->
+    <div id="admin-panel">
+        <div class="admin-kopf">
+            <h1>ADMINISTRATIVE STEUERUNG (M&M ZENTRALE)</h1>
+            <div style="display:flex; align-items:center; gap:14px;">
+                <span style="color:#fff; font-size:0.85rem;">🔑 Mitglieder: <span id="admin-zaehler" style="color:#ffd700; font-weight:bold;">0</span></span>
+                <button class="admin-btn grau" onclick="schliesseAdmin()">Zurück zum Dashboard</button>
+            </div>
+        </div>
+
+        <div class="admin-grid">
+            <!-- Header-Texter -->
+            <div class="admin-card c-blau">
+                <h3>📝 THEMEN-DEFINITION / HEADER-TEXT</h3>
+                <label>Sektor auswählen (inkl. Platzhalter 21/22):</label>
+                <select id="admin-sektor-auswahl"></select>
+                <label>Sichtweise / Sektor-Gesetz (fließt ins kollektive KI-Wissen):</label>
+                <textarea id="admin-sektor-text" rows="4" placeholder="Definiere hier das Thema / die Sichtweise …"></textarea>
+                <button class="admin-btn" onclick="adminSpeichereSektorText()">In Datenbank übertragen</button>
+            </div>
+
+            <!-- Video-Konfig -->
+            <div class="admin-card c-cyan">
+                <h3>🎥 LIVE-TISCHE (7+1 pro Thema)</h3>
+                <p style="color:#ccc; font-size:0.78rem; margin:0 0 6px 0;">Aktive Teilnehmer gesamt: <span id="admin-video-teilnehmer" style="color:#00ffcc; font-weight:bold;">0</span> · Tische: <span id="admin-video-tische" style="color:#00ffcc; font-weight:bold;">1</span></p>
+                <div id="admin-video-raeume" style="max-height:90px; overflow-y:auto; font-size:0.74rem; color:#9db8dd; margin-bottom:6px;"></div>
+                <label>Plätze pro Tisch (Standard 8):</label>
+                <input type="number" id="admin-video-plaetze" min="1" max="50" value="8">
+                <button class="admin-btn cyan" onclick="adminSpeichereVideoConfig()">Speichern</button>
+                <button class="admin-btn grau" onclick="ladeAdminVideoConfig()">Aktualisieren</button>
+            </div>
+
+            <!-- LIVE-REGIE: Echtzeit-Monitoring + Last-Steuerung + manuelle Freigabe + Spontan-Slot -->
+            <div class="admin-card c-cyan voll">
+                <h3>🎛️ LIVE-REGIE (Echtzeit-Steuerung)</h3>
+                <div style="display:flex; gap:14px; flex-wrap:wrap; align-items:flex-end; margin-bottom:8px;">
+                    <label style="display:flex; align-items:center; gap:8px; color:#fff; font-size:0.82rem;"><input type="checkbox" id="lr-pausiert" onchange="adminSetLiveRegie()"> ⛔ Not-Aus (neue Beitritte pausieren)</label>
+                    <div><label>Last-Regler: max. Tische/Thema (0 = unbegrenzt)</label><input type="number" id="lr-maxtische" min="0" max="999" value="0" style="width:130px;"></div>
+                    <button class="admin-btn cyan" onclick="adminSetLiveRegie()">Regie speichern</button>
+                    <button class="admin-btn grau" onclick="ladeAdminLiveRegie()">Aktualisieren</button>
+                    <span style="color:#9db8dd; font-size:0.76rem; margin-left:auto;">Aktiv im Video: <b id="lr-aktiv" style="color:#00ffcc;">0</b></span>
+                </div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:flex-end; border-top:1px solid #333; padding-top:8px; margin-bottom:8px;">
+                    <div><label>Spontan-Slot: Sektor</label><input type="number" id="lr-slot-sektor" min="1" max="22" value="1" style="width:80px;"></div>
+                    <div><label>Dauer (Min)</label><input type="number" id="lr-slot-dauer" min="15" max="180" value="60" style="width:90px;"></div>
+                    <button class="admin-btn gruen" onclick="adminSpontanSlot()">＋ Slot jetzt öffnen (sofort freigegeben)</button>
+                </div>
+                <div id="lr-sessions" style="max-height:260px; overflow-y:auto;"><p style="color:#666; padding:8px;">Klicke „Aktualisieren".</p></div>
+            </div>
+
+            <!-- Reservierungen & Einladungen (Echtzeit) -->
+            <div class="admin-card c-gold voll">
+                <h3>🗓️ TISCH-RESERVIERUNGEN & EINLADUNGEN (LIVE)</h3>
+                <p style="color:#ccc; font-size:0.78rem; margin:0 0 6px 0;">Gesamt: <span id="admin-res-gesamt" style="color:#ffd700; font-weight:bold;">0</span> · Live: <span id="admin-res-live" style="color:#00ff88; font-weight:bold;">0</span> · Geplant: <span id="admin-res-geplant" style="color:#ffd700; font-weight:bold;">0</span></p>
+                <div id="admin-res-liste" style="max-height:240px; overflow-y:auto;"><p style="color:#666; padding:8px;">Klicke „Aktualisieren".</p></div>
+                <button class="admin-btn grau" onclick="ladeAdminReservierungen()">Aktualisieren</button>
+            </div>
+
+            <!-- Benutzerströme -->
+            <div class="admin-card c-gruen voll">
+                <h3>👥 BENUTZERSTRÖME & FORTSCHRITTS-KONTROLLE</h3>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="admin-user-suche" placeholder="E-Mail filtern …" style="flex:1;">
+                    <button class="admin-btn gruen" onclick="ladeAdminUsers()">Laden / Suchen</button>
+                </div>
+                <div id="admin-user-tabelle"><p style="color:#666; padding:10px;">Klicke „Laden / Suchen".</p></div>
+                <div style="margin-top:10px; border-top:1px solid #333; padding-top:8px;">
+                    <h4 style="color:#fff; margin:0 0 6px 0; font-size:0.82rem;">Steuerung für: <span id="admin-ziel-user" style="color:#00ff88;">— keiner —</span></h4>
+                    <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:flex-end;">
+                        <div><label>Aktiver Sektor</label><input type="number" id="admin-ziel-sektor" min="1" max="22" style="width:80px;"></div>
+                        <div><label>Ziel-E-Mail (Zertifikat)</label><input type="email" id="admin-zert-email" placeholder="user@mail" style="width:180px;"></div>
+                        <div><label>Sektor</label><input type="number" id="admin-zert-sektor" min="1" max="22" value="1" style="width:70px;"></div>
+                        <button class="admin-btn" onclick="adminSetzeUserProgress()">Sektor übernehmen</button>
+                        <button class="admin-btn gruen" onclick="adminSendeZertifikat()">📜 Zertifikat senden</button>
+                    </div>
+                    <div style="margin-top:10px; border-top:1px solid #333; padding-top:8px;">
+                        <h4 style="color:#fff; margin:0 0 6px 0; font-size:0.82rem;">🎖️ Mitglieder-Stufe für: <span id="admin-stufe-user" style="color:#00ff88;">— keiner —</span> <span style="color:#9db8dd;">(aktuell: <b id="admin-stufe-akt" style="color:#ffd700;">—</b>)</span></h4>
+                        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                            <button class="admin-btn grau" onclick="adminSetzeStufe('basis')">Basis</button>
+                            <button class="admin-btn" onclick="adminSetzeStufe('verifiziert')">✅ Verifiziert</button>
+                            <button class="admin-btn gruen" onclick="adminSetzeStufe('premium')">⭐ Premium</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ETHNOGRAFISCHE STUDIE -->
+            <div class="admin-card c-gold voll">
+                <h3>📖 ETHNOGRAFISCHE STUDIE (Unsichtbarer KI-Scanner)</h3>
+                <p style="color:#ccc; font-size:0.78rem; margin:0 0 8px 0;">Kapitelweise Auswertung aller Beiträge (Doppel-Brille: Sektor-Kontext + Module A–I). Gesamt-Auswertungen: <span id="ethno-gesamt" style="color:#ffd700; font-weight:bold;">0</span> · Sektor 21/22 werden nie gescannt.</p>
+                <div style="display:flex; gap:14px; flex-wrap:wrap;">
+                    <div style="flex:1; min-width:240px;">
+                        <label style="color:#9db8dd; font-size:0.72rem;">Kapitel (Klick öffnet Details):</label>
+                        <div id="ethno-kapitel"><p style="color:#666; padding:8px;">Klicke „Studie laden".</p></div>
+                    </div>
+                    <div style="flex:1.4; min-width:280px;">
+                        <label style="color:#9db8dd; font-size:0.72rem;">Details: <span id="ethno-detail-titel" style="color:#ffd700;">—</span></label>
+                        <div id="ethno-detail"><p style="color:#666; padding:8px;">Wähle links ein Kapitel.</p></div>
+                    </div>
+                </div>
+                <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+                    <button class="admin-btn gruen" onclick="ladeEthnografie()">Studie laden</button>
+                    <button class="admin-btn" onclick="adminEthnografiePDF('')">📕 Gesamtwerk als PDF</button>
+                    <button class="admin-btn" onclick="adminEthnografiePDFKapitel()">📄 Aktuelles Kapitel als PDF</button>
+                </div>
+            </div>
+
+            <!-- SEKTOREN-SEELEN · KI-MASTER-SWITCH · GLOBALE SICHTBARKEIT -->
+            <div class="admin-card c-blau voll">
+                <h3>🧠 SEKTOREN-SEELEN · KI-MASTER-SWITCH · SICHTBARKEIT</h3>
+                <div style="display:flex; gap:14px; flex-wrap:wrap; align-items:flex-end;">
+                    <div style="flex:1; min-width:220px;">
+                        <label>Sektor</label>
+                        <select id="sk-sektor" onchange="ladeSektorConfig()"></select>
+                    </div>
+                    <label style="display:flex; align-items:center; gap:8px; color:#fff; font-size:0.82rem;"><input type="checkbox" id="sk-ki"> KI-Anbindung aktiv (Master-Switch)</label>
+                    <label style="display:flex; align-items:center; gap:8px; color:#fff; font-size:0.82rem;"><input type="checkbox" id="sk-sicht"> Sektor sichtbar</label>
+                </div>
+                <label>Seelen-Name</label>
+                <input type="text" id="sk-name" placeholder="z. B. Kali">
+                <label>Seelen-Wesen (Charakter der KI-Seele für Support & Studie)</label>
+                <textarea id="sk-wesen" rows="2" placeholder="Beschreibung der Sektor-Seele …"></textarea>
+                <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; align-items:center;">
+                    <button class="admin-btn" onclick="speichereSektorConfig()">Sektor speichern</button>
+                    <label style="display:flex; align-items:center; gap:8px; color:#fff; margin-left:auto; font-size:0.82rem;"><input type="checkbox" id="sk-global" onchange="setzeGlobalOffen()"> Plattform global geöffnet</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Google Translate -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({ pageLanguage: 'de', autoDisplay: false }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

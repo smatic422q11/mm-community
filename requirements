@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+httpx
+google-genai
+pymongo
+dnspython
+certifi
+requests
+fpdf
+weasyprint
+ebooklib
+stripe
+python-dotenv
