@@ -3,11 +3,18 @@ from __future__ import annotations
 import os
 import secrets
 import hashlib
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from typing import Any, Optional
 from fastapi import APIRouter, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
+from dotenv import load_dotenv
+from authlib.integrations.starlette_client import OAuth
+
+from models import RegisterModell
+from models import wandle_mongo_daten_um
 from mail_services import send_verification_email
+
+letzte_anfragen = {}
 
 class AuthRouterConfig:
     """Saubere DI-Konfiguration für den Auth-Router."""
@@ -45,7 +52,37 @@ def _get_db():
     
 router = APIRouter()
 
+# --- OAUTH SETUP FÜR GOOGLE ---
+load_dotenv()
+oauth = OAuth()
+oauth.register(
+    name="google",
+    client_id=os.getenv("GOOGLE_CLIENT_ID"),
+    client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
+    server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
+    client_kwargs={"scope": "openid email profile"},
+)
+
 ADMIN_EMAILS = {"mmcommunity22@gmail.com"}
+
+# --- Globale Admin Einstellungen (Korrigiert auf 20 Themen) ---
+SEKTOR_THEMEN = {
+    "1": "Recht auf Gefühlsvorderung", "2": "Wie werde ich Mensch", "3": "Glaube an Friede",
+    "4": "Programm für Bürgerliche Rechte", "5": "Moralische Pflicht und Verantwortung",
+    "6": "Menschlichkeit Wiederherstellung", "7": "Kinderschutz-Pflicht-Elternrechte",
+    "8": "Wahre Richtung und Kunst", "9": "LGBTQ und Kirche", "10": "Trend und Tradition",
+    "11": "Religionsbekenntnis oder Selbstwahl", "12": "Gesundheitswesen und Verhalten",
+    "13": "Arbeitswelt und Du", "14": "Mobbing am Arbeitsplatz", "15": "Jugendsprecher",
+    "16": "Ratgeber für Pensionisten", "17": "Sozialgefallen und Widerkehr",
+    "18": "Nachbarschaft und Gemeinschaft", "19": "Alleinerziehend", "20": "Die Brücke"
+}
+
+SECTOR_NAMES = {"1": "Seele 1"} # Fallbacks
+GESPERRTE_THEMEN_FUER_USER = set()
+ANZAHL_THEMEN_GESAMT = 20
+LIVE_SLOTS = {"vormittag", "nachmittag"}
+LIVE_DEFAULT_DAUER_MIN = 60
+VIDEO_DEFAULT_PLAETZE_PRO_TISCH = 8
 
 def ist_admin(email: str) -> bool:
     return (email or "").lower().strip() in ADMIN_EMAILS
@@ -295,25 +332,69 @@ def normalisiere_galerie_seite(g):
         "elemente": elemente,
     }
 
-# --- AUTH ROUTEN ---
 @router.post("/auth/register")
-async def auth_register(request: Request):
+async def auth_register(daten: RegisterModell, request: Request):
     try:
         database = _get_db()
         if database is None:
             return JSONResponse(status_code=500, content={"success": False, "message": "DB nicht konfiguriert."})
 
-        data = await request.json()
-        email = data.get("email", "").lower().strip()
-        real_name = (data.get("real_name") or data.get("name") or "").strip()
-        passwort = data.get("passwort") or data.get("password") or ""
+        # --- 1. WAHRE IP ABFANGEN (Trotz Cloudflare/Render) ---
+        forwarded = request.headers.get("X-Forwarded-For")
+        if forwarded:
+            client_ip = forwarded.split(",")[0].strip()
+        else:
+            client_ip = request.client.host
 
-        if not email or "@" not in email:
-            return JSONResponse(status_code=400, content={"success": False, "message": "Bitte eine gültige E-Mail angeben."})
-        if not real_name:
-            return JSONResponse(status_code=400, content={"success": False, "message": "Bitte deinen echten Vor- und Nachnamen angeben."})
-        if len(passwort) < 6:
-            return JSONResponse(status_code=400, content={"success": False, "message": "Das Passwort muss mindestens 6 Zeichen haben."})
+        # --- 2. EISERNES IP-SCHILD IN DER DATENBANK ---
+        jetzt = datetime.now(timezone.utc)
+        ip_sperre = database.ip_sperren.find_one({"ip": client_ip})
+        if ip_sperre:
+            letzte_zeit = ip_sperre.get("zeit")
+            if letzte_zeit:
+                # NEU: Zeitzonen-Reparatur! Macht alte, "naive" Zeiten fit fürs Rechnen.
+                if letzte_zeit.tzinfo is None:
+                    letzte_zeit = letzte_zeit.replace(tzinfo=timezone.utc)
+                
+                if (jetzt - letzte_zeit) < timedelta(hours=1):
+                    return JSONResponse(
+                        status_code=429, 
+                        content={"success": False, "message": "Spam-Schutz: Zu viele Anfragen. Bitte warte eine Stunde."}
+                    )
+
+        database.ip_sperren.update_one(
+            {"ip": client_ip},
+            {"$set": {"zeit": jetzt}},
+            upsert=True
+        )
+
+        email = daten.email.lower().strip()
+        real_name = daten.real_name.strip()
+        passwort = daten.passwort
+
+        # ==========================================
+        # --- NEU: EISERNE BACKEND-VALIDIERUNG ---
+        # ==========================================
+
+        # A) E-Mail Format per Regex im Backend prüfen
+        import re
+        email_regex = r"^[^\s@]+@[^\s@]+\.[^\s@]+$"
+        if not re.match(email_regex, email):
+            return JSONResponse(status_code=400, content={"success": False, "message": "Bitte gib eine formell gültige E-Mail-Adresse ein."})
+
+        # B) Echter Name (Mindestens Vor- und Nachname)
+        if len(real_name.split()) < 2:
+            return JSONResponse(status_code=400, content={"success": False, "message": "Bitte gib deinen echten Vor- und Nachnamen an (Vor- und Nachname)."})
+
+        # C) Passwort-Länge absichern (Mindestens 6 Zeichen)
+        if not passwort or len(passwort) < 6:
+            return JSONResponse(status_code=400, content={"success": False, "message": "Das Passwort muss mindestens 6 Zeichen lang sein."})
+
+        # D) NEU: AGB-Prüfung im Backend
+        if not daten.agb_akzeptiert:
+            return JSONResponse(status_code=400, content={"success": False, "message": "Die Nutzungsbedingungen müssen akzeptiert werden."})
+
+        # ==========================================
 
         bestehend = database.codes.find_one({"email": email})
         if bestehend and bestehend.get("konto_status") == "aktiv":
@@ -328,18 +409,20 @@ async def auth_register(request: Request):
             "real_name": real_name,
             "pass_salt": salt,
             "pass_hash": pass_hash,
+            "agb_akzeptiert_am": datetime.now(timezone.utc),
             "konto_status": "pending",
             "email_verifiziert": False,
             "role": "admin" if ist_admin(email) else "user",
-            "letztes_update": datetime.now(),
+            "letztes_update": datetime.now(timezone.utc), # Hier sichern wir ab sofort auch die Zeitzone!
         }
+        
         if bestehend:
             database.codes.update_one({"email": email}, {"$set": basis})
         else:
             basis.update({
                 "manifest_mode": None,
                 "drawer_opened": False,
-                "created_at": datetime.now(),
+                "created_at": datetime.now(timezone.utc), # Und hier auch!
                 "history": [],
                 "fortschritt": 0,
                 "profil": {"vollstaendig": False},
@@ -359,7 +442,7 @@ async def auth_register(request: Request):
     except Exception as e:
         print(f"Fehler bei /auth/register: {e}")
         return JSONResponse(status_code=500, content={"success": False, "message": "Systemfehler bei der Registrierung."})
-
+    
 @router.post("/auth/verify-code")
 async def auth_verify_code(request: Request):
     try:
@@ -423,7 +506,7 @@ async def auth_login(request: Request):
 
         record = database.codes.find_one({"email": email})
         if not record or not record.get("pass_hash"):
-            return JSONResponse(status_code=401, content={"success": False, "message": "Konto nicht gefunden oder noch nicht registriert."})
+            return JSONResponse(status_code=401, content={"success": False, "message": "Konto nicht gefunden oder noch nicht registriert (eventuell Google Login?)."})
         if not pruefe_passwort(passwort, record.get("pass_salt"), record.get("pass_hash")):
             return JSONResponse(status_code=401, content={"success": False, "message": "E-Mail oder Passwort ist falsch."})
 
@@ -526,7 +609,6 @@ async def auth_profil_daten(email: str):
             
         database = _get_db()
         
-        # BINGO: Hier war der Fehler! Wir fragen jetzt ganz höflich mit "is not None"
         rec = (database.codes.find_one({"email": email}) if database is not None else None) or {}
         profil = rec.get("profil", {}) or {}
         
@@ -667,7 +749,7 @@ async def auth_passwort_aendern(request: Request):
 
         rec = database.codes.find_one({"email": email})
         if not rec or not rec.get("pass_hash"):
-            return JSONResponse(status_code=404, content={"success": False, "message": "Kein Konto gefunden."})
+            return JSONResponse(status_code=404, content={"success": False, "message": "Kein Konto gefunden (oder über Google registriert)."})
         if not pruefe_passwort(altes, rec.get("pass_salt"), rec.get("pass_hash")):
             return JSONResponse(status_code=401, content={"success": False, "message": "Das aktuelle Passwort ist falsch."})
         if len(neues) < 6:
@@ -704,7 +786,7 @@ async def auth_email_aendern(request: Request):
 
         rec = database.codes.find_one({"email": email})
         if not rec or not rec.get("pass_hash"):
-            return JSONResponse(status_code=404, content={"success": False, "message": "Kein Konto gefunden."})
+            return JSONResponse(status_code=404, content={"success": False, "message": "Kein Konto gefunden (oder über Google registriert)."})
         if not pruefe_passwort(passwort, rec.get("pass_salt"), rec.get("pass_hash")):
             return JSONResponse(status_code=401, content={"success": False, "message": "Das Passwort ist falsch."})
         if database.codes.find_one({"email": neue_email}):
@@ -720,3 +802,76 @@ async def auth_email_aendern(request: Request):
     except Exception as e:
         print(f"Fehler bei /auth/email-aendern: {e}")
         return JSONResponse(status_code=500, content={"success": False, "message": "Systemfehler bei der E-Mail-Änderung."})
+
+
+# =========================================================
+# === NEUE GOOGLE OAUTH ROUTEN (Hier fängt die Magie an) ===
+# =========================================================
+
+@router.get("/auth/google")
+async def login_via_google(request: Request):
+    """Leitet den User zur Google-Anmeldeseite weiter"""
+    # Wir zwingen Google exakt auf diese Adresse, damit es keine Verwirrung mehr gibt!
+    redirect_uri = "http://localhost:10000/auth/google/callback"
+    return await oauth.google.authorize_redirect(request, redirect_uri)
+
+@router.get("/auth/google/callback")
+async def auth_google_callback(request: Request):
+    """Verarbeitet die Google-Antwort und loggt den User in der M&M Community ein"""
+    try:
+        token = await oauth.google.authorize_access_token(request)
+        user_info = token.get("userinfo")
+        
+        if not user_info:
+            return RedirectResponse(url="/?error=auth_failed")
+
+        email = user_info.get("email", "").lower().strip()
+        name = user_info.get("name", "")
+        picture = user_info.get("picture", "")
+        given_name = user_info.get("given_name", "")
+        family_name = user_info.get("family_name", "")
+        
+        database = _get_db()
+        if database is not None:
+            record = database.codes.find_one({"email": email})
+            if not record:
+                # User ist komplett neu -> Wir legen ihn direkt als E-Mail-verifiziert an
+                basis = {
+                    "email": email,
+                    "real_name": name,
+                    "pass_salt": "", # Google-Logins brauchen kein Passwort bei uns
+                    "pass_hash": "",
+                    "konto_status": "aktiv", # Status aktiv, auch wenn Profil noch unvollständig
+                    "email_verifiziert": True,
+                    "role": "admin" if ist_admin(email) else "user",
+                    "letztes_update": datetime.now(),
+                    "manifest_mode": None,
+                    "drawer_opened": False,
+                    "created_at": datetime.now(),
+                    "history": [],
+                    "fortschritt": 0,
+                    "profil": {
+                        "vollstaendig": False, # Das Profil muss er im Frontend noch fertig ausfüllen
+                        "vorname": given_name,
+                        "nachname": family_name,
+                        "profilbild": picture
+                    },
+                }
+                database.codes.insert_one(basis)
+            else:
+                # User existiert schon -> Wir setzen seine E-Mail auf verifiziert, falls sie es nicht war
+                if not record.get("email_verifiziert"):
+                    profil_vollstaendig = bool((record.get("profil") or {}).get("vollstaendig"))
+                    neuer_status = "aktiv" if profil_vollstaendig else "verified"
+                    database.codes.update_one(
+                        {"email": email}, 
+                        {"$set": {"email_verifiziert": True, "konto_status": neuer_status, "letztes_update": datetime.now()}}
+                    )
+
+        # Nach erfolgreichem Login leiten wir ans Frontend weiter.
+        # Über den URL-Parameter weiß dein Frontend, dass der Login geklappt hat!
+        return RedirectResponse(url=f"/?google_login=success&email={email}")
+
+    except Exception as e:
+        print(f"Fehler bei Google Callback: {e}")
+        return RedirectResponse(url="/?error=google_login_failed")
