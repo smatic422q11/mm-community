@@ -1,4 +1,45 @@
- const themen = [
+// Öffnet oder schließt eine Info-Kachel auf der Startseite sanft
+function toggleInfoKachel(geklickteKachel) {
+    // Wenn die angeklickte Kachel schon offen ist, mache sie einfach wieder zu
+    if (geklickteKachel.classList.contains('expandiert')) {
+        geklickteKachel.classList.remove('expandiert');
+        return;
+    }
+    
+    // Ansonsten: Zuerst ALLE anderen Kacheln schließen...
+    document.querySelectorAll('.lp-feature-card').forEach(kard => {
+        kard.classList.remove('expandiert');
+    });
+    
+    // ...und dann die angeklickte vergrößern!
+    geklickteKachel.classList.add('expandiert');
+    
+    // Sanftes Scrollen, damit die große Kachel schön mittig auf dem Bildschirm liegt
+    setTimeout(() => {
+        geklickteKachel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 150);
+}
+
+// Öffnet das Login- oder Registrierungs-Pop-up
+function oeffneAuth(modus) {
+    document.getElementById('auth-gate').style.display = 'flex';
+    if (typeof authZeige === 'function') {
+        authZeige(modus);
+    }
+}
+
+// Schließt das Pop-up wieder
+function schliesseAuth() {
+    document.getElementById('auth-gate').style.display = 'none';
+}
+
+// Versteckt Landingpage & Pop-up nach dem Einloggen
+function wechsleZumDashboard() {
+    document.getElementById('auth-gate').style.display = 'none';
+    document.getElementById('landing-page').style.display = 'none';
+}
+
+const themen = [
         "Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede",
         "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung",
         "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte",
@@ -84,31 +125,59 @@
     }
     function authMsg(id, text, ok) { const el = document.getElementById(id); if (el){ el.textContent = text||""; el.classList.toggle('ok', !!ok);} }
 
-    async function authRegister() {
-        const name = document.getElementById('reg-name').value.trim();
-        const email = document.getElementById('reg-email').value.trim().toLowerCase();
-        const pass = document.getElementById('reg-pass').value;
-        if (!name) return authMsg('reg-msg', "Bitte deinen echten Vor- und Nachnamen angeben.");
-        if (!email || !email.includes('@')) return authMsg('reg-msg', "Bitte eine gültige E-Mail angeben.");
-        if (pass.length < 6) return authMsg('reg-msg', "Das Passwort braucht mindestens 6 Zeichen.");
-        authMsg('reg-msg', "Sende …", true);
-        try {
-            const res = await fetch('/auth/register', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email, real_name: name, passwort: pass }) });
-            const data = await res.json();
-            if (data.success) {
-                userEmail = email;
-                document.getElementById('verify-email-anzeige').textContent = email;
-                const teile = name.split(/\s+/);
-                document.getElementById('prof-vorname').value = teile[0] || "";
-                document.getElementById('prof-nachname').value = teile.slice(1).join(' ');
-                authMsg('reg-msg', data.message, true);
-                authZeige('verify');
-            } else {
-                authMsg('reg-msg', data.message || "Registrierung fehlgeschlagen.");
-                if (data.status === 'existiert') authZeige('login');
-            }
-        } catch (e) { authMsg('reg-msg', "Server-Verbindung fehlgeschlagen."); }
+async function authRegister() {
+    const name = document.getElementById('reg-name').value.trim();
+    const email = document.getElementById('reg-email').value.trim().toLowerCase();
+    const pass = document.getElementById('reg-pass').value;
+    const agbAkzeptiert = document.getElementById('reg-agb').checked; // NEU: Checkbox auslesen
+
+    // 1. Echter Name Check
+    if (!name || name.split(/\s+/).length < 2) {
+        return authMsg('reg-msg', "Bitte gib deinen echten Vor- und Nachnamen an.");
     }
+
+    // 2. Präzise E-Mail-Prüfung
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return authMsg('reg-msg', "Bitte gib eine formell gültige E-Mail-Adresse ein.");
+    }
+
+    // 3. Passwort-Länge
+    if (pass.length < 6) {
+        return authMsg('reg-msg', "Das Passwort braucht mindestens 6 Zeichen.");
+    }
+
+    // 4. NEU: AGB Check
+    if (!agbAkzeptiert) {
+        return authMsg('reg-msg', "Du musst die Nutzungsbedingungen und den Datenschutz akzeptieren.");
+    }
+
+    authMsg('reg-msg', "Sende …", true);    
+    
+    try {
+        // NEU: agb_akzeptiert im body mitschicken
+        const res = await fetch('/auth/register', { 
+            method:'POST', 
+            headers:{'Content-Type':'application/json'}, 
+            body: JSON.stringify({ email, real_name: name, passwort: pass, agb_akzeptiert: agbAkzeptiert }) 
+        });
+        const data = await res.json();
+        if (data.success) {
+            userEmail = email;
+            document.getElementById('verify-email-anzeige').textContent = email;
+            const teile = name.split(/\s+/);
+            document.getElementById('prof-vorname').value = teile[0] || "";
+            document.getElementById('prof-nachname').value = teile.slice(1).join(' ');
+            authMsg('reg-msg', data.message, true);
+            authZeige('verify');
+        } else {
+            authMsg('reg-msg', data.message || "Registrierung fehlgeschlagen.");
+            if (data.status === 'existiert') authZeige('login');
+        }
+    } catch (e) { 
+        authMsg('reg-msg', "Server-Verbindung fehlgeschlagen."); 
+    }
+}
 
     async function authVerify() {
         const email = userEmail || document.getElementById('reg-email').value.trim().toLowerCase();
@@ -183,9 +252,20 @@
         };
         setzeHeaderAvatar();
         baueSidebar();
-        document.getElementById('auth-gate').style.display = 'none';
-        document.getElementById('app-header').classList.add('aktiv');
-        document.getElementById('dashboard').classList.add('aktiv');
+        
+        // HIER SIND DIE WICHTIGEN ZEILEN:
+        const authGate = document.getElementById('auth-gate');
+        if (authGate) authGate.style.display = 'none';
+        
+        const landingPage = document.getElementById('landing-page');
+        if (landingPage) landingPage.style.display = 'none';
+
+        const appHeader = document.getElementById('app-header');
+        if (appHeader) appHeader.classList.add('aktiv');
+
+        const dashboard = document.getElementById('dashboard');
+        if (dashboard) dashboard.classList.add('aktiv');
+        
         ladeMeineRolle();
         // Griff/Button des schwebenden Live-Panels initial setzen (Admin = sofort grün).
         aktualisiereLivePanelStatus();
@@ -3505,4 +3585,45 @@
         else if (id === 'verify-code') authVerify();
         else if (id === 'prof-vorname' || id === 'prof-nachname' || id === 'prof-handle') authProfil();
     });
-   
+   // =====================================================================
+// GOOGLE LOGIN EMPFANGS-STATION
+// =====================================================================
+document.addEventListener("DOMContentLoaded", async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const googleStatus = urlParams.get("google_login");
+    const email = urlParams.get("email");
+    const fehler = urlParams.get("error");
+
+    // Die URL oben im Browser wieder sauber machen (Parameter verstecken)
+    if (googleStatus || fehler) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    if (googleStatus === "success" && email) {
+        // Wir holen uns kurz die Profil-Daten vom Backend ...
+        try {
+            const res = await fetch(`/auth/profil-daten?email=${encodeURIComponent(email)}`);
+            const data = await res.json();
+            
+            if (data.success) {
+                // ... und füttern damit exakt deine bestehende Login-Funktion!
+                data.role = data.rolle;
+                data.co_assistent_modus = data.ist_admin;
+                data.profil = {
+                    vorname: data.vorname,
+                    nachname: data.nachname,
+                    benutzername: data.benutzername,
+                    biografie: data.biografie,
+                    profilbild: data.profilbild
+                };
+                
+                // Zugang gewähren (genau wie beim normalen Login)
+                authAbschluss(email, data);
+            }
+        } catch (e) {
+            console.error("Fehler beim Google-Login Abschluss:", e);
+        }
+    } else if (fehler) {
+        alert("Google Login ist fehlgeschlagen oder wurde abgebrochen.");
+    }
+});
