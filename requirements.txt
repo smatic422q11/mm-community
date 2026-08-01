@@ -11,4 +11,4 @@ weasyprint
 ebooklib
 stripe
 python-dotenv
-
+itsdangerous
