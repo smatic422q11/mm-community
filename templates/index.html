@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="some value" />
-    <title>M&M-COMMUNITY 3.0</title>
+    <title>M&M COMMUNITY | Mensch = Mensch</title>
 
     <!-- GOOGLE FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,59 +39,320 @@
 </head>
 <body>
 
-    <!-- ===================== AUTH-SCHLEUSE (Identity-First) ===================== -->
-    <div id="auth-gate">
-        <div class="auth-card">
-            <div class="auth-logo">M&M</div>
-            <div class="auth-sub">Community</div>
+<!-- ===================== ÖFFENTLICHE STARTSEITE (LANDING PAGE) ===================== -->
+    <div id="landing-page" class="landing-page">
+        <!-- Kopfzeile (Das Namensschild) -->
+        <header class="lp-header">
+            <div class="lp-logo">
+                <span class="mm">M&M</span><span class="co">COMMUNITY</span>
+            </div>
+            <div class="lp-actions">
+                <button class="lp-btn-login" onclick="oeffneAuth('login')">Anmelden</button>
+                <button class="lp-btn-register" onclick="oeffneAuth('register')">Registrieren</button>
+            </div>
+        </header>
 
-            <div id="auth-panel-login" class="auth-panel aktiv">
-                <h2>Anmelden</h2>
-                <p class="auth-hint">Zugang nur für verifizierte Mitglieder. Melde dich mit E-Mail und Passwort an.</p>
-                <input type="email" id="login-email" class="auth-field" placeholder="E-Mail-Adresse" autocomplete="off">
-                <input type="password" id="login-pass" class="auth-field" placeholder="Passwort" autocomplete="off">
-                <button class="auth-primary" onclick="authLogin()">Einloggen</button>
-                <div id="login-msg" class="auth-msg"></div>
-                <div class="auth-link">Noch kein Konto? <a onclick="authZeige('register')">Jetzt registrieren</a></div>
+        <!-- Hauptbereich (Der rote Teppich & Die Klingel) -->
+        <main class="lp-hero">
+            <div class="lp-badge">✨ Version 3.0 ist online</div>
+            <h1>Der digitale Raum für echte <span class="text-gold">Zusammenarbeit</span></h1>
+            <p class="lp-subtitle">Tauche ein in 20 Themen-Sektoren. Erlebe das exklusive 7+1 Live-Video-System und organisiere dich in unserer Zellenstruktur. Dein Recht auf Gefühlsvorderung beginnt hier.</p>
+            
+            <div class="lp-klingel-bereich">
+                <!-- Nur noch EIN Button, der sanft zu den Kacheln scrollt -->
+                <button class="lp-cta-btn pulsate" onclick="document.getElementById('lp-info-kacheln').scrollIntoView({behavior: 'smooth'})">
+                    👇 Entdecke unsere Welt
+                </button>
             </div>
 
-            <div id="auth-panel-register" class="auth-panel">
-                <h2>Registrieren</h2>
-                <p class="auth-hint">Erstelle deinen Zugang. Danach senden wir dir einen 6-stelligen Bestätigungscode.</p>
-                <input type="text" id="reg-name" class="auth-field" placeholder="Echter Vor- und Nachname" autocomplete="off">
-                <input type="email" id="reg-email" class="auth-field" placeholder="E-Mail-Adresse" autocomplete="off">
-                <input type="password" id="reg-pass" class="auth-field" placeholder="Passwort (min. 6 Zeichen)" autocomplete="off">
-                <button class="auth-primary" onclick="authRegister()">Konto erstellen</button>
-                <div id="reg-msg" class="auth-msg"></div>
-                <div class="auth-link">Bereits registriert? <a onclick="authZeige('login')">Zum Login</a></div>
+        <!-- Das Guckloch (Sneak-Peek Zahlen) -->
+        <section class="lp-guckloch">
+            <div class="gl-kard">
+                <div class="gl-icon">🗂️</div>
+                <div class="gl-zahl">20</div>
+                <div class="gl-text">Aktive Sektoren</div>
             </div>
-
-            <div id="auth-panel-verify" class="auth-panel">
-                <h2>E-Mail bestätigen</h2>
-                <p class="auth-hint">Wir haben dir einen 6-stelligen Code an <span id="verify-email-anzeige" style="color:#ffd700;"></span> gesendet.</p>
-                <input type="text" id="verify-code" class="auth-field auth-code-input" maxlength="6" inputmode="numeric" placeholder="––––––">
-                <button class="auth-primary" onclick="authVerify()">Bestätigen</button>
-                <div id="verify-msg" class="auth-msg"></div>
-                <div class="auth-link"><a onclick="authResend()">Code erneut senden</a></div>
+            <div class="gl-kard">
+                <div class="gl-icon">🎥</div>
+                <div class="gl-zahl">7+1</div>
+                <div class="gl-text">Live-Tisch System</div>
             </div>
+            <div class="gl-kard">
+                <div class="gl-icon">🤝</div>
+                <div class="gl-zahl">100%</div>
+                <div class="gl-text">Echte Identitäten</div>
+            </div>
+            <div class="gl-kard">
+                <div class="gl-icon">🧠</div>
+                <div class="gl-zahl">KI</div>
+                <div class="gl-text">Sektoren-Seelen</div>
+            </div>
+        </section>
 
-            <div id="auth-panel-profil" class="auth-panel">
-                <h2>Profil vervollständigen</h2>
-                <p class="auth-hint">Pflichtschritt: Ohne vollständiges Profil bleibt der Zugang gesperrt.</p>
-                <input type="text" id="prof-vorname" class="auth-field" placeholder="Vorname (Pflicht)" autocomplete="off">
-                <input type="text" id="prof-nachname" class="auth-field" placeholder="Nachname (Pflicht)" autocomplete="off">
-                <input type="text" id="prof-handle" class="auth-field" placeholder="Benutzername / Handle (frei wählbar)" autocomplete="off">
-                <div class="auth-avatar-row">
-                    <div id="auth-avatar-vorschau"></div>
-                    <label>Profilbild (optional)<br>
-                        <input type="file" id="prof-bild" accept="image/*" onchange="authBildVorschau()" style="color:#9db8dd; font-size:0.72rem; margin-top:4px;">
-                    </label>
+<!-- Info-Tafeln (Die interaktiven Info-Kacheln) -->
+        <section class="lp-features" id="lp-info-kacheln">
+            
+            <!-- Kachel 1: Diskurs -->
+            <div class="lp-feature-card" onclick="toggleInfoKachel(this)">
+                <div class="feat-header">
+                    <div class="feat-icon">💬</div>
+                    <h3>Diskurs & Gefühlsvorderung</h3>
+                    <div class="feat-plus">＋</div>
                 </div>
-                <button class="auth-primary" onclick="authProfil()">Profil speichern & Zugang freischalten</button>
-                <div id="prof-msg" class="auth-msg"></div>
+                <div class="feat-body">
+                    <p>Teile Gedanken und reflektiere sie gemeinsam mit der Community und KI-Seelen.</p>
+                    <div class="feat-details">
+                        <div class="feat-split">
+                            <div class="feat-text">
+                                <h4>Was bedeutet das im System?</h4>
+                                <p>Hier gibt es keine flüchtigen Likes. Das System der "Gefühlsvorderung" zwingt zur Reflektion. Wenn du einen Gedanken äußerst, kannst du ihn direkt in den Sektoren-Support einspeisen, wo unsere Sektoren-Seelen (KI) dich tiefgründig begleiten.</p>
+                            </div>
+                            <div class="feat-mockup">
+                                <div class="mockup-post">
+                                    <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px;">
+                                        <div style="width:24px; height:24px; border-radius:50%; background:#ffd700;"></div>
+                                        <b style="color:#ffd700;">Dein Gedanke</b>
+                                    </div>
+                                    <span style="opacity:0.7;">Wie fühlt sich das für dich an?</span>
+                                    <div class="mockup-ref">Reflektion · Recht auf Gefühlsvorderung</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <!-- Kachel 2: Live -->
+            <div class="lp-feature-card" onclick="toggleInfoKachel(this)">
+                <div class="feat-header">
+                    <div class="feat-icon">🎥</div>
+                    <h3>Live-Sektoren (7+1)</h3>
+                    <div class="feat-plus">＋</div>
+                </div>
+                <div class="feat-body">
+                    <p>Kein anonymes Zuschauen. Sichere dir einen Platz am virtuellen Tisch.</p>
+                    <div class="feat-details">
+                        <div class="feat-split">
+                            <div class="feat-text">
+                                <h4>Das Tisch-Prinzip</h4>
+                                <p>Du bist entweder aktiv am Tisch oder nicht im Raum. Jeder Sektor hat Tische mit genau 8 Plätzen (7 Teilnehmer + 1 Leiter). Sind alle Plätze belegt, öffnet sich automatisch der nächste Tisch. Pures Engagement, kein passiver Konsum.</p>
+                            </div>
+                            <div class="feat-mockup">
+                                <div class="mockup-grid">
+                                    <div class="m-slot aktiv">DU</div><div class="m-slot belegt">Gast</div>
+                                    <div class="m-slot belegt">Gast</div><div class="m-slot belegt">Gast</div>
+                                    <div class="m-slot belegt">Gast</div><div class="m-slot">frei</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kachel 3: Zellenstruktur -->
+            <div class="lp-feature-card" onclick="toggleInfoKachel(this)">
+                <div class="feat-header">
+                    <div class="feat-icon">🗺️</div>
+                    <h3>Zellenstruktur-Cockpit</h3>
+                    <div class="feat-plus">＋</div>
+                </div>
+                <div class="feat-body">
+                    <p>Optimiere Ressourcen in einem geschützten, strukturierten System.</p>
+                    <div class="feat-details">
+                        <div class="feat-split">
+                            <div class="feat-text">
+                                <h4>Die modulare Ordnung</h4>
+                                <p>Alle 20 Sektoren sind wie Zellen aufgebaut. Jede Zelle hat ihr eigenes Archiv für Medien, Diskurse und Ressourcen. Kein Chaos, sondern fokussiertes Wissen, bereitgestellt von verifizierten Mitgliedern.</p>
+                            </div>
+                            <div class="feat-mockup">
+                                <div class="mockup-drawer">
+                                    <div class="m-item">🗂️ Themen-Hub</div>
+                                    <div class="m-item">🤝 Gemeinschaft</div>
+                                    <div class="m-item aktiv">🗺️ Workflow-Cockpit</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kachel 4: Medien & Ressourcen -->
+            <div class="lp-feature-card" onclick="toggleInfoKachel(this)">
+                <div class="feat-header">
+                    <div class="feat-icon">📚</div>
+                    <h3>Medien- & Ressourcen-Archiv</h3>
+                    <div class="feat-plus">＋</div>
+                </div>
+                <div class="feat-body">
+                    <p>Teile und entdecke visuelle Medien und eine handverlesene Datenbank.</p>
+                    <div class="feat-details">
+                        <div class="feat-split">
+                            <div class="feat-text">
+                                <h4>Wissen, das bleibt</h4>
+                                <p>Jedes Thema hat sein eigenes, sauberes Archiv. Kein unübersichtlicher Chat-Verlauf, in dem alles verschwindet. Speichere wichtige Links, PDFs und Bilder in der Sektoren-Datenbank, damit die gesamte Community dauerhaft davon profitiert.</p>
+                            </div>
+                            <div class="feat-mockup">
+                                <div class="mockup-grid" style="grid-template-columns: 1fr 1fr; gap: 8px;">
+                                    <div class="m-slot" style="background:#0c1a2e; border:1px solid #1e3a5f; color:#9db8dd;">🖼️ Skizze.jpg</div>
+                                    <div class="m-slot" style="background:#0c1a2e; border:1px solid #1e3a5f; color:#9db8dd;">🔗 Wikipedia</div>
+                                    <div class="m-slot" style="background:#0c1a2e; border:1px solid #1e3a5f; color:#9db8dd;">📄 Leitfaden</div>
+                                    <div class="m-slot aktiv" style="color:#00ff88; border-color:#00ff88;">➕ Hochladen</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kachel 5: Profilsuche -->
+            <div class="lp-feature-card" onclick="toggleInfoKachel(this)">
+                <div class="feat-header">
+                    <div class="feat-icon">🔎</div>
+                    <h3>Community-Radar & Profile</h3>
+                    <div class="feat-plus">＋</div>
+                </div>
+                <div class="feat-body">
+                    <p>Finde Gleichgesinnte weltweit über unsere interaktive Profilsuche.</p>
+                    <div class="feat-details">
+                        <div class="feat-split">
+                            <div class="feat-text">
+                                <h4>Echte Menschen, echte Verbundenheit</h4>
+                                <p>Wer ist online? Wer kommt aus deiner Stadt? Unser Radar zeigt dir verifizierte Mitglieder. Mit dem freien Profil-Canvas gestaltet hier jeder seine eigene kleine Webseite, um sich der Community kreativ zu präsentieren.</p>
+                            </div>
+                            <div class="feat-mockup">
+                                <div style="display:flex; gap:10px;">
+                                    <div style="flex:1; background:#0c1a2e; border:1px solid #1e3a5f; border-radius:8px; padding:15px 10px; text-align:center;">
+                                        <div style="width:36px; height:36px; background:#ffd700; border-radius:50%; margin:0 auto 8px;"></div>
+                                        <div style="font-size:0.8rem; color:#fff; font-weight:bold;">@Macher</div>
+                                        <div style="font-size:0.7rem; color:#00ff88; margin-top:4px;">🟢 Online</div>
+                                    </div>
+                                    <div style="flex:1; background:#0c1a2e; border:1px solid #1e3a5f; border-radius:8px; padding:15px 10px; text-align:center;">
+                                        <div style="width:36px; height:36px; background:#9db8dd; border-radius:50%; margin:0 auto 8px;"></div>
+                                        <div style="font-size:0.8rem; color:#fff; font-weight:bold;">@Visionär</div>
+                                        <div style="font-size:0.7rem; color:#9db8dd; margin-top:4px;">Wien, AT</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kachel 6: KI Support -->
+            <div class="lp-feature-card" onclick="toggleInfoKachel(this)">
+                <div class="feat-header">
+                    <div class="feat-icon">🧠</div>
+                    <h3>Sektoren-Seelen & KI-Support</h3>
+                    <div class="feat-plus">＋</div>
+                </div>
+                <div class="feat-body">
+                    <p>Lass dich von themenspezifischen KIs tiefgründig auf deinem Weg begleiten.</p>
+                    <div class="feat-details">
+                        <div class="feat-split">
+                            <div class="feat-text">
+                                <h4>Dein persönlicher Begleiter</h4>
+                                <p>Du bist nie allein. Jedes der 20 Themen besitzt eine eigene, hochspezialisierte KI-Seele. Sie unterstützt dich im Sektoren-Support, reflektiert mit dir und hilft dir jederzeit bei der Strukturierung deiner Gedanken.</p>
+                            </div>
+                            <div class="feat-mockup">
+                                <div style="display:flex; flex-direction:column; gap:10px;">
+                                    <div style="background:#0c1a2e; border-left:3px solid #ffd700; padding:12px; border-radius:6px; font-size:0.8rem; line-height:1.4;">
+                                        <b style="color:#ffd700;">KI-Seele:</b> Die Begleit-Seele für Sektor 2 ist bereit. Wie kann ich dir helfen?
+                                    </div>
+                                    <div style="background:#1e3a5f; align-self:flex-end; padding:10px 14px; border-radius:6px; font-size:0.8rem; color:#fff;">
+                                        Ich möchte meine Gedanken ordnen.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Fußzeile & Cookie-Hinweis -->
+        <footer class="lp-footer">
+            <p>&copy; 2026 M&M Community | Ein Ort für Menschlichkeit & Verbundenheit</p>
+            <div class="lp-footer-links">
+                <a href="/datenschutz" target="_blank">Datenschutz</a>
+                <a href="/impressum" target="_blank">Impressum</a>
+                <a href="/nutzungsbedingungen" target="_blank">Nutzungsbedingungen</a>
+            </div>
+        </footer>
+    </div> <!-- Ende landing-page -->
+
+    <!-- ===================== AUTH-SCHLEUSE (Identity-First) ===================== -->
+<div id="auth-gate">
+    <div class="auth-card" style="position: relative;"> <!-- 'position: relative;' ist wichtig! -->
+        
+        <!-- HIER IST DER NEUE X-KNOPF -->
+        <button class="auth-close-btn" onclick="schliesseAuth()" title="Zurück zur Startseite">✕</button>
+
+        <div class="auth-logo">M&M</div>
+        <div class="auth-sub">Community</div>
+
+        <div id="auth-panel-login" class="auth-panel aktiv">
+            <h2>Anmelden</h2>
+            <p class="auth-hint">Zugang nur für verifizierte Mitglieder. Melde dich mit E-Mail und Passwort an.</p>
+            <input type="email" id="login-email" class="auth-field" placeholder="E-Mail-Adresse" autocomplete="off">
+            <input type="password" id="login-pass" class="auth-field" placeholder="Passwort" autocomplete="off">
+            <button class="auth-primary" onclick="authLogin()">Einloggen</button>
+            
+            <a href="http://localhost:10000/auth/google" class="auth-primary" style="display: block; text-align: center; margin-top: 10px; text-decoration: none; background-color: #4285F4; color: white;">
+                Mit Google einloggen
+            </a>
+
+            <div id="login-msg" class="auth-msg"></div>
+            <div class="auth-link">Noch kein Konto? <a onclick="authZeige('register')">Jetzt registrieren</a></div>
         </div>
-    </div>
+
+        <div id="auth-panel-register" class="auth-panel">
+            <h2>Registrieren</h2>
+            <p class="auth-hint">Erstelle deinen Zugang. Danach senden wir dir einen 6-stelligen Bestätigungscode.</p>
+            <input type="text" id="reg-name" class="auth-field" placeholder="Echter Vor- und Nachname" autocomplete="off">
+            <input type="email" id="reg-email" class="auth-field" placeholder="E-Mail-Adresse" autocomplete="off">
+            <input type="password" id="reg-pass" class="auth-field" placeholder="Passwort (min. 6 Zeichen)" autocomplete="off">
+            
+            <!-- NEU: Die AGB und Datenschutz Checkbox -->
+            <div style="margin-bottom: 15px; display: flex; align-items: flex-start; gap: 8px; text-align: left;">
+                <input type="checkbox" id="reg-agb" style="margin-top: 4px;">
+                <label for="reg-agb" style="font-size: 0.9em; color: #ccc;">
+                    Ich habe die <a href="/nutzungsbedingungen" target="_blank" style="color: #ff9900;">Nutzungsbedingungen</a> und die <a href="/datenschutz" target="_blank" style="color: #ff9900;">Datenschutzerklärung</a> gelesen und akzeptiere sie.
+                </label>
+            </div>
+
+            <button class="auth-primary" onclick="authRegister()">Konto erstellen</button>
+            <div id="reg-msg" class="auth-msg"></div>
+            <div class="auth-link">Bereits registriert? <a onclick="authZeige('login')">Zum Login</a></div>
+        </div>
+
+        <div id="auth-panel-verify" class="auth-panel">
+            <h2>E-Mail bestätigen</h2>
+            <p class="auth-hint">Wir haben dir einen 6-stelligen Code an <span id="verify-email-anzeige" style="color:#ffd700;"></span> gesendet.</p>
+            <input type="text" id="verify-code" class="auth-field auth-code-input" maxlength="6" inputmode="numeric" placeholder="––––––">
+            <button class="auth-primary" onclick="authVerify()">Bestätigen</button>
+            <div id="verify-msg" class="auth-msg"></div>
+            <div class="auth-link"><a onclick="authResend()">Code erneut senden</a></div>
+        </div>
+
+        <div id="auth-panel-profil" class="auth-panel">
+            <h2>Profil vervollständigen</h2>
+            <p class="auth-hint">Pflichtschritt: Ohne vollständiges Profil bleibt der Zugang gesperrt.</p>
+            <input type="text" id="prof-vorname" class="auth-field" placeholder="Vorname (Pflicht)" autocomplete="off">
+            <input type="text" id="prof-nachname" class="auth-field" placeholder="Nachname (Pflicht)" autocomplete="off">
+            <input type="text" id="prof-handle" class="auth-field" placeholder="Benutzername / Handle (frei wählbar)" autocomplete="off">
+            <div class="auth-avatar-row">
+                <div id="auth-avatar-vorschau"></div>
+                <label>Profilbild (optional)<br>
+                    <input type="file" id="prof-bild" accept="image/*" onchange="authBildVorschau()" style="color:#9db8dd; font-size:0.72rem; margin-top:4px;">
+                </label>
+            </div>
+            <button class="auth-primary" onclick="authProfil()">Profil speichern & Zugang freischalten</button>
+            <div id="prof-msg" class="auth-msg"></div>
+        </div>
+        
+    </div> <!-- Ende auth-card -->
+</div> <!-- Ende auth-gate -->
 
     <!-- ===================== APP-HEADER ===================== -->
     <div id="app-header">
@@ -143,7 +404,7 @@
                 <div class="stream-body" id="stream-body">
                     <div id="stream-willkommen" class="stream-willkommen">
                         <div class="gross">Willkommen in der M&M Community</div>
-                        <p style="font-size:1rem; color:#123; margin-top:10px;">Wähle links ein Thema aus der Schublade, um den Stream zu betreten. Über die Leiste oben erreichst du Beiträge, Archive, Profilsuche und den Sektoren-Status.</p>
+                        <p style="font-size:1rem; color:#123; margin-top:10px;">Wir freuen uns, dich in unserer Community willkommen zu heißen!</p>
                     </div>
                     <div id="stream-inhalt" style="display:none;">
                         <div class="composer-gesperrt" id="composer-gesperrt" style="display:none;">
