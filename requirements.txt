@@ -14,3 +14,4 @@ python-dotenv
 itsdangerous
 jinja2
 authlib
+email-validator
