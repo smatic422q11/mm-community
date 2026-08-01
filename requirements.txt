@@ -12,3 +12,4 @@ ebooklib
 stripe
 python-dotenv
 itsdangerous
+jinja2
