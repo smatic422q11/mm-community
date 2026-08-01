@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware  # <-- NEU: Zwingend nötig für Google OAuth
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -31,12 +33,20 @@ def create_app() -> FastAPI:
         description="Vollständig verdrahtete API inklusive Live-Video und Standard-Video.",
     )
 
+    # 1. CORS Middleware
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+    )
+
+    # 2. Session Middleware (NEU) - Muss VOR den Routern geladen werden!
+    # Holt sich einen geheimen Schlüssel aus der .env oder nutzt einen Standardwert
+    app.add_middleware(
+        SessionMiddleware, 
+        secret_key=os.getenv("SECRET_KEY", "super_geheimes_session_passwort_fuer_mm_community")
     )
 
     app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
@@ -93,15 +103,34 @@ def create_app() -> FastAPI:
     app.include_router(forum_router)
     app.include_router(misc_router)
 
-    # Startseite
+# Startseite
     @app.get("/")
     async def home(request: Request):
         return templates.TemplateResponse(request, "index.html", {"request": request})
 
+    # ===================== RECHTLICHE SEITEN =====================
+    # Diese Routen MÜSSEN vor dem "return app" stehen!
+    @app.get("/impressum")
+    async def impressum(request: Request):
+        return templates.TemplateResponse(request, "impressum.html", {"request": request})
+
+    @app.get("/datenschutz")
+    async def datenschutz(request: Request):
+        return templates.TemplateResponse(request, "datenschutz.html", {"request": request})
+
+    @app.get("/nutzungsbedingungen")
+    async def nutzungsbedingungen(request: Request):
+        return templates.TemplateResponse(request, "nutzungsbedingungen.html", {"request": request})
+
+    # HIER IST DIE AUSGANGSTÜR DER FUNKTION:
     return app
 
+# =====================================================================
+# AB HIER STARTET DAS EIGENTLICHE PROGRAMM
+# =====================================================================
 app = create_app()
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=10000, reload=False)
+    # WICHTIG: Wenn hier Port 10000 steht, muss im Google Dashboard auch 10000 bei den URIs stehen!
+    uvicorn.run(app, host="127.0.0.1", port=10000, reload=False)   
