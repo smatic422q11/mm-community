@@ -16,7 +16,6 @@ from modules import (
     ANZAHL_THEMEN_GESAMT, GESPERRTE_THEMEN_FUER_USER,
     ki_aktiv_fuer_sektor, hole_seele, thema_fuer_user_gesperrt
 )
-from auth_routes import konto_ist_aktiv, bestimme_rolle, ist_admin, hat_aktives_abo
 
 class UtilsRouterConfig:
     """Saubere DI-Konfiguration für das utils-Modul."""
@@ -130,8 +129,9 @@ def _cfg_doc(doc_id: str) -> dict:
         return {}
     return database.system_config.find_one({"_id": doc_id}) or {}
 
-def hole_sektor_gesetz(sektor) -> str:
+def hole_sektor_gesetz(sektor):
     try:
+        db = _get_db()  # <--- DAS HIER FEHLT
         doc = db.mm_wissensarchiv.find_one({"sector_id": str(sektor), "status": "gesetzbuch"}) or {}
         return (doc.get("inhalt") or "").strip()
     except Exception:
@@ -232,9 +232,13 @@ def posts_heute(email: str) -> int:
         return 0
 
 def darf_profilsuche(email: str) -> bool:
+    from auth_routes import bestimme_rolle  
+    # Wer darf die Profilsuche nutzen? (z.B. verifizierte und Premium-Mitglieder)
     return bestimme_rolle(email) in ("verifiziert", "premium", "admin")
 
 def ist_premium(email: str) -> bool:
+    from auth_routes import bestimme_rolle  
+    # Wer gilt als Premium? (z.B. Premium und Admin)
     return bestimme_rolle(email) in ("premium", "admin")
 
 def rolle_gesperrt_antwort(benoetigt: str):
@@ -265,6 +269,7 @@ def autor_signatur(email: str) -> dict:
     }
 
 def darf_forum_nutzen(email: str) -> bool:
+    from auth_routes import konto_ist_aktiv  # <--- HIER EINFÜGEN
     return konto_ist_aktiv(email)
 
 def forum_gesperrt_antwort():
@@ -503,8 +508,9 @@ def _reservierung_public(res: dict, viewer_email: str = "", zeige_sensibel: bool
     }
 
 def _admin_guard(email: str):
+    from auth_routes import ist_admin  # <--- HIER EINFÜGEN
     if not ist_admin(email):
-        return JSONResponse(content={"success": False, "error": "Nicht autorisiert."}, status_code=403)
+        return JSONResponse(...)
     return None
 
 def _live_session_public(doc: dict, email: str = "", fuer_admin: bool = False) -> dict:
