@@ -18,23 +18,39 @@
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="https://js.stripe.com/v3/"></script>
     
-    <!-- ENTITY SEO -->
+   <!-- ENTITY SEO: Person & Organisation -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org/",
-      "@type": "Person",
-      "name": "Goran Petrovic",
-      "email": "info@mm-community.online",
-      "jobTitle": "Aspiring Fullstack Developer & Founder of M&M Community",
-      "image": "https://mm-community.online/images/goran-petrovic.jpg",
-      "description": "Gründer der M&M Community & Aspiring Fullstack Developer. Ich baue digitale Räume für Zusammenarbeit und widme mich derzeit intensiv meiner Ausbildung zum Fullstack Developer.",
-      "url": "https://mm-community.online",
-      "sameAs": [
-        "https://www.linkedin.com/in/goran-petrovic-115aa8405",
-        "https://github.com/smatic422q11",
-        "https://x.com/GoranXpetrovic"
-      ]
-    }
+    [
+      {
+        "@context": "https://schema.org/",
+        "@type": "Person",
+        "name": "Goran Petrovic",
+        "jobTitle": "Gründer der M&M Community",
+        "url": "https://mm-community.online",
+        "sameAs": [
+          "https://www.linkedin.com/in/goran-petrovic-115aa8405",
+          "https://github.com/smatic422q11",
+          "https://x.com/GoranXpetrovic"
+        ]
+      },
+      {
+        "@context": "https://schema.org/",
+        "@type": "Organization",
+        "name": "M&M Community",
+        "alternateName": "Mensch ist Mensch",
+        "url": "https://mm-community.online",
+        "description": "Der digitale Raum für echte Zusammenarbeit, 20 Themen-Sektoren und das 7+1 Live-Video-System in Wien.",
+        "founder": {
+          "@type": "Person",
+          "name": "Goran Petrovic"
+        },
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Vienna",
+          "addressCountry": "AT"
+        }
+      }
+    ]
     </script>
 </head>
 <body>
