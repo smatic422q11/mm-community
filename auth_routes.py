@@ -811,8 +811,16 @@ async def auth_email_aendern(request: Request):
 @router.get("/auth/google")
 async def login_via_google(request: Request):
     """Leitet den User zur Google-Anmeldeseite weiter"""
-    # Wir zwingen Google exakt auf diese Adresse, damit es keine Verwirrung mehr gibt!
-    redirect_uri = "http://localhost:10000/auth/google/callback"
+    # Wir lesen die WAHRE Domain aus, auf der der Nutzer gerade ist (verhindert Proxy-Fehler)
+    host = request.headers.get("host", "")
+    
+    if "mm-community.online" in host:
+        # Wenn er über die Live-Website kommt, zwingen wir https und die echte Domain
+        redirect_uri = f"https://{host}/auth/google/callback"
+    else:
+        # Wenn er lokal am PC testet
+        redirect_uri = "http://localhost:10000/auth/google/callback"
+        
     return await oauth.google.authorize_redirect(request, redirect_uri)
 
 @router.get("/auth/google/callback")
@@ -869,7 +877,6 @@ async def auth_google_callback(request: Request):
                     )
 
         # Nach erfolgreichem Login leiten wir ans Frontend weiter.
-        # Über den URL-Parameter weiß dein Frontend, dass der Login geklappt hat!
         return RedirectResponse(url=f"/?google_login=success&email={email}")
 
     except Exception as e:
