@@ -529,16 +529,67 @@ async def video_leave(request: Request):
 # =====================================================================
 # --- TISCH RESERVIERUNGEN & EINLADUNGEN ---
 # =====================================================================
+def _zeitpunkt_erreicht(zeitpunkt: str) -> bool:
+    """Prueft, ob der reservierte Zeitpunkt schon erreicht ist. Leer = sofort."""
+    z = (zeitpunkt or "").strip()
+    if not z:
+        return True
+    jetzt = datetime.now()
+    formate = ["%Y-%m-%d %H:%M", "%d.%m.%Y %H:%M", "%Y-%m-%dT%H:%M", "%d.%m.%Y %H:%M:%S", "%Y-%m-%d %H:%M:%S"]
+    for f in formate:
+        try:
+            return jetzt >= datetime.strptime(z, f)
+        except ValueError:
+            continue
+    try:
+        return jetzt >= datetime.fromisoformat(z)
+    except ValueError:
+        return True
+
+
+def _einladung_abgelaufen(zeitpunkt: str, stunden: int = 1) -> bool:
+    z = (zeitpunkt or "").strip()
+    if not z:
+        return False
+    formate = ["%y-%m-%d %H:%M", "%d.%m.%Y %H:%M", "%Y-%m-%d T%H:%M", "%d.%m.%Y %H:%M:%S", "%Y-%m-%d %H:%M:%S"]
+    start = None
+    for f in formate:
+        try:
+            start = datetime.strptime(z, f); break
+        except ValueError:
+            continue
+    if start is None:
+        try:
+            start = datetime.fromisoformat(z)
+        except ValueError:
+            return False
+    return (datetime.now() - start).total_seconds() > stunden * 3600
+
 def _auto_validiere_reservierung(res: dict) -> dict:
+    """Schaltet einen Tisch automatisch live, sobald er voll (8 Plaetze) UND die Uhrzeit erreicht ist."""
     db = _get_db()
-    if not res or res.get("status") != "geplant":
+    if not res:
+        return res
+    if res.get("status") == "live":
+        lset = res.get("live_seit")
+        if lset:
+            try:
+                lset_dt = lset if isinstance(lset, datetime) else datetime.fromisoformat(str(lset))
+            except Exception:
+                lset_dt = None
+            if lset_dt and (datetime.now() - lset_dt).total_seconds() > 3600:
+                if db is not None:
+                    db.tisch_reservierungen.update_one({"_id": res["_id"]}, {"$set": {"status": "beendet"}})
+                res["status"] = "beendet"
         return res
     if not ist_premium(res.get("ersteller_email", "")):
         return res
+    plaetze = int(_video_config().get("plaetze_pro_tisch", VIDEO_DEFAULT_PLAETZE_PRO_TISCH) or 8)
     eingeladene = res.get("eingeladene", []) or []
-    if not eingeladene:
-        return res
-    if all(isinstance(g, dict) and g.get("status") == "angenommen" for g in eingeladene):
+    angenommen = [g for g in eingeladene if isinstance(g, dict) and g.get("status") == "angenommen"]
+    voll = (1 + len(angenommen)) >= plaetze
+    zeit_ok = _zeitpunkt_erreicht(res.get("zeitpunkt", ""))
+    if voll and zeit_ok:
         if db is not None:
             db.tisch_reservierungen.update_one(
                 {"_id": res["_id"]},
@@ -546,6 +597,7 @@ def _auto_validiere_reservierung(res: dict) -> dict:
             )
         res["status"] = "live"
         res["live_seit"] = datetime.now()
+    return res
     return res        
 
 def _reservierung_public(res: dict, viewer_email: str = "", zeige_sensibel: bool = False) -> dict:
@@ -576,9 +628,10 @@ def _reservierung_public(res: dict, viewer_email: str = "", zeige_sensibel: bool
     mein_status = next((g.get("status") for g in eingeladene if isinstance(g, dict) and g.get("email") == viewer_email), None)
     
     return {
-        "id": str(res.get("_id")),
+        "id": str(res.get("_id", "")),
         "raum_id": res.get("raum_id", ""),
-        "sektor": res.get("sektor"),
+        "live_seit": _iso_date_string(res.get("live_seit")),
+        "zeit_ok": _zeitpunkt_erreicht(res.get("zeitpunkt", "")),
         "thema": res.get("thema", ""),
         "zeitpunkt": res.get("zeitpunkt", ""),
         "identitaet": res.get("identitaet", "") if darf_details else "",
@@ -654,6 +707,8 @@ async def tisch_meine(email: str = ""):
             for r in db.tisch_reservierungen.find({"ersteller_email": email}).sort("erstellt_am", -1).limit(50):
                 eigene.append(_reservierung_public(r, email))
             for r in db.tisch_reservierungen.find({"eingeladene.email": email}).sort("erstellt_am", -1).limit(50):
+                if _einladung_abgelaufen(r.get("zeitpunkt", "")):
+                    continue
                 einladungen.append(_reservierung_public(r, email))
         except Exception as e:
             print(f"Fehler bei /api/tisch/meine: {e}")
@@ -714,11 +769,11 @@ async def tisch_einladen(request: Request):
             )
             res = db.tisch_reservierungen.find_one({"_id": res["_id"]})
             
-        return {"success": True, "reservierung": _reservierung_public(res, email)}
+        res = _auto_validiere_reservierung(res)
+        return {"success": True, "reservierung": _reservierung_public(res, email), "live": res.get("status") == "live"}
     except Exception as e:
         print(f"Fehler bei /api/tisch/einladen: {e}")
         return JSONResponse(status_code=500, content={"success": False, "message": "Einladung fehlgeschlagen."})
-
 @router.post("/api/tisch/einladung/antwort")
 async def tisch_einladung_antwort(request: Request):
     try:

@@ -1,4 +1,45 @@
- const themen = [
+// Öffnet oder schließt eine Info-Kachel auf der Startseite sanft
+function toggleInfoKachel(geklickteKachel) {
+    // Wenn die angeklickte Kachel schon offen ist, mache sie einfach wieder zu
+    if (geklickteKachel.classList.contains('expandiert')) {
+        geklickteKachel.classList.remove('expandiert');
+        return;
+    }
+    
+    // Ansonsten: Zuerst ALLE anderen Kacheln schließen...
+    document.querySelectorAll('.lp-feature-card').forEach(kard => {
+        kard.classList.remove('expandiert');
+    });
+    
+    // ...und dann die angeklickte vergrößern!
+    geklickteKachel.classList.add('expandiert');
+    
+    // Sanftes Scrollen, damit die große Kachel schön mittig auf dem Bildschirm liegt
+    setTimeout(() => {
+        geklickteKachel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 150);
+}
+
+// Öffnet das Login- oder Registrierungs-Pop-up
+function oeffneAuth(modus) {
+    document.getElementById('auth-gate').style.display = 'flex';
+    if (typeof authZeige === 'function') {
+        authZeige(modus);
+    }
+}
+
+// Schließt das Pop-up wieder
+function schliesseAuth() {
+    document.getElementById('auth-gate').style.display = 'none';
+}
+
+// Versteckt Landingpage & Pop-up nach dem Einloggen
+function wechsleZumDashboard() {
+    document.getElementById('auth-gate').style.display = 'none';
+    document.getElementById('landing-page').style.display = 'none';
+}
+
+const themen = [
         "Recht auf Gefühlsvorderung", "Wie werde ich Mensch", "Glaube an Friede",
         "Programm für Bürgerliche Rechte", "Moralische Pflicht und Verantwortung",
         "Menschlichkeit Wiederherstellung", "Kinderschutz-Pflicht-Elternrechte",
@@ -69,7 +110,7 @@
     };
 };
 
-    function backendSektor() { return (aktivesThemaIdx === null) ? null : (aktivesThemaIdx + 1); }
+    function backendSektor() { return (aktivesThemaIdx === null) ? 1 : (aktivesThemaIdx + 1); }
     function escapeHtml(s) { return (s || "").replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
     // =====================================================================
@@ -84,31 +125,59 @@
     }
     function authMsg(id, text, ok) { const el = document.getElementById(id); if (el){ el.textContent = text||""; el.classList.toggle('ok', !!ok);} }
 
-    async function authRegister() {
-        const name = document.getElementById('reg-name').value.trim();
-        const email = document.getElementById('reg-email').value.trim().toLowerCase();
-        const pass = document.getElementById('reg-pass').value;
-        if (!name) return authMsg('reg-msg', "Bitte deinen echten Vor- und Nachnamen angeben.");
-        if (!email || !email.includes('@')) return authMsg('reg-msg', "Bitte eine gültige E-Mail angeben.");
-        if (pass.length < 6) return authMsg('reg-msg', "Das Passwort braucht mindestens 6 Zeichen.");
-        authMsg('reg-msg', "Sende …", true);
-        try {
-            const res = await fetch('/auth/register', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email, real_name: name, passwort: pass }) });
-            const data = await res.json();
-            if (data.success) {
-                userEmail = email;
-                document.getElementById('verify-email-anzeige').textContent = email;
-                const teile = name.split(/\s+/);
-                document.getElementById('prof-vorname').value = teile[0] || "";
-                document.getElementById('prof-nachname').value = teile.slice(1).join(' ');
-                authMsg('reg-msg', data.message, true);
-                authZeige('verify');
-            } else {
-                authMsg('reg-msg', data.message || "Registrierung fehlgeschlagen.");
-                if (data.status === 'existiert') authZeige('login');
-            }
-        } catch (e) { authMsg('reg-msg', "Server-Verbindung fehlgeschlagen."); }
+async function authRegister() {
+    const name = document.getElementById('reg-name').value.trim();
+    const email = document.getElementById('reg-email').value.trim().toLowerCase();
+    const pass = document.getElementById('reg-pass').value;
+    const agbAkzeptiert = document.getElementById('reg-agb').checked; // NEU: Checkbox auslesen
+
+    // 1. Echter Name Check
+    if (!name || name.split(/\s+/).length < 2) {
+        return authMsg('reg-msg', "Bitte gib deinen echten Vor- und Nachnamen an.");
     }
+
+    // 2. Präzise E-Mail-Prüfung
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return authMsg('reg-msg', "Bitte gib eine formell gültige E-Mail-Adresse ein.");
+    }
+
+    // 3. Passwort-Länge
+    if (pass.length < 6) {
+        return authMsg('reg-msg', "Das Passwort braucht mindestens 6 Zeichen.");
+    }
+
+    // 4. NEU: AGB Check
+    if (!agbAkzeptiert) {
+        return authMsg('reg-msg', "Du musst die Nutzungsbedingungen und den Datenschutz akzeptieren.");
+    }
+
+    authMsg('reg-msg', "Sende …", true);    
+    
+    try {
+        // NEU: agb_akzeptiert im body mitschicken
+        const res = await fetch('/auth/register', { 
+            method:'POST', 
+            headers:{'Content-Type':'application/json'}, 
+            body: JSON.stringify({ email, real_name: name, passwort: pass, agb_akzeptiert: agbAkzeptiert }) 
+        });
+        const data = await res.json();
+        if (data.success) {
+            userEmail = email;
+            document.getElementById('verify-email-anzeige').textContent = email;
+            const teile = name.split(/\s+/);
+            document.getElementById('prof-vorname').value = teile[0] || "";
+            document.getElementById('prof-nachname').value = teile.slice(1).join(' ');
+            authMsg('reg-msg', data.message, true);
+            authZeige('verify');
+        } else {
+            authMsg('reg-msg', data.message || "Registrierung fehlgeschlagen.");
+            if (data.status === 'existiert') authZeige('login');
+        }
+    } catch (e) { 
+        authMsg('reg-msg', "Server-Verbindung fehlgeschlagen."); 
+    }
+}
 
     async function authVerify() {
         const email = userEmail || document.getElementById('reg-email').value.trim().toLowerCase();
@@ -183,9 +252,23 @@
         };
         setzeHeaderAvatar();
         baueSidebar();
-        document.getElementById('auth-gate').style.display = 'none';
-        document.getElementById('app-header').classList.add('aktiv');
-        document.getElementById('dashboard').classList.add('aktiv');
+        // FREIER HAUPT-FEED: Beim Login sofort den einen Haupt-Feed (Sektor 1) laden.
+        // (Frueher hing das am Themen-Klick - der Themen-Hub ist abgeschafft.)
+        ladeStream(1);
+        
+        // HIER SIND DIE WICHTIGEN ZEILEN:
+        const authGate = document.getElementById('auth-gate');
+        if (authGate) authGate.style.display = 'none';
+        
+        const landingPage = document.getElementById('landing-page');
+        if (landingPage) landingPage.style.display = 'none';
+
+        const appHeader = document.getElementById('app-header');
+        if (appHeader) appHeader.classList.add('aktiv');
+
+        const dashboard = document.getElementById('dashboard');
+        if (dashboard) dashboard.classList.add('aktiv');
+        
         ladeMeineRolle();
         // Griff/Button des schwebenden Live-Panels initial setzen (Admin = sofort grün).
         aktualisiereLivePanelStatus();
@@ -265,7 +348,7 @@
         const liste = document.getElementById('drawer-liste');
         if (!liste) return;
         liste.innerHTML = "";
-        SIDEBAR_KACHELN.forEach(kachel => {
+        SIDEBAR_KACHELN.filter(k => k.id !== 'themen').forEach(kachel => {
             const g = document.createElement('div');
             g.className = 'menu-gruppe' + (kachel.offen ? ' offen' : '');
             const kopf = document.createElement('div');
@@ -365,8 +448,7 @@
     // ---- 2) Beitrag erstellen (öffnet je Beitragsart die Eingabe-Maske) ----
     function schubladeBeitrag(body) {
         setzeSchubladeKopf('Beitrag erstellen', 'Wähle eine Beitragsart – die Eingabe öffnet sich als Maske.');
-        if (aktivesThemaIdx === null) { body.innerHTML = ssHinweis('Bitte wähle zuerst links ein Thema, um zu posten.'); return; }
-        if (GESPERRTE_THEMEN_IDX.has(aktivesThemaIdx) && !isAdmin) { body.innerHTML = ssHinweis('Dieses Thema ist noch nicht zum Posten freigeschaltet.'); return; }
+        
         body.innerHTML = `
             <div class="ss-chips">
                 <div class="ss-chip" onclick="oeffneBeitragMaske('gedanke')"><span class="cs-icon">💭</span>Gedanke</div>
@@ -617,10 +699,16 @@
             <div class="res-form">
                 <label class="b-label">Identität / Anzeigename</label>
                 <input type="text" class="p-field" id="res-identitaet" placeholder="Wie du am Tisch erscheinst" value="${escapeHtml((meinProfil.vorname||'') + ' ' + (meinProfil.nachname||'')).trim()}">
+                <label class="b-label">Datum</label>
+                <input type="date" class="p-field" id="res-datum">
                 <label class="b-label">Uhrzeit / Zeitraum</label>
-                <input type="text" class="p-field" id="res-zeit" placeholder="z. B. Heute 20:00 Uhr">
+                <input type="text" class="p-field" id="res-zeit" placeholder="z. B. 20:00 Uhr">
                 <label class="b-label">Thema</label>
-                <input type="text" class="p-field" id="res-thema" value="${escapeHtml(sektor ? themen[sektor-1] : '')}" placeholder="z. B. Recht auf Gefühlsvorderung">
+                <select class="p-field" id="res-thema-select" onchange="resThemaWechsel()">
+                    ${themen.map((t, i) => GESPERRTE_THEMEN_IDX.has(i) && !isAdmin ? '' : `<option value="${i}"${i === aktivesThemaIdx ? ' selected' : ''}>${i + 1}. ${escapeHtml(t)}</option>`).join('')}
+                    <option value="eigen">✏️ Eigenes Thema …</option>
+                </select>
+                <input type="text" class="p-field" id="res-thema-eigen" placeholder="Dein eigenes Thema" style="display:none; margin-top:8px;">
                 <button class="p-btn" style="margin-top:12px;" onclick="reservierungAnlegen()">Reservierung planen</button>
             </div>`
             : ssHinweis('🔒 Geplante Reservierungen sind Premium-Mitgliedern vorbehalten.');
@@ -631,7 +719,7 @@
                     <h3>🎥 Direkter Einstieg</h3>
                     <p class="res-p">${liveHinweis}</p>
                     <div class="mp-liste-zeile"><span>Aktuelles Thema</span><b style="color:#ffd700;">${escapeHtml(themaName)}</b></div>
-                    <button class="res-live-btn" ${premium ? '' : 'disabled'} onclick="liveBetreten()">▶ Live betreten</button>
+                    <div id="res-live-status"><p class="res-p" style="color:#9db8dd;">Pruefe deine Berechtigung ...</p></div>
                 </div>
                 <div class="res-spalte res-plan">
                     <h3>🗓️ Geplante Reservierung</h3>
@@ -642,27 +730,75 @@
             <h3 class="res-abschnitt">Meine Tische & Einladungen</h3>
             <div id="res-meine"><p style="color:#123;">Lade …</p></div>`;
         ladeMeineReservierungen();
+        aktualisiereResLiveStatus();
     }
 
     function resMsg(text, ok) { const el = document.getElementById('res-msg'); if (el){ el.textContent = text||""; el.classList.toggle('ok', !!ok);} }
 
+    // Zeigt das Freitext-Feld nur, wenn "Eigenes Thema" gewaehlt wurde.
+    function resThemaWechsel() {
+        const sel = document.getElementById('res-thema-select');
+        const eigen = document.getElementById('res-thema-eigen');
+        if (!sel || !eigen) return;
+        eigen.style.display = (sel.value === 'eigen') ? 'block' : 'none';
+    }
+
+    // Der gruene Live-Button erscheint NUR, wenn der Nutzer berechtigt ist:
+    // Admin-Freigabe aktiv ODER ein eigener/angenommener Tisch ist bereits live.
+    async function aktualisiereResLiveStatus() {
+        const box = document.getElementById('res-live-status');
+        if (!box) return;
+        const premium = !!meineRechte.darf_live || isAdmin;
+        if (!premium) {
+            box.innerHTML = '<p class="res-p" style="color:#ff9b9b;">Der Live-Bereich ist Premium-Mitgliedern vorbehalten.</p>';
+            return;
+        }
+        try {
+            const res = await fetch('/api/tisch/meine?email=' + encodeURIComponent(userEmail));
+            const d = await res.json();
+            const eigeneLive = (d.eigene || []).some(r => r.status === 'live');
+            const eingeladenLive = (d.einladungen || []).some(r => r.status === 'live' && r.mein_status === 'angenommen');
+            if (isAdmin || eigeneLive || eingeladenLive) {
+                box.innerHTML = '<button class="res-live-btn" onclick="liveBetreten()">Live betreten (freigegeben)</button>';
+            } else {
+                box.innerHTML = '<button class="res-live-btn gesperrt" disabled>Live betreten (gesperrt)</button><p class="res-p" style="color:#9db8dd; margin-top:8px;">Reserviere unten einen Tisch und lade Gaeste ein - sobald der Tisch voll ist, wird der Button automatisch gruen.</p>';
+            }
+        } catch (e) {
+            box.innerHTML = '<button class="res-live-btn gesperrt" disabled>Live betreten (gesperrt)</button>';
+        }
+    }
+
     async function liveBetreten() {
         if (!(meineRechte.darf_live || isAdmin)) { resMsg('Der Live-Sektor ist Premium-Mitgliedern vorbehalten.'); return; }
-        if (aktivesThemaIdx === null) { resMsg('Bitte wähle zuerst links ein Thema.'); return; }
+        // ENTKOPPELT: kein Themen-Zwang mehr.
         schliesseSchublade();
         starteVideo();
     }
 
     async function reservierungAnlegen() {
         const sektor = backendSektor();
-        if (!sektor) { resMsg('Bitte wähle zuerst links ein Thema.'); return; }
+        // ENTKOPPELT: kein Themen-Zwang mehr.
+        // Thema: Dropdown-Auswahl (Index) oder eigenes Freitext-Thema.
+        const sel = document.getElementById('res-thema-select');
+        const eigen = document.getElementById('res-thema-eigen');
+        let themaWert = '';
+        if (sel && sel.value === 'eigen') {
+            themaWert = (eigen && eigen.value || '').trim();
+        } else if (sel) {
+            const idx = parseInt(sel.value, 10);
+            themaWert = (!isNaN(idx) && themen[idx]) ? themen[idx] : '';
+        }
+        // Datum + Uhrzeit zu einem Zeitpunkt zusammenfuehren.
+        const datum = (document.getElementById('res-datum')||{}).value || '';
+        const uhrzeit = (document.getElementById('res-zeit')||{}).value || '';
+        const zeitpunkt = [datum, uhrzeit].filter(Boolean).join(' ');
         resMsg('Reserviere …', true);
         try {
             const res = await fetch('/api/tisch/reservieren', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({
                 email: userEmail, sektor,
                 identitaet: (document.getElementById('res-identitaet')||{}).value || '',
-                zeitpunkt: (document.getElementById('res-zeit')||{}).value || '',
-                thema: (document.getElementById('res-thema')||{}).value || '',
+                zeitpunkt: zeitpunkt,
+                thema: themaWert,
             }) });
             const d = await res.json();
             if (d.success) { resMsg('Reservierung geplant. Lade jetzt Gäste ein.', true); ladeMeineReservierungen(); }
@@ -688,7 +824,13 @@
             }
             box.innerHTML = html || ssHinweis('Noch keine Tische oder Einladungen.');
         } catch (e) { box.innerHTML = ssHinweis('Fehler beim Laden.'); }
+        // Auto-Refresh: alle 20 Sek. neu laden, damit Nachrücken/Warteliste live sichtbar wird.
+        if (resAutoTimer) clearTimeout(resAutoTimer);
+        resAutoTimer = setTimeout(() => {
+            if (document.getElementById('res-meine')) ladeMeineReservierungen();
+        }, 20000);
     }
+    let resAutoTimer = null;
 
     function resKarte(r, bin_ersteller) {
         const statusPill = { geplant: 'geplant', live: 'LIVE', abgeschlossen: 'beendet', abgelehnt: 'abgelehnt' }[r.status] || r.status;
@@ -698,20 +840,24 @@
         let aktionen = '';
         if (bin_ersteller) {
             aktionen += `<div class="res-einladen">
-                <input type="text" class="p-field" id="res-inv-${r.id}" placeholder="@handle eines Mitglieds" style="max-width:260px;">
-                <button class="p-btn sekundaer" style="width:auto;margin:0;" onclick="gastEinladen('${r.id}')">Einladen</button></div>`;
-            if (r.status === 'live') aktionen += `<button class="res-live-btn klein" onclick="liveBetreten()">▶ Meinen Tisch betreten</button>`;
-            else aktionen += `<button class="p-btn" style="width:auto;" onclick="reservierungLive('${r.id}')">Jetzt live schalten</button>`;
-        } else {
-            if (r.mein_status === 'eingeladen') {
+                <input type="text" class="p-field" id="res-inv-${r.id}" placeholder="Mitglied suchen (Name oder @handle)" style="max-width:260px;" autocomplete="off" oninput="resInvSuche('${r.id}')" onfocus="resInvSuche('${r.id}')">
+                <div class="res-inv-treffer" id="res-inv-treffer-${r.id}"></div></div>`;
+            const vollLive = (r.status === 'live') || ((1 + (r.angenommen||0)) >= 8 && r.zeit_ok !== false);
+            if (vollLive) aktionen += `<button class="res-live-btn klein" onclick="liveBetreten()">Meinen Tisch betreten</button>`;
+            else aktionen += `<button class="p-btn" style="width:auto;" onclick="reservierungLive(${r.id})">Jetzt live schalten</button>`;
+            }
+        if (r.mein_status === 'eingeladen') {
                 aktionen += `<button class="p-btn" style="width:auto;" onclick="einladungAntwort('${r.id}',true)">Annehmen</button>
                              <button class="p-btn schliessen" style="width:auto;" onclick="einladungAntwort('${r.id}',false)">Ablehnen</button>`;
-            } else if (r.mein_status === 'angenommen' && r.status === 'live') {
-                aktionen += `<button class="res-live-btn klein" onclick="liveBetreten()">▶ Tisch betreten</button>`;
+            } else if (r.mein_status === 'angenommen') {
+                if (r.status === 'live') {
+                    aktionen += `<button class="res-live-btn klein" onclick="liveBetreten()">▶ Tisch betreten</button>`;
+                } else {
+                    aktionen += `<button class="p-btn" style="width:auto;" onclick="liveBetreten()">Warte auf Start</button>`;
+                }
             } else {
                 aktionen += `<span style="color:#9db8dd;">Status: ${escapeHtml(r.mein_status||'—')}</span>`;
             }
-        }
         return `<div class="res-karte">
             <div class="res-karte-kopf">
                 <b>${escapeHtml(r.thema || ('Sektor ' + r.sektor))}</b>
@@ -723,17 +869,51 @@
         </div>`;
     }
 
-    async function gastEinladen(resId) {
+    // Echte Profilsuche-Auswahl beim Einladen: tippen -> Trefferliste -> Klick laedt ein.
+    let resInvTimer = null;
+    function resInvSuche(resId) {
+        clearTimeout(resInvTimer);
+        resInvTimer = setTimeout(() => resInvLaden(resId), 250);
+    }
+    async function resInvLaden(resId) {
         const el = document.getElementById('res-inv-' + resId);
-        const handle = (el ? el.value : '').trim().replace(/^@/, '');
-        if (!handle) { resMsg('Bitte einen @handle angeben.'); return; }
+        const box = document.getElementById('res-inv-treffer-' + resId);
+        if (!el || !box) return;
+        const q = (el.value || '').trim();
+        if (q.length < 2) { box.innerHTML = ''; return; }
         try {
-            const res = await fetch('/api/tisch/einladen', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email: userEmail, reservierung_id: resId, gast_handle: handle }) });
+            const res = await fetch('/api/profil/suche?email=' + encodeURIComponent(userEmail) + '&q=' + encodeURIComponent(q) + '&limit=8');
+            const d = await res.json();
+            const treffer = (d.treffer || []).filter(t => !t.ich);
+            if (!treffer.length) { box.innerHTML = '<div class="res-inv-leer">Kein Mitglied gefunden.</div>'; return; }
+            box.innerHTML = treffer.map((t, i) => {
+                const foto = t.profilbild ? '<span class="res-inv-foto" style="background-image:url(' + t.profilbild + ')"></span>' : '<span class="res-inv-foto">' + escapeHtml((t.name||t.handle||'M').charAt(0).toUpperCase()) + '</span>';
+                const handleTxt = t.handle ? ' <span style="color:#7fa8d8;">@' + escapeHtml(t.handle) + '</span>' : '';
+                return `<div class="res-inv-item" data-idx="${i}">${foto}<span>${escapeHtml(t.name || ('@'+t.handle))}${handleTxt}</span></div>`;
+            }).join('');
+            box.querySelectorAll('.res-inv-item').forEach((el, i) => {
+                el.addEventListener('click', () => {
+                    const t = treffer[i];
+                    gastEinladen(resId, t.ref || t.handle || '');
+                });
+            });
+        } catch (e) { box.innerHTML = ''; }
+    }
+    async function gastEinladen(resId, ref) {
+        ref = (ref || '').trim();
+        if (!ref) { resMsg('Bitte ein Mitglied auswaehlen.'); return; }
+        // ref ist die interne E-Mail-Kennung des Mitglieds (bleibt komplett in der Plattform).
+        const payload = { email: userEmail, reservierung_id: resId };
+        if (ref.indexOf('@') > -1) { payload.gast_email = ref; }
+        else { payload.gast_handle = ref.replace(/^@/, ''); }
+        try {
+            const res = await fetch('/api/tisch/einladen', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
             const d = await res.json();
             if (d.success) { resMsg('Einladung verschickt.', true); ladeMeineReservierungen(); }
             else resMsg(d.message || 'Einladung fehlgeschlagen.');
         } catch (e) { resMsg('Server-Verbindung fehlgeschlagen.'); }
     }
+
 
     async function einladungAntwort(resId, annehmen) {
         try {
@@ -801,7 +981,7 @@
     async function panelTischReservierungen(body) {
         setzePanelKopf('Tisch-Reservierungen', 'Reserviere deinen Platz an einem Live-Tisch (8 pro Tisch · 7+1-System).');
         const sektor = backendSektor();
-        if (!sektor) { body.innerHTML = `<p style="color:#9db8dd;">Wähle zuerst links ein Thema.</p>`; return; }
+        // ENTKOPPELT: kein Themen-Zwang mehr - Tisch-Reservierungen immer sichtbar.
         if (GESPERRTE_THEMEN_IDX.has(aktivesThemaIdx) && !isAdmin) { body.innerHTML = `<p style="color:#9db8dd;">Dieses Thema hat noch keinen Live-Raum.</p>`; return; }
         body.innerHTML = `<p style="color:#9db8dd;">Lade Belegung …</p>`;
         try {
@@ -1287,8 +1467,6 @@
 
     function oeffneBeitragMaske(typ) {
         const maske = BEITRAG_MASKEN[typ]; if (!maske) return;
-        if (aktivesThemaIdx === null) { alert("Bitte zuerst links ein Thema wählen."); return; }
-        if (GESPERRTE_THEMEN_IDX.has(aktivesThemaIdx) && !isAdmin) { alert("Dieses Thema ist noch nicht zum Posten freigeschaltet."); return; }
         aktiveBeitragTyp = typ; beitragMediaBase64 = ""; beitragMediaTyp = "";
         document.getElementById('beitrag-titel').textContent = maske.titel;
         document.getElementById('beitrag-hint').textContent = maske.hint;
@@ -1371,6 +1549,11 @@
     }
 
     async function ladeStream(sektor) {
+        // FREIER HAUPT-FEED: Immer den einen Haupt-Feed (Sektor 1) laden.
+        sektor = 1;
+        // FREIER HAUPT-FEED: Feed-Container sichtbar machen (frueher machte das der Themen-Klick).
+        const _willk = document.getElementById('stream-willkommen'); if (_willk) _willk.style.display = 'none';
+        const _inhalt = document.getElementById('stream-inhalt'); if (_inhalt) _inhalt.style.display = 'block';
         const liste = document.getElementById('stream-liste');
         liste.innerHTML = `<p style="color:#123; text-align:center;">Lade Stream …</p>`;
         streamBeitraege = []; streamGerendert = 0;
@@ -1406,40 +1589,6 @@
     }
 
     const TYP_LABEL = { gedanke: '💭 Gedanke', medien: '🖼️ Medien', diskurs: '💬 Diskurs', ressource: '🔗 Ressource' };
-    function renderBeitrag(b) {
-        const name = escapeHtml(b.autor_name || "Mensch");
-        const handle = b.autor_handle ? `<span class="bk-handle">@${escapeHtml(b.autor_handle)}</span>` : "";
-        const avatar = b.autor_bild ? `<div class="avatar-klein" style="background-image:url('${b.autor_bild}');"></div>` : `<div class="avatar-klein">${name.charAt(0).toUpperCase()}</div>`;
-        let zeit = ""; try { zeit = new Date(b.erstellt_am).toLocaleString('de-DE'); } catch(e){ zeit = b.erstellt_am || ""; }
-
-        // Typ- und Sichtbarkeits-Badges.
-        const typLabel = TYP_LABEL[b.beitrag_typ] || TYP_LABEL.gedanke;
-        const tisch = (b.sichtbarkeit === 'tisch-gruppe');
-        const sichtBadge = tisch
-            ? `<span class="bk-badge badge-sicht-tisch">👥 Tisch-Gruppe</span>`
-            : `<span class="bk-badge badge-sicht-oeffentlich">🌍 Öffentlich</span>`;
-        const badges = `<span class="bk-badges"><span class="bk-badge badge-typ">${typLabel}</span>${sichtBadge}</span>`;
-
-        let media = "";
-        if (b.media) media = (b.media_typ === 'video') ? `<video class="bk-media" src="${b.media}" controls></video>` : `<img class="bk-media" src="${b.media}" alt="Beitragsbild">`;
-        const text = b.text ? `<div class="bk-text">${escapeHtml(b.text)}</div>` : "";
-        const reflektion = b.reflektion ? `<div class="bk-reflektion"><span class="r-label">Reflektion · Recht auf Gefühlsvorderung</span>${escapeHtml(b.reflektion)}</div>` : "";
-        let ressource = "";
-        if (b.ressource_url) {
-            const safeUrl = escapeHtml(b.ressource_url);
-            ressource = `<div class="bk-ressource">🔗 <a href="${safeUrl}" target="_blank" rel="noopener noreferrer">${safeUrl}</a></div>`;
-        }
-        const komm = (b.kommentare || []).map(renderKommentar).join('');
-        return `<div class="beitrag" id="beitrag-${b.id}">
-            <div class="bk-kopf">${avatar}<div><span class="bk-name">${name}</span> ${handle}</div>${badges}<span class="bk-zeit">${escapeHtml(zeit)}</span></div>
-            ${text}${reflektion}${ressource}${media}
-            <div class="kommentare" id="komm-${b.id}">${komm}</div>
-            <div class="komm-input-row">
-                <input type="text" id="komm-in-${b.id}" placeholder="Kommentar schreiben …" onkeypress="if(event.key==='Enter')sendeKommentar('${b.id}')">
-                <button onclick="sendeKommentar('${b.id}')">Senden</button>
-            </div>
-        </div>`;
-    }
 
    // Globaler State für offene Beitrags-Ansichten
     const geöffneteKommentare = new Set();
@@ -1780,8 +1929,8 @@
 
     // Overlay legt sich dynamisch über die Seite, sobald eine Sektor-Sitzung aktiv ist.
     function oeffneLiveOverlay() {
-        if (aktivesThemaIdx === null) { alert("Bitte zuerst ein Thema wählen."); return; }
-        if (GESPERRTE_THEMEN_IDX.has(aktivesThemaIdx) && !isAdmin) { alert("Dieses Thema hat noch keinen Live-Raum."); return; }
+        // ENTKOPPELT: kein Themen-Zwang mehr.
+        if (aktivesThemaIdx !== null && GESPERRTE_THEMEN_IDX.has(aktivesThemaIdx) && !isAdmin) { alert("Dieses Thema hat noch keinen Live-Raum."); return; }
         liveOverlayOffen = true;
         setText('lo-thema', `Sektor ${aktivesThemaIdx + 1}: ${themen[aktivesThemaIdx] || ""}`);
         document.getElementById('live-overlay').classList.add('aktiv');
@@ -1835,7 +1984,7 @@
             alert('Noch gesperrt: Durchlaufe zuerst in der Mitte die Schleuse „Anmeldeoptionen für Live-Sektor" (Thema → Zeitfenster → Technik-Check). Sobald „Live-betreten" grün ist, wird dieses Element scharfgeschaltet.');
             return;
         }
-        if (aktivesThemaIdx === null) { alert('Bitte zuerst ein Thema wählen.'); return; }
+        // ENTKOPPELT: kein Themen-Zwang mehr.
         starteVideo();   // öffnet das eingepasste 7+1-Video-Grid in der Mittel-Fläche
     }
 
@@ -1904,7 +2053,7 @@
 
     async function starteVideo() {
         const sektor = backendSektor();
-        if (!sektor) { alert("Bitte zuerst ein Thema wählen."); return; }
+        // ENTKOPPELT: kein Themen-Zwang mehr.
         if (GESPERRTE_THEMEN_IDX.has(aktivesThemaIdx) && !isAdmin) { alert("Dieses Thema hat noch keinen Live-Raum."); return; }
         if (typeof Peer === 'undefined') { alert("Video-Engine (PeerJS) nicht geladen."); return; }
         if (videoPeer) return;
@@ -3505,4 +3654,45 @@
         else if (id === 'verify-code') authVerify();
         else if (id === 'prof-vorname' || id === 'prof-nachname' || id === 'prof-handle') authProfil();
     });
-   
+   // =====================================================================
+// GOOGLE LOGIN EMPFANGS-STATION
+// =====================================================================
+document.addEventListener("DOMContentLoaded", async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const googleStatus = urlParams.get("google_login");
+    const email = urlParams.get("email");
+    const fehler = urlParams.get("error");
+
+    // Die URL oben im Browser wieder sauber machen (Parameter verstecken)
+    if (googleStatus || fehler) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    if (googleStatus === "success" && email) {
+        // Wir holen uns kurz die Profil-Daten vom Backend ...
+        try {
+            const res = await fetch(`/auth/profil-daten?email=${encodeURIComponent(email)}`);
+            const data = await res.json();
+            
+            if (data.success) {
+                // ... und füttern damit exakt deine bestehende Login-Funktion!
+                data.role = data.rolle;
+                data.co_assistent_modus = data.ist_admin;
+                data.profil = {
+                    vorname: data.vorname,
+                    nachname: data.nachname,
+                    benutzername: data.benutzername,
+                    biografie: data.biografie,
+                    profilbild: data.profilbild
+                };
+                
+                // Zugang gewähren (genau wie beim normalen Login)
+                authAbschluss(email, data);
+            }
+        } catch (e) {
+            console.error("Fehler beim Google-Login Abschluss:", e);
+        }
+    } else if (fehler) {
+        alert("Google Login ist fehlgeschlagen oder wurde abgebrochen.");
+    }
+});
