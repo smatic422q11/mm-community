@@ -105,18 +105,10 @@ async def forum_post(request: Request, background_tasks: BackgroundTasks):
                 "message": f"Dein Tageslimit ist erreicht ({tages_limit} Beitrag/Tag als {rolle}-Mitglied).",
             })
 
-        try:
-            sektor = int(data.get("sektor"))
-        except (TypeError, ValueError):
-            return JSONResponse(status_code=400, content={"success": False, "message": "Ungültiger Sektor."})
-        if sektor < 1 or sektor > ANZAHL_THEMEN_GESAMT:
-            return JSONResponse(status_code=400, content={"success": False, "message": "Unbekanntes Thema."})
-
-        if thema_fuer_user_gesperrt(sektor, email):
-            return JSONResponse(status_code=403, content={
-                "success": False, "gesperrt": True,
-                "message": "Dieses Thema wird gerade vorbereitet und ist noch nicht zum Posten freigeschaltet.",
-            })
+        # FREIES POSTEN: Der Themen-Hub ist abgeschafft. Jeder Beitrag landet im
+        # einen Haupt-Feed (Sektor 1). Ein mitgeschickter Sektor wird bewusst
+        # ignoriert, damit die Nutzer nicht mehr an Themen gebunden sind.
+        sektor = 1
 
         text = (data.get("text") or "").strip()
         media = data.get("media") or ""
@@ -236,13 +228,15 @@ async def forum_posts(email: str = "", sektor: str = "", limit: int = 100, typ: 
         return zugang_verweigert_antwort()
     if not darf_forum_nutzen(email):
         return forum_gesperrt_antwort()
-    try:
-        sektor_int = int(sektor)
-    except (TypeError, ValueError):
-        return JSONResponse(status_code=400, content={"success": False, "message": "Ungültiger Sektor."})
 
-    gesperrt = thema_fuer_user_gesperrt(sektor_int, email)
-    query = {"sektor": sektor_int}
+    # FREIER HAUPT-FEED: Der Themen-Hub ist abgeschafft. Der Feed liefert immer
+    # ALLE Beiträge aus dem einen Haupt-Feed (Sektor 1). Ein mitgeschickter
+    # Sektor wird bewusst ignoriert. Der Live-Sektor (SEKTOR_THEMEN) bleibt
+    # davon unberührt und wählt dort weiterhin sein Thema.
+    sektor_int = 1
+
+    gesperrt = False
+    query = {}
     typ = (typ or "").strip().lower()
     if typ in ("gedanke", "medien", "diskurs", "ressource"):
         query["beitrag_typ"] = typ

@@ -303,6 +303,46 @@ async function authRegister() {
     // =====================================================================
     function schubladeToggle() { document.getElementById('drawer').classList.toggle('zu'); }
 
+    // Eigene Seiten (Kapital & Verantwortung, Kollektiv) -
+    // sie öffnen sich in der MITTLEREN Spalte, nicht als eigene Karte darüber.
+    function oeffneSpezial(titel) {
+        if (typeof schliesseSchublade === 'function') schliesseSchublade();
+        const willkommen = document.getElementById('stream-willkommen');
+        const inhalt = document.getElementById('stream-inhalt');
+        const spezial = document.getElementById('stream-spezial');
+        if (willkommen) willkommen.style.display = 'none';
+        if (inhalt) inhalt.style.display = 'none';
+        if (spezial) {
+            spezial.style.display = 'block';
+            spezial.innerHTML = '';
+        }
+        setText('stream-titel', titel);
+        setText('stream-sub', 'Eigener Bereich · unabhängig vom Content-Stream');
+        const vp = document.getElementById('stream-viewport');
+        if (vp) vp.scrollTop = 0;
+    }
+
+    function schliesseSpezial() {
+        const spezial = document.getElementById('stream-spezial');
+        if (spezial) { spezial.style.display = 'none'; spezial.innerHTML = ''; }
+    }
+
+    // Zurück zum universellen Content-Stream (Haupt-Feed mit allen Beiträgen).
+    async function zeigeContentStream() {
+        const willkommen = document.getElementById('stream-willkommen');
+        const inhalt = document.getElementById('stream-inhalt');
+        const spez = document.getElementById('stream-spezial');
+        if (spez) { spez.style.display = 'none'; spez.innerHTML = ''; }
+        if (willkommen) willkommen.style.display = 'none';
+        if (inhalt) inhalt.style.display = 'block';
+        setText('stream-titel', 'Content-Stream');
+        setText('stream-sub', 'Der Haupt-Feed der Community · Fotos, Artikel und Diskussion');
+        document.querySelectorAll('.thema-btn').forEach(function (b) { b.classList.remove('aktiv'); });
+        const vp = document.getElementById('stream-viewport');
+        if (vp) vp.scrollTop = 0;
+        await ladeStream(1);
+    }
+
     // Themen-Hub baut die 20 Sektoren (21/22 liegen in 'Gemeinschaft & Transparenz').
     function baueThemenHubInhalt(container) {
         for (let i = 0; i < 20; i++) {
@@ -317,8 +357,8 @@ async function authRegister() {
     // Inhalt der Kachel 'Gemeinschaft & Transparenz' (Sektoren 21/22).
     function baueGemeinschaftInhalt(container) {
         const kinder = [
-            { label: 'Kapital & Verantwortung', action: () => waehleThema(20), sektor: 21 },
-            { label: 'Kollektiv', action: () => waehleThema(21), sektor: 22 },
+            { label: 'Kapital & Verantwortung', action: () => oeffneSpezial('Kapital & Verantwortung'), sektor: 21 },
+            { label: 'Kollektiv', action: () => oeffneSpezial('Kollektiv'), sektor: 22 },
         ];
         kinder.forEach(kind => {
             const gesperrt = kind.sektor && GESPERRTE_THEMEN_IDX.has(kind.sektor - 1) && !isAdmin;
@@ -432,11 +472,11 @@ async function authRegister() {
     function schubladeSupport(body) {
         const sektor = backendSektor() || 1;
         const thema = themen[sektor - 1] || 'die Community';
-        setzeSchubladeKopf('Sektoren-Support', `Sektor-sensitive Begleitung · Sektor ${sektor}: ${thema}`);
+        setzeSchubladeKopf('Sektoren-Support', 'M&M Support · Hilfe zur Plattform');
         body.innerHTML = `
             <div class="ss-card">
                 <div class="support-chat" id="support-chat">
-                    <div class="s-ki"><b>M&M Support:</b> Die Begleit-Seele für „${escapeHtml(thema)}" ist bereit. Wie kann ich dir helfen?</div>
+                    <div class="s-ki"><b>M&M Support:</b> Ich bin für alle Fragen zur Plattform da – Anmeldung, Profil, Beiträge, Live-Tisch.</div>
                 </div>
                 <div class="support-eingabe">
                     <input type="text" id="support-in" placeholder="Deine Frage …" onkeypress="if(event.key==='Enter')sendeSupport()">
@@ -571,14 +611,14 @@ async function authRegister() {
             ? `<div class="ps-kachel-foto" style="background-image:url('${t.profilbild}')"></div>`
             : `<div class="ps-kachel-foto ps-kein-foto">${escapeHtml((t.name||t.handle||'M').charAt(0).toUpperCase())}</div>`;
         const ort = [t.stadt, t.land].filter(Boolean).map(escapeHtml).join(', ');
-        const badges = (t.verifiziert ? '<span class="ps-badge ver" title="Verifiziert">✔</span>' : '')
-                     + (t.neu ? '<span class="ps-badge neu" title="Neu dabei">✨</span>' : '');
+        const badges = (t.verifiziert ? '<span class="ps-badge ver" title="Verifiziert">Verifiziert</span>' : '')
+                     + (t.neu ? '<span class="ps-badge neu" title="Neu dabei">Neu</span>' : '');
         return `<div class="ps-kachel" onclick="oeffneFremdprofil('${ref}')">
             ${foto}
             <span class="ps-dot ${t.online?'on':''}" title="${t.online?'Online':'Offline'}"></span>
             <div class="ps-kachel-info">
                 <div class="ps-kachel-name">${escapeHtml(t.name || '@'+t.handle)}${t.ich?' · du':''} ${badges}</div>
-                ${ort ? `<div class="ps-kachel-ort">📍 ${ort}</div>` : ''}
+                ${ort ? `<div class="ps-kachel-ort">${ort}</div>` : ''}
             </div>
         </div>`;
     }
@@ -645,7 +685,7 @@ async function authRegister() {
         try {
             const res = await fetch(`/auth/status?email=${encodeURIComponent(userEmail)}`);
             const s = await res.json();
-            const jaNein = v => v ? '✅ Ja' : '—';
+            const jaNein = v => v ? 'Ja' : '—';
             const sektorName = (aktivesThemaIdx !== null) ? `${aktivesThemaIdx + 1}. ${themen[aktivesThemaIdx]}` : 'kein Thema gewählt';
             body.innerHTML = `
                 <div class="ss-card">
@@ -658,7 +698,7 @@ async function authRegister() {
                 <div class="ss-chips">
                     <div class="ss-chip" onclick="oeffneSchublade('beitrag')"><span class="cs-icon">➕</span>Beitrag erstellen</div>
                     <div class="ss-chip" onclick="oeffneSchublade('status')"><span class="cs-icon">📊</span>Sektoren-Status</div>
-                    <div class="ss-chip" onclick="schliesseSchublade(); oeffneProfil();"><span class="cs-icon">👤</span>Profil bearbeiten</div>
+                    <div class="ss-chip" onclick="schliesseSchublade(); oeffneProfilHub();"><span class="cs-icon">👤</span>Profil bearbeiten</div>
                     <div class="ss-chip" onclick="oeffneSchublade('profilsuche')"><span class="cs-icon">🔎</span>Profilsuche</div>
                 </div>`;
         } catch (e) { body.innerHTML = ssHinweis('Cockpit konnte nicht geladen werden.'); }
@@ -666,7 +706,7 @@ async function authRegister() {
 
     // ---- 8) Sektoren-Status (Übersicht aller 22 Sektoren) ----
     async function schubladeStatus(body) {
-        setzeSchubladeKopf('Sektoren-Status', 'Übersicht aller 22 Sektoren: Freigabe, Beiträge und aktive Live-Teilnehmer.');
+        setzeSchubladeKopf('Themen-Übersicht', 'Alle 22 Themen auf einen Blick: Freigabe, Beiträge und aktive Live-Teilnehmer.');
         body.innerHTML = `<p style="color:#123;">Lade Status …</p>`;
         try {
             const res = await fetch(`/api/sektoren/status?email=${encodeURIComponent(userEmail)}`);
@@ -950,10 +990,10 @@ async function authRegister() {
     function panelSupport(body) {
         const sektor = backendSektor() || 1;
         const thema = themen[sektor - 1] || 'die Community';
-        setzePanelKopf('Support', `Sektor-sensitive Begleitung · Sektor ${sektor}: ${thema}`);
+        setzePanelKopf('Support', 'M&M Support · Hilfe zur Plattform');
         body.innerHTML = `
             <div class="support-chat" id="support-chat">
-                <div class="s-ki"><b>M&M Support:</b> Die Begleit-Seele für „${escapeHtml(thema)}" ist bereit. Wie kann ich dir helfen?</div>
+                <div class="s-ki"><b>M&M Support:</b> Ich bin für alle Fragen zur Plattform da – Anmeldung, Profil, Beiträge, Live-Tisch.</div>
             </div>
             <div class="support-eingabe">
                 <input type="text" id="support-in" placeholder="Deine Frage …" onkeypress="if(event.key==='Enter')sendeSupport()">
@@ -964,7 +1004,8 @@ async function authRegister() {
         const input = document.getElementById('support-in');
         const msg = (input.value || "").trim();
         if (!msg) return;
-        const sektor = backendSektor() || 1;
+        // Der M&M Support ist NICHT an ein Thema gebunden (Sektor 0 = allgemein).
+        const sektor = 0;
         const chat = document.getElementById('support-chat');
         chat.innerHTML += `<div class="s-du"><b>Du:</b> ${escapeHtml(msg)}</div>`;
         input.value = ""; chat.scrollTop = chat.scrollHeight;
@@ -1357,7 +1398,7 @@ async function authRegister() {
                 <div class="mp-liste-zeile"><span>Zugang freigeschaltet</span><b>${jaNein(s.zugang_frei)}</b></div>
                 <div class="mp-liste-zeile"><span>Aktives Abo</span><b>${jaNein(s.abo_aktiv)}</b></div>
                 <div class="mp-liste-zeile"><span>Wahrheits-Zertifikat</span><b>${jaNein(s.hat_zertifikat)}</b></div>
-                <button class="p-btn sekundaer" onclick="schliesseMenuPanel(); oeffneProfil();">Profil bearbeiten</button>`;
+                <button class="p-btn sekundaer" onclick="schliesseMenuPanel(); oeffneProfilHub();">Profil bearbeiten</button>`;
         } catch (e) { body.innerHTML = `<p style="color:#ff6b6b;">Account-Daten konnten nicht geladen werden.</p>`; }
     }
 
@@ -1385,9 +1426,30 @@ async function authRegister() {
         const btn = document.getElementById('thema-'+i); if (btn) btn.classList.add('aktiv');
 
         document.getElementById('stream-willkommen').style.display = 'none';
-        document.getElementById('stream-inhalt').style.display = 'block';
+        // Themenseite statt Content-Stream: der Stream bleibt für Beiträge,
+        // ein Themenklick landet aber NICHT mehr dort.
+        document.getElementById('stream-inhalt').style.display = 'none';
+        const spezFeld = document.getElementById('stream-spezial');
+        if (spezFeld) {
+            spezFeld.style.display = 'block';
+            spezFeld.innerHTML = `<div class="spk-seite">
+                <h2>${i + 1}. ${escapeHtml(themen[i])}</h2>
+                <div id="spk-def-text"><p class="spk-leer">Lade Definition …</p></div>
+                <div id="spk-seele" style="display:none;">
+                    <div class="spk-seele-kopf" id="spk-seele-kopf"></div>
+                    <div class="support-chat" id="thema-chat"></div>
+                    <div class="support-eingabe">
+                        <input type="text" id="thema-in" placeholder="Frage an deine Begleitung …"
+                               onkeypress="if(event.key==='Enter')sendeSeeleSupport(${i + 1})">
+                        <button onclick="sendeSeeleSupport(${i + 1})">Senden</button>
+                    </div>
+                </div>
+                <button class="spk-zurueck" onclick="zeigeContentStream()">Zurück zum Content-Stream</button>
+            </div>`;
+            ladeThemaDefinition(i + 1);
+        }
         document.getElementById('stream-titel').textContent = `${i+1}. ${themen[i]}`;
-        document.getElementById('stream-sub').textContent = "Content-Stream · Fotos, Artikel und Diskussion";
+        document.getElementById('stream-sub').textContent = "Thema · Definition und Grundlage";
 
         // Live-Sektor an das aktive Thema koppeln (Info-Panel-Kopf).
         setText('live-thema', `Sektor ${i+1}: ${themen[i]}`);
@@ -1403,7 +1465,65 @@ async function authRegister() {
         }
         // Rechtes Info-Panel auffrischen, falls offen.
         if (livePanelOffen) ladeLiveInfo();
-        await ladeStream(i+1);
+        // Kein ladeStream mehr: Themenseite und Content-Stream sind entkoppelt.
+    }
+
+    // Lädt Definition und Begleitung (Seele) eines Themas auf die Themenseite.
+    async function ladeThemaDefinition(sektor) {
+        const ziel = document.getElementById('spk-def-text');
+        if (!ziel) return;
+        try {
+            const res = await fetch(`/api/thema/definition?sektor=${sektor}&email=${encodeURIComponent(userEmail)}`);
+            const d = await res.json();
+            if (!d.success) {
+                ziel.innerHTML = `<p class="spk-leer">${escapeHtml(d.message || 'Nicht verfügbar.')}</p>`;
+                return;
+            }
+            ziel.innerHTML = d.definition
+                ? `<div class="spk-def">${escapeHtml(d.definition)}</div>`
+                : '<p class="spk-leer">Definition folgt – dieses Thema wird von der Community definiert.</p>';
+
+            const box = document.getElementById('spk-seele');
+            const kopf = document.getElementById('spk-seele-kopf');
+            const chat = document.getElementById('thema-chat');
+            if (!box || !kopf || !chat) return;
+
+            box.style.display = 'block';
+            const name = d.seele_aktiv ? d.seele : 'M&M Support';
+            kopf.innerHTML = `<b>Begleitung: ${escapeHtml(name)}</b>` +
+                (d.seele_aktiv && d.wesen
+                    ? `<span>${escapeHtml(d.wesen)}</span>`
+                    : '<span>Die Seele dieses Themas ist noch nicht erwacht.</span>');
+            chat.innerHTML = `<div class="s-ki"><b>${escapeHtml(name)}:</b> ` +
+                (d.seele_aktiv
+                    ? 'Ich begleite dieses Thema. Was bewegt dich daran?'
+                    : 'Ich bin für Fragen zur Plattform da. Die Seele dieses Themas spricht, sobald es definiert ist.') +
+                '</div>';
+        } catch (e) {
+            ziel.innerHTML = '<p class="spk-leer">Definition konnte nicht geladen werden.</p>';
+        }
+    }
+
+    // Frage an die Seele des Themas (nur wenn das Thema eine Definition hat).
+    async function sendeSeeleSupport(sektor) {
+        const input = document.getElementById('thema-in');
+        const chat = document.getElementById('thema-chat');
+        if (!input || !chat) return;
+        const msg = (input.value || '').trim();
+        if (!msg) return;
+        chat.innerHTML += `<div class="s-du"><b>Du:</b> ${escapeHtml(msg)}</div>`;
+        input.value = ''; chat.scrollTop = chat.scrollHeight;
+        try {
+            const res = await fetch('/api/support', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: userEmail, sektor, message: msg })
+            });
+            const d = await res.json();
+            const name = d.seele || 'M&M Support';
+            chat.innerHTML += `<div class="s-ki"><b>${escapeHtml(name)}:</b> ${escapeHtml(d.reply || 'Ich bin gleich wieder für dich da.')}</div>`;
+            chat.scrollTop = chat.scrollHeight;
+        } catch (e) { chat.innerHTML += `<div class="s-ki">Verbindung zum Support fehlgeschlagen.</div>`; }
     }
 
     // =====================================================================
@@ -2880,12 +3000,321 @@ async function authRegister() {
     // =====================================================================
     // PROFIL-HUB + DESIGN-VORSCHAU (Einstieg: Profil / Galerie / Vorschau)
     // =====================================================================
-    function oeffneProfilHub() { document.getElementById('profil-hub-overlay').classList.add('aktiv'); }
+    function oeffneProfilHub() {
+        document.getElementById('profil-hub-overlay').classList.add('aktiv');
+        peTab('profil');
+        peProfilLaden();
+    }
+    // Navigation im Fenster "Profil-Einstellungen": schaltet nur die Bereiche um.
+    function peTab(bereich) {
+        document.querySelectorAll('.pe-nav button[data-pe]').forEach(function (b) {
+            b.classList.toggle('aktiv', b.dataset.pe === bereich);
+        });
+        document.querySelectorAll('.pe-tab').forEach(function (t) {
+            t.classList.toggle('pe-versteckt', t.id !== 'pe-tab-' + bereich);
+        });
+        if (bereich === 'vorschau') peVorschauLaden();
+        if (bereich === 'galerie') peGalerieLaden();
+        if (bereich === 'konto') peKontoLaden();
+    }
+
+    // =====================================================================
+    // GALERIE IM FENSTER (pe*): bis zu 8 Bilder, Reihenfolge, Speichern.
+    // =====================================================================
+    let peGalerieBilder = [];
+    let peGalerieGeladen = false;
+
+    function peGalerieRendern() {
+        const ziel = document.getElementById('pe-galerie');
+        if (!ziel) return;
+        const kacheln = peGalerieBilder.map(function (bild, i) {
+            return '<div class="pe-gkachel">' +
+                '<img src="' + bild + '" alt="">' +
+                (i === 0 ? '<span class="pe-gtitel">Titelbild</span>' : '') +
+                '<button class="pe-gweg" title="Entfernen" onclick="peGalerieEntfernen(' + i + ')">×</button>' +
+                '</div>';
+        }).join('');
+        const neu = peGalerieBilder.length < 8
+            ? '<button class="pe-gneu" onclick="document.getElementById(\'pe-galerie-input\').click()">+ Bild</button>'
+            : '';
+        ziel.innerHTML = kacheln + neu;
+    }
+
+    async function peGalerieLaden() {
+        if (peGalerieGeladen) return;
+        try {
+            const res = await fetch('/auth/profil-daten?email=' + encodeURIComponent(userEmail));
+            const p = await res.json();
+            peGalerieBilder = Array.isArray(p.galerie) ? p.galerie.slice(0, 8) : [];
+            peGalerieGeladen = true;
+            peGalerieRendern();
+        } catch (e) {
+            const ziel = document.getElementById('pe-galerie');
+            if (ziel) ziel.innerHTML = '<p class="pe-lade">Galerie konnte nicht geladen werden.</p>';
+        }
+    }
+
+    function peGalerieBilderWaehlen(input) {
+        const dateien = Array.from(input.files || []);
+        const platz = 8 - peGalerieBilder.length;
+        dateien.slice(0, Math.max(0, platz)).forEach(function (datei) {
+            const leser = new FileReader();
+            leser.onload = function () {
+                peGalerieBilder.push(String(leser.result || ''));
+                peGalerieRendern();
+            };
+            leser.readAsDataURL(datei);
+        });
+        input.value = '';
+    }
+
+    function peGalerieEntfernen(index) {
+        peGalerieBilder.splice(index, 1);
+        peGalerieRendern();
+    }
+
+    async function peGalerieSpeichern() {
+        const status = document.getElementById('pe-galerie-status');
+        if (status) { status.textContent = 'Speichere …'; status.style.color = '#8ea3ba'; }
+        try {
+            const res = await fetch('/auth/profil-update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: userEmail, galerie: peGalerieBilder }),
+            });
+            const d = await res.json();
+            if (status) {
+                status.textContent = d.success ? 'Gespeichert.' : (d.message || 'Speichern fehlgeschlagen.');
+                status.style.color = d.success ? '#00c781' : '#8ea3ba';
+            }
+            if (d.success) peVorschauFertig = false;
+        } catch (e) {
+            if (status) status.textContent = 'Speichern fehlgeschlagen.';
+        }
+    }
+    // Zeigt das eigene Profil direkt im Reiter "Vorschau" - so, wie ein Gast es sieht.
+    let peVorschauFertig = false;
+    async function peVorschauLaden() {
+        const ziel = document.getElementById('pe-vorschau-inhalt');
+        if (!ziel || peVorschauFertig) return;
+        ziel.innerHTML = '<p class="pe-lade">Vorschau wird geladen …</p>';
+        try {
+            const res = await fetch('/auth/profil-daten?email=' + encodeURIComponent(userEmail));
+            const p = await res.json();
+            ziel.innerHTML = peVorschauHtml(p);
+            peVorschauFertig = true;
+        } catch (e) {
+            ziel.innerHTML = '<p class="pe-lade">Vorschau konnte nicht geladen werden.</p>';
+        }
+    }
+
+    function peVorschauHtml(p) {
+        const esc = function (s) {
+            return String(s == null ? '' : s).replace(/[&<>"]/g, function (z) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[z];
+            });
+        };
+        const name = ((p.vorname || '') + ' ' + (p.nachname || '')).trim() || 'Noch kein Name';
+        const handle = (p.benutzername || '').trim();
+        const ort = [p.stadt, p.land].filter(Boolean).join(', ');
+        const bild = (p.profilbild || '').trim();
+        const bio = (p.biografie || '').trim();
+        const galerie = Array.isArray(p.galerie) ? p.galerie : [];
+
+        const marken = (p.ist_admin ? '<span class="pv-marke gold">Administrator</span>' : '') +
+            '<span class="pv-marke">Verifiziert</span>';
+
+        const bilder = galerie.length
+            ? galerie.slice(0, 4).map(function (b) {
+                return '<div class="pv-bild"><img src="' + esc(b) + '" alt=""></div>';
+            }).join('')
+            : '<div class="pv-bild pv-leer"></div><div class="pv-bild pv-leer"></div>' +
+              '<div class="pv-bild pv-leer"></div><div class="pv-bild pv-leer"></div>';
+
+        const avatarStil = bild
+            ? "background-image:url('" + esc(bild) + "');background-size:cover;background-position:center;"
+            : '';
+
+        return '' +
+            '<div class="pv-leiste"><span class="pv-punkt"></span><span>Öffentliche Ansicht</span>' +
+            '<span class="pv-rechts">Vorschau · nichts wird gespeichert</span></div>' +
+            '<div class="pv-deckel"></div>' +
+            '<div class="pv-kopf">' +
+                '<div class="pv-avatar" style="' + avatarStil + '"></div>' +
+                '<div class="pv-kopftext">' +
+                    '<div class="pv-name">' + esc(name) + '</div>' +
+                    (handle ? '<div class="pv-handle">' + esc(handle) + '</div>' : '') +
+                    '<div class="pv-marken">' + marken + '</div>' +
+                '</div>' +
+                (ort ? '<div class="pv-orte"><span>' + esc(ort) + '</span></div>' : '') +
+            '</div>' +
+            (bio ? '<div class="pv-text">' + esc(bio) + '</div>' : '') +
+            '<div class="pv-abschnitt">' +
+                '<div class="pv-titel">Galerie <span>' + galerie.length + ' Bilder</span></div>' +
+                '<div class="pv-galerie">' + bilder + '</div>' +
+            '</div>' +
+            '<div class="pv-fuss">So sehen Gäste dein Profil. E-Mail und Geburtsdatum bleiben unsichtbar.</div>';
+    }
+
+    // =====================================================================
+    // PROFIL-FORMULAR IM FENSTER (pe*): laden, Foto waehlen, speichern.
+    // Speichert nur die Felder, die hier stehen - Canvas und Galerie
+    // bleiben unangetastet, weil der Server nur ueberschreibt, was ankommt.
+    // =====================================================================
+    let peNeuesBild = null;
+
+    function peStatus(text, ok) {
+        const el = document.getElementById('pe-status');
+        if (!el) return;
+        el.textContent = text || '';
+        el.style.color = ok ? '#00c781' : '#8ea3ba';
+    }
+
+    async function peProfilLaden() {
+        const setz = function (id, wert) { const el = document.getElementById(id); if (el) el.value = wert || ''; };
+        try {
+            const res = await fetch('/auth/profil-daten?email=' + encodeURIComponent(userEmail));
+            const p = await res.json();
+            setz('pe-vorname', p.vorname);
+            setz('pe-nachname', p.nachname);
+            setz('pe-handle', p.benutzername);
+            setz('pe-geburtsdatum', p.geburtsdatum);
+            setz('pe-land', p.land);
+            setz('pe-stadt', p.stadt);
+            setz('pe-bio', p.biografie);
+            peNeuesBild = null;
+            const av = document.getElementById('pe-avatar');
+            if (av) {
+                if (p.profilbild) {
+                    av.style.backgroundImage = 'url(' + p.profilbild + ')';
+                    av.style.backgroundSize = 'cover';
+                    av.style.backgroundPosition = 'center';
+                    av.textContent = '';
+                } else {
+                    av.style.backgroundImage = '';
+                    av.textContent = 'Foto';
+                }
+            }
+            peStatus('');
+        } catch (e) {
+            peStatus('Daten konnten nicht geladen werden.');
+        }
+    }
+
+    function peFotoWaehlen(input) {
+        const datei = input && input.files && input.files[0];
+        if (!datei) return;
+        const leser = new FileReader();
+        leser.onload = function () {
+            peNeuesBild = String(leser.result || '');
+            const av = document.getElementById('pe-avatar');
+            if (av) {
+                av.style.backgroundImage = 'url(' + peNeuesBild + ')';
+                av.style.backgroundSize = 'cover';
+                av.style.backgroundPosition = 'center';
+                av.textContent = '';
+            }
+        };
+        leser.readAsDataURL(datei);
+    }
+
+    function peKontoLaden() {
+        const feld = document.getElementById('pe-konto-email');
+        if (feld) feld.value = userEmail || '';
+        const neu = document.getElementById('pe-neue-email');
+        if (neu && !neu.value) neu.value = '';
+    }
+
+    async function peEmailAendern() {
+        const status = document.getElementById('pe-email-status');
+        const neue = (document.getElementById('pe-neue-email') || {}).value || '';
+        const passwort = (document.getElementById('pe-email-pass') || {}).value || '';
+        if (status) { status.textContent = 'Prüfe …'; status.style.color = '#8ea3ba'; }
+        try {
+            const res = await fetch('/auth/email-aendern', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: userEmail, neue_email: neue.trim(), passwort: passwort }),
+            });
+            const d = await res.json();
+            if (status) {
+                status.textContent = d.message || (d.success ? 'Geändert.' : 'Änderung fehlgeschlagen.');
+                status.style.color = d.success ? '#00c781' : '#ff9b9b';
+            }
+            if (d.success && d.neue_email) {
+                userEmail = d.neue_email;
+                localStorage.setItem('mm_profil_id', userEmail);
+                const feld = document.getElementById('pe-konto-email');
+                if (feld) feld.value = userEmail;
+                const pw = document.getElementById('pe-email-pass');
+                if (pw) pw.value = '';
+                const nn = document.getElementById('pe-neue-email');
+                if (nn) nn.value = '';
+            }
+        } catch (e) {
+            if (status) { status.textContent = 'Änderung fehlgeschlagen.'; status.style.color = '#ff9b9b'; }
+        }
+    }
+
+    async function pePasswortAendern() {
+        const status = document.getElementById('pe-pass-status');
+        const altes = (document.getElementById('pe-altes-pass') || {}).value || '';
+        const neues = (document.getElementById('pe-neues-pass') || {}).value || '';
+        if (status) { status.textContent = 'Prüfe …'; status.style.color = '#8ea3ba'; }
+        try {
+            const res = await fetch('/auth/passwort-aendern', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: userEmail, altes_passwort: altes, neues_passwort: neues }),
+            });
+            const d = await res.json();
+            if (status) {
+                status.textContent = d.message || (d.success ? 'Passwort geändert.' : 'Änderung fehlgeschlagen.');
+                status.style.color = d.success ? '#00c781' : '#ff9b9b';
+            }
+            if (d.success) {
+                const a = document.getElementById('pe-altes-pass');
+                const n = document.getElementById('pe-neues-pass');
+                if (a) a.value = '';
+                if (n) n.value = '';
+            }
+        } catch (e) {
+            if (status) { status.textContent = 'Änderung fehlgeschlagen.'; status.style.color = '#ff9b9b'; }
+        }
+    }
+
+    async function peProfilSpeichern() {
+        const wert = function (id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+        const payload = {
+            email: userEmail,
+            vorname: wert('pe-vorname'),
+            nachname: wert('pe-nachname'),
+            benutzername: wert('pe-handle'),
+            geburtsdatum: wert('pe-geburtsdatum'),
+            land: wert('pe-land'),
+            stadt: wert('pe-stadt'),
+            biografie: wert('pe-bio'),
+        };
+        if (peNeuesBild !== null) payload.profilbild = peNeuesBild;
+        peStatus('Speichere …', true);
+        try {
+            const res = await fetch('/auth/profil-update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+            const d = await res.json();
+            peStatus(d.success ? 'Gespeichert.' : (d.message || 'Speichern fehlgeschlagen.'), !!d.success);
+            if (d.success) { peNeuesBild = null; peVorschauFertig = false; }
+        } catch (e) {
+            peStatus('Speichern fehlgeschlagen.');
+        }
+    }
     function schliesseProfilHub() { document.getElementById('profil-hub-overlay').classList.remove('aktiv'); }
     function hubOeffne(was) {
+        if (was === 'profil') { peTab('profil'); return; }
         schliesseProfilHub();
-        if (was === 'profil') oeffneProfil();
-        else if (was === 'galerie') oeffneGalerieEditor();
+        if (was === 'galerie') peTab('galerie');
         else if (was === 'vorschau') oeffneDesignVorschau();
     }
     // Eigenes Profil read-only ansehen – exakt wie ein Besucher (inkl. Zwei-Button-Umschalter).
@@ -3342,7 +3771,7 @@ async function authRegister() {
     function versucheAdmin() { if (isAdmin) { oeffneAdmin(); } }
     function oeffneAdmin() {
         document.getElementById('admin-panel').classList.add('aktiv');
-        ladeAdminStats(); ladeAdminUsers(); ladeAdminVideoConfig(); ladeEthnografie(); ladeSektorConfigAlle(); ladeAdminReservierungen(); ladeAdminLiveRegie();
+        ladeAdminStats(); ladeAdminUsers(); ladeAdminVideoConfig(); ladeEthnografie(); ladeSektorConfigAlle(); ladeAdminReservierungen(); ladeAdminLiveRegie(); ladeKiBasis();
     }
     function schliesseAdmin() { document.getElementById('admin-panel').classList.remove('aktiv'); }
 
@@ -3557,6 +3986,39 @@ async function authRegister() {
             await fetch('/admin/update-sector', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email: userEmail, sector_id: sektorIdx, header_text: headerText, status: 'update-text' }) });
             alert("Erfolgreich übertragen!");
         } catch (e) { alert("Verbindungsfehler."); }
+    }
+
+    // --- Zentrales KI-Basis-Wissen (gilt für alle Seelen und den allgemeinen Support) ---
+    async function ladeKiBasis() {
+        const area = document.getElementById('admin-ki-basis-text');
+        const st = document.getElementById('admin-ki-basis-status');
+        if (!area) return;
+        try {
+            const res = await fetch('/admin/ki-basis');
+            const d = await res.json();
+            if (!d.success) { if (st) st.textContent = d.error || 'Nicht autorisiert.'; return; }
+            area.value = d.text || '';
+            if (st) st.textContent = d.zeichen
+                ? `${d.zeichen} Zeichen geladen (${d.quelle})`
+                : 'Noch leer – bitte eintragen.';
+        } catch (e) {}
+    }
+
+    async function adminSpeichereKiBasis() {
+        const area = document.getElementById('admin-ki-basis-text');
+        const st = document.getElementById('admin-ki-basis-status');
+        if (!area) return;
+        try {
+            const res = await fetch('/admin/ki-basis', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: userEmail, text: area.value })
+            });
+            const d = await res.json();
+            if (st) st.textContent = d.success
+                ? `Gespeichert – ${d.zeichen} Zeichen.`
+                : (d.error || 'Fehler beim Speichern.');
+        } catch (e) { if (st) st.textContent = 'Verbindungsfehler.'; }
     }
 
     // --- Ethnografische Studie ---

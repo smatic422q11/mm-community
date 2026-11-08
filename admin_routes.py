@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import JSONResponse, FileResponse
 from datetime import date, datetime, timedelta
 import secrets
@@ -10,7 +10,18 @@ from typing import Any, Optional, Dict
 from bson import ObjectId
 import re
 
-router = APIRouter()
+def admin_pflicht(request: Request) -> None:
+    """Nur ein wirklich angemeldeter Admin darf /admin/* aufrufen.
+
+    Die E-Mail kommt aus der Sitzung (Cookie) - NICHT aus der Anfrage.
+    Sonst koennte jeder Fremde einfach eine Admin-Adresse mitschicken.
+    """
+    email = (request.session.get("email") or "").lower().strip()
+    if not email or not ist_admin(email):
+        raise HTTPException(status_code=403, detail="Nicht autorisiert.")
+
+
+router = APIRouter(dependencies=[Depends(admin_pflicht)])
 
 # --- Globale Admin Einstellungen ---
 SEKTOR_THEMEN = {
@@ -583,6 +594,66 @@ async def admin_sektor_config_set(request: Request):
         return {"success": True, "sektor": s}
     except Exception as e:
         return JSONResponse(content={"success": False, "error": str(e)}, status_code=500)
+
+# --- Zentrales KI-Basis-Wissen (gilt fuer ALLE Seelen und den allgemeinen Support) ---
+BASIS_WISSEN_DATEI = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "KI_SUPPORT_WISSEN.txt"
+)
+
+
+def _lies_basis_datei() -> str:
+    try:
+        with open(BASIS_WISSEN_DATEI, "r", encoding="utf-8") as f:
+            return f.read().strip()
+    except Exception:
+        return ""
+
+
+@router.get("/admin/ki-basis")
+async def admin_get_ki_basis():
+    try:
+        db = _get_db()
+        text = ""
+        if db is not None:
+            doc = db.system_config.find_one({"_id": "ki_basis"}) or {}
+            text = (doc.get("text") or "").strip()
+
+        quelle = "datenbank"
+        # Erstbefuellung: steht noch nichts in der Datenbank, wird automatisch die
+        # Wissensdatei aus dem Projekt uebernommen. So muss niemand den Text von
+        # Hand hineinkopieren.
+        if not text:
+            datei_text = _lies_basis_datei()
+            if datei_text:
+                text = datei_text
+                quelle = "datei"
+                if db is not None:
+                    db.system_config.update_one(
+                        {"_id": "ki_basis"},
+                        {"$set": {"text": text, "quelle": "datei", "letztes_update": datetime.now()}},
+                        upsert=True,
+                    )
+        return {"success": True, "text": text, "quelle": quelle, "zeichen": len(text)}
+    except Exception as e:
+        return JSONResponse(content={"success": False, "error": str(e)}, status_code=500)
+
+
+@router.post("/admin/ki-basis")
+async def admin_set_ki_basis(request: Request):
+    try:
+        db = _get_db()
+        data = await request.json()
+        text = (data.get("text") or "").strip()
+        if db is not None:
+            db.system_config.update_one(
+                {"_id": "ki_basis"},
+                {"$set": {"text": text, "quelle": "admin", "letztes_update": datetime.now()}},
+                upsert=True,
+            )
+        return {"success": True, "zeichen": len(text)}
+    except Exception as e:
+        return JSONResponse(content={"success": False, "error": str(e)}, status_code=500)
+
 
 @router.get("/admin/video-config")
 async def admin_get_video_config(email: str = ""):

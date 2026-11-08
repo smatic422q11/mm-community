@@ -1,0 +1,300 @@
+=============================================================
+M&M COMMUNITY - BEDIENUNGSANLEITUNG
+Stand: 08.11.2026 (neuer Aufbau)
+Für Mitglieder, Moderatoren und den Support
+=============================================================
+
+Willkommen bei M&M Community - Mensch ist Mensch.
+
+Diese Anleitung beschreibt die Plattform so, wie sie JETZT gebaut ist.
+Alles, was hier steht, ist geprüft und im laufenden System vorhanden.
+Was noch nicht fertig ist, steht am Ende unter "In Arbeit".
+
+
+-------------------------------------------------------------
+1. WAS IST DIE M&M COMMUNITY?
+-------------------------------------------------------------
+Die M&M Community ist ein Ort für die Themen, die sonst unter den
+Teppich gekehrt werden. Kein Algorithmus, keine vorgegebene Meinung.
+Ein Ort, an dem sich jeder selbst eine Meinung bilden darf.
+
+Grundsätze:
+- Mensch ist Mensch.
+- Hier zählt der Mensch, nicht die Meinung.
+- Jeder darf seine eigene Sicht haben, niemand wird bewertet.
+- 22 Themen gehören zur Community. Eigene Themen der Mitglieder
+  sollen später dazukommen können (noch in Arbeit).
+
+
+-------------------------------------------------------------
+2. DIE STARTSEITE (vor der Anmeldung)
+-------------------------------------------------------------
+Die Startseite ist ruhig und ohne Werbung aufgebaut.
+
+LINKS: die Botschaft
+- "Mensch ist Mensch"
+- "Hier zählt der Mensch, nicht die Meinung."
+- Drei Punkte: 22 Themen / Ein gemeinsamer Feed / Echte Menschen
+
+RECHTS: der Kasten "Zugang"
+- Knopf "Anmelden" - öffnet das Anmeldefenster
+- Knopf "Konto erstellen" - öffnet die Registrierung
+
+UNTEN: die Pflichtleiste mit
+- Impressum
+- Datenschutz
+- Nutzungsbedingungen
+
+Oben links steht nur das M&M-Logo. Es gibt bewusst keine zweite
+Anmeldeleiste im Kopf, damit nichts doppelt ist.
+
+
+-------------------------------------------------------------
+3. REGISTRIERUNG UND ANMELDUNG
+-------------------------------------------------------------
+So kommt ein neues Mitglied herein:
+
+1. "Konto erstellen" drücken.
+2. Echter Vor- und Nachname, gültige E-Mail, Passwort (mind. 6 Zeichen),
+   Nutzungsbedingungen akzeptieren.
+3. E-Mail bestätigen: Es kommt ein 6-stelliger Code per E-Mail.
+   Diesen Code im Fenster eingeben.
+4. Profil vervollständigen: Vorname, Nachname und Benutzername (Handle)
+   sind Pflicht. Profilbild ist freiwillig.
+5. Erst danach ist der volle Zugang frei.
+
+Anmelden:
+- E-Mail und Passwort eingeben, "Einloggen" drücken.
+- Alternativ "Mit Google einloggen".
+- Nach erfolgreicher Anmeldung öffnet sich direkt das Dashboard.
+  Die Startseite verschwindet dabei vollständig.
+
+Wichtig für den Support:
+- "Konto nicht gefunden" bedeutet: diese E-Mail ist nicht registriert
+  oder das Konto wurde damals über Google angelegt (dann gibt es kein
+  Passwort, dann nur über Google anmelden).
+- "E-Mail oder Passwort ist falsch" bedeutet: Konto existiert,
+  Passwort passt nicht.
+
+
+-------------------------------------------------------------
+4. DAS DASHBOARD - DREI SPALTEN
+-------------------------------------------------------------
+Links:   die Themen-Schublade (das Menü)
+Mitte:   der Content-Stream (alle Beiträge)
+Rechts:  das Live-Panel (wer ist online, welche Tische laufen)
+
+
+-------------------------------------------------------------
+5. DIE THEMEN-SCHUBLADE (LINKS)
+-------------------------------------------------------------
+Die Schublade enthält diese Bereiche:
+
+A) Themen-Hub
+   Alle 22 Themen, fortlaufend nummeriert. Ein Klick auf ein Thema
+   öffnet die Themenseite (siehe Punkt 6).
+
+B) Gemeinschaft & Transparenz
+   Enthält zwei eigene Bereiche:
+   - Kapital & Verantwortung
+   - Kollektiv
+   Diese beiden sind vom Content-Stream ENTKOPPELT. Ein Klick öffnet
+   keine Beiträge und keinen Stream, sondern einen eigenen leeren
+   Bereich in der Mitte. Dort wird später der Inhalt aufgebaut
+   (Zweck, Verantwortliche, Zahlen, Projekte, Beschlüsse).
+
+C) Profil-Einstellungen
+   Öffnet das neue Profil-Fenster mit vier Reitern (siehe Punkt 8).
+
+D) Konto & Sicherheit
+   Eigenes Fenster im neuen Stil. Kein blaues Kästchen mehr.
+
+E) Mein Account
+   Eigenes Fenster im neuen Stil.
+
+F) Zugangsdaten
+   Eigenes Fenster im neuen Stil.
+
+   Wichtig: D, E und F bleiben getrennte Einträge. Sie werden NICHT
+   zusammengelegt und öffnen jeweils ihr eigenes Fenster.
+
+G) Tisch-Reservierungen
+   Öffnet die Schublade für Tisch-Reservierungen. Die Tisch-Funktion
+   ist vom Thema unabhängig und immer erreichbar.
+
+H) Anmeldeoptionen für Live-Sektoren
+   Anmeldung für den Live-Bereich (7+1-System).
+
+
+-------------------------------------------------------------
+6. DIE 22 THEMEN
+-------------------------------------------------------------
+ 1. Recht auf Gefühlsvorderung
+ 2. Wie werde ich Mensch
+ 3. Glaube an Friede
+ 4. Programm für Bürgerliche Rechte
+ 5. Moralische Pflicht und Verantwortung
+ 6. Menschlichkeit Wiederherstellung
+ 7. Kinderschutz-Pflicht-Elternrechte
+ 8. Wahre Richtung und Kunst
+ 9. LGBTQ und Kirche
+10. Trend und Tradition
+11. Religionsbekenntnis oder Selbstwahl
+12. Gesundheitswesen und Verhalten
+13. Arbeitswelt und Du
+14. Mobbing am Arbeitsplatz
+15. Jugendsprecher
+16. Ratgeber für Pensionisten
+17. Sozialgefallen und Widerkehr
+18. Nachbarschaft und Gemeinschaft
+19. Alleinerziehend
+20. Die Brücke
+21. Kapital und Verwaltung      (nur Administration)
+22. Globale Verbundenheit       (nur Administration)
+
+Die Themen 21 und 22 sind für normale Mitglieder gesperrt und nur
+für die Administration sichtbar.
+
+Wichtig zum Verhalten:
+- Ein Klick auf ein Thema führt NICHT mehr in den Content-Stream.
+- Die Themenseite zeigt die Überschrift des Themas und den Platz
+  für die Definition. Der Stream bleibt für die Beiträge.
+- Unten auf der Themenseite steht "Zurück zum Content-Stream".
+  Dieser Knopf holt den allgemeinen Feed mit allen Beiträgen zurück.
+
+
+-------------------------------------------------------------
+7. DER CONTENT-STREAM (MITTE)
+-------------------------------------------------------------
+Der Stream ist der gemeinsame Feed. Er zeigt alle Beiträge
+unabhängig vom Thema.
+
+Die acht Kacheln oben im Stream:
+1. Sektoren-Support - Hilfe und Regeln, Gespräch mit der Begleitung
+2. Beitrag erstellen - neuer Beitrag mit Text, Bild oder Link
+3. Medien-Archiv - Bilder und Dateien
+4. Diskurs-Forum - Beiträge mit Antworten
+5. Ressourcen-Datenbank - Links, Leitfäden, Wissen
+6. Profilsuche - Mitglieder finden (online, Stadt, Name)
+7. Workflow-Cockpit - Abläufe und Stationen
+8. Themen-Übersicht - alle 22 Themen auf einen Blick mit Freigabe,
+   Beitragszahl und aktiven Live-Teilnehmern
+   (früher hieß diese Kachel "Sektoren-Status")
+
+Ein neuer Beitrag erscheint direkt im Stream - das ist so gewollt.
+
+
+-------------------------------------------------------------
+8. PROFIL-EINSTELLUNGEN (NEUES FENSTER)
+-------------------------------------------------------------
+Erreichbar über die Schublade oder über das Profilbild oben rechts.
+Das Fenster hat links eine Navigation mit vier Reitern:
+
+1) PROFIL
+   Foto, Vorname, Nachname, Benutzername, Geburtsdatum, Land, Stadt
+   und "Über mich" - direkt im Fenster bearbeitbar.
+   Unten der Knopf zum Speichern.
+
+2) GALERIE
+   Bis zu 8 Bilder. Bild hinzufügen, Titelbild festlegen, Speichern.
+   Der alte, überladene Galerie-Editor mit "Werkzeuge / Speichern /
+   Schließen" wurde vollständig entfernt.
+
+3) VORSCHAU
+   Zeigt das eigene Profil so, wie Gäste es sehen:
+   Deckblatt, Foto, Name mit @Handle, Marken (Admin / Verifiziert),
+   Ort, Mitglied seit, Text, Galerie und aktive Themen -
+   ohne Bearbeiten-Knöpfe, ohne E-Mail, ohne Geburtsdatum.
+
+4) ANMELDUNG & PASSWORT
+   E-Mail-Adresse ändern (mit Bestätigungspasswort) und
+   Passwort ändern (aktuelles + neues Passwort).
+   Beide Bereiche geben eine eigene Rückmeldung.
+
+
+-------------------------------------------------------------
+9. DIE 8 NAVIGATIONS-KACHELN IM ÜBERBLICK
+-------------------------------------------------------------
+Sektoren-Support    Hilfe, Regeln und Gespräch
+Beitrag erstellen   neuer Beitrag für den Stream
+Medien-Archiv       Bilder und Dateien
+Diskurs-Forum       Beiträge mit Antworten
+Ressourcen-Datenbank Links und Wissen
+Profilsuche         Mitglieder finden
+Workflow-Cockpit    Abläufe und Stationen
+Themen-Übersicht    alle 22 Themen auf einen Blick
+
+
+-------------------------------------------------------------
+10. MITGLIEDSSTUFEN
+-------------------------------------------------------------
+- Basis:       registriert, Profil noch nicht vollständig
+- Verifiziert: Profil vollständig und E-Mail bestätigt
+- Premium:     aktives Abo
+- Admin:       Verwaltung der Plattform
+
+
+-------------------------------------------------------------
+11. LIVE-BEREICH (7+1-SYSTEM)
+-------------------------------------------------------------
+Rechts im Dashboard liegt das Live-Panel.
+Jeder Tisch hat 8 Plätze: 7 Teilnehmer + 1 Leiter.
+Ist ein Tisch voll, öffnet sich automatisch der nächste (8, 16, 24 ...).
+Kein anonymes Zuschauen - wer dabei ist, ist am Tisch.
+
+Die Anmeldung läuft über "Anmeldeoptionen für Live-Sektoren":
+Themen-Wahl, Zeitfenster, technischer Vor-Check.
+
+
+-------------------------------------------------------------
+12. DEIN RECHT AUF GEFÜHLSVORDERUNG
+-------------------------------------------------------------
+Das ist das Herz der Community.
+Wenn ein Mensch tiefe Gefühle, Schwere oder Leere zeigt, ist das die
+höchste Währung im Raum. Es wird niemals bewertet, es gibt keine
+Ratschläge und keine Floskeln - das Gefühl wird angenommen und
+wertfrei zurückgespiegelt.
+
+
+-------------------------------------------------------------
+13. SICHERHEIT UND DATENSCHUTZ
+-------------------------------------------------------------
+- Alle Verwaltungs-Adressen (/admin/...) sind geschützt.
+  Ohne echte Anmeldung als Administrator antwortet der Server mit
+  "Nicht autorisiert". Die frühere Lücke ist geschlossen.
+- Der Server merkt sich die angemeldete Identität in einem
+  Sitzungs-Cookie. Er glaubt nicht mehr der E-Mail, die im Auftrag
+  mitgeschickt wird.
+- Passwörter werden niemals im Klartext gespeichert (gesalzener Hash).
+
+
+-------------------------------------------------------------
+14. WAS NOCH IN ARBEIT IST
+-------------------------------------------------------------
+- Die Definitionen der 22 Themen werden gemeinsam mit dem Gründer
+  geschrieben (Inhalt kommt vom Gründer, Jarvis formuliert).
+- Eigene Themen von Mitgliedern (jeder darf später ein Thema
+  mitbringen).
+- Inhalt für "Kapital & Verantwortung" und "Kollektiv".
+- Willkommensseite nur beim ersten Login (später).
+- Neue Oberfläche ist bisher NUR LOKAL. Live läuft noch der alte
+  Stand, bis die geänderten Dateien hochgeladen und der Container
+  neu gestartet wird.
+
+
+-------------------------------------------------------------
+15. KURZ GESAGT
+-------------------------------------------------------------
+- Startseite: rechts anmelden oder Konto erstellen.
+- Nach dem Login direkt im Dashboard.
+- Thema anklicken = Themenseite mit Definition, nicht der Stream.
+- "Zurück zum Content-Stream" holt den allgemeinen Feed zurück.
+- Gemeinschaft & Transparenz = eigener Bereich, getrennt vom Stream.
+- Profil-Einstellungen = Profil, Galerie, Vorschau, Anmeldung.
+- Die drei Kontoeinträge bleiben getrennt.
+
+Mensch ist Mensch. Hier zählt der Mensch, nicht die Meinung.
+
+=============================================================
+ENDE DER BEDIENUNGSANLEITUNG
+=============================================================

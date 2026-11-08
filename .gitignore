@@ -1,0 +1,23 @@
+# Geheimnisse - NIEMALS hochladen
+.env
+.env.*
+*.env
+
+# Sicherungen und Temp-Reste (werden von den Werkzeugen angelegt)
+*.bak
+*.bak_*
+*.old
+*.orig
+*_neu.py
+_tmp*
+_part*
+_srv_*
+_served.js
+
+# Python
+__pycache__/
+*.pyc
+
+# System
+Thumbs.db
+desktop.ini

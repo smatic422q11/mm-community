@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="some value" />
-    <title>M&M-COMMUNITY 3.0</title>
+    <title>M&M COMMUNITY | Mensch = Mensch</title>
 
     <!-- GOOGLE FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,85 +13,177 @@
 
     <!-- DIE BRÜCKEN ZU DEINEN DATEIEN -->
     <link rel="stylesheet" href="/static/styles.css">
-    <script src="/static/script.js" defer></script>
+    <link rel="stylesheet" href="/static/design_neu.css">
+    <script src="/static/script.js?v=5" defer></script>
 
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="https://js.stripe.com/v3/"></script>
     
-    <!-- ENTITY SEO -->
+   <!-- ENTITY SEO: Person, Organisation & Wikidata-Verknüpfung -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org/",
-      "@type": "Person",
-      "name": "Goran Petrovic",
-      "email": "info@mm-community.online",
-      "jobTitle": "Aspiring Fullstack Developer & Founder of M&M Community",
-      "image": "https://mm-community.online/images/goran-petrovic.jpg",
-      "description": "Gründer der M&M Community & Aspiring Fullstack Developer. Ich baue digitale Räume für Zusammenarbeit und widme mich derzeit intensiv meiner Ausbildung zum Fullstack Developer.",
-      "url": "https://mm-community.online",
-      "sameAs": [
-        "https://www.linkedin.com/in/goran-petrovic-115aa8405",
-        "https://github.com/smatic422q11",
-        "https://x.com/GoranXpetrovic"
-      ]
-    }
+    [
+      {
+        "@context": "https://schema.org/",
+        "@type": "Person",
+        "name": "Goran Petrovic",
+        "jobTitle": "Gründer der M&M Community",
+        "url": "https://mm-community.online",
+        "sameAs": [
+          "https://www.linkedin.com/in/goran-petrovic-115aa8405",
+          "https://github.com/smatic422q11",
+          "https://x.com/GoranXpetrovic"
+        ]
+      },
+      {
+        "@context": "https://schema.org/",
+        "@type": "Organization",
+        "name": "M&M Community",
+        "alternateName": "Mensch ist Mensch",
+        "url": "https://mm-community.online",
+        "sameAs": "https://www.wikidata.org/wiki/Q141134863",
+        "description": "M&M Community – Mensch ist Mensch. 22 Themen, echte Menschen und ehrliche Gespräche aus Wien.",
+        "founder": {
+          "@type": "Person",
+          "name": "Goran Petrovic"
+        },
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Vienna",
+          "addressCountry": "AT"
+        }
+      }
+    ]
     </script>
 </head>
 <body>
 
-    <!-- ===================== AUTH-SCHLEUSE (Identity-First) ===================== -->
-    <div id="auth-gate">
-        <div class="auth-card">
-            <div class="auth-logo">M&M</div>
-            <div class="auth-sub">Community</div>
+    <!-- ===================== ÖFFENTLICHE STARTSEITE ===================== -->
+    <div id="landing-page" class="landing-page">
+        <div class="lp2-wrap">
 
-            <div id="auth-panel-login" class="auth-panel aktiv">
-                <h2>Anmelden</h2>
-                <p class="auth-hint">Zugang nur für verifizierte Mitglieder. Melde dich mit E-Mail und Passwort an.</p>
-                <input type="email" id="login-email" class="auth-field" placeholder="E-Mail-Adresse" autocomplete="off">
-                <input type="password" id="login-pass" class="auth-field" placeholder="Passwort" autocomplete="off">
-                <button class="auth-primary" onclick="authLogin()">Einloggen</button>
-                <div id="login-msg" class="auth-msg"></div>
-                <div class="auth-link">Noch kein Konto? <a onclick="authZeige('register')">Jetzt registrieren</a></div>
-            </div>
-
-            <div id="auth-panel-register" class="auth-panel">
-                <h2>Registrieren</h2>
-                <p class="auth-hint">Erstelle deinen Zugang. Danach senden wir dir einen 6-stelligen Bestätigungscode.</p>
-                <input type="text" id="reg-name" class="auth-field" placeholder="Echter Vor- und Nachname" autocomplete="off">
-                <input type="email" id="reg-email" class="auth-field" placeholder="E-Mail-Adresse" autocomplete="off">
-                <input type="password" id="reg-pass" class="auth-field" placeholder="Passwort (min. 6 Zeichen)" autocomplete="off">
-                <button class="auth-primary" onclick="authRegister()">Konto erstellen</button>
-                <div id="reg-msg" class="auth-msg"></div>
-                <div class="auth-link">Bereits registriert? <a onclick="authZeige('login')">Zum Login</a></div>
-            </div>
-
-            <div id="auth-panel-verify" class="auth-panel">
-                <h2>E-Mail bestätigen</h2>
-                <p class="auth-hint">Wir haben dir einen 6-stelligen Code an <span id="verify-email-anzeige" style="color:#ffd700;"></span> gesendet.</p>
-                <input type="text" id="verify-code" class="auth-field auth-code-input" maxlength="6" inputmode="numeric" placeholder="––––––">
-                <button class="auth-primary" onclick="authVerify()">Bestätigen</button>
-                <div id="verify-msg" class="auth-msg"></div>
-                <div class="auth-link"><a onclick="authResend()">Code erneut senden</a></div>
-            </div>
-
-            <div id="auth-panel-profil" class="auth-panel">
-                <h2>Profil vervollständigen</h2>
-                <p class="auth-hint">Pflichtschritt: Ohne vollständiges Profil bleibt der Zugang gesperrt.</p>
-                <input type="text" id="prof-vorname" class="auth-field" placeholder="Vorname (Pflicht)" autocomplete="off">
-                <input type="text" id="prof-nachname" class="auth-field" placeholder="Nachname (Pflicht)" autocomplete="off">
-                <input type="text" id="prof-handle" class="auth-field" placeholder="Benutzername / Handle (frei wählbar)" autocomplete="off">
-                <div class="auth-avatar-row">
-                    <div id="auth-avatar-vorschau"></div>
-                    <label>Profilbild (optional)<br>
-                        <input type="file" id="prof-bild" accept="image/*" onchange="authBildVorschau()" style="color:#9db8dd; font-size:0.72rem; margin-top:4px;">
-                    </label>
+            <header class="lp2-kopf">
+                <div class="lp-logo">
+                    <span class="mm">M&amp;M</span><span class="co">COMMUNITY</span>
                 </div>
-                <button class="auth-primary" onclick="authProfil()">Profil speichern & Zugang freischalten</button>
-                <div id="prof-msg" class="auth-msg"></div>
-            </div>
+            </header>
+
+            <main class="lp2-inhalt">
+                <section class="lp2-links">
+                    <div class="lp2-marke">Mensch ist Mensch</div>
+                    <h1>Hier zählt der Mensch,<br>nicht die Meinung.</h1>
+                    <p class="lp2-text">Eine Community für die Themen, die sonst unter den Teppich gekehrt werden. Kein Algorithmus, keine vorgegebene Meinung – ein Ort, an dem du dir selbst eine Meinung bilden darfst.</p>
+
+                    <div class="lp2-punkte">
+                        <div class="lp2-punkt">
+                            <b>22 Themen</b>
+                            <span>Gesellschaft, Arbeit, Familie, Glaube, Miteinander.</span>
+                        </div>
+                        <div class="lp2-punkt">
+                            <b>Ein gemeinsamer Feed</b>
+                            <span>Beiträge, Bilder und Diskussionen an einem Ort.</span>
+                        </div>
+                        <div class="lp2-punkt">
+                            <b>Echte Menschen</b>
+                            <span>Angemeldete Mitglieder, keine anonyme Menge.</span>
+                        </div>
+                    </div>
+
+                    <p class="lp2-schluss">Dein Recht auf Gefühlsvorderung beginnt hier.</p>
+                </section>
+
+                <aside class="lp2-rechts">
+                    <div class="lp2-karte">
+                        <h2>Zugang</h2>
+                        <p class="lp2-karte-text">Melde dich an oder erstelle ein Konto – es dauert eine Minute.</p>
+                        <button class="lp2-btn-voll" onclick="oeffneAuth('login')">Anmelden</button>
+                        <button class="lp2-btn-rand" onclick="oeffneAuth('register')">Konto erstellen</button>
+                        <p class="lp2-klein">Mit der Registrierung akzeptierst du die Nutzungsbedingungen und die Datenschutzerklärung.</p>
+                    </div>
+                </aside>
+            </main>
+
+            <footer class="lp2-fuss">
+                <span>&copy; 2026 M&amp;M Community &middot; Wien</span>
+                <nav>
+                    <a href="/impressum" target="_blank">Impressum</a>
+                    <a href="/datenschutz" target="_blank">Datenschutz</a>
+                    <a href="/nutzungsbedingungen" target="_blank">Nutzungsbedingungen</a>
+                </nav>
+            </footer>
+
         </div>
-    </div>
+    </div> <!-- Ende landing-page -->
+
+    <!-- ===================== AUTH-SCHLEUSE (Identity-First) ===================== -->
+<div id="auth-gate">
+    <div class="auth-card" style="position: relative;"> <!-- 'position: relative;' ist wichtig! -->
+        
+        <!-- HIER IST DER NEUE X-KNOPF -->
+        <button class="auth-close-btn" onclick="schliesseAuth()" title="Zurück zur Startseite">✕</button>
+
+        <div class="auth-logo">M&M</div>
+        <div class="auth-sub">Community</div>
+
+        <div id="auth-panel-login" class="auth-panel aktiv">
+            <h2>Anmelden</h2>
+            <p class="auth-hint">Zugang nur für verifizierte Mitglieder. Melde dich mit E-Mail und Passwort an.</p>
+            <input type="email" id="login-email" class="auth-field" placeholder="E-Mail-Adresse" autocomplete="off">
+            <input type="password" id="login-pass" class="auth-field" placeholder="Passwort" autocomplete="off">
+            <button class="auth-primary" onclick="authLogin()">Einloggen</button>
+            
+           <a href="/auth/google" class="auth-primary" style="display: block; text-align: center; margin-top: 10px; text-decoration: none; background-color: #4285F4; color: white;">Mit Google einloggen</a>
+
+            <div id="login-msg" class="auth-msg"></div>
+            <div class="auth-link">Noch kein Konto? <a onclick="authZeige('register')">Jetzt registrieren</a></div>
+        </div>
+
+        <div id="auth-panel-register" class="auth-panel">
+            <h2>Registrieren</h2>
+            <p class="auth-hint">Erstelle deinen Zugang. Danach senden wir dir einen 6-stelligen Bestätigungscode.</p>
+            <input type="text" id="reg-name" class="auth-field" placeholder="Echter Vor- und Nachname" autocomplete="off">
+            <input type="email" id="reg-email" class="auth-field" placeholder="E-Mail-Adresse" autocomplete="off">
+            <input type="password" id="reg-pass" class="auth-field" placeholder="Passwort (min. 6 Zeichen)" autocomplete="off">
+            
+            <!-- NEU: Die AGB und Datenschutz Checkbox -->
+            <div style="margin-bottom: 15px; display: flex; align-items: flex-start; gap: 8px; text-align: left;">
+                <input type="checkbox" id="reg-agb" style="margin-top: 4px;">
+                <label for="reg-agb" style="font-size: 0.9em; color: #ccc;">
+                    Ich habe die <a href="/nutzungsbedingungen" target="_blank" style="color: #ff9900;">Nutzungsbedingungen</a> und die <a href="/datenschutz" target="_blank" style="color: #ff9900;">Datenschutzerklärung</a> gelesen und akzeptiere sie.
+                </label>
+            </div>
+
+            <button class="auth-primary" onclick="authRegister()">Konto erstellen</button>
+            <div id="reg-msg" class="auth-msg"></div>
+            <div class="auth-link">Bereits registriert? <a onclick="authZeige('login')">Zum Login</a></div>
+        </div>
+
+        <div id="auth-panel-verify" class="auth-panel">
+            <h2>E-Mail bestätigen</h2>
+            <p class="auth-hint">Wir haben dir einen 6-stelligen Code an <span id="verify-email-anzeige" style="color:#ffd700;"></span> gesendet.</p>
+            <input type="text" id="verify-code" class="auth-field auth-code-input" maxlength="6" inputmode="numeric" placeholder="––––––">
+            <button class="auth-primary" onclick="authVerify()">Bestätigen</button>
+            <div id="verify-msg" class="auth-msg"></div>
+            <div class="auth-link"><a onclick="authResend()">Code erneut senden</a></div>
+        </div>
+
+        <div id="auth-panel-profil" class="auth-panel">
+            <h2>Profil vervollständigen</h2>
+            <p class="auth-hint">Pflichtschritt: Ohne vollständiges Profil bleibt der Zugang gesperrt.</p>
+            <input type="text" id="prof-vorname" class="auth-field" placeholder="Vorname (Pflicht)" autocomplete="off">
+            <input type="text" id="prof-nachname" class="auth-field" placeholder="Nachname (Pflicht)" autocomplete="off">
+            <input type="text" id="prof-handle" class="auth-field" placeholder="Benutzername / Handle (frei wählbar)" autocomplete="off">
+            <div class="auth-avatar-row">
+                <div id="auth-avatar-vorschau"></div>
+                <label>Profilbild (optional)<br>
+                    <input type="file" id="prof-bild" accept="image/*" onchange="authBildVorschau()" style="color:#9db8dd; font-size:0.72rem; margin-top:4px;">
+                </label>
+            </div>
+            <button class="auth-primary" onclick="authProfil()">Profil speichern & Zugang freischalten</button>
+            <div id="prof-msg" class="auth-msg"></div>
+        </div>
+        
+    </div> <!-- Ende auth-card -->
+</div> <!-- Ende auth-gate -->
 
     <!-- ===================== APP-HEADER ===================== -->
     <div id="app-header">
@@ -123,7 +215,7 @@
             <div class="stream-topbar" id="stream-topbar">
                 <div class="stream-kopf">
                     <h1 id="stream-titel">Content-Stream</h1>
-                    <div class="stream-sub" id="stream-sub">Wähle links ein Thema, um den Stream zu betreten und live mitzudiskutieren.</div>
+                    <div class="stream-sub" id="stream-sub">Willkommen im M&M Content-Stream – Tausche dich frei mit der Community aus und erstelle neue Beiträge.</div>
                 </div>
                 <nav class="sektor-nav" id="sektor-nav">
                     <button class="sn-kachel" data-key="support"     onclick="oeffneSchublade('support')"><span class="sn-icon">🧭</span>Sektoren-Support</button>
@@ -133,7 +225,7 @@
                     <button class="sn-kachel" data-key="ressourcen"  onclick="oeffneSchublade('ressourcen')"><span class="sn-icon">🔗</span>Ressourcen-Datenbank</button>
                     <button class="sn-kachel" data-key="profilsuche" onclick="oeffneSchublade('profilsuche')"><span class="sn-icon">🔎</span>Profilsuche</button>
                     <button class="sn-kachel" data-key="workflow"    onclick="oeffneSchublade('workflow')"><span class="sn-icon">🗺️</span>Workflow-Cockpit</button>
-                    <button class="sn-kachel" data-key="status"      onclick="oeffneSchublade('status')"><span class="sn-icon">📊</span>Sektoren-Status</button>
+                    <button class="sn-kachel" data-key="status"      onclick="oeffneSchublade('status')"><span class="sn-icon">📊</span>Themen-Übersicht</button>
                 </nav>
             </div>
 
@@ -143,7 +235,7 @@
                 <div class="stream-body" id="stream-body">
                     <div id="stream-willkommen" class="stream-willkommen">
                         <div class="gross">Willkommen in der M&M Community</div>
-                        <p style="font-size:1rem; color:#123; margin-top:10px;">Wähle links ein Thema aus der Schublade, um den Stream zu betreten. Über die Leiste oben erreichst du Beiträge, Archive, Profilsuche und den Sektoren-Status.</p>
+                        <p style="font-size:1rem; color:#123; margin-top:10px;">Wir freuen uns, dich in unserer Community willkommen zu heißen!</p>
                     </div>
                     <div id="stream-inhalt" style="display:none;">
                         <div class="composer-gesperrt" id="composer-gesperrt" style="display:none;">
@@ -152,6 +244,8 @@
                         <div class="stream-liste" id="stream-liste"></div>
                         <div id="stream-sentinel"></div>
                     </div>
+                    <!-- Eigene Seite (Kapital & Verantwortung / Kollektiv) - erscheint in der Mitte -->
+                    <div id="stream-spezial" style="display:none;"></div>
                 </div>
 
                 <!-- In-Spalten-Schublade: Overlay NUR über dem hellblauen Bereich, entfaltet von oben -->
@@ -204,12 +298,13 @@
     <!-- ===================== PROFIL-CANVAS (freies Gestaltungssystem, wie eine eigene Webseite) ===================== -->
     <!-- Keine starren Kasten-in-Kasten-Formulare mehr -> freier Canvas. -->
     <div id="profil-overlay" class="overlay">
-        <div class="canvas-editor" id="canvas-editor">
+        <!-- Alter Kasten-Editor entfernt: die Profil-Einstellungen liegen jetzt im Fenster mit Navigation. -->
+        <div class="canvas-editor-alt" style="display:none">
             <div class="ce-dock" id="ce-dock">
             <div class="ce-topbar">
                 <div class="ce-topbar-titel">
-                    <h2>Mein Profil-Canvas</h2>
-                    <div class="p-hint">Vollbild-Bühne: Gestalte dein Profil frei wie eine eigene Webseite – jeder Pixel gehört dir. Editor und Ansicht sind 1:1 identisch.</div>
+                    <h2>Mein Profil</h2>
+                    <div class="p-hint">Foto, Name und ein paar Angaben - fertig.</div>
                 </div>
                 <div class="ce-topbar-actions">
                     <button class="p-btn sekundaer" id="ce-dock-btn" onclick="ceDockToggle()" title="Werkzeuge ein-/ausblenden">▲ Werkzeuge</button>
@@ -217,7 +312,7 @@
                     <button class="p-btn schliessen" onclick="schliesseProfil()">Schließen</button>
                 </div>
             </div>
-            <div class="ce-werkzeuge">
+            <div class="ce-werkzeuge" style="display:none">
                 <label class="ce-tool">🌄 Hintergrundbild-URL
                     <input type="text" id="ce-bg-url" placeholder="https://…/bild.jpg" autocomplete="off" onchange="ceCanvasStil()"></label>
                 <label class="ce-tool">🎨 Hintergrundfarbe
@@ -252,7 +347,7 @@
             <div class="ce-buehne">
                 <div class="ce-canvas-wrap">
                     <div class="ce-canvas" id="ce-canvas">
-                        <div class="ce-canvas-hint">Klick auf die freie Bühne fügt ein Modul hinzu · Modul anklicken öffnet sein Menü · ziehen verschiebt · Ecke ⭜ skaliert · Doppelklick auf Text schreibt.</div>
+                        <div class="ce-canvas-hint" style="display:none">Klick auf die freie Bühne fügt ein Modul hinzu · Modul anklicken öffnet sein Menü · ziehen verschiebt · Ecke ⭜ skaliert · Doppelklick auf Text schreibt.</div>
                     </div>
                 </div>
                 <!-- WYSIWYG-Attributpanel: formt das gewählte Modul mit Live-Vorschau. -->
@@ -261,80 +356,119 @@
             <!-- Schwebendes Kontextmenü: erscheint am angeklickten Modul bzw. am Bühnen-Klickpunkt. -->
             <div class="ce-ctx" id="ce-ctx"></div>
         </div>
-    </div>
-
-    <!-- ===================== PROFIL-HUB (Auswahl: Profil / Galerie / Design-Vorschau) ===================== -->
-    <div id="profil-hub-overlay" class="overlay">
-        <div class="hub-box">
-            <button class="p-btn schliessen hub-close" onclick="schliesseProfilHub()">✕</button>
-            <h2 class="hub-titel">Profil-Einstellungen</h2>
-            <p class="hub-hint">Wähle, was du gestalten möchtest.</p>
-            <div class="hub-grid">
-                <button class="hub-karte" onclick="hubOeffne('profil')"><span class="hub-icon">👤</span><b>Profil bearbeiten</b><span class="hub-sub">Dein freier Profil-Canvas</span></button>
-                <button class="hub-karte" onclick="hubOeffne('galerie')"><span class="hub-icon">🖼️</span><b>Galerie bearbeiten</b><span class="hub-sub">Eigener Bild-Raum</span></button>
-                <button class="hub-karte" onclick="hubOeffne('vorschau')"><span class="hub-icon">👁️</span><b>Design-Vorschau</b><span class="hub-sub">So sehen dich Besucher</span></button>
-            </div>
         </div>
     </div>
 
-    <!-- ===================== GALERIE-CANVAS (eigenständige Galerie-Suite · getrennt vom Profil) ===================== -->
-    <div id="galerie-overlay" class="overlay">
-        <div class="canvas-editor" id="galerie-editor">
-            <div class="ce-dock" id="ge-dock">
-            <div class="ce-topbar">
-                <div class="ce-topbar-titel">
-                    <h2>Meine Galerie</h2>
-                    <div class="p-hint">Eigener Bild-Raum – frei gestaltbar wie dein Profil-Canvas, aber komplett getrennt. Editor und Besucheransicht sind 1:1 identisch.</div>
-                </div>
-                <div class="ce-topbar-actions">
-                    <button class="p-btn sekundaer" id="ge-dock-btn" onclick="geDockToggle()" title="Werkzeuge ein-/ausblenden">▲ Werkzeuge</button>
-                    <button class="p-btn" onclick="speichereGalerie()">Speichern</button>
-                    <button class="p-btn schliessen" onclick="schliesseGalerieEditor()">Schließen</button>
-                </div>
+    
+
+    <!-- ===================== PROFIL-EINSTELLUNGEN (Fenster mit Navigation) ===================== -->
+    <div id="profil-hub-overlay" class="overlay">
+        <div class="pe-fenster">
+            <div class="pe-kopf">
+                <h2>Profil-Einstellungen</h2>
+                <span class="pe-unter">M&amp;M Community</span>
+                <button class="pe-x" onclick="schliesseProfilHub()" title="Schließen">✕</button>
             </div>
-            <div class="ce-werkzeuge">
-                <label class="ce-tool">🌄 Hintergrundbild-URL
-                    <input type="text" id="ge-bg-url" placeholder="https://…/bild.jpg" autocomplete="off" onchange="geCanvasStil()"></label>
-                <label class="ce-tool">🎨 Hintergrundfarbe
-                    <input type="color" id="ge-bg-farbe" value="#0c1a2e" oninput="geCanvasStil()"></label>
-                <label class="ce-tool">🖼️ Farbschema
-                    <select id="ge-schema" onchange="geSchemaWechsel(this.value)"></select></label>
-                <label class="ce-tool">🔲 Rahmen
-                    <select id="ge-rahmen" onchange="geCanvasStil()">
-                        <option value="">ohne</option>
-                        <option value="gold">Gold</option>
-                        <option value="doppelt">Doppelt</option>
-                        <option value="neon">Neon</option>
-                        <option value="weich">Weich (Schatten)</option>
-                    </select></label>
-                <!-- Malermodus (Feature 1): Galerie-Hintergrund live verschieben/skalieren. -->
-                <label class="ce-tool">⬍ Hintergrund Y <span id="ge-bg-posy-lab">50%</span>
-                    <input type="range" id="ge-bg-posy" min="0" max="100" step="1" value="50" oninput="geCanvasStil()"></label>
-                <label class="ce-tool">⬌ Hintergrund X <span id="ge-bg-posx-lab">50%</span>
-                    <input type="range" id="ge-bg-posx" min="0" max="100" step="1" value="50" oninput="geCanvasStil()"></label>
-                <label class="ce-tool">🔍 Hintergrund skalieren <span id="ge-bg-skala-lab">100%</span>
-                    <input type="range" id="ge-bg-skala" min="30" max="300" step="1" value="100" oninput="geCanvasStil()"></label>
-                <div class="ce-tool-btns">
-                    <button onclick="geBildHinzufuegen()">＋ Bild laden</button>
-                    <button onclick="geLayoutPreset('2x2')">▦ 2×2</button>
-                    <button onclick="geLayoutPreset('3er')">▤ 3er-Reihe</button>
-                    <button onclick="geLayoutPreset('hero')">▛ Hero+Streifen</button>
-                    <button onclick="geLayoutPreset('raster')">▓ Raster (alle)</button>
-                </div>
-                <div class="ce-tool-hinweis"><b>＋ Bild laden</b> legt je Datei ein frei platzierbares Modul an · Klick auf die freie Bühne fügt ebenfalls ein Bild hinzu · Modul anklicken zeigt sein Menü.</div>
-            </div>
-            <div id="galerie-msg" class="p-msg"></div>
-            </div><!-- /ge-dock -->
-            <div class="ce-buehne">
-                <div class="ce-canvas-wrap">
-                    <div class="ce-canvas" id="ge-canvas">
-                        <div class="ce-canvas-hint">Klick auf die freie Bühne fügt ein Bild hinzu · Bild anklicken öffnet sein Menü · ziehen verschiebt · Ecke ⭜ skaliert.</div>
+            <div class="pe-koerper">
+                <nav class="pe-nav">
+                    <div class="pe-gruppe">Konto</div>
+                    <button class="aktiv" data-pe="profil" onclick="peTab('profil')">Profil</button>
+                    <button data-pe="galerie" onclick="peTab('galerie')">Galerie</button>
+                    <button data-pe="vorschau" onclick="peTab('vorschau')">Vorschau</button>
+                    <div class="pe-strich"></div>
+                    <div class="pe-gruppe">Sicherheit</div>
+                    <button data-pe="konto" onclick="peTab('konto')">Anmeldung &amp; Passwort</button>
+                    <div class="pe-fuss">Änderungen werden erst mit „Speichern" übernommen.</div>
+                </nav>
+
+                <section class="pe-inhalt">
+                    <div class="pe-tab" id="pe-tab-profil">
+                        <h3>Profil</h3>
+                        <p class="pe-text">Diese Angaben sehen andere Mitglieder in deinem Profil.</p>
+
+                        <div class="pe-foto-zeile">
+                            <div class="pe-avatar" id="pe-avatar">Foto</div>
+                            <div class="pe-foto-aktionen">
+                                <button class="pe-ghost" onclick="document.getElementById('pe-foto-input').click()">Bild auswählen</button>
+                                <input type="file" id="pe-foto-input" accept="image/*" style="display:none" onchange="peFotoWaehlen(this)">
+                                <span class="pe-hilfe">JPG oder PNG, mindestens 400 × 400 Pixel.</span>
+                            </div>
+                        </div>
+
+                        <div class="pe-block">
+                            <div class="pe-block-titel">Persönliche Angaben</div>
+                            <div class="pe-raster">
+                                <label class="pe-feld">Vorname<input type="text" id="pe-vorname" autocomplete="off"></label>
+                                <label class="pe-feld">Nachname<input type="text" id="pe-nachname" autocomplete="off"></label>
+                                <label class="pe-feld">Benutzername<input type="text" id="pe-handle" placeholder="@deinname" autocomplete="off"></label>
+                                <label class="pe-feld">Geburtsdatum<input type="date" id="pe-geburtsdatum" autocomplete="off"></label>
+                                <label class="pe-feld">Land<input type="text" id="pe-land" placeholder="z. B. Österreich" autocomplete="off"></label>
+                                <label class="pe-feld">Stadt<input type="text" id="pe-stadt" placeholder="z. B. Wien" autocomplete="off"></label>
+                                <label class="pe-feld pe-breit">Über mich<textarea id="pe-bio" rows="4" placeholder="Ein paar Sätze über dich …"></textarea></label>
+                            </div>
+                        </div>
+
+                        <div class="pe-fusszeile">
+                            <span class="pe-status" id="pe-status"></span>
+                            <button class="pe-ghost" onclick="peProfilLaden()">Verwerfen</button>
+                            <button class="pe-btn" onclick="peProfilSpeichern()">Speichern</button>
+                        </div>
                     </div>
-                </div>
-                <div class="ce-attr-panel" id="ge-attr"></div>
+
+                    <div class="pe-tab pe-versteckt" id="pe-tab-galerie">
+                        <h3>Galerie</h3>
+                        <p class="pe-text">Bis zu 8 Bilder. Das erste Bild ist dein Titelbild, die Reihenfolge bestimmst du selbst.</p>
+
+                        <div class="pe-galerie" id="pe-galerie"></div>
+                        <input type="file" id="pe-galerie-input" accept="image/*" multiple style="display:none" onchange="peGalerieBilderWaehlen(this)">
+
+                        <div class="pe-fusszeile">
+                            <span class="pe-status" id="pe-galerie-status"></span>
+                            <button class="pe-ghost" onclick="document.getElementById('pe-galerie-input').click()">Bild hinzufügen</button>
+                            <button class="pe-btn" onclick="peGalerieSpeichern()">Speichern</button>
+                        </div>
+                    </div>
+
+                    <div class="pe-tab pe-versteckt" id="pe-tab-vorschau">
+                        <h3>Vorschau</h3>
+                        <p class="pe-text">Genau so sehen Gäste dein Profil – ohne Bearbeiten-Knöpfe und ohne private Angaben wie E-Mail oder Geburtsdatum.</p>
+                        <div class="pe-karte pe-karte-vorschau">
+                            <div id="pe-vorschau-inhalt" class="pe-vorschau-inhalt">
+                                <p class="pe-lade">Vorschau wird geladen …</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pe-tab pe-versteckt" id="pe-tab-konto">
+                        <h3>Anmeldung &amp; Passwort</h3>
+                        <p class="pe-text">E-Mail-Adresse und Passwort für deinen Zugang.</p>
+                        <div class="pe-block">
+                            <div class="pe-block-titel">E-Mail-Adresse</div>
+                            <div class="pe-raster">
+                                <label class="pe-feld">Aktuelle E-Mail<input type="text" id="pe-konto-email" disabled></label>
+                                <label class="pe-feld">Neue E-Mail<input type="email" id="pe-neue-email" autocomplete="off"></label>
+                                <label class="pe-feld pe-breit">Passwort zur Bestätigung<input type="password" id="pe-email-pass" autocomplete="off"></label>
+                            </div>
+                            <div class="pe-fusszeile">
+                                <span class="pe-status" id="pe-email-status"></span>
+                                <button class="pe-btn" onclick="peEmailAendern()">E-Mail ändern</button>
+                            </div>
+                        </div>
+
+                        <div class="pe-block">
+                            <div class="pe-block-titel">Passwort</div>
+                            <div class="pe-raster">
+                                <label class="pe-feld">Aktuelles Passwort<input type="password" id="pe-altes-pass" autocomplete="off"></label>
+                                <label class="pe-feld">Neues Passwort<input type="password" id="pe-neues-pass" autocomplete="off"></label>
+                            </div>
+                            <div class="pe-fusszeile">
+                                <span class="pe-status" id="pe-pass-status"></span>
+                                <button class="pe-btn" onclick="pePasswortAendern()">Passwort ändern</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
-            <!-- Schwebendes Kontextmenü der Galerie (eigene ID, getrennt vom Profil-Canvas). -->
-            <div class="ce-ctx" id="ge-ctx"></div>
         </div>
     </div>
 
@@ -381,6 +515,20 @@
         </div>
 
         <div class="admin-grid">
+            <!-- KI-Basis-Wissen: gilt für alle Seelen und den allgemeinen Support -->
+            <div class="admin-card c-blau">
+                <h3>🧠 KI-BASIS-WISSEN (GILT FÜR ALLE SEELEN)</h3>
+                <p style="color:#a7b0bd; font-size:0.8rem; margin:0 0 8px;">
+                    Dieses Wissen liest jede Seele und auch der allgemeine Support.
+                    Einmal hier pflegen – nicht 22-mal.
+                </p>
+                <textarea id="admin-ki-basis-text" rows="10" placeholder="Grundlagen-Wissen der Plattform …"></textarea>
+                <div style="display:flex; gap:10px; align-items:center; margin-top:8px;">
+                    <button class="admin-btn" onclick="adminSpeichereKiBasis()">Basis-Wissen speichern</button>
+                    <span id="admin-ki-basis-status" style="color:#8fd6b0; font-size:0.8rem;"></span>
+                </div>
+            </div>
+
             <!-- Header-Texter -->
             <div class="admin-card c-blau">
                 <h3>📝 THEMEN-DEFINITION / HEADER-TEXT</h3>

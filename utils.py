@@ -16,7 +16,6 @@ from modules import (
     ANZAHL_THEMEN_GESAMT, GESPERRTE_THEMEN_FUER_USER,
     ki_aktiv_fuer_sektor, hole_seele, thema_fuer_user_gesperrt
 )
-from auth_routes import konto_ist_aktiv, bestimme_rolle, ist_admin, hat_aktives_abo
 
 class UtilsRouterConfig:
     """Saubere DI-Konfiguration für das utils-Modul."""
@@ -130,10 +129,24 @@ def _cfg_doc(doc_id: str) -> dict:
         return {}
     return database.system_config.find_one({"_id": doc_id}) or {}
 
-def hole_sektor_gesetz(sektor) -> str:
+def hole_sektor_gesetz(sektor):
     try:
+        db = _get_db()  # <--- DAS HIER FEHLT
         doc = db.mm_wissensarchiv.find_one({"sector_id": str(sektor), "status": "gesetzbuch"}) or {}
         return (doc.get("inhalt") or "").strip()
+    except Exception:
+        return ""
+
+def hole_ki_basis() -> str:
+    """Zentrales Basis-Wissen: gilt fuer ALLE Seelen und den allgemeinen Support.
+
+    Liegt in system_config unter _id 'ki_basis'. Wird einmal in der
+    Steuerzentrale gepflegt und von jeder Seele gelesen - so muss das
+    Wissen nicht 22-mal geschrieben werden.
+    """
+    try:
+        doc = _cfg_doc("ki_basis") or {}
+        return (doc.get("text") or "").strip()
     except Exception:
         return ""
 
@@ -175,17 +188,24 @@ def unsichtbarer_ki_scan(beitrag_id: str, sektor_int: int, email: str, roh_text:
             '"module": {"Modul_A": "...", "Modul_B": "...", "Modul_C": "...", "Modul_D": "...", '
             '"Modul_E": "...", "Modul_F": "...", "Modul_G": "...", "Modul_H": "...", "Modul_I": "..."}}'
         )
-        api_key = os.getenv("GEMINI_API_KEY", "").strip().replace("[", "").replace("]", "")
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
+        api_key = os.getenv("DEEPSEEK_API_KEY", "").strip()
+        base_url = os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com").strip()
+        model = os.getenv("DEEPSEEK_MODEL", "deepseek-flash").strip()
+        url = f"{base_url}/chat/completions"
         resp = requests.post(
             url,
-            json={"contents": [{"role": "user", "parts": [{"text": scan_prompt}]}]},
+            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+            json={
+                "model": model,
+                "messages": [{"role": "user", "content": scan_prompt}],
+                "temperature": 0.3,
+            },
             timeout=30,
         )
         auswertung_roh, sektor_essenz, gefuehls_fundament, modul_brille = "", "", "", {}
         res_data = resp.json()
-        if resp.status_code == 200 and "candidates" in res_data:
-            auswertung_roh = res_data["candidates"][0]["content"]["parts"][0]["text"].strip()
+        if resp.status_code == 200 and "choices" in res_data:
+            auswertung_roh = res_data["choices"][0]["message"]["content"].strip()
             try:
                 sauber = auswertung_roh.replace("```json", "").replace("```", "").strip()
                 parsed = json.loads(sauber)
@@ -232,9 +252,13 @@ def posts_heute(email: str) -> int:
         return 0
 
 def darf_profilsuche(email: str) -> bool:
+    from auth_routes import bestimme_rolle  
+    # Wer darf die Profilsuche nutzen? (z.B. verifizierte und Premium-Mitglieder)
     return bestimme_rolle(email) in ("verifiziert", "premium", "admin")
 
 def ist_premium(email: str) -> bool:
+    from auth_routes import bestimme_rolle  
+    # Wer gilt als Premium? (z.B. Premium und Admin)
     return bestimme_rolle(email) in ("premium", "admin")
 
 def rolle_gesperrt_antwort(benoetigt: str):
@@ -265,6 +289,7 @@ def autor_signatur(email: str) -> dict:
     }
 
 def darf_forum_nutzen(email: str) -> bool:
+    from auth_routes import konto_ist_aktiv  # <--- HIER EINFÜGEN
     return konto_ist_aktiv(email)
 
 def forum_gesperrt_antwort():
@@ -503,8 +528,9 @@ def _reservierung_public(res: dict, viewer_email: str = "", zeige_sensibel: bool
     }
 
 def _admin_guard(email: str):
+    from auth_routes import ist_admin  # <--- HIER EINFÜGEN
     if not ist_admin(email):
-        return JSONResponse(content={"success": False, "error": "Nicht autorisiert."}, status_code=403)
+        return JSONResponse(...)
     return None
 
 def _live_session_public(doc: dict, email: str = "", fuer_admin: bool = False) -> dict:

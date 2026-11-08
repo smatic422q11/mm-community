@@ -1,0 +1,42 @@
+{
+    "timestamp_utc": "2026-08-29T12:27:18.970110+00:00",
+    "system_metrics": {
+        "platform": "Windows-10-10.0.19045-SP0",
+        "python_version": "3.12.3",
+        "disk_total_gb": 237.99,
+        "disk_used_gb": 98.66,
+        "disk_free_gb": 139.32,
+        "disk_usage_percent": 41.46
+    },
+    "core_files": {
+        "main.py": {
+            "exists": true,
+            "size_bytes": 4507
+        },
+        "app.py": {
+            "exists": true,
+            "size_bytes": 2812
+        },
+        "config.py": {
+            "exists": true,
+            "size_bytes": 317
+        },
+        "database.py": {
+            "exists": true,
+            "size_bytes": 2297
+        },
+        "models.py": {
+            "exists": true,
+            "size_bytes": 1539
+        },
+        "seo_generator.py": {
+            "exists": true,
+            "size_bytes": 1288
+        },
+        "mail_services.py": {
+            "exists": true,
+            "size_bytes": 3624
+        }
+    },
+    "status": "HEALTHY"
+}

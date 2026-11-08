@@ -35,6 +35,7 @@ from utils import (
     _prune_video_raum, 
     _kurz_name, 
     hole_sektor_gesetz, 
+    hole_ki_basis,
     rolle_gesperrt_antwort, 
     ist_premium
 )
@@ -292,6 +293,36 @@ async def sektoren_status(email: str = ""):
         })
     return {"success": True, "sektoren": sektoren}
 
+@router.get("/api/thema/definition")
+async def thema_definition(sektor: int = 1, email: str = ""):
+    """Definition eines Themas + zustaendige Seele.
+
+    Die Seele ist erst 'wach', wenn das Thema eine Definition hat und ihr
+    KI-Schalter an ist. Vorher antwortet dort der allgemeine M&M Support.
+    """
+    email = (email or "").lower().strip()
+    if not konto_ist_aktiv(email):
+        return zugang_verweigert_antwort()
+    try:
+        s = str(int(sektor))
+    except (TypeError, ValueError):
+        s = "1"
+    if thema_fuer_user_gesperrt(int(s), email):
+        return {"success": False, "message": "Dieses Thema ist nur für die Administration."}
+    definition = hole_sektor_gesetz(s)
+    seele, wesen = hole_seele(s)
+    aktiv = bool(definition) and ki_aktiv_fuer_sektor(s)
+    return {
+        "success": True,
+        "sektor": int(s),
+        "thema": SEKTOR_THEMEN.get(s, f"Thema {s}"),
+        "definition": definition,
+        "seele": seele,
+        "wesen": wesen,
+        "seele_aktiv": aktiv,
+    }
+
+
 @router.get("/api/rolle")
 async def api_rolle(email: str = ""):
     email = (email or "").lower().strip()
@@ -337,41 +368,75 @@ async def api_support(request: Request):
         seele, seele_wesen = hole_seele(sektor)
         thema = SEKTOR_THEMEN.get(sektor, "die M&M Community")
         sektor_gesetz = hole_sektor_gesetz(sektor)
+        basis_wissen = hole_ki_basis()
 
+        # Gemeinsames Fundament: gilt fuer jede Seele UND fuer den allgemeinen Support.
+        basis_block = (
+            "\n\nGRUNDLAGEN-WISSEN DER PLATTFORM (gilt fuer ALLE Themen und alle Seelen - "
+            "das ist die verbindliche Wahrheit ueber die M&M Community):\n"
+            f"\"\"\"{basis_wissen}\"\"\"\n"
+            if basis_wissen else ""
+        )
         gesetz_block = (
-            f"\n\nVERBINDLICHE THEMENDEFINITION / SICHTWEISE DIESES SEKTORS "
+            f"\n\nVERBINDLICHE THEMENDEFINITION / SICHTWEISE DIESES THEMAS "
             f"(vom Architekten der M&M Community festgelegt – RICHTE DEIN VERHALTEN, DEINE "
             f"ANSPRACHE UND DEINE SUPPORT-LOGIK STRIKT DANACH AUS):\n\"\"\"{sektor_gesetz}\"\"\"\n"
             if sektor_gesetz else ""
         )
+
+        # Solange ein Thema keine Definition hat, antwortet der neutrale allgemeine
+        # Support - nicht die Seele. So geht keine der Seelen verloren, und der Nutzer
+        # bekommt trotzdem eine klare Auskunft.
+        if sektor_gesetz:
+            rolle_block = (
+                f"Du bist der M&M Community Support. Du sprichst als die Seele '{seele}' "
+                f"des Themas {sektor} ('{thema}').\n"
+                f"Deine Wesensart: {seele_wesen}\n"
+                "Bleibe in dieser Rolle, ohne esoterisch zu uebertreiben."
+            )
+            seele_anzeige = seele
+        else:
+            rolle_block = (
+                "Du bist der allgemeine M&M Community Support - neutral, ruhig und sofort da. "
+                "Du hast keinen eigenen Charakter. Die Seele eines Themas uebernimmt erst, "
+                "wenn dieses Thema eine Definition hat."
+            )
+            seele_anzeige = "M&M Support"
+
         system = (
-            f"Du bist der M&M Community Support. Du wirst DYNAMISCH als die Seele '{seele}' "
-            f"des Sektors {sektor} geladen (Thema: '{thema}').\n"
-            f"Deine Wesensart: {seele_wesen}"
+            f"{rolle_block}"
+            f"{basis_block}"
             f"{gesetz_block}\n\n"
             "AUFTRAG: Hilf dem Menschen freundlich, klar und konkret bei Fragen zur Plattform, "
-            "zur Bedienung des 3-Spalten-Dashboards (Themen-Stream, Live-Sektor) und zu diesem Thema. "
-            "Wenn eine Themendefinition/Sichtweise oben vorgegeben ist, ist sie für dich Gesetz: "
+            "zur Bedienung des 3-Spalten-Dashboards (Themen, Content-Stream, Live) und zu seinem Thema. "
+            "Wenn eine Themendefinition/Sichtweise oben vorgegeben ist, ist sie fuer dich Gesetz: "
             "vertritt sie konsequent (z. B. der Grundsatz, dass Mensch gleich Mensch ist) und weiche nicht davon ab. "
-            "Antworte kurz (maximal 4 Sätze), respektvoll und im Geist des Rechts auf Gefühlsvorderung. "
-            "Bleibe in der Rolle deiner Sektor-Seele, ohne esoterisch zu übertreiben."
+            "Antworte kurz (maximal 4 Saetze), respektvoll und im Geist des Rechts auf Gefuehlsvorderung. "
+            "Erfinde nichts, was nicht im Grundlagen-Wissen steht; bei Unklarheit verweise auf das Team."
         )
 
-        api_key = os.getenv("GEMINI_API_KEY", "").strip().replace("[", "").replace("]", "")
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={api_key}"
-        contents = [
-            {"role": "user", "parts": [{"text": f"SYSTEM-ANWEISUNG:\n{system}"}]},
-            {"role": "model", "parts": [{"text": f"Verstanden. Ich bin als {seele} für dich da."}]},
-            {"role": "user", "parts": [{"text": nachricht}]},
+        api_key = os.getenv("DEEPSEEK_API_KEY", "").strip()
+        base_url = os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com").strip()
+        model = os.getenv("DEEPSEEK_MODEL", "deepseek-flash").strip()
+        url = f"{base_url}/chat/completions"
+        messages = [
+            {"role": "system", "content": system},
+            {"role": "assistant", "content": f"Verstanden. Ich bin als {seele} für dich da."},
+            {"role": "user", "content": nachricht},
         ]
-        resp = requests.post(url, json={"contents": contents}, timeout=30)
+        resp = requests.post(
+            url,
+            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+            json={"model": model, "messages": messages, "temperature": 0.7},
+            timeout=30,
+        )
         res_data = resp.json()
-        if resp.status_code == 200 and "candidates" in res_data:
-            reply = res_data["candidates"][0]["content"]["parts"][0]["text"].strip()
+        if resp.status_code == 200 and "choices" in res_data:
+            reply = res_data["choices"][0]["message"]["content"].strip()
         else:
-            reply = f"{seele}: Ich bin gleich wieder für dich da – der Support-Dienst antwortet gerade nicht."
+            reply = f"{seele_anzeige}: Ich bin gleich wieder für dich da – der Support-Dienst antwortet gerade nicht."
 
-        return {"success": True, "reply": reply, "seele": seele, "sektor": sektor, "thema": thema}
+        return {"success": True, "reply": reply, "seele": seele_anzeige, "sektor": sektor, "thema": thema}
     except Exception as e:
         print(f"Fehler bei /api/support: {e}")
         return {"success": False, "message": "Systemfehler im Support."}

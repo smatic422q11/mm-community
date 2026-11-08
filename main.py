@@ -1,11 +1,14 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware  # <-- NEU: Zwingend nötig für Google OAuth
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from fastapi.responses import FileResponse
 
 # Zentrale Dienste und Module importieren (Nur das, was wirklich als Service existiert)
 from database import database_service
@@ -31,6 +34,7 @@ def create_app() -> FastAPI:
         description="Vollständig verdrahtete API inklusive Live-Video und Standard-Video.",
     )
 
+    # 1. CORS Middleware
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
@@ -39,8 +43,15 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
+    # 2. Session Middleware (NEU) - Muss VOR den Routern geladen werden!
+    # Holt sich einen geheimen Schlüssel aus der .env oder nutzt einen Standardwert
+    app.add_middleware(
+        SessionMiddleware, 
+        secret_key=os.getenv("SECRET_KEY", "super_geheimes_session_passwort_fuer_mm_community")
+    )
 
+    app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
+    
     # Sichere Datenbankverbindung holen
     def _get_db():
         try:
@@ -93,15 +104,35 @@ def create_app() -> FastAPI:
     app.include_router(forum_router)
     app.include_router(misc_router)
 
-    # Startseite
+# Startseite
     @app.get("/")
     async def home(request: Request):
         return templates.TemplateResponse(request, "index.html", {"request": request})
 
+    @app.get("/sitemap.xml", include_in_schema=False)
+    async def get_sitemap():
+        return FileResponse("sitemap.xml", media_type="application/xml")
+
+    # ===================== RECHTLICHE SEITEN =====================
+    # Diese Routen MÜSSEN vor dem "return app" stehen!
+    @app.get("/impressum")
+    async def impressum(request: Request):
+        return templates.TemplateResponse(request, "impressum.html", {"request": request})
+
+    @app.get("/datenschutz")
+    async def datenschutz(request: Request):
+        return templates.TemplateResponse(request, "datenschutz.html", {"request": request})
+
+    @app.get("/nutzungsbedingungen")
+    async def nutzungsbedingungen(request: Request):
+        return templates.TemplateResponse(request, "nutzungsbedingungen.html", {"request": request})
+
+    # HIER IST DIE AUSGANGSTÜR DER FUNKTION:
     return app
 
 app = create_app()
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=10000, reload=False)
+    # WICHTIG: Wenn hier Port 10000 steht, muss im Google Dashboard auch 10000 bei den URIs stehen!
+    uvicorn.run(app, host="0.0.0.0", port=10000, reload=False)   
